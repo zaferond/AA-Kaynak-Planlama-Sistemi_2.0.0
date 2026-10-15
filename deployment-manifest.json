@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "7e09237e1dd340bc630cb86f6e5e409409da6739",
+  "commit": "ead6dfc2542be985a5147abdc57739b712b348f3",
   "sources": {
     "backend/active-directory.mjs": "378b9aa0d31346261a26dbda3584588dd8041604a3f2aec0a0771a1c05c02394",
     "backend/activity-report.mjs": "e93a679889539fb99e3bf9eded566dbd7d3b2b6d63979a18f2fcb7f85142b4f3",
@@ -422,7 +422,7 @@
     "scripts/browser-checks/team-planning-permissions.mjs": "6630762364153d1a52c522f226a35acd4ca25f6eda17c2968b3f80045b442b07",
     "scripts/browser-checks/timeline-concurrency.mjs": "297dcc7726b1105297d44fc01d10ee6d30182dcc622430874395f65e1c6b2db3",
     "scripts/browser-checks/timeline-layers.mjs": "7774bc1cad647898d72505a96273ad587421ad83ad6f8aa7421cf95a0f3e921b",
-    "scripts/browser-checks/today-line-visibility.mjs": "93902f67284060ce71d3d448808a9e872962cd2956e4b89871228f8467a9614f",
+    "scripts/browser-checks/today-line-visibility.mjs": "3fe200d50c57441a48e0e7a155a07a4286ebcef4461d59e964ee95c8a40d3f16",
     "scripts/browser-checks/transport-recovery.mjs": "a7e763e3297c200df42d9b60de7c24f4c05dea1178b15b316c5dcb740165e70e",
     "scripts/browser-checks/viewport-scroll.mjs": "26b78b0ed8b5239424014cd81ad3941cd87d32d3d398809fca9eb42fbbf2c0fa",
     "scripts/browser-checks/workspace-actions.mjs": "aba35085a09e6cb0356a20dc934f4711eb85ab0050c2d84f09914c63f18da49b",

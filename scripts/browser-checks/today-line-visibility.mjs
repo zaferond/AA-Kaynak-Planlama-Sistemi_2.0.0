@@ -9,9 +9,21 @@ export async function checkTodayLineVisibility(f) {
   async function centerLine() {
     await container.evaluate((c) => {
       c.style.width = "650px";
+      // Center the line in the calendar area right of the frozen label/code
+      // columns; centering in the whole container can land beneath them.
+      const zoom =
+        Number.parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
+      const row = c.querySelector("[data-project-heading]");
+      const frozenRight = Math.max(
+        c.getBoundingClientRect().left,
+        ...[...row.cells]
+          .filter((cell) => getComputedStyle(cell).position === "sticky")
+          .map((cell) => cell.getBoundingClientRect().right),
+      );
+      const frozen = (frozenRight - c.getBoundingClientRect().left) / zoom;
       c.scrollLeft =
         Number.parseFloat(c.querySelector(".today-date-line").style.left) -
-        c.clientWidth / 2;
+        (frozen + (c.clientWidth - frozen) / 2);
     });
     await f.wait(
       async () =>

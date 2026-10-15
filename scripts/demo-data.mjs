@@ -242,7 +242,8 @@ try {
     })),
   );
 
-  // Leadership hierarchy and managers (shown in reports and planning headers).
+  // Leadership managers (shown in reports and planning headers). Leaderships
+  // stay independent; none is placed under another.
   for (const leader of Object.keys(leaders)) {
     await store.mutate(actor, (d, u, c, generation) =>
       applyLeaderChange(
@@ -252,7 +253,6 @@ try {
           action: "update",
           name: leader,
           managerName: leaders[leader].name,
-          ...(leader === TOP ? {} : { parentName: TOP }),
           catalogRevision: directoryRevision(d),
         },
         c,
@@ -1018,11 +1018,7 @@ try {
         continue;
       const ownTeams =
         role === "leader"
-          ? new Set(
-              workTeams
-                .filter((t) => t.lead === v.lead || v.lead === TOP)
-                .map((t) => t.id),
-            )
+          ? new Set(workTeams.filter((t) => t.lead === v.lead).map((t) => t.id))
           : new Set([v.team]);
       const byProject = new Map();
       for (const [key, value] of Object.entries(allocations)) {

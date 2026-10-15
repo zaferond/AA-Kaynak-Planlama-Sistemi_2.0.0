@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "119250de6c631ef34b48af6be1b91feadbc53232",
+  "commit": "626877827eff21554e82fdc5914c6b8fa45fb4eb",
   "sources": {
     "backend/active-directory.mjs": "378b9aa0d31346261a26dbda3584588dd8041604a3f2aec0a0771a1c05c02394",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -437,7 +437,7 @@
     "scripts/check-deployment-package.mjs": "0b67591fa941bd06a69161c7a11b90856f5062e86b388db7d6a94aa4f6e2e99f",
     "scripts/check-domain.mjs": "00c1a900a61a714c533f76fdd4c62cffabd4fdfeb9b83d489ae772ab967809f6",
     "scripts/data-maintenance.mjs": "c552da367084c6f068aa810e134a36edb97bc45ec904c1df822645d81492bc26",
-    "scripts/demo-data.mjs": "8ae040303f8efc6f6c0d8271f0972e900872ef6b7987ffd97d5024b92c955a46",
+    "scripts/demo-data.mjs": "7a6fd310862fb15d3330cec3b8e486c9d39d909b55145abd592bdf9261da76d8",
     "scripts/deployment-manifest.mjs": "734ada3c0b1aeff832858151683ee5568f3525caaa4224aa784a3c99eb493a07",
     "scripts/deployment-package.mjs": "2b8098daaa0ce794c4a9c68c612dad91bea66f1792dbdb44e2a99b34ac4dd28b",
     "scripts/domain-boundaries.mjs": "28ab4d65fde9fc6762e95db9e9319489d3f9f25dfc7af604d4a35cc12fe52163",

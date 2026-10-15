@@ -165,7 +165,9 @@ try {
           team: team.id,
           lead: team.lead || "",
           status,
-          included: true,
+          // Vacancies stay out of capacity until an admin turns on
+          // "Aktif İlanları Dahil Et".
+          included: !status.endsWith("İlan"),
           amount: 1,
           assignmentRole: role,
         },

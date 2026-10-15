@@ -161,7 +161,15 @@
   .phasepreview {
   visibility: hidden;
 }
-.app .phase-chip[data-phase-run="start"] .phasepreview {
+/* Çubuğun tüm parçaları tek satır: gizli etiket ara hücrelerde kırılıp
+   parçaların yüksekliğini farklılaştırmasın. */
+.app
+  .phase-chip:is(
+    [data-phase-run="start"],
+    [data-phase-run="middle"],
+    [data-phase-run="end"]
+  )
+  .phasepreview {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -185,4 +193,19 @@
   background: var(--color-brand-soft);
   filter: none;
   box-shadow: none;
+}
+
+/* Çubuk başındaki etiket çubuğun tamamını kullanır. Sonraki aylar kendi
+   düğmeleriyle tıklanmaya devam etsin diye etiket tıklamayı geçirir. Genişlik
+   hücre içeriği × hücre sayısıdır; çubuğun sonunu aşmaz. */
+.app .phase-chip[data-phase-run="start"] {
+  overflow: visible;
+}
+.app .phase-chip[data-phase-run="start"] .phasepreview {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: calc(var(--phase-run-span, 1) * 100%);
+  max-width: none;
+  pointer-events: none;
 }

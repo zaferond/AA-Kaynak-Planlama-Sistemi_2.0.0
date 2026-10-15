@@ -4,7 +4,9 @@ import { applyChanges } from "../../backend/operations.mjs";
 async function checkFreeze(page, tableSelector, capture) {
   const table = page.locator(tableSelector);
   const container = table.locator("..");
-  assert((await table.locator("tbody[data-project-group]").count()) >= 2);
+  // A tall first project may fill the virtual window; the scroll loop below
+  // asserts that the next project mounts.
+  assert((await table.locator("tbody[data-project-group]").count()) >= 1);
   const geometry = async () =>
     table.evaluate((table) => {
       const c = table.parentElement,
@@ -212,6 +214,11 @@ export async function checkProjectTables(f) {
             exact: true,
           })
           .click();
+        // With details open the first project can be taller than the virtual
+        // window; reorder needs both headings mounted at the same time.
+        await page
+          .getByRole("switch", { name: "Detayları Göster", exact: true })
+          .uncheck();
         const before = await f.state();
         const [first, second] = before.projects;
         await page

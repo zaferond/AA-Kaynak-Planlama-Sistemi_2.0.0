@@ -14,6 +14,7 @@ import {
   phaseChipEmpty,
   phaseRunKey,
   phaseRunParts,
+  phaseRunSpans,
 } from "./phase-chip";
 import ProjectResponsible from "./ProjectResponsible";
 import { milestoneRanges } from "./milestone-ranges";
@@ -166,15 +167,15 @@ export default function ProjectTimelineRows({
           </TableCell>
         )}
         {(() => {
-          const phaseRuns = phaseRunParts(
-            periods.map((period) =>
-              phaseRunKey(
-                project,
-                phaseMonthForPeriod(period, project),
-                periodOverlapsProject(period, project),
-              ),
+          const phaseKeys = periods.map((period) =>
+            phaseRunKey(
+              project,
+              phaseMonthForPeriod(period, project),
+              periodOverlapsProject(period, project),
             ),
           );
+          const phaseRuns = phaseRunParts(phaseKeys);
+          const phaseSpans = phaseRunSpans(phaseKeys);
           return periods.map((period, periodIndex) => {
             const active = periodOverlapsProject(period, project);
             const month = phaseMonthForPeriod(period, project);
@@ -200,7 +201,11 @@ export default function ProjectTimelineRows({
                 <button
                   className="phasebutton phase-chip"
                   disabled={!active}
-                  style={phaseChipStyle(project, month)}
+                  style={phaseChipStyle(
+                    project,
+                    month,
+                    phaseSpans[periodIndex],
+                  )}
                   data-phase-empty={!active || phaseChipEmpty(project, month)}
                   data-phase-run={phaseRuns[periodIndex]}
                   aria-label={

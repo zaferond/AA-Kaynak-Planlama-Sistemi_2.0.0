@@ -47,7 +47,12 @@ export const phaseChipPalette = [
   },
 ];
 
-export function phaseChipStyle(project: Project, month: string): CSSProperties {
+/** `span` is the number of cells a run covers; its label may use that width. */
+export function phaseChipStyle(
+  project: Project,
+  month: string,
+  span = 1,
+): CSSProperties {
   const color = phaseChipPalette.find(
     (item) => item.id === phaseColor(project, month).id,
   )!;
@@ -57,6 +62,7 @@ export function phaseChipStyle(project: Project, month: string): CSSProperties {
     "--phase-chip-ink": color.ink,
     "--phase-chip-highlight":
       color.id === "red" || color.id === "gray" ? "10%" : "30%",
+    "--phase-run-span": span,
   } as CSSProperties;
 }
 
@@ -85,6 +91,16 @@ export function phaseRunParts(keys: readonly string[]) {
       : joinsAfter
         ? "start"
         : "single";
+  });
+}
+
+/** Cells covered by the run that starts at each index; 1 elsewhere. */
+export function phaseRunSpans(keys: readonly string[]) {
+  return keys.map((key, index) => {
+    if (!key || keys[index - 1] === key) return 1;
+    let end = index;
+    while (keys[end + 1] === key) end++;
+    return end - index + 1;
   });
 }
 

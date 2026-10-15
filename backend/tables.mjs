@@ -50,6 +50,15 @@ export const tables = {
       project_code: "nvarchar(100)",
       start_month: "varchar(7)",
       end_month: "varchar(7)",
+      access_restricted: "bit",
+    },
+  },
+  project_access: {
+    key: ["project_id", "kind", "target"],
+    columns: {
+      project_id: "nvarchar(120)",
+      kind: "varchar(10)",
+      target: "nvarchar(200)",
     },
   },
   project_risks: {

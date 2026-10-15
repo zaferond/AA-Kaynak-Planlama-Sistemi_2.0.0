@@ -9,6 +9,7 @@ import {
   actualVersionAt,
 } from "./domain/index.mjs";
 import { orderedProjects } from "../shared/project-order.ts";
+import { projectVisibility } from "../shared/project-access.ts";
 import { stageRiskChange, stageRiskSystemChange } from "./risk-commands.mjs";
 import { stageTeamChange } from "./directory-commands.mjs";
 import { stageProjectResourceChange } from "./project-resource-commands.mjs";
@@ -105,6 +106,9 @@ export function preparePlanningCommand(command) {
 function stageParsedChanges(d, u, changes) {
   const seen = new Set(),
     affectedActualMonths = new Set();
+  // Decided on the snapshot before this batch; a batch cannot grant itself access.
+  const canSeeProject =
+    u.role === "admin" ? () => true : projectVisibility(d, publicUser(u));
   for (const ch of changes) {
     const { kind, id, value, revision, operation } = ch,
       k = kind + ":" + id;
@@ -152,6 +156,11 @@ function stageParsedChanges(d, u, changes) {
       !canRisk
     )
       fail(403, "Bu işlem için yetkiniz yok.");
+    if (
+      (kind === "allocation" || kind === "actual") &&
+      !canSeeProject(id.split("|")[1])
+    )
+      fail(403, "Bu projeyi görüntüleme yetkiniz yok.");
     if (ownActual && !resource) fail(404, "Çalışan kaynak bulunamadı.");
     if ((d.revisions[k] || 0) !== revision)
       fail(

@@ -45,7 +45,8 @@ export async function readSnapshotMetadata(c, { batch = false, report } = {}) {
       ? { kind: "leadership" }
       : {}),
   }));
-  d.projects = (await metadata("projects")).rows.map((r) => ({
+  const projectRows = (await metadata("projects")).rows;
+  d.projects = projectRows.map((r) => ({
     id: r.id,
     name: r.name,
     ...(r.sort_order !== null && r.sort_order !== undefined
@@ -99,6 +100,25 @@ export async function readSnapshotMetadata(c, { batch = false, report } = {}) {
         ? { additionalRanges: JSON.parse(r.extra_ranges) }
         : {}),
     });
+  }
+  // Viewing rules exist only on restricted projects; no rules means everyone.
+  const accessKinds = {
+    role: "roles",
+    leader: "leaders",
+    team: "teams",
+    person: "people",
+  };
+  const restricted = new Set(
+    projectRows
+      .filter((r) => Number(r.access_restricted) === 1)
+      .map((r) => r.id),
+  );
+  for (const p of d.projects)
+    if (restricted.has(p.id))
+      p.access = { roles: [], leaders: [], teams: [], people: [] };
+  for (const r of (await metadata("projectAccess")).rows) {
+    const list = pm.get(r.project_id)?.access?.[accessKinds[r.kind]];
+    if (list) list.push(r.target);
   }
   d.resources = (await metadata("resources")).rows.map((r) => ({
     id: r.id,

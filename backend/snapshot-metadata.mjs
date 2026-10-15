@@ -11,6 +11,8 @@ const metadataQueries = Object.freeze({
   phases: "SELECT * FROM kp_project_phases",
   milestones:
     "SELECT * FROM kp_project_milestones ORDER BY project_id,sort_order,id",
+  projectAccess:
+    "SELECT project_id,kind,target FROM kp_project_access ORDER BY project_id,kind,target",
   resources: "SELECT * FROM kp_resources ORDER BY id",
   resourceVersions:
     "SELECT * FROM kp_resource_versions ORDER BY effective_month",

@@ -59,6 +59,8 @@ export type Project = {
   phases: Record<string, string>;
   phaseColors?: Record<string, string>;
   milestones?: Milestone[];
+  /** Viewing rules; absent means every user may view the project. */
+  access?: import("./project-access.ts").ProjectAccess;
 };
 export type Risk = {
   id: string;
@@ -125,6 +127,9 @@ export type Data = {
   workCalendar?: WorkCalendar;
   personCalendar?: PersonCalendar;
   actualTeamTotals?: Record<string, number>;
+  /** Response-only: planned totals (team|month) of projects this user may not
+   * view, so team capacity figures stay complete without revealing them. */
+  hiddenAllocationTotals?: Record<string, number>;
   /** Response-only organisational labels; never persisted or used for authorization. */
   planningUnitManagers?: Record<string, string>;
   revisions: Record<string, number>;

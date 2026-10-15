@@ -80,6 +80,23 @@ const milestone = z.object({
   barText: z.string().trim().optional(),
   barNotes: z.array(milestoneNote).max(10).optional(),
 });
+const accessTargets = z
+  .array(z.string().trim().min(1).max(200))
+  .max(1000)
+  .refine((items) => new Set(items).size === items.length, {
+    message: "Tekrarlanan yetki kaydı.",
+  });
+const projectAccess = z
+  .object({
+    roles: z
+      .array(z.enum(["manager", "normal"]))
+      .max(2)
+      .refine((items) => new Set(items).size === items.length),
+    leaders: accessTargets,
+    teams: accessTargets,
+    people: accessTargets,
+  })
+  .strict();
 const proj = z.object({
   id: z.string().min(1),
   name: z.string().trim().min(1).max(200),
@@ -93,6 +110,7 @@ const proj = z.object({
     .record(mo, z.enum(phasePalette.map((x) => x.id) as [string, ...string[]]))
     .optional(),
   milestones: z.array(milestone).max(100).optional(),
+  access: projectAccess.optional(),
 });
 const risk = z
   .object({

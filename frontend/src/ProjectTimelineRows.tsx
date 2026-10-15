@@ -1,7 +1,14 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  GripVertical,
+  Lock,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { TableBody, TableRow, TableCell } from "@/components/ui/table";
 import {
   periodOverlapsProject,
@@ -17,6 +24,7 @@ import {
   phaseRunSpans,
 } from "./phase-chip";
 import ProjectResponsible from "./ProjectResponsible";
+import { hasProjectAccessRules } from "../../shared/project-access.ts";
 import { milestoneRanges } from "./milestone-ranges";
 import { milestoneBarsForPeriods } from "./milestone-bars";
 import { weeklyNoteLayout } from "./weekly-note-bars";
@@ -145,6 +153,16 @@ export default function ProjectTimelineRows({
                 onClick={onProjectInfo}
               >
                 {project.name}
+                {hasProjectAccessRules(project.access) && (
+                  <span
+                    className="project-access-lock"
+                    role="img"
+                    aria-label="Görüntüleme kısıtlı"
+                    title="Görüntüleme kısıtlı: yalnızca seçilen roller, liderlikler, takımlar ve kişiler görür."
+                  >
+                    <Lock size={12} />
+                  </span>
+                )}
               </button>
               <ProjectResponsible project={project} />
               <small>

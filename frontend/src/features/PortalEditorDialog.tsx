@@ -136,7 +136,11 @@ export default function PortalEditorDialog({
             }
           >
             {editor.kind === "project" && (
-              <ProjectEditorFields editor={editor} setEditor={setEditor} />
+              <ProjectEditorFields
+                editor={editor}
+                setEditor={setEditor}
+                data={data}
+              />
             )}
             {editor.kind === "projectPhase" && (
               <ProjectPhaseEditorFields editor={editor} setEditor={setEditor} />

@@ -39,6 +39,11 @@ export function buildCapacityIndex(d: Data, months: string[]) {
       cell = out[t + "|" + m];
     if (cell) cell.total += n;
   }
+  // Projects this user may not view still occupy team capacity.
+  for (const [key, n] of Object.entries(d.hiddenAllocationTotals || {})) {
+    const cell = out[key];
+    if (cell) cell.total += n;
+  }
   return out;
 }
 export function projectTotalIndex(

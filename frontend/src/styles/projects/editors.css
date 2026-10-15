@@ -766,3 +766,76 @@
   min-height: 14px;
   padding: 0;
 }
+
+/* Proje görüntüleme yetkisi: Proje Ekle / Proje Bilgilerini Düzenle. */
+[data-slot="dialog-content"] .project-access {
+  display: grid;
+  gap: 10px;
+  margin: 4px 0 0;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 8px;
+  background: var(--brand-surface-soft, #f6f8f2);
+}
+[data-slot="dialog-content"] .project-access legend {
+  padding: 0 4px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+[data-slot="dialog-content"] .project-access-mode,
+[data-slot="dialog-content"] .project-access-roles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+}
+[data-slot="dialog-content"] .project-access-mode label,
+[data-slot="dialog-content"] .project-access-roles label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  cursor: pointer;
+}
+[data-slot="dialog-content"] .project-access-roles > span {
+  min-width: 64px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+[data-slot="dialog-content"] .project-access-rules {
+  display: grid;
+  gap: 10px;
+}
+[data-slot="dialog-content"] .project-access-note {
+  margin: 0;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+.app .projectmatrix .project-access-lock {
+  display: inline-flex;
+  vertical-align: -2px;
+  margin-left: 4px;
+  color: var(--brand-muted, #60715e);
+}
+[data-slot="dialog-content"]
+  .project-access
+  :is(.project-access-mode, .project-access-roles)
+  label {
+  flex-direction: row;
+  grid-auto-flow: column;
+  justify-content: start;
+}
+[data-slot="dialog-content"]
+  .project-access
+  input:is([type="radio"], [type="checkbox"]) {
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  flex: none;
+  accent-color: var(--brand-primary, #405341);
+}

@@ -85,6 +85,7 @@ export function actualView(data, user, query, date = currentPlanningDate()) {
       ),
     },
     user,
+    { projectAccessData: data },
   );
   const resources = actualViewResources(data, user, teams, currentMonth);
   const byId = new Map(resources.map((resource) => [resource.id, resource]));

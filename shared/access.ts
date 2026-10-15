@@ -3,6 +3,7 @@ import { visibleLeaderParents } from "./leadership-hierarchy.ts";
 import type { Data, Resource } from "./model.ts";
 import { actualTeamTotalIndex, createActualTeamIndex } from "./model.ts";
 import { filterOwnRecords } from "./records.ts";
+import { projectVisibility } from "./project-access.ts";
 export type Role = "admin" | "manager" | "normal";
 export type Credential = {
   salt: string;
@@ -28,6 +29,8 @@ export function isEmployeeResource(resource: Resource) {
   return resource.versions.some((version) => !version.status.includes("İlan"));
 }
 export const ROOT_ADMIN_ID = "root-admin";
+/** Anonymous project id that aggregates actual team totals of hidden projects. */
+export const HIDDEN_PROJECT_ID = "~gizli";
 export type Principal = Omit<Account, "credential">;
 /** Daily leave/training details belong only to the employee and administrators.
  * Leadership grants authorize actual work entries, never private calendars. */
@@ -137,8 +140,20 @@ export function actualReadOwnerScope(
     )
     .map((r) => r.id);
 }
-export function scopeData(d: Data, u: Principal): Data {
+/** `projectAccessData` decides project visibility when `d` was already reduced
+ * for a narrower endpoint (for example without planned allocations). */
+export function scopeData(
+  d: Data,
+  u: Principal,
+  { projectAccessData = d }: { projectAccessData?: Data } = {},
+): Data {
   if (u.role === "admin") return d;
+  const canSeeProject = projectVisibility(projectAccessData, u);
+  const hiddenProjects = new Set(
+    d.projects
+      .filter((project) => !canSeeProject(project.id))
+      .map((project) => project.id),
+  );
   const { leaderNames, teams, ids } = visiblePlanningTeamScope(d, u);
   const privateIds = visibleTeamScope(d, u).ids;
   const ownId = u.resourceId || "";
@@ -156,6 +171,7 @@ export function scopeData(d: Data, u: Principal): Data {
     const parts = key.split("|"),
       resourceId = parts[0],
       month = parts[kind === "actual" ? 2 : 1];
+    if (kind === "actual" && hiddenProjects.has(parts[1])) return false;
     return canSeeResourceMonth(resourceId, month);
   };
   const actualEntries = (
@@ -173,7 +189,8 @@ export function scopeData(d: Data, u: Principal): Data {
       return false;
     }
     return key.startsWith("allocation:")
-      ? canSeePlanningRevision(u, key.slice(11).split("|")[0], ids)
+      ? canSeePlanningRevision(u, key.slice(11).split("|")[0], ids) &&
+          !hiddenProjects.has(key.slice(11).split("|")[1])
       : key.startsWith("actual:")
         ? canSeeActual(key.slice(7), "actual")
         : key.startsWith("workedHours:")
@@ -185,6 +202,28 @@ export function scopeData(d: Data, u: Principal): Data {
   for (const key of riskKeys) revisions[key] = d.revisions[key];
 
   const personCalendar = filterOwnRecords(d.personCalendar, canSeePersonDay);
+  // Hidden projects still count in team capacity: planned values travel as
+  // team|month totals, actual team totals under one anonymous project id.
+  const hiddenAllocationTotals: Record<string, number> = {};
+  const allocations = filterOwnRecords(d.allocations, (key) => {
+    const [team, project, month] = key.split("|");
+    if (!ids.has(team)) return false;
+    if (!hiddenProjects.has(project)) return true;
+    const total = team + "|" + month;
+    hiddenAllocationTotals[total] =
+      (ownValue(hiddenAllocationTotals, total) || 0) + d.allocations[key];
+    return false;
+  });
+  const teamTotals = actualTeamTotalIndex(d, ids, assignments);
+  const actualTeamTotals: Record<string, number> = {};
+  for (const [key, value] of Object.entries(teamTotals)) {
+    const [team, project, month] = key.split("|");
+    const target = hiddenProjects.has(project)
+      ? team + "|" + HIDDEN_PROJECT_ID + "|" + month
+      : key;
+    actualTeamTotals[target] =
+      (ownValue(actualTeamTotals, target) || 0) + value;
+  }
 
   return {
     ...d,
@@ -227,15 +266,22 @@ export function scopeData(d: Data, u: Principal): Data {
               },
         ),
       })),
-    allocations: filterOwnRecords(d.allocations, (key) =>
-      ids.has(key.split("|")[0]),
-    ),
+    projects: d.projects
+      .filter((project) => !hiddenProjects.has(project.id))
+      // Viewing rules name colleagues; only admins edit or see them.
+      .map(({ access: _access, ...project }) => project),
+    allocations,
+    ...(Object.keys(hiddenAllocationTotals).length
+      ? { hiddenAllocationTotals }
+      : {}),
     actualAllocations: actualEntries(d.actualAllocations, "actual"),
     actualWorkedHours: actualEntries(d.actualWorkedHours, "workedHours"),
     actualPercentEntries: actualEntries(d.actualPercentEntries, "actual"),
     personCalendar,
-    actualTeamTotals: actualTeamTotalIndex(d, ids, assignments),
+    actualTeamTotals,
     revisions,
-    risks: d.risks || [],
+    risks: (d.risks || []).filter(
+      (risk) => !hiddenProjects.has(risk.projectId),
+    ),
   };
 }

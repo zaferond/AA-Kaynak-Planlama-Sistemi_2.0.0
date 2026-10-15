@@ -1,3 +1,4 @@
+import { hasProjectAccessRules } from "../shared/project-access.ts";
 import { dataChanges } from "./change-set.mjs";
 import { table, tables, ident } from "./tables.mjs";
 import { entityCollections as kinds } from "../shared/entity-kinds.ts";
@@ -81,6 +82,7 @@ export async function persistPlanningSnapshot(
       sort_order: p.sortOrder ?? null,
       start_month: p.start,
       end_month: p.end,
+      access_restricted: hasProjectAccessRules(p.access) ? 1 : 0,
     })),
   );
   await c.upsert(
@@ -140,6 +142,31 @@ export async function persistPlanningSnapshot(
           label: p.phases[month] ?? null,
           color: p.phaseColors?.[month] || null,
         })),
+      ),
+    );
+    await clearChildren(
+      "project_access",
+      "project_id",
+      new Set(ps.map((p) => p.id)),
+    );
+    const accessKinds = [
+      ["role", "roles"],
+      ["leader", "leaders"],
+      ["team", "teams"],
+      ["person", "people"],
+    ];
+    await c.upsert(
+      "project_access",
+      ps.flatMap((p) =>
+        hasProjectAccessRules(p.access)
+          ? accessKinds.flatMap(([kind, field]) =>
+              [...new Set(p.access[field] || [])].map((target) => ({
+                project_id: p.id,
+                kind,
+                target,
+              })),
+            )
+          : [],
       ),
     );
     await clearChildren(

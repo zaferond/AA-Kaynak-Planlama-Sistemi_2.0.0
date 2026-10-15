@@ -164,6 +164,7 @@ test("database migration 29 preserves model/history, runs once and enforces nonn
         responsible_name: "Test",
         start_month: "2026-01",
         end_month: "2026-12",
+        access_restricted: 0,
       },
     ]);
     await c.upsert("project_phases", [

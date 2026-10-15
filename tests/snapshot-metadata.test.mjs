@@ -21,6 +21,7 @@ test("one snapshot's metadata batch uses the same ordered queries and never reus
     "risks",
     "phases",
     "milestones",
+    "projectAccess",
     "resources",
     "resourceVersions",
   ];
@@ -75,10 +76,10 @@ test("malformed, interrupted or incomplete metadata batches cannot become accept
   for (const result of [
     null,
     [],
-    Array(9).fill({ rows: [] }),
-    Array(11).fill({ rows: [] }),
-    Array(10).fill({ rows: null }),
-    Array(10),
+    Array(10).fill({ rows: [] }),
+    Array(12).fill({ rows: [] }),
+    Array(11).fill({ rows: null }),
+    Array(11),
   ])
     await assert.rejects(
       snapshotMetadataReader(

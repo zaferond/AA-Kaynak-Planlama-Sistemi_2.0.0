@@ -11,6 +11,7 @@ import {
   MAX_FILTER_START,
 } from "../shared/planning-dates.ts";
 import { monthsFrom } from "../shared/model.ts";
+import { projectVisibility } from "../shared/project-access.ts";
 export const activityQuery = z
   .object({
     start: z
@@ -55,8 +56,13 @@ export function activityReport(
 ) {
   const permitted = activityTeamScope(data, user, currentMonth);
   const resources = activityReportResources(data, permitted, currentMonth);
+  // Without a project filter the rows keep every project (team totals stay
+  // complete); a filter may only name projects this user can view.
+  const canSeeProject = projectVisibility(data, user, currentMonth);
   const projects = data.projects.filter(
-    (project) => !query.projects.length || query.projects.includes(project.id),
+    (project) =>
+      !query.projects.length ||
+      (query.projects.includes(project.id) && canSeeProject(project.id)),
   );
   const leaders = [
     ...new Set(permitted.map((team) => team.lead).filter(Boolean)),

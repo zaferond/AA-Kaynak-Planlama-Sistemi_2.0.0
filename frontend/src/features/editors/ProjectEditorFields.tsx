@@ -1,6 +1,12 @@
 import type { EditorFieldProps } from "./editor-field-props";
-type Props = EditorFieldProps<"project">;
-export default function ProjectEditorFields({ editor, setEditor }: Props) {
+import type { Data } from "../../model";
+import ProjectAccessFields from "./ProjectAccessFields";
+type Props = EditorFieldProps<"project"> & { data: Data | null };
+export default function ProjectEditorFields({
+  editor,
+  setEditor,
+  data,
+}: Props) {
   return (
     <>
       <label>
@@ -61,6 +67,11 @@ export default function ProjectEditorFields({ editor, setEditor }: Props) {
           </label>
         ))}
       </div>
+      <ProjectAccessFields
+        data={data}
+        value={editor.value}
+        onChange={(value) => setEditor({ ...editor, value })}
+      />
     </>
   );
 }

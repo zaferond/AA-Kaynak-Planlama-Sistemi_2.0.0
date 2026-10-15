@@ -45,7 +45,7 @@ export async function checkActualAllocation(f) {
         assert.equal(await page.locator(".actual-context-selected").count(), 0);
         await page
           .locator(
-            '.actual-person-total td[title="Browser Employee · 2026-01 · projeler ve 0 saat eğitim"]',
+            '.actual-cell-load[data-detail="Browser Employee · 2026-01 · projeler ve 0 saat eğitim"]',
           )
           .first()
           .click();

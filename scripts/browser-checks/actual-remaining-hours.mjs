@@ -44,20 +44,23 @@ export async function checkActualRemainingHours(f) {
     await page
       .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
       .click();
-    const total = page
-      .locator('[data-project-group="p-a"] .actual-person-total')
+    // Person totals are load bars under each entry cell (no separate row).
+    const january = page
+      .locator(
+        '[data-project-group="p-a"] .actual-cell-load[data-actual-total="r-own|2026-01"]',
+      )
       .first();
-    const january = total.locator("td").nth(1);
+    const value = async () => await january.getAttribute("data-value");
     await f.check(
       "actual hours: remaining net capacity subtracts all projects and training, with holiday/leave deducted once",
       async () => {
         await page.locator("#actual-entry-unit").selectOption("hours");
         assert(
-          (await total.locator("td").first().innerText()).includes(
+          (await january.getAttribute("aria-label")).startsWith(
             "Kalan Aylık Çalışma Saati",
           ),
         );
-        assert.equal((await january.innerText()).trim(), "155");
+        assert.equal(await value(), "155");
         assert(
           (await january.getAttribute("title")).includes(
             "184,5 saat aylık çalışma − 27 saat proje dağılımı − 2,5 saat eğitim = 155 saat kalan",
@@ -73,16 +76,16 @@ export async function checkActualRemainingHours(f) {
           .getByRole("checkbox", { name: "Browser Project A", exact: true })
           .check();
         await page.keyboard.press("Escape");
-        assert.equal((await january.innerText()).trim(), "155");
+        assert.equal(await value(), "155");
         await page.locator("#actual-entry-unit").selectOption("percent");
         assert(
-          (await total.locator("td").first().innerText()).includes(
+          (await january.getAttribute("aria-label")).startsWith(
             "Dağıtılan Kaynak %'si",
           ),
         );
-        assert.equal((await january.innerText()).trim(), "%15,99");
+        assert.equal(await value(), "%15,99");
         await page.locator("#actual-entry-unit").selectOption("hours");
-        assert.equal((await january.innerText()).trim(), "155");
+        assert.equal(await value(), "155");
       },
     );
     await f.check(
@@ -100,20 +103,20 @@ export async function checkActualRemainingHours(f) {
         await hours.fill("200");
         await hours.press("Enter");
         await f.wait(
-          async () => (await january.innerText()).trim() === "170,5",
+          async () => (await value()) === "170,5",
           "remaining hours after manual capacity update",
         );
         await amount.fill("188,5");
         await amount.press("Enter");
         await f.wait(
-          async () => (await january.innerText()).trim() === "0",
+          async () => (await value()) === "0",
           "fully distributed month has zero remaining hours",
         );
         assert(
           (await january.getAttribute("class")).includes("actual-total-full"),
         );
         await page.locator("#actual-entry-unit").selectOption("percent");
-        assert.equal((await january.innerText()).trim(), "%100");
+        assert.equal(await value(), "%100");
         await page.locator("#actual-entry-unit").selectOption("hours");
         await f.capture(page, "actual-remaining-hours");
       },

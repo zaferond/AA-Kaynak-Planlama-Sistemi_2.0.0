@@ -517,10 +517,10 @@ export async function checkCalendar(f) {
         assert.equal(await hours.inputValue(), "180,5");
         const total = p
           .locator(
-            '.actual-person-total td[title="Browser Employee · 2026-01 · projeler ve 2 saat eğitim"]',
+            '.actual-cell-load[data-detail="Browser Employee · 2026-01 · projeler ve 2 saat eğitim"]',
           )
           .first();
-        assert.equal((await total.innerText()).trim(), "%1,11");
+        assert.equal(await total.getAttribute("data-value"), "%1,11");
         await amount.fill("100");
         await amount.press("Enter");
         await p
@@ -546,7 +546,7 @@ export async function checkCalendar(f) {
         );
         await amount.click();
         await f.wait(
-          async () => (await total.innerText()).trim() === "%51,11",
+          async () => (await total.getAttribute("data-value")) === "%51,11",
           "saved actual percent and training total rendered",
         );
         await hours.fill("80");

@@ -40,26 +40,44 @@
   cursor: not-allowed;
 }
 
-.app.tab-actual .actual-person-total td {
-  background: #f4f8fb;
-  color: #385c75;
-  border-top: 1px solid #dfebf2;
+/* Kişinin o aydaki tüm projelerdeki toplamı: giriş hücresinin altında ince
+   doluluk çubuğu. Tam değer ipucunda ve ekran okuyucu etiketinde. */
+.app.tab-actual .allocation-grid td:has(> .actual-cell-load) {
+  position: relative;
+  padding-bottom: 8px;
 }
-.app.tab-actual .actual-person-total td:first-child {
-  padding-left: 24px !important;
+.app.tab-actual .actual-cell-load {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 3px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    #7f9f86 var(--actual-load, 0%),
+    #dde6d8 var(--actual-load, 0%)
+  );
+  pointer-events: auto;
+}
+.app.tab-actual .actual-cell-load.actual-total-full {
+  background: #2f6b4f;
+}
+.app.tab-actual .actual-view-bar .actual-load-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  padding-right: 14px;
+  color: var(--brand-muted, #60715e);
   font-size: var(--fs-xs);
-  font-weight: 600;
 }
-.app.tab-actual .actual-person-total td:not(:first-child) {
-  padding: 4px 2px;
-  text-align: center;
-  font-size: var(--fs-xs);
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
-}
-.app.tab-actual .actual-person-total td.actual-total-full {
-  background: #eaf4ef;
-  color: #286049;
+.app.tab-actual .actual-view-bar .actual-load-legend i {
+  display: inline-block;
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #7f9f86 60%, #dde6d8 60%);
 }
 
 .actual-limit-dialog {

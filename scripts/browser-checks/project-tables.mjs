@@ -200,6 +200,14 @@ export async function checkProjectTables(f) {
             exact: true,
           })
           .click();
+        // One row per person keeps this synthetic table short; a lower
+        // viewport still lets the next project heading reach the top.
+        await page
+          .locator(".person-allocation .allocation-grid")
+          .locator("..")
+          .evaluate((c) => {
+            c.style.maxHeight = "300px";
+          });
         await checkFreeze(page, ".person-allocation .allocation-grid", () =>
           f.capture(page, "actual-project-freeze"),
         );

@@ -147,6 +147,10 @@ export default function PersonAllocationPanel(
           />
           Sadece veri olanlar
         </label>
+        <span className="actual-load-legend">
+          <i aria-hidden="true" />
+          Hücre altındaki çubuk: kişinin o ay tüm projelerdeki toplamı
+        </span>
         <Pager
           total={totalRows}
           page={visiblePage}

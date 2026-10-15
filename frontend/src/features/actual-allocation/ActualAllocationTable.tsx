@@ -84,6 +84,39 @@ export default function ActualAllocationTable({
       0
     );
   }
+  /** Person-month total across all projects; drawn as a load bar under each
+   * entry cell instead of a separate row per person. */
+  function personMonthLoad(resource: Resource, month: string) {
+    const allocated = personMonthTotals[resource.id + "|" + month] || 0;
+    const summary = actualMonths.get(resource.id, month);
+    const unallocatedHours =
+      summary.effectiveHours - allocated * DEFAULT_MONTHLY_HOURS;
+    const remainingHours =
+      Math.abs(unallocatedHours) < ACTUAL_FTE_TOLERANCE * DEFAULT_MONTHLY_HOURS
+        ? 0
+        : unallocatedHours;
+    const percent =
+      summary.capacityFte > 0 ? (allocated / summary.capacityFte) * 100 : 0;
+    const hours = unit === "hours";
+    return {
+      percent,
+      full: percent >= 100 - 1e-8,
+      label: hours ? "Kalan Aylık Çalışma Saati" : "Dağıtılan Kaynak %'si",
+      value: hours
+        ? numberFormat.format(remainingHours)
+        : "%" + numberFormat.format(percent),
+      title: hours
+        ? `${resource.name} · ${month} · ${numberFormat.format(summary.effectiveHours)} saat aylık çalışma − ${numberFormat.format(summary.projectFte * DEFAULT_MONTHLY_HOURS)} saat proje dağılımı − ${numberFormat.format(summary.trainingHours)} saat eğitim = ${numberFormat.format(remainingHours)} saat kalan`
+        : resource.name +
+          " · " +
+          month +
+          " · projeler ve " +
+          numberFormat.format(
+            calendarTotals(resource.id, month).trainingHours,
+          ) +
+          " saat eğitim",
+    };
+  }
   const tableRef = useRef<HTMLTableElement>(null);
   const chunkSize = Math.max(
     4,
@@ -103,7 +136,7 @@ export default function ActualAllocationTable({
       return {
         key,
         headingKey,
-        height: (first ? 80 : 0) + chunk.length * 80,
+        height: (first ? 80 : 0) + chunk.length * 44,
         render: () => (
           <TableBody
             key={key}
@@ -281,85 +314,41 @@ export default function ActualAllocationTable({
                                 save(resource, project, month, amount)
                               }
                             />
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow className="actual-person-total">
-                      <TableCell
-                        className="rowname"
-                        title={
-                          resource.name +
-                          (unit === "hours"
-                            ? " · aylık çalışma − tüm projeler ve eğitim süresi"
-                            : " · projeler ve eğitim toplamı")
-                        }
-                      >
-                        <span className="indent">↳</span>
-                        {unit === "hours"
-                          ? "Kalan Aylık Çalışma Saati"
-                          : "Dağıtılan Kaynak %'si"}
-                      </TableCell>
-                      {months.map((month) => {
-                        const allocated =
-                          personMonthTotals[resource.id + "|" + month] || 0;
-                        const summary = actualMonths.get(resource.id, month);
-                        const monthlyCapacity = summary.capacityFte;
-                        const unallocatedHours =
-                          summary.effectiveHours -
-                          allocated * DEFAULT_MONTHLY_HOURS;
-                        const remainingHours =
-                          Math.abs(unallocatedHours) <
-                          ACTUAL_FTE_TOLERANCE * DEFAULT_MONTHLY_HOURS
-                            ? 0
-                            : unallocatedHours;
-                        const percent =
-                          monthlyCapacity > 0
-                            ? (allocated / monthlyCapacity) * 100
-                            : 0;
-                        const visible = eligible.has(resource.id + "|" + month);
-                        const key = resource.id + "|total|" + month;
-                        return (
-                          <TableCell
-                            key={month}
-                            data-actual-context-cell={
-                              visible ? "true" : undefined
-                            }
-                            className={
-                              [
-                                visible && percent >= 100 - 1e-8
-                                  ? "actual-total-full"
-                                  : "",
-                                selectedCell?.key === key
-                                  ? "actual-context-selected"
-                                  : "",
-                              ]
-                                .filter(Boolean)
-                                .join(" ") || undefined
-                            }
-                            onClick={() => {
-                              if (visible)
-                                selectHoursContext(resource.id, month, key);
-                            }}
-                            title={
-                              unit === "hours"
-                                ? `${resource.name} · ${month} · ${numberFormat.format(summary.effectiveHours)} saat aylık çalışma − ${numberFormat.format(summary.projectFte * DEFAULT_MONTHLY_HOURS)} saat proje dağılımı − ${numberFormat.format(summary.trainingHours)} saat eğitim = ${numberFormat.format(remainingHours)} saat kalan`
-                                : resource.name +
-                                  " · " +
-                                  month +
-                                  " · projeler ve " +
-                                  numberFormat.format(
-                                    calendarTotals(resource.id, month)
-                                      .trainingHours,
-                                  ) +
-                                  " saat eğitim"
-                            }
-                          >
-                            {visible
-                              ? unit === "hours"
-                                ? numberFormat.format(remainingHours)
-                                : "%" + numberFormat.format(percent)
-                              : "—"}
+                            {eligible.has(resource.id + "|" + month) &&
+                              (() => {
+                                const load = personMonthLoad(resource, month);
+                                return (
+                                  <span
+                                    className={
+                                      "actual-cell-load" +
+                                      (load.full ? " actual-total-full" : "")
+                                    }
+                                    role="img"
+                                    aria-label={load.label + ": " + load.value}
+                                    title={
+                                      load.label +
+                                      ": " +
+                                      load.value +
+                                      "\n" +
+                                      load.title
+                                    }
+                                    data-actual-total={
+                                      resource.id + "|" + month
+                                    }
+                                    data-value={load.value}
+                                    data-detail={load.title}
+                                    style={
+                                      {
+                                        "--actual-load":
+                                          Math.min(
+                                            100,
+                                            Math.max(0, load.percent),
+                                          ) + "%",
+                                      } as React.CSSProperties
+                                    }
+                                  />
+                                );
+                              })()}
                           </TableCell>
                         );
                       })}

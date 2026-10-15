@@ -21,23 +21,35 @@ const sections = [
 ] as const;
 
 const SECTION_GAP = 16;
-/** Bring a section heading just below the window top. The page is drawn with
- * CSS zoom, which some browsers ignore in scrollIntoView and overshoot; measure
- * the result and correct with the observed scroll-to-pixel ratio instead. */
+/** Glide a section heading to just below the window top. The page is drawn
+ * with CSS zoom, which some browsers ignore in scroll positions and overshoot.
+ * The exact target is found first with instant, unpainted test scrolls in the
+ * same task (corrected by the observed scroll-to-pixel ratio); the page then
+ * returns to where it was and scrolls smoothly to that target. */
 function scrollToSection(id: string) {
   const target = document.getElementById(id);
   if (!target) return;
   const offset = () => target.getBoundingClientRect().top - SECTION_GAP;
+  const origin = window.scrollY;
   let ratio = 1;
   for (let step = 0; step < 4; step++) {
     const before = offset();
     if (Math.abs(before) < 2) break;
     const startY = window.scrollY;
-    window.scrollTo(0, startY + before / ratio);
+    window.scrollTo({ top: startY + before / ratio, behavior: "instant" });
     const moved = before - offset();
     if (Math.abs(moved) < 1) break;
     ratio = moved / (window.scrollY - startY || 1);
   }
+  const destination = window.scrollY;
+  window.scrollTo({ top: origin, behavior: "instant" });
+  const reduceMotion = window.matchMedia?.(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  window.scrollTo({
+    top: destination,
+    behavior: reduceMotion ? "instant" : "smooth",
+  });
 }
 
 /** Headline figures for the selected scope, computed with the same functions

@@ -1,6 +1,12 @@
 import { ROOT_ADMIN_ID } from "../shared/access.ts";
 import { Store } from "./store.mjs";
 import { hashPassword } from "./auth.mjs";
+import { assertAdminPassword } from "./admin-credentials.mjs";
+assertAdminPassword(
+  process.env.NEW_ADMIN_PASSWORD,
+  process.env.ADMIN_USERNAME,
+  "NEW_ADMIN_PASSWORD",
+);
 const password = await hashPassword(process.env.NEW_ADMIN_PASSWORD),
   s = new Store();
 try {

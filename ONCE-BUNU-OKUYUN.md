@@ -12,7 +12,7 @@ Bu paket iki mod içerir:
 1. ZIP'e sağ tıklayın → **Tümünü ayıkla**. Yeni klasörü kullanın; eski PostgreSQL/MongoDB klasörünün üzerine kopyalamayın.
 2. **Node.js 24 veya daha yenisi** kurulu olmalı. Docker Desktop açmanız gerekmez.
 3. Çıkan klasörde **baslat-windows.cmd** dosyasına çift tıklayın.
-4. İlk çalıştırmada giriş e-postası sorulur. `mehmetzaferonder@gmail.com` için Enter'a basın veya başka bir kullanıcı adı yazın.
+4. İlk çalıştırmada yönetici kullanıcı adı sorulur. Kendi kullanıcı adınızı veya e-postanızı yazın.
 5. En az 10 karakterlik kendi şifrenizi belirleyin; istenince tekrar yazın. Yazarken görünmez; bu normaldir. Bu kurulum aracında tek tırnak karakteri kullanmayın.
 6. Paketlerin internetten indirilmesini bekleyin. **Sistem hazır: http://localhost:3000** mesajı geldiğinde tarayıcıda bu adresi açın.
 
@@ -69,7 +69,7 @@ Eski tek HTML sürümünün şifreli yedeği için `IT-MSSQL-GECIS.md` dosyasın
 | İndirme hatası | İnternet/proxy ayarlarını kontrol edip komutu tekrar çalıştırın. |
 | Eski veriler kaybolmuş gibi | Aynı proje klasörünü ve aynı `.env` ayarını kullandığınızı kontrol edin. |
 
-Şifre değiştirmek için sistemi durdurun, `.env` içine geçici `NEW_ADMIN_PASSWORD='yeni-sifreniz'` ekleyin, `npm.cmd run admin:password` çalıştırın (Mac'te `npm run admin:password`). Sonra geçici satırı kaldırıp uygulamayı yeniden başlatın.
+Şifre değiştirmek için sistemi durdurun, `.env` içine geçici `NEW_ADMIN_PASSWORD='<yeni şifreniz>'` ekleyin, `npm.cmd run admin:password` çalıştırın (Mac'te `npm run admin:password`). Sonra geçici satırı kaldırıp uygulamayı yeniden başlatın.
 
 ## Canlıya geçiş
 

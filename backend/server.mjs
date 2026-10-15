@@ -3,6 +3,7 @@ import { httpConfig } from "./http-config.mjs";
 import { Store } from "./store.mjs";
 import { createApp } from "./app.mjs";
 import { hashPassword } from "./auth.mjs";
+import { assertAdminPassword } from "./admin-credentials.mjs";
 import { fileURLToPath } from "node:url";
 import { verifyDeployment } from "../scripts/deployment-manifest.mjs";
 import { mutationAdmissionConfig } from "./mutation-admission.mjs";
@@ -39,7 +40,10 @@ try {
   if (!(await store.findUser({ id: ROOT_ADMIN_ID }))) {
     const username = (env.ADMIN_USERNAME || "").trim().toLowerCase();
     if (!/^[a-z0-9._@+-]{3,100}$/.test(username))
-      throw Error("Önce npm run setup komutunu çalıştırın.");
+      throw Error(
+        "ADMIN_USERNAME boş veya geçersiz. Yerelde npm run setup çalıştırın; MSSQL kurulumunda .env içine ilk yönetici kullanıcı adını yazın.",
+      );
+    assertAdminPassword(env.ADMIN_PASSWORD, username);
     await store.bootstrapUser({
       _id: ROOT_ADMIN_ID,
       username,

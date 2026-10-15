@@ -39,11 +39,11 @@ APP_ORIGIN=https://planlama.sirketiniz.com
 HOST=127.0.0.1
 PORT=3000
 NODE_ENV=production
-ADMIN_USERNAME=mehmetzaferonder@gmail.com
-ADMIN_PASSWORD='yalnizca-ilk-kurulumda-gereken-portal-sifresi'
+ADMIN_USERNAME=<ilk-yonetici-kullanici-adi>
+ADMIN_PASSWORD=<en-az-10-karakterlik-kendi-sifreniz>
 ```
 
-DB_USER/DB_PASSWORD SQL Server servis hesabıdır; ADMIN_USERNAME/ADMIN_PASSWORD portalın ilk yönetici hesabıdır. İkisi farklıdır. İlk yönetici yalnızca hesap yoksa oluşturulur; sonraki açılışta ADMIN_PASSWORD değiştirmek var olan şifreyi değiştirmez. İlk kurulumdan sonra ADMIN_PASSWORD satırını kaldırabilirsiniz.
+DB_USER/DB_PASSWORD SQL Server servis hesabıdır; ADMIN_USERNAME/ADMIN_PASSWORD portalın ilk yönetici hesabıdır. İkisi farklıdır. İlk yönetici yalnızca hesap yoksa oluşturulur; boş, örnek dosyadaki yer tutucu veya kullanıcı adıyla aynı şifre reddedilir ve sistem başlamaz; sonraki açılışta ADMIN_PASSWORD değiştirmek var olan şifreyi değiştirmez. İlk kurulumdan sonra ADMIN_PASSWORD satırını kaldırabilirsiniz.
 
 Named instance için `DB_INSTANCE=INSTANCE_ADI` tanımlayın; bu durumda DB_PORT kullanılmaz. SQL Browser ve ilgili ağ erişimi gerekir; IT sabit TCP portu sağlıyorsa port üzerinden bağlantı daha nettir. DB_SERVER alanına `sunucu\\instance` yerine yalnızca sunucu adı girin.
 

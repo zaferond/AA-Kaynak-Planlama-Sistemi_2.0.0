@@ -24,6 +24,7 @@ export async function startupFixture(t, { launcher = false } = {}) {
   await fs.mkdir(bin);
   for (const relative of [
     "backend/setup.mjs",
+    "backend/admin-credentials.mjs",
     "backend/ensure-dependencies.mjs",
     ...(launcher ? ["baslat-windows.cmd"] : []),
   ])

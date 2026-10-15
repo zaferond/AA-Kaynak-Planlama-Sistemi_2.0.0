@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import { constants } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { Writable } from "node:stream";
+import { assertAdminPassword } from "./admin-credentials.mjs";
 const file = new URL("../.env", import.meta.url);
 let exists = false;
 try {
@@ -44,10 +45,9 @@ try {
   console.log("\nAA Kaynak Planlama — İlk kurulum\n");
   let username;
   do {
-    username =
-      (await ask("Giriş e-postası [mehmetzaferonder@gmail.com]: "))
-        .trim()
-        .toLowerCase() || "mehmetzaferonder@gmail.com";
+    username = (await ask("Yönetici kullanıcı adı veya e-postası: "))
+      .trim()
+      .toLowerCase();
   } while (!/^[a-z0-9._@+-]{3,100}$/.test(username));
   let password;
   while (true) {
@@ -62,6 +62,12 @@ try {
       password.includes("'")
     ) {
       console.log("10–256 karakter girin; tek tırnak kullanmayın.");
+      continue;
+    }
+    try {
+      assertAdminPassword(password, username, "Şifre");
+    } catch (error) {
+      console.log(error.message);
       continue;
     }
     if (password === (await ask("Aynı şifreyi tekrar yazın: ", true))) break;

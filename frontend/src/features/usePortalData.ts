@@ -1,4 +1,4 @@
-import { useState, type RefObject } from "react";
+import { useCallback, useState, type RefObject } from "react";
 import type { ChangeKind, ChangeValues } from "../../../shared/commands";
 import type { Data } from "../model";
 import {
@@ -16,7 +16,14 @@ export function usePortalData(assertSessionRef: RefObject<() => void>) {
   const [user, setUser] = useState(currentUser);
   const [data, setData] = useState<Data | null>(null);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+  // Each message gets an id, so repeating the same text still shows again.
+  const [noticeState, setNoticeState] = useState({ text: "", id: 0 });
+  const setNotice = useCallback(
+    (text: string) =>
+      setNoticeState((current) => ({ text, id: current.id + 1 })),
+    [],
+  );
+  const notice = noticeState.text;
   const [saving, setSaving] = useState(false);
   async function reload(onUnauthenticated: () => void) {
     try {
@@ -91,6 +98,7 @@ export function usePortalData(assertSessionRef: RefObject<() => void>) {
     error,
     setError,
     notice,
+    noticeId: noticeState.id,
     setNotice,
     saving,
     setSaving,

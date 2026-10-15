@@ -40,7 +40,7 @@ type Props = {
   onProjectDeleted: (id: string) => void;
   onSubmitted: () => void;
   setError: Dispatch<SetStateAction<string>>;
-  setNotice: Dispatch<SetStateAction<string>>;
+  setNotice: (message: string) => void;
 };
 
 /** Own draft state and editor actions; persistence remains in the workspace batch service. */

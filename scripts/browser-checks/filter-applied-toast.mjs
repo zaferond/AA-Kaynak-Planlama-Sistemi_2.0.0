@@ -46,7 +46,7 @@ export async function checkFilterAppliedToast(f) {
     ]);
   });
   const { page } = await f.client("root-admin");
-  const toast = () => page.locator(".filter-applied-toast");
+  const toast = () => page.locator(".filter-applied-toast:not(.message-toast)");
   try {
     await selectWorkspaceTab(page, "Planlanan Kaynak Dağılımı");
     await f.check(

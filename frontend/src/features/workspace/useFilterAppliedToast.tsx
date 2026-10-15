@@ -64,3 +64,32 @@ export function useFilterAppliedToast() {
       : null,
   };
 }
+
+/** Save results and similar messages: shown briefly in the corner instead of
+ * as a line between the filters and the table. */
+export function useMessageToast(message: string, id: number) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!message) {
+      setVisible(false);
+      return;
+    }
+    setVisible(true);
+    const timer = setTimeout(() => setVisible(false), 3500);
+    return () => clearTimeout(timer);
+  }, [message, id]);
+  return visible && message
+    ? createPortal(
+        <div
+          className="filter-applied-toast message-toast"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <CircleCheck size={19} aria-hidden="true" />
+          <span>{message}</span>
+        </div>,
+        document.body,
+      )
+    : null;
+}

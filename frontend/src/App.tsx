@@ -90,6 +90,7 @@ export default function Portal() {
     error,
     setError,
     notice,
+    noticeId,
     setNotice,
     saving,
     setSaving,
@@ -479,6 +480,7 @@ export default function Portal() {
       saving={saving}
       resetAll={resetAll}
       notice={notice}
+      noticeId={noticeId}
       showPeriodFilters={tab !== "overview" || reportView !== "headcount"}
     />
   );

@@ -667,6 +667,10 @@ html {
   line-height: 1.4;
   pointer-events: none;
 }
+/* Save results sit above a simultaneous filter notice. */
+.filter-applied-toast.message-toast {
+  bottom: 72px;
+}
 .filter-applied-toast.filter-reset-toast {
   border-color: #b8cbe1;
   background: #f2f6fc;

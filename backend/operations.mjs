@@ -9,7 +9,10 @@ import {
   actualVersionAt,
 } from "./domain/index.mjs";
 import { orderedProjects } from "../shared/project-order.ts";
-import { projectVisibility } from "../shared/project-access.ts";
+import {
+  isProjectEditor,
+  projectVisibility,
+} from "../shared/project-access.ts";
 import { stageRiskChange, stageRiskSystemChange } from "./risk-commands.mjs";
 import { stageTeamChange } from "./directory-commands.mjs";
 import { stageProjectResourceChange } from "./project-resource-commands.mjs";
@@ -138,6 +141,7 @@ function stageParsedChanges(d, u, changes) {
       actualKind;
     const ownDay =
       kind === "personDay" && !!u.resourceId && targetId === u.resourceId;
+    const projectEditor = kind === "project" && isProjectEditor(u);
     const existingRisk =
       kind === "risk" ? d.risks?.find((item) => item.id === id) : undefined;
     const canRisk =
@@ -153,6 +157,7 @@ function stageParsedChanges(d, u, changes) {
       !managerActual &&
       !ownActual &&
       !ownDay &&
+      !projectEditor &&
       !canRisk
     )
       fail(403, "Bu işlem için yetkiniz yok.");

@@ -374,6 +374,8 @@ export type UserInput = {
   role: "admin" | "manager" | "normal";
   leaders: string[];
   planningTeams?: string[];
+  /** With role "normal": the "Normal-Proje" role. */
+  projectEditor?: boolean;
   resourceId: string;
   revision: number;
   reactivate?: boolean;

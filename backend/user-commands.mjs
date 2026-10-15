@@ -9,6 +9,7 @@ export const permissionInput = z
     role: z.enum(["admin", "manager", "normal"]),
     leaders: z.array(z.string()).max(100),
     planningTeams: z.array(z.string().min(1).max(120)).max(5000).default([]),
+    projectEditor: z.boolean().default(false),
     resourceId: z.string().max(120).default(""),
     revision: z.number().int().nonnegative(),
     reactivate: z.boolean().optional(),
@@ -24,6 +25,7 @@ export const accountInput = z
     role: z.enum(["admin", "manager", "normal"]),
     leaders: z.array(z.string()).max(100),
     planningTeams: z.array(z.string().min(1).max(120)).max(5000).default([]),
+    projectEditor: z.boolean().default(false),
     resourceId: z.string().min(1).max(120),
   })
   .strict();
@@ -84,6 +86,8 @@ export async function updatePermissions(store, d, u, session, input) {
       role: input.role,
       leaders: input.role === "admin" ? [] : input.leaders,
       planningTeams: input.role === "manager" ? input.planningTeams || [] : [],
+      // "Normal-Proje" is a normal account with admin rights on project screens.
+      projectEditor: input.role === "normal" && !!input.projectEditor,
       resourceId,
       revision: old.revision + 1,
       version: old.version + 1,
@@ -107,6 +111,7 @@ export async function revokePermissions(store, u, session, input) {
       active: false,
       leaders: [],
       planningTeams: [],
+      projectEditor: false,
       resourceId: "",
       revision: old.revision + 1,
       version: old.version + 1,
@@ -148,6 +153,8 @@ export async function createEmployeeAccount(
       role: input.role,
       leaders: input.role === "admin" ? [] : input.leaders,
       planningTeams: input.role === "manager" ? input.planningTeams || [] : [],
+      // "Normal-Proje" is a normal account with admin rights on project screens.
+      projectEditor: input.role === "normal" && !!input.projectEditor,
       resourceId,
       active: true,
       // A random, undisclosed placeholder preserves the existing backup schema.

@@ -7,7 +7,7 @@ import { ROOT_ADMIN_ID } from "../access";
 import type { AccessControls } from "./access/access-controls";
 import {
   employeeAccountRows,
-  accountRoleLabels,
+  accountRoleLabel,
   employeeSearchField,
 } from "./access/employee-account-rows";
 import { useFilterAppliedToast } from "./workspace/useFilterAppliedToast";
@@ -341,7 +341,7 @@ export default function ResourcesPanel({
                           <span
                             className={"access-role-badge role-" + account.role}
                           >
-                            {accountRoleLabels[account.role]}
+                            {accountRoleLabel(account)}
                           </span>
                           <small
                             className={

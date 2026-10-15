@@ -60,22 +60,31 @@ export default function AccessPermissionFields({
       Rol
       <select
         aria-label="Rol"
-        value={form.role}
+        value={
+          form.role === "normal" && form.projectEditor
+            ? "projectEditor"
+            : form.role
+        }
         disabled={busy}
-        onChange={(event) =>
+        onChange={(event) => {
+          // "Normal-Proje" is stored as a normal account with project rights.
+          const projectEditor = event.target.value === "projectEditor";
+          const role = (projectEditor ? "normal" : event.target.value) as Role;
           setForm({
             ...form,
-            role: event.target.value as Role,
+            role,
+            projectEditor,
             resourceId:
-              event.target.value === "admin" &&
+              role === "admin" &&
               !boundResource &&
               selected?.authSource !== "ldap"
                 ? ""
                 : form.resourceId,
-          })
-        }
+          });
+        }}
       >
         <option value="normal">Normal Kullanıcı</option>
+        <option value="projectEditor">Normal-Proje</option>
         <option value="manager">Yönetici</option>
         {(creating || selected?.authSource === "ldap" || !boundResource) && (
           <option value="admin">Admin</option>

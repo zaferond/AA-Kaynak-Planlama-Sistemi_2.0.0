@@ -163,6 +163,7 @@ const accountSchema = z
     role: z.enum(["admin", "manager", "normal"]),
     leaders: z.array(z.string()),
     planningTeams: z.array(z.string()).optional(),
+    projectEditor: z.boolean().optional(),
     active: z.boolean(),
     credential: credentialSchema.optional(),
   })

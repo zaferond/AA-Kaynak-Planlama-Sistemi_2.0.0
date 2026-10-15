@@ -32,6 +32,14 @@ export const accountRoleLabels = {
   manager: "Yönetici",
   normal: "Normal Kullanıcı",
 } as const;
+/** Visible role name; "Normal-Proje" is a normal account with project rights. */
+export const accountRoleLabel = (account: {
+  role: keyof typeof accountRoleLabels;
+  projectEditor?: boolean;
+}) =>
+  account.role === "normal" && account.projectEditor
+    ? "Normal-Proje"
+    : accountRoleLabels[account.role];
 export type EmployeeAccountRow = {
   key: string;
   resource?: Resource;
@@ -80,7 +88,7 @@ export function employeeAccountRows(
           a.name,
           a.username,
           a.email || "",
-          accountRoleLabels[a.role],
+          accountRoleLabel(a),
           a.id === ROOT_ADMIN_ID ? "Ana yönetici Sistem Yöneticisi" : "",
         ].join(" ")
       : "";

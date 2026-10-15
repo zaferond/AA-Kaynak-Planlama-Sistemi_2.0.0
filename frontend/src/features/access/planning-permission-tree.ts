@@ -107,9 +107,11 @@ export function togglePlanningRow(
 }
 export function planningGrantSummary(
   data: Directory,
-  account: PlanningGrants & { role: string },
+  account: PlanningGrants & { role: string; projectEditor?: boolean },
 ) {
   if (account.role === "admin") return "Tüm Liderlikler";
+  if (account.role === "normal" && account.projectEditor)
+    return "Projeler ve Kritik Proje Konuları";
   const scope = selectedLeadershipScope(data, account.leaders, true);
   const allLeaders =
     !!data.leaders?.length && data.leaders.every((name) => scope.has(name));

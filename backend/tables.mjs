@@ -193,6 +193,7 @@ export const tables = {
       email: "nvarchar(320)",
       auth_source: "varchar(10)",
       active: "bit",
+      project_editor: "bit",
       password_salt: "varchar(100)",
       password_hash: "varchar(200)",
       revision: "bigint",

@@ -11,6 +11,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Principal } from "../access";
 import { RISK_MANAGEMENT_ENABLED, TAB_LABELS } from "../settings";
+import { isProjectEditor } from "../../../shared/project-access.ts";
 export type WorkspaceDensity = "detail" | "compact" | "overview";
 export type ReportView = "resources" | "headcount";
 type Props = {
@@ -54,8 +55,11 @@ export default function WorkspaceNavigation({
   setReportView,
 }: Props) {
   const isAdmin = user?.role === "admin",
-    isManager = user?.role === "manager";
-  const anyRole = isAdmin || isManager || user?.role === "normal";
+    isManager = user?.role === "manager",
+    projectEditor = isProjectEditor(user);
+  // "Normal-Proje" sees only the project and critical-topic screens.
+  const anyRole =
+    isAdmin || isManager || (user?.role === "normal" && !projectEditor);
   // Order and grouping: actuals · planning and projects · reports · administration.
   const mainTabs = (
     [
@@ -83,7 +87,7 @@ export default function WorkspaceNavigation({
         value: "critical",
         Icon: FolderKanban,
         group: "planning",
-        show: isAdmin || isManager,
+        show: isAdmin || isManager || projectEditor,
       },
       {
         value: "overview",
@@ -178,7 +182,7 @@ export default function WorkspaceNavigation({
               </TabsList>
             </Tabs>
           )}
-          {tab === "projects" && isAdmin && (
+          {tab === "projects" && (isAdmin || projectEditor) && (
             <button
               className="button project-create"
               onClick={() => openProject()}

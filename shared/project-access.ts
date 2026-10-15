@@ -22,6 +22,11 @@ export function hasProjectAccessRules(access: ProjectAccess | undefined) {
       0
   );
 }
+export function isProjectEditor(
+  user: Pick<Principal, "role" | "projectEditor"> | null | undefined,
+) {
+  return user?.role === "normal" && user.projectEditor === true;
+}
 export const PROJECT_ACCESS_ROLES = [
   { id: "manager", label: "Yönetici" },
   { id: "normal", label: "Normal Kullanıcı" },
@@ -38,7 +43,7 @@ type AccessData = Pick<
 >;
 type AccessUser = Pick<
   Principal,
-  "role" | "resourceId" | "leaders" | "planningTeams"
+  "role" | "resourceId" | "leaders" | "planningTeams" | "projectEditor"
 >;
 
 function withAncestors(
@@ -65,7 +70,9 @@ export function projectVisibility(
   user: AccessUser,
   month = currentPlanningMonth(),
 ) {
-  if (user.role === "admin") return (_projectId: string) => true;
+  // Admins and "Normal-Proje" accounts manage every project.
+  if (user.role === "admin" || isProjectEditor(user))
+    return (_projectId: string) => true;
   const restricted = data.projects.filter((project) =>
     hasProjectAccessRules(project.access),
   );

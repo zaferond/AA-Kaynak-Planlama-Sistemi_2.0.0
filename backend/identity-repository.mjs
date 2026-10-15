@@ -10,6 +10,10 @@ const mapUser = (r) =>
     directoryId: r.directory_id || "",
     email: r.email || "",
     active: !!r.active,
+    // "Normal-Proje": a normal account with admin rights on project screens.
+    ...(r.role === "normal" && Number(r.project_editor) === 1
+      ? { projectEditor: true }
+      : {}),
     leaders: [],
     planningTeams: [],
     password: { salt: r.password_salt, hash: r.password_hash },
@@ -71,6 +75,7 @@ export async function saveUser(c, u) {
       directory_id: u.directoryId || null,
       email: u.email || "",
       active: u.active,
+      project_editor: u.role === "normal" && u.projectEditor ? 1 : 0,
       password_salt: u.password.salt,
       password_hash: u.password.hash,
       revision: u.revision,

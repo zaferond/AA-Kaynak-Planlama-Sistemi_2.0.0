@@ -25,6 +25,8 @@ import { captureEditorRevisions, editorRevision } from "./editor-revisions";
 type Props = {
   data: Data | null;
   isAdmin: boolean;
+  /** Admins and "Normal-Proje" accounts edit projects and their details. */
+  canEditProjects: boolean;
   saving: boolean;
   start: string;
   count: number;
@@ -45,6 +47,7 @@ type Props = {
 export function usePortalEditor({
   data,
   isAdmin,
+  canEditProjects,
   saving,
   start,
   count,
@@ -61,7 +64,7 @@ export function usePortalEditor({
   const [formError, setFormError] = useState("");
   const months = useMemo(() => monthsFrom(start, count), [start, count]);
   function openProject(p?: Project, m?: string) {
-    if (!isAdmin || !data) return;
+    if (!canEditProjects || !data) return;
     const baseRevisions = captureEditorRevisions(data);
     setFormError("");
     if (p && m)
@@ -93,7 +96,7 @@ export function usePortalEditor({
   async function deleteProject() {
     if (
       !data ||
-      !isAdmin ||
+      !canEditProjects ||
       saving ||
       editor?.kind !== "project" ||
       editor.isNew
@@ -137,7 +140,7 @@ export function usePortalEditor({
     }
   }
   function openMilestone(project: Project, milestone?: Milestone) {
-    if (!isAdmin || !data) return;
+    if (!canEditProjects || !data) return;
     setFormError("");
     const first =
       months.find((month) => month >= project.start && month <= project.end) ||
@@ -165,7 +168,7 @@ export function usePortalEditor({
     });
   }
   async function deleteMilestone(project: Project, milestone: Milestone) {
-    if (!data || !isAdmin || saving) return;
+    if (!data || !canEditProjects || saving) return;
     const current = data.projects.find((item) => item.id === project.id);
     if (!current?.milestones?.some((item) => item.id === milestone.id)) {
       const message =

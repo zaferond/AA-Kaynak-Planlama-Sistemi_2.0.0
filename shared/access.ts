@@ -3,7 +3,7 @@ import { visibleLeaderParents } from "./leadership-hierarchy.ts";
 import type { Data, Resource } from "./model.ts";
 import { actualTeamTotalIndex, createActualTeamIndex } from "./model.ts";
 import { filterOwnRecords } from "./records.ts";
-import { projectVisibility } from "./project-access.ts";
+import { isProjectEditor, projectVisibility } from "./project-access.ts";
 export type Role = "admin" | "manager" | "normal";
 export type Credential = {
   salt: string;
@@ -22,6 +22,9 @@ export type Account = {
   email?: string;
   leaders: string[];
   planningTeams?: string[];
+  /** "Normal-Proje": a normal account that sees only the project screens and
+   * has admin rights there (projects, phases, details, critical topics). */
+  projectEditor?: boolean;
   active: boolean;
   credential?: Credential;
 };
@@ -188,6 +191,7 @@ export function scopeData(
       riskKeys.push(key);
       return false;
     }
+    if (key.startsWith("project:")) return isProjectEditor(u);
     return key.startsWith("allocation:")
       ? canSeePlanningRevision(u, key.slice(11).split("|")[0], ids) &&
           !hiddenProjects.has(key.slice(11).split("|")[1])
@@ -268,8 +272,10 @@ export function scopeData(
       })),
     projects: d.projects
       .filter((project) => !hiddenProjects.has(project.id))
-      // Viewing rules name colleagues; only admins edit or see them.
-      .map(({ access: _access, ...project }) => project),
+      // Viewing rules name colleagues; only admins and project editors see them.
+      .map(({ access, ...project }) =>
+        isProjectEditor(u) && access ? { ...project, access } : project,
+      ),
     allocations,
     ...(Object.keys(hiddenAllocationTotals).length
       ? { hiddenAllocationTotals }

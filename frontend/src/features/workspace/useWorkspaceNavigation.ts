@@ -70,10 +70,10 @@ export function useWorkspaceNavigation({
       navigation.invalidateTabRequest();
       setTab(allowed[0]);
     }
-  }, [user?.role, tab, navigation]);
+  }, [user?.role, user?.projectEditor, tab, navigation]);
   useEffect(() => {
     setDefaultTab(readDefaultTab(user));
-  }, [user?.id, user?.role]);
+  }, [user?.id, user?.role, user?.projectEditor]);
   function setOpeningTab(nextTab: string) {
     if (!user || !allowedDefaultTabs(user).includes(nextTab)) return;
     try {

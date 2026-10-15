@@ -39,7 +39,9 @@ export default function WorkspaceHeader({
     ? "Admin"
     : isManager
       ? "Yönetici"
-      : "Normal Kullanıcı";
+      : user?.projectEditor
+        ? "Normal-Proje"
+        : "Normal Kullanıcı";
   const [menuOpen, setMenuOpen] = useState(false);
   const restoreInput = useRef<HTMLInputElement>(null);
   return (

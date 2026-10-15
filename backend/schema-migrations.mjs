@@ -555,6 +555,11 @@ export async function prepareSchema(c, { provider, auto }) {
       );
     await executeSqlMigration(c, provider, 38);
   }
+  if (!versions.includes(39)) {
+    if (!auto)
+      throw Error("Normal-Proje rolü için IT npm run db:migrate çalıştırmalı.");
+    await executeSqlMigration(c, provider, 39);
+  }
   assertMigrationHistory(
     (await c.query("SELECT version FROM kp_schema_migrations")).rows.map(
       (row) => Number(row.version),

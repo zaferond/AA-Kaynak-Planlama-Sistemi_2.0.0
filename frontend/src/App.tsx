@@ -21,6 +21,7 @@ import WorkspaceFilters from "./features/WorkspaceFilters";
 import PlannedAllocationPanel from "./features/PlannedAllocationPanel";
 import WorkspaceFilterSummary from "./features/workspace/WorkspaceFilterSummary";
 import { useOnlyDataRows } from "./features/workspace/useOnlyDataRows";
+import { isProjectEditor } from "../../shared/project-access.ts";
 import { useProjectMenus } from "./features/useProjectMenus";
 import ProjectContextMenus from "./features/ProjectContextMenus";
 import {
@@ -99,6 +100,8 @@ export default function Portal() {
     change,
   } = usePortalData(assertSessionRef);
   const isAdmin = user?.role === "admin";
+  // "Normal-Proje": admin rights on the project screens only.
+  const canEditProjects = isAdmin || isProjectEditor(user);
   const isManager = user?.role === "manager";
   const {
     tab,
@@ -224,6 +227,7 @@ export default function Portal() {
   } = usePortalEditor({
     data,
     isAdmin: !!isAdmin,
+    canEditProjects,
     saving,
     start,
     count,
@@ -255,8 +259,8 @@ export default function Portal() {
     setPlanMenu(null);
   }, [leads, teamIds, projectIds, start, count, search, view]);
   useEffect(() => {
-    if (!isAdmin) setEditor(null);
-  }, [isAdmin, user?.role]);
+    if (!canEditProjects) setEditor(null);
+  }, [canEditProjects, user?.role]);
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       const list = mainTabsRef.current;
@@ -361,7 +365,7 @@ export default function Portal() {
       search,
       timelineWeekly,
     ]),
-    isAdmin: !!isAdmin,
+    isAdmin: canEditProjects,
     saving,
     batch,
     setNotice,
@@ -396,7 +400,7 @@ export default function Portal() {
     batch,
     setNotice,
     setError,
-    isAdmin: !!isAdmin,
+    isAdmin: canEditProjects,
   });
   const { exportCurrentTab } = createWorkspaceExports({
     data: viewData,
@@ -706,7 +710,7 @@ export default function Portal() {
                     expandAllDetails={showProjectDetails}
                     onDetailsChange={setShowProjectDetails}
                     onWeeklyChange={setProjectWeekly}
-                    isAdmin={!!isAdmin}
+                    isAdmin={canEditProjects}
                     saving={saving}
                     page={effectiveProjectPage}
                     onPageChange={setProjectPage}
@@ -714,7 +718,7 @@ export default function Portal() {
                       onReorderProject: reorderProject,
                       onProjectInfo: openProject,
                       onPhaseClick: (project, month) =>
-                        isAdmin
+                        canEditProjects
                           ? openProject(project, month)
                           : setPhaseDetail({ project, month }),
                       onPhaseContextMenu: openPhaseMenu,
@@ -911,11 +915,11 @@ export default function Portal() {
                   )}
                 </TabsContent>
               )}
-              {(isAdmin || isManager) && tab === "critical" && (
+              {(canEditProjects || isManager) && tab === "critical" && (
                 <TabsContent value="critical">
                   <ProjectInfoReport
                     projects={data.projects}
-                    canEdit={!!isAdmin}
+                    canEdit={canEditProjects}
                     onSave={(project) => save("project", project.id, project)}
                     onOpenProjects={() => changeTab("projects")}
                     onAddInfo={(project) => openMilestone(project)}
@@ -965,7 +969,7 @@ export default function Portal() {
       <ProjectContextMenus
         menus={projectMenus}
         data={data}
-        isAdmin={!!isAdmin}
+        isAdmin={canEditProjects}
         saving={saving}
       />
       <>

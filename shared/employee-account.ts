@@ -5,6 +5,7 @@ export type EmployeePermission =
       role: "normal" | "manager" | "admin";
       leaders: string[];
       planningTeams?: string[];
+      projectEditor?: boolean;
       resourceId: string;
     }
   | {
@@ -13,6 +14,7 @@ export type EmployeePermission =
       role: "normal" | "manager" | "admin";
       leaders: string[];
       planningTeams?: string[];
+      projectEditor?: boolean;
       resourceId: string;
       revision: number;
       reactivate?: boolean;

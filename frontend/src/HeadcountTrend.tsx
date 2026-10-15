@@ -68,7 +68,7 @@ export default function HeadcountTrend({
           ? 2
           : 1;
   return (
-    <section className="panel trend headcount-trend">
+    <section id="rapor-calisan" className="panel trend headcount-trend">
       <div className="panelhead">
         <div>
           <h2>Aylık Ortalama Çalışan Sayısı ve Öngörü Grafiği</h2>

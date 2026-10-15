@@ -449,3 +449,12 @@
     padding: 4px;
   }
 }
+
+/* Pencere içeriği kadar uzar; boş yıl listesi sabit 336px yer kaplamaz. */
+.work-calendar-dialog {
+  height: auto;
+}
+.work-calendar-list > p {
+  min-height: 96px;
+  border-radius: 6px;
+}

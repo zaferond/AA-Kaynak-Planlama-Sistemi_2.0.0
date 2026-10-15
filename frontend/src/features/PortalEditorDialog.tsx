@@ -262,23 +262,46 @@ export default function PortalEditorDialog({
                 >
                   Projeyi Sil
                 </button>
-                <button
-                  type="button"
-                  className="button primary"
-                  disabled={saving}
-                  onClick={submit}
-                >
-                  {saving ? "Kaydediliyor…" : "Kaydet"}
-                </button>
+                <span className="editor-actions-end">
+                  <button
+                    type="button"
+                    className="button"
+                    disabled={saving}
+                    onClick={() => setEditor(null)}
+                  >
+                    Vazgeç
+                  </button>
+                  <button
+                    type="button"
+                    className="button primary"
+                    disabled={saving}
+                    onClick={submit}
+                  >
+                    {saving ? "Kaydediliyor…" : "Kaydet"}
+                  </button>
+                </span>
               </div>
             ) : (
-              <button
-                className="button primary"
-                disabled={saving}
-                onClick={submit}
-              >
-                {saving ? "Kaydediliyor…" : "Kaydet"}
-              </button>
+              <div className="project-editor-actions">
+                <span className="editor-actions-end">
+                  <button
+                    type="button"
+                    className="button"
+                    disabled={saving}
+                    onClick={() => setEditor(null)}
+                  >
+                    Vazgeç
+                  </button>
+                  <button
+                    type="button"
+                    className="button primary"
+                    disabled={saving}
+                    onClick={submit}
+                  >
+                    {saving ? "Kaydediliyor…" : "Kaydet"}
+                  </button>
+                </span>
+              </div>
             )}
           </div>
         )}

@@ -1,5 +1,7 @@
 /* One phase treatment for actual, planned and project timelines. No raised
    stacking layer or size-changing hover: frozen labels keep their precedence. */
+/* Flat, tinted phase box: same-hue hairline and a strong accent stripe on the
+   left. No gradient or drop shadow; frozen labels keep their precedence. */
 :is(.app, [data-slot="dialog-content"]) .phase-chip {
   display: flex;
   align-items: center;
@@ -9,23 +11,15 @@
   min-height: 36px;
   height: auto;
   margin: 0;
-  padding: 6px 7px;
-  border: 1px solid #252525;
-  border-radius: 3px;
-  background: linear-gradient(
-      to bottom,
-      rgb(255 255 255 / var(--phase-chip-highlight, 30%)),
-      rgb(255 255 255 / 0%) 55%,
-      rgb(24 39 52 / 3%)
-    )
-    var(--phase-chip-background, #dce2e7);
-  color: var(--phase-chip-ink, #5b6975);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 75%),
-    inset 0 -1px 0 rgb(24 39 52 / 6%),
-    0 1px 2px rgb(24 39 52 / 12%);
+  padding: 6px 7px 6px 9px;
+  border: 1px solid var(--phase-chip-border, #c4cfd9);
+  border-radius: 4px;
+  background: var(--phase-chip-background, #eef1f4);
+  color: var(--phase-chip-ink, #2c3a46);
+  box-shadow: inset 3px 0 0 var(--phase-chip-accent, #5b6975);
   font-size: var(--fs-xs);
   font-weight: 600;
+  letter-spacing: 0.01em;
   line-height: 1.35;
   text-align: left;
   white-space: pre-wrap;
@@ -34,7 +28,6 @@
   transition:
     background-color 0.12s ease,
     border-color 0.12s ease,
-    box-shadow 0.12s ease,
     filter 0.12s ease;
 }
 .app .planning-grid .phase-chip {
@@ -72,8 +65,8 @@
   min-height: 36px;
 }
 :is(.app, [data-slot="dialog-content"]) .phase-chip[data-phase-empty="true"] {
-  border: 1px solid #252525;
-  background: #f3f5f2;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  background: #f6f8f4;
   color: #68735e;
   box-shadow: none;
   font-weight: 400;
@@ -87,12 +80,8 @@
 }
 @media (hover: hover) {
   .app button.phase-chip:not(:disabled):hover {
-    border-color: #252525;
-    filter: brightness(0.96);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 75%),
-      inset 0 -1px 0 rgb(24 39 52 / 8%),
-      0 1px 3px rgb(24 39 52 / 18%);
+    border-color: var(--phase-chip-accent, #5b6975);
+    filter: brightness(0.97);
   }
 }
 .app button.phase-chip:not(:disabled):focus-visible {
@@ -102,7 +91,6 @@
 .app .projectmatrix td.phase-cell-selected .phase-chip {
   outline: 2px solid var(--brand-focus, #405341);
   outline-offset: -2px;
-  box-shadow: inset 0 0 0 3px #f2f6ec;
 }
 .app.dense-overview .planning-grid .phase-chip {
   min-height: 28px;
@@ -128,12 +116,7 @@
 .app .phase-chip.month-work {
   --phase-cell-pad: 17px;
 }
-.app
-  .phase-chip:is(
-    [data-phase-run="start"],
-    [data-phase-run="middle"],
-    [data-phase-run="end"]
-  ) {
+.app .phase-chip:is([data-phase-run="middle"], [data-phase-run="end"]) {
   box-shadow: none;
 }
 .app .phase-chip:is([data-phase-run="start"], [data-phase-run="end"]) {
@@ -189,8 +172,8 @@
     :hover,
     :focus-visible
   ) {
-  border: 1px dashed var(--color-muted);
-  background: var(--color-brand-soft);
+  border: 1px dashed var(--brand-muted, #60715e);
+  background: var(--brand-surface, #edf1e8);
   filter: none;
   box-shadow: none;
 }
@@ -202,10 +185,17 @@
   overflow: visible;
 }
 .app .phase-chip[data-phase-run="start"] .phasepreview {
+  /* Above the run's own month buttons, below frozen label columns (z 1+). */
   position: relative;
-  z-index: 1;
+  z-index: 0;
   flex: none;
   width: calc(var(--phase-run-span, 1) * 100%);
   max-width: none;
   pointer-events: none;
+}
+/* 5 yıllık görünüm: metin baştaki şeride yapışmasın. */
+.app.dense-overview
+  .planning-grid
+  .phase-chip:not([data-phase-run="middle"]):not([data-phase-run="end"]) {
+  padding-left: 6px;
 }

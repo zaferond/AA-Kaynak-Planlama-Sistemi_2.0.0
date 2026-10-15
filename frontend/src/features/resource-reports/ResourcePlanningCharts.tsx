@@ -43,7 +43,10 @@ export default function ResourcePlanningCharts({
   const visibleRanks = showAll ? ranked : ranked.slice(0, 10);
   return (
     <div className="resource-planning-charts">
-      <section className="panel resource-report capacity-comparison">
+      <section
+        id="rapor-planlanan-gerceklesen"
+        className="panel resource-report capacity-comparison"
+      >
         <header className="resource-report-head">
           <div>
             <h2>Planlanan Kaynak / Gerçekleşen Kaynak Karşılaştırma Grafiği</h2>
@@ -71,7 +74,10 @@ export default function ResourcePlanningCharts({
       </section>
       <ProjectAllocationChart rows={comparison.projects} scope={scope} />
       <PlanningEffectivenessChart months={comparison.months} scope={scope} />
-      <section className="panel resource-report shortage-ranking">
+      <section
+        id="rapor-takim-ihtiyac"
+        className="panel resource-report shortage-ranking"
+      >
         <header className="resource-report-head">
           <div>
             <h2>Takım Bazlı Kaynak İhtiyaç Grafiği</h2>

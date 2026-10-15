@@ -53,7 +53,10 @@ export default function MonthlyShortageTrend({
           ? 2
           : 1;
   return (
-    <section className="panel trend monthly-shortage-trend">
+    <section
+      id="rapor-aylik-eksik"
+      className="panel trend monthly-shortage-trend"
+    >
       <div className="panelhead">
         <div>
           <h2>Aylık Eksik Kaynak Grafiği</h2>

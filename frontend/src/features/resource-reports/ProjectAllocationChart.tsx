@@ -76,7 +76,10 @@ export default function ProjectAllocationChart({
   const center = (index: number) => left + slot * (index + 0.5);
   const y = (value: number) => baseline - (value / ceiling) * (baseline - top);
   return (
-    <section className="panel resource-report project-allocation-report">
+    <section
+      id="rapor-proje"
+      className="panel resource-report project-allocation-report"
+    >
       <header className="resource-report-head">
         <div>
           <h2>

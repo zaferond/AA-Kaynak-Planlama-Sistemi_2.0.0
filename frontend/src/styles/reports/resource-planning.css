@@ -331,3 +331,100 @@
   font-size: var(--fs-xs);
   font-weight: 700;
 }
+
+/* Raporlar: üstte özet kartlar ve bölümlere geçiş. */
+.app .report-summary {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.app .report-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.app .report-summary-card {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-left: 4px solid var(--brand-border-strong, #96a889);
+  border-radius: 8px;
+  background: #fff;
+}
+.app .report-summary-card.tone-warn {
+  border-left-color: #b5562e;
+}
+.app .report-summary-card.tone-ok {
+  border-left-color: #2f6b4f;
+}
+.app .report-summary-label {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.app .report-summary-value {
+  color: var(--brand-text, #26372c);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+.app .report-summary-value small {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+.app .report-summary-detail {
+  overflow: hidden;
+  color: var(--brand-dark, #344736);
+  font-size: var(--fs-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app .report-sections {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+}
+.app .report-sections > span {
+  margin-right: 2px;
+  color: var(--brand-muted, #60715e);
+  font-weight: 700;
+}
+.app .report-sections button {
+  padding: 4px 10px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 999px;
+  background: var(--brand-surface-soft, #f6f8f2);
+  color: var(--brand-dark, #344736);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.app .report-sections button:hover {
+  border-color: var(--brand-border-strong, #96a889);
+  background: var(--brand-surface, #edf1e8);
+}
+.app .report-sections button:focus-visible {
+  outline: 2px solid var(--brand-focus, #6d855e);
+  outline-offset: 1px;
+}
+.app.tab-overview
+  :is(
+    #rapor-liderlik-eksik,
+    #rapor-takim-eksik,
+    #rapor-aylik-eksik,
+    #rapor-planlanan-gerceklesen,
+    #rapor-proje,
+    #rapor-etkinlik,
+    #rapor-takim-ihtiyac,
+    #rapor-calisan
+  ) {
+  scroll-margin-top: 12px;
+}

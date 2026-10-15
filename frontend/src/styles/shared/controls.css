@@ -484,8 +484,13 @@ select {
 .project-editor-actions .button {
   min-height: 38px;
 }
-.project-editor-actions .button.primary {
+.project-editor-actions .editor-actions-end {
+  display: flex;
+  gap: 8px;
   margin-left: auto;
+}
+.project-editor-actions .button {
+  min-width: 96px;
 }
 
 .picker-item-label {

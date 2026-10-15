@@ -126,10 +126,10 @@ export default function ProjectContextMenus({
                       style={{
                         background: phaseChipPalette.find(
                           (c) => c.id === copiedPhaseColor,
-                        )?.border,
+                        )?.accent,
                         borderColor: phaseChipPalette.find(
                           (c) => c.id === copiedPhaseColor,
-                        )?.border,
+                        )?.accent,
                       }}
                     />
                   )}
@@ -155,10 +155,10 @@ export default function ProjectContextMenus({
                       style={{
                         background: phaseChipPalette.find(
                           (c) => c.id === copiedPhaseBundle.values[0][0].color,
-                        )?.border,
+                        )?.accent,
                         borderColor: phaseChipPalette.find(
                           (c) => c.id === copiedPhaseBundle.values[0][0].color,
-                        )?.border,
+                        )?.accent,
                       }}
                     />
                   )}

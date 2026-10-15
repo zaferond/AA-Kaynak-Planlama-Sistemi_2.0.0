@@ -8,6 +8,7 @@ import RemainingResourceTable, {
 } from "../RemainingResourceTable";
 import ResourcePlanningCharts from "../resource-reports/ResourcePlanningCharts";
 import { useSynchronizedTableScroll } from "./useSynchronizedTableScroll";
+import ReportSummary from "./ReportSummary";
 
 type Props = {
   data: Data;
@@ -66,7 +67,15 @@ export default function WorkspaceReports({
   };
   return (
     <>
-      <section className="panel">
+      <ReportSummary
+        data={data}
+        teams={teams.filter((team) => teamIds.includes(team.id))}
+        capacity={capacity}
+        actualTotals={actualTotals}
+        teamIds={teamIds}
+        months={months}
+      />
+      <section id="rapor-liderlik-eksik" className="panel">
         <div className="panelhead">
           <div>
             <h2>Liderlik Bazında Eksik Raporu</h2>
@@ -79,7 +88,7 @@ export default function WorkspaceReports({
           tableRef={leaderReportTableRef}
         />
       </section>
-      <section className="panel report">
+      <section id="rapor-takim-eksik" className="panel report">
         <div className="panelhead">
           <div>
             <h2>Takım Bazında Eksik Kaynak Raporu</h2>

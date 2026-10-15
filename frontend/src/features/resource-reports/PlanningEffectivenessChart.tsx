@@ -12,7 +12,10 @@ export default function PlanningEffectivenessChart({
 }) {
   const effectiveness = useMemo(() => planningEffectiveness(months), [months]);
   return (
-    <section className="panel resource-report planning-effectiveness-report">
+    <section
+      id="rapor-etkinlik"
+      className="panel resource-report planning-effectiveness-report"
+    >
       <header className="resource-report-head">
         <div>
           <h2>Kaynak Planlama Süreç Etkinlik Grafiği</h2>

@@ -503,9 +503,9 @@
   min-width: 0;
 }
 .app.tab-resources .employee-access-table .resourceactions {
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  white-space: normal;
+  flex-wrap: nowrap;
+  gap: 4px;
+  white-space: nowrap;
 }
 .employee-access-table .access-account-actions {
   gap: 5px;

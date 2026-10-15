@@ -438,8 +438,15 @@ export async function restoreBackup(file: File, _includeUsers = false) {
 export async function readAuditLog(
   offset = 0,
   limit = 30,
+  filters: { kind?: string; q?: string } = {},
 ): Promise<import("../../shared/audit-types").AuditPage> {
-  return api("/audit?offset=" + offset + "&limit=" + limit);
+  const query = new URLSearchParams({
+    offset: String(offset),
+    limit: String(limit),
+  });
+  if (filters.kind) query.set("kind", filters.kind);
+  if (filters.q?.trim()) query.set("q", filters.q.trim());
+  return api("/audit?" + query);
 }
 
 export type ActualViewSnapshot = {

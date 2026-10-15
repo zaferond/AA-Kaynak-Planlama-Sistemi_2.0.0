@@ -171,7 +171,7 @@ export class Store {
       user: principal,
     };
   }
-  async auditLog(u, { offset = 0, limit = 50 } = {}) {
+  async auditLog(u, { offset = 0, limit = 50, kind, q } = {}) {
     if (
       !Number.isInteger(offset) ||
       offset < 0 ||
@@ -185,8 +185,30 @@ export class Store {
       if (!active?.active || active.version !== u.version)
         fail(401, "Oturum yenilenmeli.");
       admin(active);
+      // Optional filters are fixed SQL fragments with bound parameters; the
+      // search text is a LIKE pattern with its wildcards escaped. LOWER on both
+      // sides keeps search case-insensitive under MSSQL's binary collation.
+      const filters = [],
+        values = [offset, limit];
+      if (kind) {
+        values.push(kind);
+        filters.push("kind=@p" + (values.length - 1));
+      }
+      if (q) {
+        values.push("%" + q.replace(/[\\%_[]/g, (x) => "\\" + x) + "%");
+        const p = "@p" + (values.length - 1);
+        filters.push(
+          `(LOWER(record_name) LIKE LOWER(${p}) ESCAPE '\\' OR LOWER(actor_name) LIKE LOWER(${p}) ESCAPE '\\')`,
+        );
+      }
+      const where = filters.length ? " WHERE " + filters.join(" AND ") : "";
       const total = Number(
-        (await c.query("SELECT COUNT(*) AS n FROM kp_audit_events")).rows[0].n,
+        (
+          await c.query(
+            "SELECT COUNT(*) AS n FROM kp_audit_events" + where,
+            values,
+          )
+        ).rows[0].n,
       );
       const page =
         this.provider === "mssql"
@@ -194,9 +216,11 @@ export class Store {
           : "LIMIT @p1 OFFSET @p0";
       const rows = (
         await c.query(
-          "SELECT * FROM kp_audit_events ORDER BY occurred_at DESC,id DESC " +
+          "SELECT * FROM kp_audit_events" +
+            where +
+            " ORDER BY occurred_at DESC,id DESC " +
             page,
-          [offset, limit],
+          values,
         )
       ).rows;
       return {

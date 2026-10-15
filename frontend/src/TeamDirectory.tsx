@@ -156,7 +156,11 @@ export default function TeamDirectory({
                     } as React.CSSProperties
                   }
                 >
-                  <TableCell>{lead || "—"}</TableCell>
+                  {/* The leadership is the group heading above; keep its name
+                      for screen readers without repeating it on every row. */}
+                  <TableCell className="directory-lead-repeat">
+                    <span className="sr-only">{lead || "Liderlik yok"}</span>
+                  </TableCell>
                   <TableCell>
                     <span
                       className="directory-indent directory-unit-title"

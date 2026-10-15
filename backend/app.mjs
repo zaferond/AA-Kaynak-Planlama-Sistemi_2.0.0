@@ -344,6 +344,11 @@ export function createApp(
       .object({
         offset: z.coerce.number().int().min(0).max(1000000).default(0),
         limit: z.coerce.number().int().min(1).max(100).default(50),
+        kind: z
+          .string()
+          .regex(/^[a-zA-Z]{1,40}$/)
+          .optional(),
+        q: z.string().trim().max(100).optional(),
       })
       .parse(req.query);
     res.json(await store.auditLog(req.user, page));

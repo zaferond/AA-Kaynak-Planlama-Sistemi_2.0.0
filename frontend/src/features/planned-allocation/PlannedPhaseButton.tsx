@@ -17,17 +17,23 @@ function phaseText(p: Project, m: string) {
 export default function PlannedPhaseButton({
   project: p,
   month: m,
+  months,
   density,
   onPhaseClick,
   onPhaseContextMenu,
 }: Pick<
   PlannedAllocationProps,
-  "density" | "onPhaseClick" | "onPhaseContextMenu"
+  "months" | "density" | "onPhaseClick" | "onPhaseContextMenu"
 > & { project: Project; month: string }) {
   const text = phaseText(p, m);
   const inProject = (month: string) => month >= p.start && month <= p.end;
+  // Only visible months join a bar: a phase that began before the first
+  // visible month starts (and is labelled) at that month.
+  const first = months[0],
+    last = months[months.length - 1];
   const keyAt = (delta: number) => {
     const month = shiftMonth(m, delta);
+    if (month < first || month > last) return "";
     return phaseRunKey(p, month, inProject(month));
   };
   const run = phaseRunParts([-1, 0, 1].map(keyAt))[1];

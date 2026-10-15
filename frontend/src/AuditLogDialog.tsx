@@ -1,7 +1,7 @@
 import { ownValue } from "../../shared/records";
 import retentionPolicy from "../../shared/data-retention-policy.json";
 import { useEffect, useState } from "react";
-import { History, ChevronLeft, ChevronRight } from "lucide-react";
+import { History, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -141,17 +141,28 @@ export default function AuditLogDialog({
   const [page, setPage] = useState(0),
     [result, setResult] = useState<AuditPage | null>(null),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [kind, setKind] = useState(""),
+    [search, setSearch] = useState(""),
+    [query, setQuery] = useState("");
   useEffect(() => {
     if (open) setPage(0);
   }, [open]);
+  // Search after typing pauses; a new filter always starts from page one.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setQuery(search.trim());
+      setPage(0);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [search]);
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
     setBusy(true);
     setError("");
     setResult(null);
-    readAuditLog(page * pageSize, pageSize)
+    readAuditLog(page * pageSize, pageSize, { kind, q: query })
       .then((data) => {
         if (!cancelled) setResult(data);
       })
@@ -164,7 +175,7 @@ export default function AuditLogDialog({
     return () => {
       cancelled = true;
     };
-  }, [open, page]);
+  }, [open, page, kind, query]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="audit-log-dialog">
@@ -187,33 +198,74 @@ export default function AuditLogDialog({
             {error}
           </p>
         )}
+        <div className="audit-log-filters" role="search">
+          <label>
+            <span>Kayıt türü</span>
+            <select
+              value={kind}
+              onChange={(event) => {
+                setKind(event.target.value);
+                setPage(0);
+              }}
+            >
+              <option value="">Tümü</option>
+              {Object.entries(kinds).map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="audit-log-search">
+            <span>Ara</span>
+            <span className="audit-log-search-box">
+              <Search size={14} aria-hidden="true" />
+              <input
+                type="search"
+                value={search}
+                placeholder="Kayıt adı veya kullanıcı"
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </span>
+          </label>
+        </div>
+        <div className="audit-log-head" aria-hidden="true">
+          <span>Zaman</span>
+          <span>İşlem</span>
+          <span>Kayıt</span>
+          <span>Kullanıcı</span>
+          <span>Değişiklik</span>
+        </div>
         <div className="audit-log-list" aria-busy={busy}>
           {busy ? (
             <p>Geçmiş yükleniyor…</p>
           ) : !result?.entries.length ? (
-            <p>Henüz değişiklik kaydı yok.</p>
+            <p>
+              {kind || query
+                ? "Bu filtrelere uyan değişiklik kaydı yok."
+                : "Henüz değişiklik kaydı yok."}
+            </p>
           ) : (
             result.entries.map((entry) => (
               <article key={entry.id} className="audit-log-entry">
-                <header>
-                  <div>
-                    <span className={"audit-action " + entry.action}>
-                      {entry.action === "create"
-                        ? "Eklendi"
-                        : entry.action === "delete"
-                          ? "Silindi"
-                          : "Düzenlendi"}
-                    </span>
-                    <strong>
-                      {ownValue(kinds, entry.kind) || entry.kind} ·{" "}
-                      {entry.record_name}
-                    </strong>
-                  </div>
-                  <time>
-                    {new Date(entry.occurred_at).toLocaleString("tr-TR")}
-                  </time>
-                </header>
-                <p>{entry.actor_name}</p>
+                <time dateTime={entry.occurred_at}>
+                  {new Date(entry.occurred_at).toLocaleString("tr-TR", {
+                    dateStyle: "short",
+                    timeStyle: "short",
+                  })}
+                </time>
+                <span className={"audit-action " + entry.action}>
+                  {entry.action === "create"
+                    ? "Eklendi"
+                    : entry.action === "delete"
+                      ? "Silindi"
+                      : "Düzenlendi"}
+                </span>
+                <span className="audit-record" title={entry.record_name}>
+                  <small>{ownValue(kinds, entry.kind) || entry.kind}</small>
+                  <strong>{entry.record_name}</strong>
+                </span>
+                <span className="audit-actor">{entry.actor_name}</span>
                 <details>
                   <summary>{entry.changes.length} alan değişikliği</summary>
                   <table>

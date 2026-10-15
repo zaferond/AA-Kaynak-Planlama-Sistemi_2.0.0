@@ -517,3 +517,52 @@ select {
 .pickeroptions .option[data-leadership-depth] input {
   flex: none;
 }
+
+/* Satır işlemleri: küçük, tutarlı düğmeler; silme yalnızca ikon. */
+.app :is(.row-edit-button, .row-delete-button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+.app .row-edit-button {
+  width: 28px;
+  padding: 0;
+  color: var(--brand-dark, #344736);
+}
+.app .row-delete-button {
+  width: 28px;
+  padding: 0;
+  color: var(--brand-muted, #60715e);
+}
+.app .row-edit-button:hover:not(:disabled) {
+  border-color: var(--brand-border-strong, #96a889);
+  background: var(--brand-surface-soft, #f6f8f2);
+}
+.app .row-delete-button:hover:not(:disabled) {
+  border-color: #d9aca2;
+  background: #fbefec;
+  color: #a32d1e;
+}
+.app :is(.row-edit-button, .row-delete-button):focus-visible {
+  outline: 2px solid var(--brand-focus, #6d855e);
+  outline-offset: 1px;
+}
+.app :is(.row-edit-button, .row-delete-button):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.app .resourceactions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+}

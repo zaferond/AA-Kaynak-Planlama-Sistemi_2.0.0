@@ -235,3 +235,23 @@
   background: #e8f1e3;
   color: #315c40;
 }
+
+/* Kalan değeri eksi ve ondalıkla uzayabilir: kutular harf öneki taşımaz,
+   genişlik içeriğe göre paylaşılır. Anlam renk ve üstteki açıklamadadır. */
+.app.tab-plan .allocation-grid .team-capacity-value::before {
+  display: none;
+}
+.app.tab-plan .allocation-grid .team-capacity-values {
+  grid-template-columns: auto auto auto;
+}
+.app.tab-plan .allocation-grid .team-capacity-value {
+  padding: 2px 4px;
+}
+.app.tab-plan .capacity-legend-item i {
+  width: 10px;
+  height: 10px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.75;
+}

@@ -451,3 +451,25 @@
 .directory-teams li[data-directory-kind="leader"] {
   background: #eaf0e2;
 }
+
+/* Organizasyon: liderlik adı grup başlığında; satır düğmeleri sade. */
+.app .directory-table .directory-actions .button {
+  height: 28px;
+  min-height: 28px;
+  padding: 0 9px;
+  border-color: var(--brand-border, #ccd6c5);
+  background: #fff;
+  box-shadow: none;
+  font-size: var(--fs-xs);
+}
+.app .directory-table .directory-team .directory-actions .button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--brand-muted, #60715e);
+}
+.app .directory-table .directory-team:hover .directory-actions .button,
+.app .directory-table .directory-team .directory-actions .button:focus-visible {
+  border-color: var(--brand-border, #ccd6c5);
+  background: #fff;
+  color: var(--brand-dark, #344736);
+}

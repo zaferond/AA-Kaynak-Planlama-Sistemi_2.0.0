@@ -12,7 +12,7 @@ import {
 } from "./access/employee-account-rows";
 import { useFilterAppliedToast } from "./workspace/useFilterAppliedToast";
 import type { Dispatch, SetStateAction } from "react";
-import { Info, Plus } from "lucide-react";
+import { Info, Pencil, Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -367,30 +367,37 @@ export default function ResourcesPanel({
                         {r && (
                           <div className="resourceactions">
                             <button
-                              className="textbutton"
+                              type="button"
+                              className="row-edit-button"
+                              aria-label="Düzenle"
+                              title="Düzenle"
                               disabled={busy}
                               onClick={() => openResource(r)}
                             >
-                              Düzenle
+                              <Pencil size={14} aria-hidden="true" />
                             </button>
                             <button
-                              className="textbutton deletebutton"
+                              type="button"
+                              className="row-delete-button"
                               disabled={busy}
                               aria-label={r.name + " kaydını sil"}
+                              title="Kaydı sil"
                               onClick={() => deleteResources([r.id])}
                             >
-                              Sil
+                              <Trash2 size={14} aria-hidden="true" />
                             </button>
                           </div>
                         )}
                         {!r && account && !root && (
                           <button
                             type="button"
-                            className="textbutton"
+                            className="row-edit-button"
+                            aria-label="Düzenle"
+                            title="Düzenle"
                             disabled={busy}
                             onClick={() => access.onEdit(account)}
                           >
-                            Düzenle
+                            <Pencil size={14} aria-hidden="true" />
                           </button>
                         )}
                         {root && (

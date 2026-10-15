@@ -38,7 +38,7 @@ export default function PlannedAllocationPanel(props: PlannedAllocationProps) {
                 key={label}
                 className={"capacity-legend-item team-capacity-kind-" + index}
               >
-                <b>{"ADK"[index]}</b>
+                <i aria-hidden="true" />
                 {label}
               </span>
             ))}

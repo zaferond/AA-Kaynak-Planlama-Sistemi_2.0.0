@@ -1,92 +1,182 @@
+/* Değişiklik Geçmişi: filtreler, kompakt satırlar, istenince açılan alan farkları. */
 .audit-log-dialog {
   width: min(1100px, 94vw);
   max-width: 1100px;
   max-height: 88vh;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 .audit-log-dialog h2 {
   display: flex;
   align-items: center;
   gap: 9px;
 }
+.audit-log-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px 14px;
+}
+.audit-log-filters label {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+.audit-log-filters select,
+.audit-log-search-box {
+  height: 32px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--brand-text, #26372c);
+  font-size: var(--fs-sm);
+}
+.audit-log-filters select {
+  min-width: 190px;
+  padding: 0 8px;
+}
+.audit-log-search {
+  flex: 1;
+  min-width: 220px;
+}
+.audit-log-search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+}
+.audit-log-search-box input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.audit-log-search-box:focus-within {
+  border-color: var(--brand-focus, #6d855e);
+  box-shadow: 0 0 0 2px var(--brand-focus-shadow, #61705226);
+}
+/* Same columns for the header and each row. */
+.audit-log-head,
+.audit-log-entry {
+  display: grid;
+  grid-template-columns: 112px 92px minmax(0, 1fr) minmax(120px, 190px) 150px;
+  align-items: center;
+  column-gap: 12px;
+}
+.audit-log-head {
+  padding: 0 12px 6px;
+  border-bottom: 1px solid var(--brand-border, #ccd6c5);
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
 .audit-log-list {
   overflow: auto;
   min-height: 180px;
   min-width: 0;
   display: grid;
-  gap: 12px;
-  padding: 2px 6px 2px 0;
+  align-content: start;
+  padding: 0 4px 2px 0;
+}
+.audit-log-list > p {
+  margin: 0;
+  padding: 24px 12px;
+  color: var(--brand-muted, #60715e);
 }
 .audit-log-entry {
-  border: 1px solid #d8e2eb;
-  border-radius: 10px;
-  padding: 14px 16px;
-  background: #f8fafc;
   min-width: 0;
+  padding: 7px 12px;
+  border-bottom: 1px solid #e3e9de;
+  font-size: var(--fs-sm);
 }
-.audit-log-entry header {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: start;
-}
-.audit-log-entry header > div {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  min-width: 0;
-}
-.audit-log-entry strong {
-  overflow-wrap: anywhere;
-  color: #29465f;
-}
-.audit-log-entry time,
-.audit-log-entry > p {
-  font-size: var(--fs-xs);
-  color: #657b8e;
+.audit-log-entry:hover {
+  background: var(--brand-surface-soft, #f6f8f2);
 }
 .audit-log-entry time {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.audit-log-entry > p {
-  margin: 6px 0 10px;
+.audit-record {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.audit-record small {
+  flex: none;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.audit-record strong {
+  overflow: hidden;
+  color: var(--brand-text, #26372c);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.audit-actor {
+  overflow: hidden;
+  color: var(--brand-dark, #344736);
+  font-size: var(--fs-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .audit-action {
+  justify-self: start;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: #e6ecf3;
+  color: #23384f;
   font-size: var(--fs-xs);
   font-weight: 700;
-  border-radius: 5px;
-  padding: 3px 7px;
-  background: #e2edf7;
-  color: #315e83;
   white-space: nowrap;
 }
 .audit-action.create {
-  background: #e3f1e8;
-  color: #2d7046;
+  background: #e2eee9;
+  color: #1f4438;
 }
 .audit-action.delete {
-  background: #f4e7e8;
-  color: #92424d;
+  background: #f3e3df;
+  color: #7a1a10;
+}
+.audit-log-entry details {
+  min-width: 0;
+}
+/* Opened differences take a full-width line under their row. */
+.audit-log-entry details[open] {
+  grid-column: 1 / -1;
+  padding: 6px 0 4px;
 }
 .audit-log-entry summary {
   cursor: pointer;
-  color: #3d607d;
+  color: var(--brand-primary, #405341);
   font-size: var(--fs-xs);
   font-weight: 600;
+  white-space: nowrap;
 }
 .audit-log-entry table {
   table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 8px;
   background: #fff;
 }
 .audit-log-entry th,
 .audit-log-entry td {
   border: 1px solid #dce5ed;
-  padding: 9px;
+  padding: 7px 9px;
   text-align: left;
   vertical-align: top;
   overflow-wrap: anywhere;
@@ -94,7 +184,7 @@
   font-size: var(--fs-xs);
 }
 .audit-log-entry thead {
-  background: #eaf0f5;
+  background: #eef2ea;
 }
 .audit-log-entry th {
   font-weight: 600;
@@ -112,13 +202,17 @@
   color: #657b8e;
   font-size: var(--fs-xs);
 }
-@media (max-width: 700px) {
-  .audit-log-entry header {
-    flex-direction: column;
-    gap: 5px;
+@media (max-width: 760px) {
+  .audit-log-head {
+    display: none;
   }
-  .audit-log-entry header > div {
-    flex-wrap: wrap;
+  .audit-log-entry {
+    grid-template-columns: 1fr auto;
+    row-gap: 4px;
+  }
+  .audit-record,
+  .audit-actor {
+    grid-column: 1 / -1;
   }
   .audit-log-footer {
     flex-wrap: wrap;

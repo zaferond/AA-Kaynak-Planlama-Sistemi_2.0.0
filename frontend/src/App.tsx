@@ -917,6 +917,7 @@ export default function Portal() {
                     projects={data.projects}
                     canEdit={!!isAdmin}
                     onSave={(project) => save("project", project.id, project)}
+                    onOpenProjects={() => changeTab("projects")}
                     onAddInfo={(project) => openMilestone(project)}
                     onEditInfo={(project, infoId) => {
                       const milestone = project.milestones?.find(

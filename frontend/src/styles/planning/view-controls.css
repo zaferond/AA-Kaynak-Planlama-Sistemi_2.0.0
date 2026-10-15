@@ -200,3 +200,38 @@
   background: #ffe4e4;
   color: #b32c32;
 }
+
+/* Takım → Projeler: takım satırındaki A / D / K kutularının açıklaması. */
+.app.tab-plan .capacity-legend {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.app.tab-plan .capacity-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border: 1px solid #d4dfcf;
+  border-radius: 4px;
+  background: #f9fbf6;
+  color: #35543c;
+  font-weight: 600;
+}
+.app.tab-plan .capacity-legend-item b {
+  font-weight: 700;
+}
+.app.tab-plan .capacity-legend-item.team-capacity-kind-1 {
+  border-color: #d4dfe8;
+  background: #f4f8fb;
+  color: #335c7b;
+}
+.app.tab-plan .capacity-legend-item.team-capacity-kind-2 {
+  border-color: #bfcfb5;
+  background: #e8f1e3;
+  color: #315c40;
+}

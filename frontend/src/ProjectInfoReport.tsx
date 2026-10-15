@@ -36,6 +36,7 @@ type Props = {
   onSave: (project: Project) => Promise<void>;
   onAddInfo: (project: Project) => void;
   onEditInfo: (project: Project, infoId: string) => void;
+  onOpenProjects?: () => void;
 };
 
 export default function ProjectInfoReport({
@@ -44,6 +45,7 @@ export default function ProjectInfoReport({
   onSave,
   onAddInfo,
   onEditInfo,
+  onOpenProjects,
 }: Props) {
   const [editing, setEditing] = useState<Editing | null>(null);
   const [busy, setBusy] = useState(false);
@@ -89,22 +91,23 @@ export default function ProjectInfoReport({
             detay konu
           </p>
         </div>
-        <button
-          type="button"
-          className="button project-info-export"
-          disabled={!topicCount}
-          onClick={() => {
-            try {
-              downloadProjectInfoReport(groups);
-              setError("");
-            } catch (cause) {
-              setError((cause as Error).message);
-            }
-          }}
-        >
-          <ArrowDownToLine size={15} />
-          Excel’e Aktar
-        </button>
+        {!!topicCount && (
+          <button
+            type="button"
+            className="button project-info-export"
+            onClick={() => {
+              try {
+                downloadProjectInfoReport(groups);
+                setError("");
+              } catch (cause) {
+                setError((cause as Error).message);
+              }
+            }}
+          >
+            <ArrowDownToLine size={15} />
+            Excel’e Aktar
+          </button>
+        )}
       </div>
       {error && !editing && (
         <p role="alert" className="project-info-error">
@@ -388,9 +391,23 @@ export default function ProjectInfoReport({
           })}
         </div>
       ) : (
-        <p className="emptymsg">
-          Henüz “Rapora Ekle” seçili açıklama bulunmuyor.
-        </p>
+        <div className="emptymsg project-info-empty">
+          <h3>Raporda henüz kritik konu yok</h3>
+          <p>
+            {canEdit
+              ? "Kritik konular Projeler ekranındaki başlıklardan gelir. Bir başlığın notunu açıp “Rapora Ekle” kutusunu işaretlediğinizde not burada listelenir."
+              : "Kritik konular Projeler ekranındaki başlıklardan gelir. Bir yönetici notu “Rapora Ekle” ile işaretlediğinde burada listelenir."}
+          </p>
+          {onOpenProjects && (
+            <button
+              type="button"
+              className="button primary"
+              onClick={onOpenProjects}
+            >
+              Projeler ekranına git
+            </button>
+          )}
+        </div>
       )}
     </section>
   );

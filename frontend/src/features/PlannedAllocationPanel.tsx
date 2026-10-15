@@ -30,6 +30,20 @@ export default function PlannedAllocationPanel(props: PlannedAllocationProps) {
           />
           Sadece veri olanlar
         </label>
+        {props.view === "team" && (
+          <span className="capacity-legend">
+            <span>Takım satırı:</span>
+            {["Aktif kaynak", "Dağıtılan", "Kalan"].map((label, index) => (
+              <span
+                key={label}
+                className={"capacity-legend-item team-capacity-kind-" + index}
+              >
+                <b>{"ADK"[index]}</b>
+                {label}
+              </span>
+            ))}
+          </span>
+        )}
       </div>
       <PlannedAllocationTable {...props} />
       {(!teams.length || !projects.length) && (

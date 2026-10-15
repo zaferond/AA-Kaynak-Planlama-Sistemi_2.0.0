@@ -47,7 +47,7 @@ export default function PlannedPhaseButton({
       disabled={m < p.start || m > p.end}
     >
       <span className="phasepreview">
-        {density === "overview"
+        {density === "overview" && span < 2
           ? phaseInitial(p.phases[m]?.trim() || "") || "-"
           : p.phases[m]?.trim() || "-"}
       </span>

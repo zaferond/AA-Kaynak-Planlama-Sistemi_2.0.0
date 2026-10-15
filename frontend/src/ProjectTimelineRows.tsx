@@ -278,7 +278,10 @@ export default function ProjectTimelineRows({
                     {!active ? (
                       "-"
                     ) : density === "overview" ? (
-                      phaseText ? (
+                      // Multi-month bars have room for the full name.
+                      phaseText && phaseSpans[periodIndex] > 1 ? (
+                        phaseText
+                      ) : phaseText ? (
                         <strong className="phase-initial">
                           {phaseInitial(phaseText)}
                         </strong>

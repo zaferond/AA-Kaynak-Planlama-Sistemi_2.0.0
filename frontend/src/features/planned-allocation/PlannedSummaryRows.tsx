@@ -41,8 +41,10 @@ export default function PlannedSummaryRows({
         return (
           <TableCell
             key={m}
+            // Capacity status is the remaining row's message; colouring the
+            // allocated row too made both rows read as errors.
             className={
-              kind >= 2 ? capacityStatus(c.current, allocated).className : ""
+              kind === 3 ? capacityStatus(c.current, allocated).className : ""
             }
             title={
               monthLabel(m) +

@@ -21,7 +21,7 @@ const sections = [
 ] as const;
 
 const SECTION_GAP = 16;
-/** Glide a section heading to just below the window top. The page is drawn
+/** Glide a section heading to just below the sticky report filters. The page is drawn
  * with CSS zoom, which some browsers ignore in scroll positions and overshoot.
  * The exact target is found first with instant, unpainted test scrolls in the
  * same task (corrected by the observed scroll-to-pixel ratio); the page then
@@ -29,10 +29,17 @@ const SECTION_GAP = 16;
 function scrollToSection(id: string) {
   const target = document.getElementById(id);
   if (!target) return;
-  const offset = () => target.getBoundingClientRect().top - SECTION_GAP;
+  // The report filters stick to the window top; land below them.
+  const dock = document.querySelector<HTMLElement>(".app .reports-filter-dock");
+  const cover = () =>
+    dock && getComputedStyle(dock).position === "sticky"
+      ? Math.max(0, dock.getBoundingClientRect().bottom)
+      : 0;
+  const offset = () =>
+    target.getBoundingClientRect().top - cover() - SECTION_GAP;
   const origin = window.scrollY;
   let ratio = 1;
-  for (let step = 0; step < 4; step++) {
+  for (let step = 0; step < 6; step++) {
     const before = offset();
     if (Math.abs(before) < 2) break;
     const startY = window.scrollY;

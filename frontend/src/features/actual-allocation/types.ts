@@ -15,6 +15,8 @@ export type PersonAllocationPanelProps = {
   currentMonth: string;
   todayDate: string;
   selectedPersonIds: string[];
+  onlyDataRows: boolean;
+  onOnlyDataRowsChange: (only: boolean) => void;
   canEditCalendar: boolean;
   sharedCalendarOpen: boolean;
   onSharedCalendarClose: () => void;

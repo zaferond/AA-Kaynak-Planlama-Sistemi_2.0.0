@@ -73,3 +73,24 @@ export function groupPage(
   }
   return groups;
 }
+/** Pages rows whose outer groups have their own inner lists; empty groups are
+ * skipped. With full lists it matches groupPage(outer, inner, page, size). */
+export function groupPageLists(
+  lists: readonly (readonly number[])[],
+  page: number,
+  size: number,
+) {
+  const total = lists.reduce((sum, inners) => sum + inners.length, 0),
+    start = page * size,
+    end = Math.min(total, start + size);
+  const groups: { outer: number; inners: number[] }[] = [];
+  let offset = 0;
+  lists.forEach((inners, outer) => {
+    const from = Math.max(start, offset),
+      to = Math.min(end, offset + inners.length);
+    if (from < to)
+      groups.push({ outer, inners: inners.slice(from - offset, to - offset) });
+    offset += inners.length;
+  });
+  return { groups, total };
+}

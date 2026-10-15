@@ -7,7 +7,11 @@ import { topLevelReportGroups } from "../resource-report-groups.ts";
 import type { Data, Team, Project } from "../../model.ts";
 import type { Principal } from "../../access.ts";
 import { visibleActualInScope } from "../../../../shared/actual-visibility.ts";
-import { groupPage, sumCapacityMetrics, type Metric } from "../../metrics.ts";
+import {
+  groupPageLists,
+  sumCapacityMetrics,
+  type Metric,
+} from "../../metrics.ts";
 import { monthLabel } from "../../format.ts";
 import { type WorkspaceFilterValues } from "./workspace-options.ts";
 export function selectWorkspaceScope(
@@ -115,15 +119,23 @@ export function selectWorkspacePages(
     planPage,
     projectPage,
   }: { count: number; view: string; planPage: number; projectPage: number },
+  /** When set, only team/project rows with planned data are listed. */
+  hasData?: (teamId: string, projectId: string) => boolean,
 ) {
+  const outers = view === "team" ? teams.length : projects.length,
+    inners = view === "team" ? projects.length : teams.length;
+  const lists = Array.from({ length: outers }, (_, outer) =>
+    Array.from({ length: inners }, (_, inner) => inner).filter(
+      (inner) =>
+        !hasData ||
+        (view === "team"
+          ? hasData(teams[outer].id, projects[inner].id)
+          : hasData(teams[inner].id, projects[outer].id)),
+    ),
+  );
   const planPageSize = Math.max(1, teams.length * projects.length);
   const effectivePlanPage = 0;
-  const planGroups = groupPage(
-    view === "team" ? teams.length : projects.length,
-    view === "team" ? projects.length : teams.length,
-    0,
-    planPageSize,
-  );
+  const planGroups = groupPageLists(lists, 0, planPageSize).groups;
   const effectiveProjectPage = 0;
   const visiblePlanRows = planGroups.flatMap((group) =>
     group.inners.map((index) =>

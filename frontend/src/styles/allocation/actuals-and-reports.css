@@ -199,3 +199,32 @@
 .person-allocation .actual-cell-readonly .person-amount input:disabled {
   pointer-events: none;
 }
+
+/* "Sadece veri olanlar" anahtarı sayfalama ile aynı satırı paylaşır;
+   sayfalama gizliyken (tek sayfa) anahtar tek başına kalır. */
+.app .person-allocation .actual-view-bar {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding-left: 12px;
+  border-block: 1px solid var(--brand-border, #d5dfcf);
+  background: var(--brand-surface-soft, #f6f8f4);
+}
+.app .person-allocation .actual-view-bar .actual-only-data {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding-right: 14px;
+  color: var(--brand-dark, #344736);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+.app .person-allocation .actual-view-bar > .pager {
+  flex: 1;
+  min-width: 0;
+  border-block: 0;
+  border-left: 1px solid var(--brand-border, #d5dfcf);
+  background: transparent;
+}

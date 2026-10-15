@@ -4,7 +4,7 @@ import PlannedAllocationTable from "./planned-allocation/PlannedAllocationTable"
 import type { PlannedAllocationProps } from "./planned-allocation/types";
 import { useViewportWorkspace } from "./workspace/useViewportWorkspace";
 export default function PlannedAllocationPanel(props: PlannedAllocationProps) {
-  const { teams, projects } = props;
+  const { teams, projects, groups, onlyDataRows } = props;
   const viewportRef = useViewportWorkspace();
   return (
     <section className="panel workspace-dock" ref={viewportRef}>
@@ -22,11 +22,28 @@ export default function PlannedAllocationPanel(props: PlannedAllocationProps) {
           />
           Gerçekleşen Dağılım Göster
         </label>
+        <label>
+          <Switch
+            size="sm"
+            checked={onlyDataRows}
+            onCheckedChange={props.onOnlyDataRowsChange}
+          />
+          Sadece veri olanlar
+        </label>
       </div>
       <PlannedAllocationTable {...props} />
       {(!teams.length || !projects.length) && (
         <p className="emptymsg">Bu filtrelere uygun takım veya proje yok.</p>
       )}
+      {!!teams.length &&
+        !!projects.length &&
+        onlyDataRows &&
+        !groups.length && (
+          <p className="emptymsg">
+            Seçili dönemde planlanan dağılımı olan satır yok. Bütün satırları
+            görmek için “Sadece veri olanlar” anahtarını kapatın.
+          </p>
+        )}
       <footer className="tablefoot">
         <span>Birim: aylık kişi eşdeğeri · Ondalık giriş: 0,5</span>
         <span>

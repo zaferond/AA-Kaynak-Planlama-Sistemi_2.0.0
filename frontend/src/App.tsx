@@ -20,6 +20,7 @@ import WorkspaceNavigation, {
 import WorkspaceFilters from "./features/WorkspaceFilters";
 import PlannedAllocationPanel from "./features/PlannedAllocationPanel";
 import WorkspaceFilterSummary from "./features/workspace/WorkspaceFilterSummary";
+import { useOnlyDataRows } from "./features/workspace/useOnlyDataRows";
 import { useProjectMenus } from "./features/useProjectMenus";
 import ProjectContextMenus from "./features/ProjectContextMenus";
 import {
@@ -168,6 +169,7 @@ export default function Portal() {
     currentMonth,
     months,
   } = useWorkspaceFilters(openingOptions, tab, setNotice);
+  const [onlyDataRows, setOnlyDataRows] = useOnlyDataRows(user?.id);
   const activity = useActivityReport(
     tab === "activity" && !!data,
     data,
@@ -319,6 +321,7 @@ export default function Portal() {
     currentMonth,
     planPage,
     projectPage,
+    onlyDataRows,
   });
   const plannedGrid = usePlannedGrid({
     visiblePlanRows,
@@ -638,6 +641,8 @@ export default function Portal() {
                     projectIds={projectIds}
                     projectTotals={projectTotals}
                     actualTotals={actualTotals}
+                    onlyDataRows={onlyDataRows}
+                    onOnlyDataRowsChange={setOnlyDataRows}
                     showAllActual={showAllActual}
                     onShowAllActualChange={(show) => {
                       setShowAllActual(show);
@@ -786,6 +791,8 @@ export default function Portal() {
                       currentMonth={currentMonth}
                       todayDate={todayDate}
                       selectedPersonIds={personIds}
+                      onlyDataRows={onlyDataRows}
+                      onOnlyDataRowsChange={setOnlyDataRows}
                       canEditCalendar={!!isAdmin}
                       sharedCalendarOpen={sharedCalendarOpen && !!isAdmin}
                       onSharedCalendarClose={() => setSharedCalendarOpen(false)}

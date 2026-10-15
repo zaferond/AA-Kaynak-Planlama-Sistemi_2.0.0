@@ -10,6 +10,7 @@ import {
   type ActualEntry,
 } from "./features/actual-allocation-commands";
 import Pager from "./Pager";
+import { Switch } from "@/components/ui/switch";
 import ActualAllocationControls from "./features/actual-allocation/ActualAllocationControls";
 import ActualAllocationTable from "./features/actual-allocation/ActualAllocationTable";
 import ActualAllocationDialogs from "./features/actual-allocation/ActualAllocationDialogs";
@@ -137,13 +138,23 @@ export default function PersonAllocationPanel(
         saveHours={saveHours}
         canEditPersonMonth={canEditPersonMonth}
       />
-      <Pager
-        total={totalRows}
-        page={visiblePage}
-        size={pageSize}
-        onChange={setPage}
-        label="Kişi / proje satırı"
-      />
+      <div className="actual-view-bar">
+        <label className="actual-only-data">
+          <Switch
+            size="sm"
+            checked={props.onlyDataRows}
+            onCheckedChange={props.onOnlyDataRowsChange}
+          />
+          Sadece veri olanlar
+        </label>
+        <Pager
+          total={totalRows}
+          page={visiblePage}
+          size={pageSize}
+          onChange={setPage}
+          label="Kişi / proje satırı"
+        />
+      </div>
       <ActualAllocationTable
         data={data}
         projects={projects}
@@ -185,6 +196,12 @@ export default function PersonAllocationPanel(
       />
       {!projects.length && (
         <p className="emptymsg">Seçili filtrelerde proje bulunamadı.</p>
+      )}
+      {!!projects.length && props.onlyDataRows && !totalRows && (
+        <p className="emptymsg">
+          Seçili dönemde gerçekleşen değeri girilmiş satır yok. Bütün satırları
+          görmek için “Sadece veri olanlar” anahtarını kapatın.
+        </p>
       )}
       {!!projects.length && !people.length && (
         <p className="emptymsg">

@@ -14,6 +14,7 @@ type ViewFilters = WorkspaceFilterValues & {
   currentMonth: string;
   planPage: number;
   projectPage: number;
+  onlyDataRows?: boolean;
 };
 export function useWorkspaceView(
   data: Data | null,
@@ -31,6 +32,7 @@ export function useWorkspaceView(
     view,
     planPage,
     projectPage,
+    onlyDataRows,
   } = filters;
   const scope = useMemo(
     () => selectWorkspaceScope(data, user, filters),
@@ -53,9 +55,33 @@ export function useWorkspaceView(
     () => (data ? data.actualTeamTotals || actualTeamTotalIndex(data) : {}),
     [data],
   );
+  const allocations = data?.allocations;
   const pages = useMemo(
-    () => selectWorkspacePages(scope.teams, scope.projects, filters),
-    [scope.teams, scope.projects, count, view, planPage, projectPage],
+    () =>
+      selectWorkspacePages(
+        scope.teams,
+        scope.projects,
+        filters,
+        onlyDataRows
+          ? (teamId, projectId) =>
+              months.some(
+                (month) =>
+                  (allocations?.[teamId + "|" + projectId + "|" + month] ||
+                    0) !== 0,
+              )
+          : undefined,
+      ),
+    [
+      scope.teams,
+      scope.projects,
+      count,
+      view,
+      planPage,
+      projectPage,
+      onlyDataRows,
+      onlyDataRows && allocations,
+      onlyDataRows && months,
+    ],
   );
   const metric = (ids: string[], month: string) =>
     workspaceMetric(cache, ids, month);

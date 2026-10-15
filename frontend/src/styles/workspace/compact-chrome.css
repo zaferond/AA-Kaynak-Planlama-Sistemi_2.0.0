@@ -1,0 +1,80 @@
+/* Sıkı üst alan: üst bar, sekmeler, araç satırı, filtreler ve filtre özeti
+   tablodan önce daha az dikey yer kaplar. Bu katman manifestte en sondadır;
+   kaldırıldığında önceki ölçüler geri gelir. */
+html[data-theme] .app > header.mast {
+  padding-block: 6px;
+}
+html[data-theme] .app > main {
+  padding-top: 6px;
+}
+
+/* Sekmeler ve araç satırı */
+html[data-theme] .app .workspace-nav {
+  margin-bottom: 4px;
+}
+html[data-theme] .app .workspace-nav .navtabs {
+  min-height: 0;
+  padding: 3px;
+  margin-bottom: 0;
+}
+html[data-theme] .app .workspace-nav .navtabs [role="tab"] {
+  min-height: 30px;
+  height: 30px;
+}
+html[data-theme] .app .workspace-nav-actions {
+  padding-block: 4px 2px;
+}
+
+/* Filtre kutusu: etiket ile alan arası ve iç boşluklar daralır */
+html[data-theme] .app .planning-filterbar {
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  row-gap: 6px;
+}
+html[data-theme] .app .planning-filterbar label.pick,
+html[data-theme] .app .planning-filterbar .filters > label {
+  gap: 2px;
+}
+html[data-theme] .app .planning-filterbar :is(input, select, .pickerbutton),
+html[data-theme] .app .planning-filterbar .filteractions .button {
+  min-height: 28px;
+  height: 28px;
+  padding-block: 3px;
+}
+
+/* Filtre özeti: başlık ve filtre etiketleri tek satırda */
+html[data-theme] .app .capacitystrip {
+  min-height: 0;
+  padding: 5px 10px;
+  margin-bottom: 6px;
+  gap: 8px;
+  align-items: center;
+}
+html[data-theme] .app .capacitystrip .capacitystrip-icon {
+  width: 24px;
+  height: 24px;
+}
+html[data-theme] .app .capacitystrip .capacitystrip-icon svg {
+  width: 15px;
+  height: 15px;
+}
+html[data-theme] .app .capacitystrip .capacitystrip-copy {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 4px;
+}
+html[data-theme] .app .capacitystrip .capacity-filter-chip {
+  padding-block: 2px;
+}
+
+/* Gerçekleşen tablosunun yüksekliği eski üst alana göre 305px düşülerek
+   hesaplanıyordu; üst alan küçüldüğü için tablo ekranın altına kadar uzar. */
+html[data-theme] .app [data-slot="table-container"]:has(> .planning-grid) {
+  max-height: calc(100vh - 245px);
+}
+/* Aylık Aktivite tablosu da kazanılan yüksekliği kullanır. */
+html[data-theme] .app .monthly-activity-report > [data-slot="table-container"] {
+  max-height: calc(64dvh + 75px);
+}

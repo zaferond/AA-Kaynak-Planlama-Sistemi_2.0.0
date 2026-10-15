@@ -35,5 +35,6 @@
   "shared/project-groups.css",
   "workspace/military-theme.css",
   "shared/phase-chips.css",
-  "workspace/viewport-tables.css"
+  "workspace/viewport-tables.css",
+  "workspace/compact-chrome.css"
 ]

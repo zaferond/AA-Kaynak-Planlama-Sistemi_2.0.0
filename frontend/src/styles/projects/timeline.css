@@ -834,3 +834,10 @@
   display: block;
   overflow-wrap: anywhere;
 }
+
+/* Düzenleme yetkisi olmayan kullanıcıda proje adı soluk görünmesin. */
+.app .projectmatrix .project-name-copy .textbutton:disabled {
+  opacity: 1;
+  color: var(--brand-text, #26372c);
+  cursor: default;
+}

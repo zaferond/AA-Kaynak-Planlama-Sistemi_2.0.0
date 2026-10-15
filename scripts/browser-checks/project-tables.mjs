@@ -162,7 +162,7 @@ export async function checkProjectTables(f) {
   try {
     await page
       .getByRole("tab", {
-        name: "AA Mühendislik Liderliği Projeler",
+        name: "Mühendislik Liderliği Projeler",
         exact: true,
       })
       .click();
@@ -182,7 +182,7 @@ export async function checkProjectTables(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "AA Planlanan Kaynak Dağılımı",
+            name: "Planlanan Kaynak Dağılımı",
             exact: true,
           })
           .click();
@@ -196,7 +196,7 @@ export async function checkProjectTables(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "AA Gerçekleşen Kaynak Dağılımı",
+            name: "Gerçekleşen Kaynak Dağılımı",
             exact: true,
           })
           .click();
@@ -210,7 +210,7 @@ export async function checkProjectTables(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "AA Mühendislik Liderliği Projeler",
+            name: "Mühendislik Liderliği Projeler",
             exact: true,
           })
           .click();
@@ -244,7 +244,7 @@ export async function checkProjectTables(f) {
         await page.reload();
         await page
           .getByRole("tab", {
-            name: "AA Mühendislik Liderliği Projeler",
+            name: "Mühendislik Liderliği Projeler",
             exact: true,
           })
           .click();

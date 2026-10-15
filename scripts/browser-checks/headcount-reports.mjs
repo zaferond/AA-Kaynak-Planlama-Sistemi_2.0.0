@@ -70,7 +70,7 @@ export async function checkHeadcountReports(f) {
     (
       await table(index).locator(`[data-headcount-total="${key}"]`).innerText()
     ).trim();
-  await tab("AA Kaynak Planlama Raporları").click();
+  await tab("Kaynak Planlama Raporları").click();
   await f.check(
     "headcount: left sub-tabs retain resource reports and show dated status pivots with unique totals",
     async () => {
@@ -194,7 +194,7 @@ export async function checkHeadcountReports(f) {
       const manager = await f.client("manager"),
         normal = await f.client("employee");
       await manager.page
-        .getByRole("tab", { name: "AA Kaynak Planlama Raporları", exact: true })
+        .getByRole("tab", { name: "Kaynak Planlama Raporları", exact: true })
         .click();
       await manager.page
         .getByRole("tab", { name: "Head Count", exact: true })
@@ -212,7 +212,7 @@ export async function checkHeadcountReports(f) {
       assert.equal(
         await normal.page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .count(),

@@ -86,14 +86,14 @@ export async function checkWorkspaceNavigation(f) {
         await page.route("**/api/changes", hold, { times: 1 });
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
         await f.wait(() => writes === 1, "draft save held");
         await page
           .getByRole("tab", {
-            name: "AA Mühendislik Liderliği Projeler",
+            name: "Mühendislik Liderliği Projeler",
             exact: true,
           })
           .click();
@@ -107,7 +107,7 @@ export async function checkWorkspaceNavigation(f) {
           async () =>
             (await page
               .getByRole("tab", {
-                name: "AA Mühendislik Liderliği Projeler",
+                name: "Mühendislik Liderliği Projeler",
                 exact: true,
               })
               .getAttribute("aria-selected")) === "true",

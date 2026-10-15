@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { openUserMenu } from "./fixture.mjs";
 import { applyChanges } from "../../backend/operations.mjs";
 import { buildCapacityIndex } from "../../shared/metrics.ts";
 import { fmt } from "../../frontend/src/format.ts";
@@ -205,7 +206,7 @@ export async function checkWorkspaceFilters(f) {
         await page.goto(f.origin);
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
@@ -244,7 +245,7 @@ export async function checkWorkspaceFilters(f) {
         await page.goto(f.origin);
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
@@ -255,7 +256,7 @@ export async function checkWorkspaceFilters(f) {
         );
         await page
           .getByRole("tab", {
-            name: "AA Mühendislik Liderliği Projeler",
+            name: "Mühendislik Liderliği Projeler",
             exact: true,
           })
           .click();
@@ -275,7 +276,7 @@ export async function checkWorkspaceFilters(f) {
         );
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
@@ -284,6 +285,7 @@ export async function checkWorkspaceFilters(f) {
           page,
           await page.locator(".remaining-report").all(),
         );
+        await openUserMenu(page);
         await page
           .getByLabel("Varsayılan Sekme", { exact: true })
           .selectOption("overview");

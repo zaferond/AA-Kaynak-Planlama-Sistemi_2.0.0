@@ -171,7 +171,7 @@ export async function fixture({ mutationLimits } = {}) {
       if (login)
         await page
           .getByRole("tab", {
-            name: "AA Mühendislik Liderliği Projeler",
+            name: "Mühendislik Liderliği Projeler",
             exact: true,
           })
           .waitFor();
@@ -289,4 +289,12 @@ export async function revealTableItem(container, item) {
     if (edges >= 3) break;
   }
   throw Error("Record was not reachable through the table viewport");
+}
+
+/** The default-tab choice and backup actions live in the header user menu. */
+export async function openUserMenu(page) {
+  const trigger = page.getByRole("button", { name: /^Kullanıcı menüsü/ });
+  if ((await trigger.getAttribute("aria-expanded")) !== "true")
+    await trigger.click();
+  await page.locator('[data-slot="popover-content"].user-menu').waitFor();
 }

@@ -24,7 +24,7 @@ export async function checkPlannedTeamFreeze(f) {
   const { page } = await f.client("root-admin");
   try {
     await page
-      .getByRole("tab", { name: "AA Planlanan Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Planlanan Kaynak Dağılımı", exact: true })
       .click();
     await page
       .getByRole("tab", { name: "Takım → Projeler", exact: true })

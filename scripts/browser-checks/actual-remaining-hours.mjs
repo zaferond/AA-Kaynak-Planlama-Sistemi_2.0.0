@@ -42,7 +42,7 @@ export async function checkActualRemainingHours(f) {
   const { page } = await f.client("employee");
   try {
     await page
-      .getByRole("tab", { name: "AA Gerçekleşen Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
       .click();
     const total = page
       .locator('[data-project-group="p-a"] .actual-person-total')

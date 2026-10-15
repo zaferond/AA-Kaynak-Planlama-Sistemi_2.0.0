@@ -55,7 +55,7 @@ export async function checkReportOwnerSource(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "AA Planlanan Kaynak Dağılımı",
+            name: "Planlanan Kaynak Dağılımı",
             exact: true,
           })
           .click();
@@ -202,7 +202,7 @@ export async function checkReportOwnerSource(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
@@ -249,7 +249,7 @@ export async function checkReportOwnerSource(f) {
         await page.reload();
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
@@ -262,7 +262,7 @@ export async function checkReportOwnerSource(f) {
         );
         await page
           .getByRole("tab", {
-            name: "AA Planlanan Kaynak Dağılımı",
+            name: "Planlanan Kaynak Dağılımı",
             exact: true,
           })
           .click();

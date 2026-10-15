@@ -67,7 +67,7 @@ export async function checkMilestoneOverlap(f) {
         const { page } = client;
         async function openTimeline() {
           await page
-            .getByRole("tab", { name: /AA Mühendislik.*Projeler/ })
+            .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
             .click();
           await page
             .getByRole("switch", { name: "Detayları Göster", exact: true })

@@ -10,7 +10,7 @@ export async function checkRiskVisibility(f) {
         async () => {
           assert.equal(
             await page
-              .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
+              .getByRole("tab", { name: "Risk Yönetimi", exact: true })
               .count(),
             0,
           );
@@ -20,7 +20,7 @@ export async function checkRiskVisibility(f) {
           );
           await page
             .getByRole("tab", {
-              name: "AA Mühendislik Liderliği Projeler",
+              name: "Mühendislik Liderliği Projeler",
               exact: true,
             })
             .click();
@@ -34,7 +34,7 @@ export async function checkRiskVisibility(f) {
           await page.reload();
           assert.equal(
             await page
-              .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
+              .getByRole("tab", { name: "Risk Yönetimi", exact: true })
               .count(),
             0,
           );

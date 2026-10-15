@@ -64,7 +64,9 @@ export async function checkMilestoneParentDates(f) {
     });
     const { page } = c;
     await page.reload();
-    await page.getByRole("tab", { name: /AA Mühendislik.*Projeler/ }).click();
+    await page
+      .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
+      .click();
     await page
       .getByRole("switch", { name: "Detayları Göster", exact: true })
       .check();
@@ -136,7 +138,7 @@ export async function checkMilestoneParentDates(f) {
         );
         await page.reload();
         await page
-          .getByRole("tab", { name: /AA Mühendislik.*Projeler/ })
+          .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
           .click();
         await page
           .getByRole("switch", { name: "Detayları Göster", exact: true })
@@ -194,7 +196,7 @@ export async function checkMilestoneParentDates(f) {
         await dialog.waitFor({ state: "hidden" });
         await page.reload();
         await page
-          .getByRole("tab", { name: /AA Mühendislik.*Projeler/ })
+          .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
           .click();
         await page
           .getByRole("switch", { name: "Detayları Göster", exact: true })

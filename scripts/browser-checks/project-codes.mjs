@@ -33,7 +33,7 @@ export async function checkProjectCodes(f) {
   try {
     await page
       .getByRole("tab", {
-        name: "AA Mühendislik Liderliği Projeler",
+        name: "Mühendislik Liderliği Projeler",
         exact: true,
       })
       .click();
@@ -75,7 +75,7 @@ export async function checkProjectCodes(f) {
         await page.reload();
         await page
           .getByRole("tab", {
-            name: "AA Mühendislik Liderliği Projeler",
+            name: "Mühendislik Liderliği Projeler",
             exact: true,
           })
           .click();
@@ -204,7 +204,7 @@ export async function checkProjectCodes(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();

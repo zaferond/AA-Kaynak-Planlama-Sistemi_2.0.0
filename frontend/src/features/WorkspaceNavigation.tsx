@@ -55,6 +55,45 @@ export default function WorkspaceNavigation({
 }: Props) {
   const isAdmin = user?.role === "admin",
     isManager = user?.role === "manager";
+  const anyRole = isAdmin || isManager || user?.role === "normal";
+  // Order and grouping: actuals · planning and projects · reports · administration.
+  const mainTabs = (
+    [
+      { value: "actual", Icon: CalendarDays, group: "actuals", show: anyRole },
+      {
+        value: "activity",
+        Icon: CalendarDays,
+        group: "actuals",
+        show: anyRole,
+      },
+      {
+        value: "plan",
+        Icon: CalendarDays,
+        group: "planning",
+        show: isAdmin || isManager,
+      },
+      { value: "projects", Icon: FolderKanban, group: "planning", show: true },
+      {
+        value: "risk",
+        Icon: ShieldAlert,
+        group: "planning",
+        show: RISK_MANAGEMENT_ENABLED,
+      },
+      {
+        value: "critical",
+        Icon: FolderKanban,
+        group: "planning",
+        show: isAdmin || isManager,
+      },
+      {
+        value: "overview",
+        Icon: Layers3,
+        group: "reports",
+        show: isAdmin || isManager,
+      },
+      { value: "resources", Icon: Users, group: "admin", show: isAdmin },
+    ] as const
+  ).filter((item) => item.show);
   return (
     <div className="workspace-nav">
       <TabsList
@@ -63,52 +102,22 @@ export default function WorkspaceNavigation({
         variant="line"
         aria-label="Ana sekmeler"
       >
-        {(isAdmin || isManager || user?.role === "normal") && (
-          <TabsTrigger value="actual">
-            <CalendarDays />
-            {TAB_LABELS.actual}
+        {mainTabs.map((item, index) => (
+          <TabsTrigger
+            key={item.value}
+            value={item.value}
+            data-tab-group={item.group}
+            // A thin divider marks where a new group of tabs begins.
+            data-group-start={
+              index > 0 && mainTabs[index - 1].group !== item.group
+                ? ""
+                : undefined
+            }
+          >
+            <item.Icon />
+            {TAB_LABELS[item.value]}
           </TabsTrigger>
-        )}
-        {(isAdmin || isManager || user?.role === "normal") && (
-          <TabsTrigger value="activity">
-            <CalendarDays />
-            {TAB_LABELS.activity}
-          </TabsTrigger>
-        )}
-        {(isAdmin || isManager) && (
-          <TabsTrigger value="plan">
-            <CalendarDays />
-            {TAB_LABELS.plan}
-          </TabsTrigger>
-        )}
-        <TabsTrigger value="projects">
-          <FolderKanban />
-          {TAB_LABELS.projects}
-        </TabsTrigger>
-        {RISK_MANAGEMENT_ENABLED && (
-          <TabsTrigger value="risk">
-            <ShieldAlert />
-            {TAB_LABELS.risk}
-          </TabsTrigger>
-        )}
-        {(isAdmin || isManager) && (
-          <TabsTrigger value="critical">
-            <FolderKanban />
-            {TAB_LABELS.critical}
-          </TabsTrigger>
-        )}
-        {(isAdmin || isManager) && (
-          <TabsTrigger value="overview">
-            <Layers3 />
-            {TAB_LABELS.overview}
-          </TabsTrigger>
-        )}
-        {isAdmin && (
-          <TabsTrigger value="resources">
-            <Users />
-            {TAB_LABELS.resources}
-          </TabsTrigger>
-        )}
+        ))}
       </TabsList>
       {!["access", "teams", "critical", "risk", "activity"].includes(tab) && (
         <div className="workspace-nav-actions">

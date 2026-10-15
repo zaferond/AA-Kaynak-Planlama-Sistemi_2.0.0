@@ -31,3 +31,114 @@
   flex-wrap: wrap;
   padding: 5px 0 7px;
 }
+
+/* Sekme grupları: gerçekleşen · planlama ve projeler · raporlar · yönetim.
+   Grup başında ince bir ayırıcı; sekmeler tek satırda kalır. */
+html[data-theme] .app .navtabs [role="tab"][data-group-start] {
+  margin-left: 13px;
+}
+html[data-theme] .app .navtabs [role="tab"][data-group-start]::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 7px;
+  bottom: 7px;
+  width: 1px;
+  background: var(--brand-border-strong, #96a889);
+  pointer-events: none;
+}
+
+/* Kullanıcı kutusu menü düğmesidir: varsayılan sekme ve yedek işlemleri. */
+html[data-theme] .app .mastuser-trigger {
+  color: inherit;
+  font: inherit;
+  font-size: var(--fs-xs);
+  cursor: pointer;
+}
+html[data-theme] .app .mastuser-trigger:hover,
+html[data-theme] .app .mastuser-trigger[data-state="open"] {
+  background: #ffffff26;
+}
+html[data-theme] .app .mastuser-trigger:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+[data-slot="popover-content"].user-menu {
+  display: grid;
+  gap: 12px;
+  width: 270px;
+  padding: 14px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--brand-text, #26372c);
+  font-size: var(--fs-sm);
+  box-shadow: 0 10px 28px #1b281f2e;
+}
+.user-menu .user-menu-head {
+  display: grid;
+  gap: 2px;
+}
+.user-menu .user-menu-head strong {
+  font-size: var(--fs-md);
+}
+.user-menu .user-menu-head span,
+.user-menu small {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.user-menu .user-menu-field {
+  display: grid;
+  gap: 5px;
+  font-weight: 600;
+}
+.user-menu .user-menu-field select {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+}
+.user-menu .user-menu-field small {
+  font-weight: 400;
+}
+.user-menu .user-menu-section {
+  display: grid;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border, #ccd6c5);
+}
+.user-menu .user-menu-title {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.user-menu .button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--brand-text, #26372c);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.user-menu .button:hover {
+  background: var(--brand-surface-soft, #f6f8f2);
+}
+.user-menu .button:focus-visible,
+.user-menu select:focus-visible {
+  outline: 2px solid var(--brand-focus, #6d855e);
+  outline-offset: 1px;
+}

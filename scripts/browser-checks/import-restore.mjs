@@ -1,4 +1,4 @@
-import { selectWorkspaceTab } from "./fixture.mjs";
+import { selectWorkspaceTab, openUserMenu } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import path from "node:path";
 import { applyChanges } from "../../backend/operations.mjs";
@@ -190,6 +190,7 @@ export async function checkImportRestore(f) {
     await f.check(
       "backup: downloaded JSON includes planning records without users or credentials",
       async () => {
+        await openUserMenu(page);
         bytes = await download(
           page,
           page.getByRole("button", { name: "Veri Yedeği İndir", exact: true }),
@@ -284,7 +285,7 @@ export async function checkImportRestore(f) {
         const users = await f.store.users();
         await page.reload();
         await page
-          .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
+          .getByRole("tab", { name: "Risk Yönetimi", exact: true })
           .waitFor();
         page.once("dialog", (d) => d.accept());
         await restore(bytes);

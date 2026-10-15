@@ -318,7 +318,7 @@ export async function checkTransportRecovery(report) {
     const actual = await f.client("employee");
     await actual.page
       .getByRole("tab", {
-        name: "AA Gerçekleşen Kaynak Dağılımı",
+        name: "Gerçekleşen Kaynak Dağılımı",
         exact: true,
       })
       .click();
@@ -407,7 +407,7 @@ export async function checkTransportRecovery(report) {
     await actual.page.reload();
     await actual.page
       .getByRole("tab", {
-        name: "AA Gerçekleşen Kaynak Dağılımı",
+        name: "Gerçekleşen Kaynak Dağılımı",
         exact: true,
       })
       .click();

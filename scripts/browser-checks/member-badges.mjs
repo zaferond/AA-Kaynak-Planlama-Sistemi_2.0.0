@@ -5,7 +5,7 @@ export async function checkMemberBadges(f) {
   const created = [];
   try {
     await page
-      .getByRole("tab", { name: "AA Kaynak Planlama Raporları", exact: true })
+      .getByRole("tab", { name: "Kaynak Planlama Raporları", exact: true })
       .click();
     const lastLead = await page
       .locator(".leader-report tbody tr")
@@ -58,7 +58,7 @@ export async function checkMemberBadges(f) {
     );
     await page.reload();
     await page
-      .getByRole("tab", { name: "AA Kaynak Planlama Raporları", exact: true })
+      .getByRole("tab", { name: "Kaynak Planlama Raporları", exact: true })
       .click();
     await page.setViewportSize({ width: 1000, height: 700 });
     for (const selector of [".leader-report", ".team-report"]) {
@@ -113,7 +113,7 @@ export async function checkMemberBadges(f) {
     }
     await page.setViewportSize({ width: 1800, height: 1050 });
     await page
-      .getByRole("tab", { name: "AA Planlanan Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Planlanan Kaynak Dağılımı", exact: true })
       .click();
     const badge = page.locator(".allocation-grid .team-member-badge").first();
     await badge.click();

@@ -61,7 +61,7 @@ export async function checkWorkspaceActions(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "AA Planlanan Kaynak Dağılımı",
+            name: "Planlanan Kaynak Dağılımı",
             exact: true,
           })
           .click();
@@ -78,7 +78,7 @@ export async function checkWorkspaceActions(f) {
         assert(xml.includes("<v>0.25</v>"));
         await page
           .getByRole("tab", {
-            name: "AA Mühendislik Liderliği Projeler",
+            name: "Mühendislik Liderliği Projeler",
             exact: true,
           })
           .click();
@@ -95,7 +95,7 @@ export async function checkWorkspaceActions(f) {
         );
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
@@ -110,7 +110,7 @@ export async function checkWorkspaceActions(f) {
         assert(xml.includes("Liderlik: Tümü · Takım: 1 seçili"));
         await page
           .getByRole("tab", {
-            name: "AA Gerçekleşen Kaynak Dağılımı",
+            name: "Gerçekleşen Kaynak Dağılımı",
             exact: true,
           })
           .click();
@@ -151,7 +151,7 @@ export async function checkWorkspaceActions(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "AA Planlanan Kaynak Dağılımı",
+            name: "Planlanan Kaynak Dağılımı",
             exact: true,
           })
           .click();
@@ -161,7 +161,7 @@ export async function checkWorkspaceActions(f) {
         await page.reload();
         await page
           .getByRole("tab", {
-            name: "AA Planlanan Kaynak Dağılımı",
+            name: "Planlanan Kaynak Dağılımı",
             exact: true,
           })
           .click();

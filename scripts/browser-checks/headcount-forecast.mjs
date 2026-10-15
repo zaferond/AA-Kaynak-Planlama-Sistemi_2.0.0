@@ -53,7 +53,7 @@ export async function checkHeadcountForecast(f) {
   async function openReport() {
     await page.goto(f.origin);
     await page
-      .getByRole("tab", { name: "AA Kaynak Planlama Raporları", exact: true })
+      .getByRole("tab", { name: "Kaynak Planlama Raporları", exact: true })
       .click();
     await page.getByRole("button", { name: "Takım", exact: true }).click();
     const panel = page.locator('.pickerpanel[data-state="open"]');

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { openUserMenu } from "./fixture.mjs";
 import path from "node:path";
 import { download, zipEntries, validateXml } from "./files.mjs";
 
@@ -19,9 +20,7 @@ export function acceptRiskSaveConfirmations(page) {
 }
 
 export async function openRisks(page, project = "Browser Project A") {
-  await page
-    .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
-    .click();
+  await page.getByRole("tab", { name: "Risk Yönetimi", exact: true }).click();
   await page
     .getByRole("button", { name: "Risk projeleri", exact: true })
     .click();
@@ -222,7 +221,7 @@ export async function checkRisks(f) {
         );
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
@@ -232,7 +231,7 @@ export async function checkRisks(f) {
           .waitFor();
         assert.equal(
           await page
-            .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
+            .getByRole("tab", { name: "Risk Yönetimi", exact: true })
             .getAttribute("aria-selected"),
           "true",
         );
@@ -246,7 +245,7 @@ export async function checkRisks(f) {
         );
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
@@ -304,14 +303,14 @@ export async function checkRisks(f) {
         await field(page, "description").fill("");
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .focus();
         await page.keyboard.press("Enter");
         assert.equal(
           await page
-            .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
+            .getByRole("tab", { name: "Risk Yönetimi", exact: true })
             .getAttribute("aria-selected"),
           "true",
         );
@@ -345,13 +344,13 @@ export async function checkRisks(f) {
           assert(await field(page, "impact").isDisabled());
           await page
             .getByRole("tab", {
-              name: "AA Kaynak Planlama Raporları",
+              name: "Kaynak Planlama Raporları",
               exact: true,
             })
             .click();
           await page
             .getByRole("tab", {
-              name: "AA Mühendislik Liderliği Projeler",
+              name: "Mühendislik Liderliği Projeler",
               exact: true,
             })
             .click();
@@ -419,6 +418,7 @@ export async function checkRisks(f) {
         );
         assert.equal(downloads, 0);
         page.off("download", downloaded);
+        await openUserMenu(page);
         const backup = JSON.parse(
           (
             await download(

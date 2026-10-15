@@ -72,7 +72,7 @@ export async function checkTodayLineVisibility(f) {
     );
   }
   try {
-    await selectWorkspaceTab(page, "AA Mühendislik Liderliği Projeler");
+    await selectWorkspaceTab(page, "Mühendislik Liderliği Projeler");
     await page.locator(".planning-filterbar .period select").selectOption("24");
     for (const weekly of [false, true]) {
       await f.check(

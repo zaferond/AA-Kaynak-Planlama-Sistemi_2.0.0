@@ -86,26 +86,26 @@ export async function checkHorizontalScroll(f) {
   const results = [];
   const configurations = [
     [
-      "AA Planlanan Kaynak Dağılımı",
+      "Planlanan Kaynak Dağılımı",
       ".workspace-dock > [data-slot=table-container]",
       "plan",
     ],
     [
-      "AA Mühendislik Liderliği Projeler",
+      "Mühendislik Liderliği Projeler",
       ".workspace-dock > [data-slot=table-container]",
       "projects",
     ],
     [
-      "AA Gerçekleşen Kaynak Dağılımı",
+      "Gerçekleşen Kaynak Dağılımı",
       ".person-allocation > [data-slot=table-container]",
       "actual",
     ],
     [
-      "AA Aylık Aktivite Raporu",
+      "Aylık Aktivite Raporu",
       ".monthly-activity-report > [data-slot=table-container]",
       "activity",
     ],
-    ["AA Kaynak Planlama Raporları", ".remaining-report", "reports"],
+    ["Kaynak Planlama Raporları", ".remaining-report", "reports"],
   ];
   async function sample(selector, label) {
     let container = page.locator(selector).first();
@@ -157,12 +157,12 @@ export async function checkHorizontalScroll(f) {
     await f.check(
       "horizontal scroll: weekly projects and 5-year planning retain native scrolling",
       async () => {
-        await selectWorkspaceTab(page, "AA Mühendislik Liderliği Projeler");
+        await selectWorkspaceTab(page, "Mühendislik Liderliği Projeler");
         await page
           .getByRole("switch", { name: "Haftalık proje görünümü", exact: true })
           .check();
         await sample(configurations[1][1], "weekly-projects");
-        await selectWorkspaceTab(page, "AA Planlanan Kaynak Dağılımı");
+        await selectWorkspaceTab(page, "Planlanan Kaynak Dağılımı");
         await page
           .locator(".planning-filterbar .period select")
           .selectOption("60");
@@ -187,7 +187,7 @@ export async function checkHorizontalScroll(f) {
         assert.equal(await input.inputValue(), "0,37");
         assert(await input.evaluate((e) => e === document.activeElement));
         await input.press("Escape");
-        await selectWorkspaceTab(page, "AA Kaynak Planlama Raporları");
+        await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
         const containers = page.locator(".remaining-report");
         for (const table of await containers.all())
           await table.locator("..").evaluate((e) => {

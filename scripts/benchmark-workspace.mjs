@@ -77,7 +77,7 @@ try {
     await page.goto(f.origin);
     await page
       .getByRole("tab", {
-        name: "AA Mühendislik Liderliği Projeler",
+        name: "Mühendislik Liderliği Projeler",
         exact: true,
       })
       .waitFor();
@@ -99,8 +99,8 @@ try {
     ]) {
       const planned = mode.startsWith("plan"),
         tab = planned
-          ? "AA Planlanan Kaynak Dağılımı"
-          : "AA Mühendislik Liderliği Projeler";
+          ? "Planlanan Kaynak Dağılımı"
+          : "Mühendislik Liderliği Projeler";
       await page.getByRole("tab", { name: tab, exact: true }).click();
       await page
         .locator('.planning-filterbar input[type="month"]')

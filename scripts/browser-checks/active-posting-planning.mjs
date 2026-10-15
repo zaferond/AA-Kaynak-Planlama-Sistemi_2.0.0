@@ -41,7 +41,7 @@ export async function checkActivePostingPlanning(f) {
   const control = () =>
     page.getByRole("switch", { name: "Aktif İlanları Dahil Et", exact: true });
   try {
-    await selectWorkspaceTab(page, "AA Kaynak Planlama Raporları");
+    await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
     await f.check(
       "report vacancies: compact switch is below filters and above leadership report; all teams update atomically",
       async () => {
@@ -93,7 +93,7 @@ export async function checkActivePostingPlanning(f) {
         );
         await f.capture(page, "active-postings-report-toggle");
         await page.reload();
-        await selectWorkspaceTab(page, "AA Kaynak Planlama Raporları");
+        await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
         await control().waitFor();
         assert.equal(await control().getAttribute("aria-checked"), "true");
       },
@@ -141,7 +141,7 @@ export async function checkActivePostingPlanning(f) {
   }
   const manager = await f.client("manager");
   try {
-    await selectWorkspaceTab(manager.page, "AA Kaynak Planlama Raporları");
+    await selectWorkspaceTab(manager.page, "Kaynak Planlama Raporları");
     await f.check(
       "report vacancies: manager sees read-only toggle and API rejects global resource changes",
       async () => {

@@ -155,13 +155,13 @@ export async function checkRiskConcurrency(f) {
         );
         await page
           .getByRole("tab", {
-            name: "AA Kaynak Planlama Raporları",
+            name: "Kaynak Planlama Raporları",
             exact: true,
           })
           .click();
         assert.equal(
           await page
-            .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
+            .getByRole("tab", { name: "Risk Yönetimi", exact: true })
             .getAttribute("aria-selected"),
           "true",
         );

@@ -96,7 +96,9 @@ export async function checkTimelineConcurrency(f) {
       ],
     });
     await page.reload();
-    await page.getByRole("tab", { name: /AA Mühendislik.*Projeler/ }).click();
+    await page
+      .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
+      .click();
     await page
       .getByRole("switch", { name: "Detayları Göster", exact: true })
       .check();

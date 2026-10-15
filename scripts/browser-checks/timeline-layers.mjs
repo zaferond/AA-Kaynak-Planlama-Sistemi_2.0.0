@@ -115,7 +115,7 @@ export async function checkTimelineLayers(f) {
   try {
     await page
       .getByRole("tab", {
-        name: "AA Mühendislik Liderliği Projeler",
+        name: "Mühendislik Liderliği Projeler",
         exact: true,
       })
       .click();

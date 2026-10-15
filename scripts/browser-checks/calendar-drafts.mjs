@@ -12,7 +12,7 @@ export async function checkCalendarDrafts(f) {
   const dialog = () => page.locator(".work-calendar-dialog");
   const actual = () =>
     page
-      .getByRole("tab", { name: "AA Gerçekleşen Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
       .click();
   const open = () =>
     page

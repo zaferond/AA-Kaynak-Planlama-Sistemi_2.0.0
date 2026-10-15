@@ -6,12 +6,12 @@ export async function checkAllocationFocusLayers(f) {
   try {
     for (const [tab, tableSelector, inputSelector] of [
       [
-        "AA Gerçekleşen Kaynak Dağılımı",
+        "Gerçekleşen Kaynak Dağılımı",
         ".person-allocation .allocation-grid",
         ".person-amount input:not(:disabled)",
       ],
       [
-        "AA Planlanan Kaynak Dağılımı",
+        "Planlanan Kaynak Dağılımı",
         ".workspace-dock > [data-slot=table-container] > .allocation-grid",
         ".cell input:not(:disabled)",
       ],

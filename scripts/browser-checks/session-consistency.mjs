@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { openUserMenu } from "./fixture.mjs";
 import { loginUI } from "./access.mjs";
 import { openRisks, acceptRiskSaveConfirmations } from "./risk.mjs";
 
@@ -62,12 +63,14 @@ export async function checkSessionConsistency(f) {
           .count(),
         0,
       );
+      await openUserMenu(page);
       assert.equal(
         await page
           .getByRole("button", { name: "Veri Yedeği İndir", exact: true })
           .count(),
         0,
       );
+      await page.keyboard.press("Escape");
     }
   }
   async function directLogin(context, id) {

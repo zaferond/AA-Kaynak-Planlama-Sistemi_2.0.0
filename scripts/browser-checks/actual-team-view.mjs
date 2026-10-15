@@ -100,7 +100,7 @@ export async function checkActualTeamView(f) {
   const { page } = c;
   const open = async (p) => {
     await p
-      .getByRole("tab", { name: "AA Gerçekleşen Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
       .click();
     await p.locator('input[type="month"]').fill("2026-09");
     await p.locator("#actual-entry-unit").selectOption("hours");

@@ -1,13 +1,12 @@
 import assert from "node:assert/strict";
+import { openUserMenu } from "./fixture.mjs";
 import { applyChanges } from "../../backend/operations.mjs";
 
 export async function loginUI(page, id, password) {
   await page.getByLabel("Kullanıcı Adı", { exact: true }).fill("qa." + id);
   await page.getByLabel("Şifre", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Giriş Yap", exact: true }).click();
-  await page
-    .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
-    .waitFor();
+  await page.getByRole("tab", { name: "Risk Yönetimi", exact: true }).waitFor();
 }
 const openAccess = (page) =>
   page
@@ -63,7 +62,7 @@ export async function checkAccess(f) {
         await loginUI(p, "employee", f.password);
         await p.reload();
         await p
-          .getByRole("tab", { name: "AA Risk Yönetimi", exact: true })
+          .getByRole("tab", { name: "Risk Yönetimi", exact: true })
           .waitFor();
         const cookies = await c.context.cookies();
         assert(cookies.some((cookie) => cookie.httpOnly));
@@ -76,12 +75,14 @@ export async function checkAccess(f) {
             .count(),
           0,
         );
+        await openUserMenu(p);
         assert.equal(
           await p
             .getByRole("button", { name: "Veri Yedeği İndir", exact: true })
             .count(),
           0,
         );
+        await p.keyboard.press("Escape");
         assert(
           !(await p.evaluate(() => JSON.stringify(localStorage))).includes(
             f.password,
@@ -129,7 +130,7 @@ export async function checkAccess(f) {
         assert(
           await employee.page
             .getByRole("tab", {
-              name: "AA Planlanan Kaynak Dağılımı",
+              name: "Planlanan Kaynak Dağılımı",
               exact: true,
             })
             .isVisible(),
@@ -377,7 +378,7 @@ export async function checkAccess(f) {
         const manager = await f.client("new-manager");
         await manager.page
           .getByRole("tab", {
-            name: "AA Gerçekleşen Kaynak Dağılımı",
+            name: "Gerçekleşen Kaynak Dağılımı",
             exact: true,
           })
           .click();

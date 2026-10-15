@@ -1,0 +1,191 @@
+{
+  "capturedAt": "2026-10-08T18:49:47.480970+00:00",
+  "run": {
+    "id": 37826265331,
+    "name": "Quality checks",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "b15865410c470ac67a70a97f7c5005d6490fe5e8",
+    "html_url": "https://github.com/zaferond/AA-Kaynak-Planlama-Sistemi/actions/runs/37826265331",
+    "created_at": "2026-10-08T18:41:45Z",
+    "updated_at": "2026-10-08T18:45:57Z",
+    "run_attempt": 1
+  },
+  "jobs": [
+    {
+      "id": 113479811476,
+      "name": "windows-synthetic",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-08T18:41:48Z",
+      "completed_at": "2026-10-08T18:43:27Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm --prefix frontend ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Shared domain, TypeScript and site build on Windows",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Synthetic sessions, file locks, recovery, rollback, restart and concurrency",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Clean release package acceptance (temporary directory, no database)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": {
+        "tests": 214,
+        "suites": 0,
+        "pass": 214,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "downloadedJobLogSha256": "f872cb43ecfd499bd6bfd82e917fce5c7276cb5aa185e93daae92e348e109f4f",
+      "browserChecks": null
+    },
+    {
+      "id": 113479811941,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-08T18:41:48Z",
+      "completed_at": "2026-10-08T18:45:56Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm --prefix frontend ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run verify",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run deploy:verify",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Clean release package acceptance (temporary directory, no database)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npx playwright install --with-deps chromium",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser security and draft regression checks (synthetic database)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm audit --audit-level=high",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm --prefix frontend audit --audit-level=high",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": {
+        "tests": 564,
+        "suites": 0,
+        "pass": 564,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "downloadedJobLogSha256": "06e7c569a28dd7857789982008b8ceacf5ee884a7f4dc6c0be4a136cf1edde82",
+      "browserChecks": 141
+    }
+  ]
+}

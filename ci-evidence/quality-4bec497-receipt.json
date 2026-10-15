@@ -1,0 +1,181 @@
+{
+  "capturedAt": "2026-10-08T12:40:43.865000+00:00",
+  "run": {
+    "id": 37777354538,
+    "name": "Quality checks",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "4bec49706b5986ad1d8e07d6b1318d08961000e8",
+    "html_url": "https://github.com/zaferond/AA-Kaynak-Planlama-Sistemi/actions/runs/37777354538",
+    "created_at": "2026-10-08T12:30:31Z",
+    "updated_at": "2026-10-08T12:34:51Z",
+    "run_attempt": 1
+  },
+  "jobs": [
+    {
+      "id": 113311451947,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-08T12:30:34Z",
+      "completed_at": "2026-10-08T12:34:50Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm --prefix frontend ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run verify",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run deploy:verify",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npx playwright install --with-deps chromium",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser security and draft regression checks (synthetic database)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm audit --audit-level=high",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm --prefix frontend audit --audit-level=high",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": {
+        "tests": 530,
+        "suites": 0,
+        "pass": 530,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "downloadedJobLogSha256": "60a34a0bc65d8d60703704cd208e8af4b3fecc7576c5e78a67fe5f66d601e1f3",
+      "browserChecks": 133
+    },
+    {
+      "id": 113311452494,
+      "name": "windows-synthetic",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-08T12:30:34Z",
+      "completed_at": "2026-10-08T12:31:33Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm --prefix frontend ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Shared domain, TypeScript and site build on Windows",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Synthetic sessions, file locks, recovery, rollback, restart and concurrency",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": {
+        "tests": 181,
+        "suites": 0,
+        "pass": 181,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "downloadedJobLogSha256": "c6023e729e4ea10ddbc4760f65cf23eaea9c08669f019ebc213c0d28deea2f39",
+      "browserChecks": null
+    }
+  ]
+}

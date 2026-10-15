@@ -1,0 +1,115 @@
+{
+  "capturedAt": "2026-10-08T12:31:43.148875+00:00",
+  "run": {
+    "id": 37776609079,
+    "name": "Native MSSQL verification",
+    "event": "workflow_dispatch",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "ae28c2c261d3f3a846a14bd9bf3b05fb76547fb4",
+    "html_url": "https://github.com/zaferond/AA-Kaynak-Planlama-Sistemi/actions/runs/37776609079",
+    "created_at": "2026-10-08T12:24:17Z",
+    "updated_at": "2026-10-08T12:28:50Z",
+    "run_attempt": 1
+  },
+  "jobs": [
+    {
+      "id": 113308955775,
+      "name": "native",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-08T12:24:21Z",
+      "completed_at": "2026-10-08T12:28:49Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Create isolated SQL Server container",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Wait for SQL Server and create empty test database",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run native assertions and synthetic SQL profile",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Remove test container",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": {
+        "tests": 21,
+        "suites": 0,
+        "pass": 21,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "downloadedJobLogSha256": "250bed48c51152fb93a21f788471e778c7b7acb31dc170c0319bf7eaee2b7d07",
+      "browserChecks": null
+    }
+  ],
+  "artifact": {
+    "id": 11550211915,
+    "name": "native-mssql-report",
+    "created_at": "2026-10-08T12:28:46Z",
+    "expires_at": "2026-10-15T12:28:45Z",
+    "expired": false,
+    "digest": "sha256:923a33760eeb5369786ac192071101b55e9c8271d5c7a60f321e61df199ae184"
+  },
+  "archivedReport": "native-mssql-ae28c2c.json",
+  "archivedReportSha256": "651b0db388725ebc20054d13de300e54f945b4d18cfbb8c892d01e39f24a0f3a",
+  "sourceHashComparison": {
+    "comparedCommit": "ae28c2c261d3f3a846a14bd9bf3b05fb76547fb4",
+    "files": 467,
+    "mismatches": [],
+    "windowsLauncherGitLineEnding": "CRLF checkout bytes per .gitattributes"
+  }
+}

@@ -1,0 +1,224 @@
+/* A compact read-only matrix; frozen labels stay above the today marker. */
+.app.tab-activity .reports-filter-dock {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--brand-surface-soft);
+  margin-bottom: 12px;
+}
+.app.tab-activity .reports-filter-dock .planning-filterbar {
+  margin-top: 0;
+}
+.app.tab-activity .reports-filter-summary {
+  margin: 0;
+}
+.app .monthly-activity-report {
+  padding: 0;
+  overflow: hidden;
+}
+.app .activity-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--brand-surface-soft, #f6f8f4);
+  border-bottom: 1px solid var(--table-label-border);
+}
+.app .activity-toolbar h2 {
+  font-size: 12px;
+  margin: 0 0 3px;
+  color: var(--brand-dark);
+}
+.app .activity-toolbar span,
+.app .activity-toolbar label {
+  font-size: 10px;
+  color: #536252;
+}
+.app .activity-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app .activity-toolbar select {
+  min-width: 110px;
+  height: 30px;
+  font-size: 10px;
+}
+.app .monthly-activity-report > [data-slot="table-container"] {
+  max-height: 64dvh;
+  overflow: auto;
+  overscroll-behavior-y: auto;
+  padding-bottom: var(--table-scrollbar-clearance);
+}
+.app .activity-matrix {
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 10px;
+}
+.app .activity-matrix th,
+.app .activity-matrix td {
+  border-right: 1px solid var(--table-grid-border);
+  border-bottom: 1px solid var(--table-grid-border);
+  text-align: center;
+  vertical-align: middle;
+  padding: 6px;
+  height: 38px;
+}
+.app .activity-matrix tbody tr {
+  background: #fff;
+}
+.app .activity-matrix tbody tr:nth-child(even) {
+  background: #f7f9f6;
+}
+.app .activity-matrix thead th {
+  position: sticky;
+  z-index: 6;
+  font-weight: 700;
+  background: var(--table-year-background, #e9efe5);
+  color: var(--table-year-color, #344736);
+}
+.app .activity-year-row th {
+  top: 0;
+  height: 24px;
+  padding: 3px 6px;
+}
+.app .activity-month-row th {
+  top: 24px;
+  height: 34px;
+}
+.app .activity-matrix :is(.activity-lead, .activity-team, .activity-person) {
+  position: sticky;
+  z-index: 3;
+  background: inherit;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+  line-height: 1.3;
+}
+.app .activity-matrix .activity-lead {
+  left: 0;
+}
+.app .activity-matrix .activity-team {
+  left: 124px;
+}
+.app .activity-matrix .activity-person {
+  left: 248px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  font-weight: 700;
+  box-shadow: var(--table-frozen-shadow);
+}
+.app
+  .activity-matrix
+  thead
+  :is(.activity-lead, .activity-team, .activity-person) {
+  background: var(--brand-surface-soft, #f6f8f4);
+  z-index: 9;
+  text-align: center;
+}
+.app .activity-matrix .activity-year-label {
+  left: 0;
+  z-index: 10;
+  background: var(--table-year-label-background);
+}
+.app .activity-matrix .activity-lead-start td {
+  border-top: 2px solid var(--table-label-border);
+}
+.app .activity-matrix .activity-team-start td {
+  border-top: 1px solid var(--table-label-border);
+}
+.app .activity-value strong {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.app .activity-matrix td.has-activity {
+  background: var(--table-actual-entry-background);
+  color: var(--table-actual-entry-color);
+}
+.app .activity-matrix td.activity-before-start,
+.app .activity-legend i.activity-before-start {
+  background: repeating-linear-gradient(
+    135deg,
+    #f0f2f4,
+    #f0f2f4 4px,
+    #e7ebef 4px,
+    #e7ebef 5px
+  );
+  color: #586574;
+}
+.app .activity-matrix td.activity-departed,
+.app .activity-legend i.activity-departed {
+  background: #f6ece8;
+  color: #805143;
+}
+.app .activity-employment-label {
+  display: block;
+  font-size: 9px;
+  line-height: 1.25;
+  font-style: italic;
+  margin-top: 3px;
+  white-space: normal;
+}
+.app .activity-matrix td.activity-other-team,
+.app .activity-matrix td.activity-future {
+  background: #f0f2ef;
+  color: #9aa298;
+}
+.app .activity-footnote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  border-top: 1px solid var(--table-label-border);
+  font-size: 10px;
+  color: #5e6b5b;
+  line-height: 1.5;
+}
+.app .activity-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.app .activity-legend i {
+  width: 13px;
+  height: 13px;
+  border: 1px solid #c7cbc3;
+  border-radius: 3px;
+  margin-left: 8px;
+}
+.app .activity-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 10px;
+}
+.app .activity-matrix .activity-empty {
+  white-space: normal;
+  text-align: left;
+  padding: 24px;
+  color: #60715e;
+}
+
+.app .monthly-activity-report .today-date-line {
+  z-index: 2;
+}
+
+/* The header is one stacking context above the three frozen body columns. */
+.app .activity-matrix thead {
+  z-index: 8;
+}
+.app .activity-matrix th,
+.app .activity-matrix td {
+  font-size: 9px;
+}
+.app .activity-employment-label {
+  font-size: 8px;
+}

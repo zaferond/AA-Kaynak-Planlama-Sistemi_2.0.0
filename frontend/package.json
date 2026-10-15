@@ -1,0 +1,33 @@
+{
+  "name": "aa-kaynak-planlama-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"../shared/**/*.ts\" \"../backend/**/*.mjs\" \"../scripts/**/*.mjs\" \"../tests/*.mjs\" \"*.mjs\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"../shared/**/*.ts\" \"../backend/**/*.mjs\" \"../scripts/**/*.mjs\" \"../tests/*.mjs\" \"*.mjs\""
+  },
+  "dependencies": {
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "^1.31.0",
+    "radix-ui": "^1.6.7",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "tailwind-merge": "3.6.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "prettier": "3.9.9",
+    "typescript": "5.9.3",
+    "vite": "8.0.16"
+  },
+  "type": "module"
+}

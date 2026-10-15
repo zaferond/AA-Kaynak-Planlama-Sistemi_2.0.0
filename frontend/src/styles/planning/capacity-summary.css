@@ -1,0 +1,136 @@
+/* Monthly capacity disclosure */
+.app .capacitystrip {
+  margin: 8px 12px 10px;
+  border: 1px solid #cbdced;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 1px 3px #173b6110;
+  overflow: hidden;
+}
+.app .capacitystrip > summary,
+.app .capacitystrip[open] > summary {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 57px;
+  padding: 9px 12px;
+  list-style: none;
+  cursor: pointer;
+  background: #f5f9fe;
+  color: #183f65;
+  transition: background-color 0.18s ease;
+}
+.app .capacitystrip > summary::-webkit-details-marker {
+  display: none;
+}
+.app .capacitystrip > summary:focus-visible {
+  outline: 2px solid #2674c2;
+  outline-offset: -3px;
+}
+.app .capacitystrip[open] > summary {
+  background: #edf5fe;
+  border-bottom: 1px solid #d7e5f3;
+}
+.app .capacitystrip-icon {
+  width: 35px;
+  height: 35px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid #c9ddf2;
+  border-radius: 8px;
+  background: #fff;
+  color: #2165a3;
+}
+.app .capacitystrip-copy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  line-height: 1.25;
+}
+.app .capacitystrip-copy strong {
+  font-size: 12px;
+  font-weight: 700;
+  color: #183f65;
+}
+.app .capacity-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.app .capacity-filter-chip {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 100%;
+  padding: 3px 7px;
+  border: 1px solid #ffffff40;
+  border-radius: 5px;
+  background: #ffffff12;
+  line-height: 1.35;
+}
+.app .capacity-filter-chip > span {
+  font-size: 10px;
+  font-weight: 500;
+  color: #d5e5f1;
+}
+.app .capacity-filter-chip > strong {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+.app .capacity-filter-chip.is-active {
+  border-color: #c1ddf1;
+  background: #eaf5ff;
+}
+.app .capacity-filter-chip.is-active > span {
+  color: #51708b;
+}
+.app .capacity-filter-chip.is-active > strong {
+  color: #17476b;
+}
+.app .capacitystrip-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  padding: 7px 10px;
+  border: 1px solid #bcd3eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #1c609f;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.app .capacitystrip-action svg {
+  transition: transform 0.18s ease;
+}
+.app .capacitystrip[open] .capacitystrip-action svg {
+  transform: rotate(180deg);
+}
+.app .capacitystrip [data-slot="table-container"] {
+  border-top: 0;
+}
+@media (max-width: 650px) {
+  .app .capacitystrip {
+    margin: 8px 0 10px;
+  }
+  .app .capacitystrip > summary,
+  .app .capacitystrip[open] > summary {
+    gap: 8px;
+    padding: 9px;
+  }
+  .app .capacitystrip-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .app .capacitystrip-action {
+    padding: 7px;
+    font-size: 10px;
+  }
+}

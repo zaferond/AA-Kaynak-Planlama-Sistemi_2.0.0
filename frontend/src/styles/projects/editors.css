@@ -1,0 +1,768 @@
+/* Focused project timeline editors with a clear context, controls and preview. */
+.editor.timeline-editor {
+  width: min(640px, calc(100vw - 24px));
+  max-width: 640px !important;
+  max-height: 88dvh;
+  padding: 0;
+  gap: 0;
+  overflow-y: auto;
+  border: 1px solid #cbd9e6;
+  border-radius: 12px;
+  box-shadow: 0 24px 70px #142f4852;
+  background: #fff;
+}
+.timeline-editor [data-slot="dialog-header"] {
+  gap: 5px;
+  padding: 22px 26px 18px;
+  border-top: 4px solid #315b7d;
+  border-bottom: 1px solid #dce6ef;
+  background: #f7fafc;
+  text-align: left;
+}
+.timeline-editor [data-slot="dialog-title"] {
+  padding-right: 25px;
+  color: #223e55;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.timeline-editor [data-slot="dialog-description"] {
+  color: #64798a;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.timeline-editor [data-slot="dialog-close"] {
+  top: 22px;
+  right: 22px;
+  color: #597186;
+  opacity: 1;
+}
+.timeline-editor [data-slot="dialog-close"]:hover {
+  color: #234d6d;
+}
+.editor .timeline-editor-form {
+  gap: 17px;
+  padding: 22px 26px 0;
+}
+.timeline-editor-form > .phasecontext {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid #cddfed;
+  border-left: 3px solid #48789f;
+  border-radius: 7px;
+  background: #f1f6fa;
+  color: #294e6b;
+}
+.timeline-editor-form > .phasecontext > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+}
+.timeline-editor-form > .phasecontext small {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #69849b;
+}
+.timeline-editor-form > .phasecontext strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+.timeline-editor-form > .phasecontext span {
+  padding: 5px 8px;
+  border: 1px solid #d0deea;
+  border-radius: 5px;
+  background: #fff;
+  color: #3b5e7b;
+  font-size: 11px;
+}
+.timeline-editor-form > label,
+.timeline-editor-form .formrow > label {
+  gap: 6px;
+  min-width: 0;
+  color: #344f67;
+  font-size: 12px;
+  font-weight: 650;
+}
+.timeline-editor-form > label input,
+.timeline-editor-form > label textarea,
+.timeline-editor-form .formrow input {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid #c7d5e2;
+  border-radius: 6px;
+  background: #fff;
+  color: #20394f;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.timeline-editor-form > label textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.timeline-editor-form input:focus-visible,
+.timeline-editor-form textarea:focus-visible {
+  border-color: #3979aa;
+  outline: 0;
+  box-shadow: 0 0 0 3px #bdd9ee99;
+}
+.timeline-editor-form .formrow {
+  gap: 12px;
+}
+.timeline-editor-form .timeline-fieldset,
+.timeline-editor-form .milestone-style,
+.timeline-editor-form .milestone-ranges {
+  min-width: 0;
+  margin: 0;
+  padding: 13px 14px 14px;
+  border: 1px solid #d7e2eb;
+  border-radius: 7px;
+  background: #fbfcfe;
+}
+.timeline-editor-form
+  :is(.timeline-fieldset, .milestone-style, .milestone-ranges)
+  legend {
+  padding: 0 6px;
+  color: #344f67;
+  font-size: 12px;
+  font-weight: 700;
+}
+.milestone-range-list {
+  display: grid;
+  gap: 12px;
+}
+.milestone-date-hint {
+  margin: 0 0 11px;
+  color: #61798d;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.milestone-range-row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 30px;
+  align-items: start;
+  gap: 8px;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #cddde9;
+  border-left: 4px solid #5c89ae;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 3px #193c5710;
+}
+.milestone-range-row:nth-child(even) {
+  border-color: #c9dcd7;
+  border-left-color: #6aa18c;
+  background: #f4faf7;
+}
+.milestone-range-row + .milestone-range-row {
+  padding-top: 14px;
+  border-top: 1px solid #cddde9;
+}
+.milestone-range-number {
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  background: #e7f0f7;
+  color: #3d6b90;
+  font-size: 11px;
+  font-weight: 700;
+}
+.milestone-range-row:nth-child(even) .milestone-range-number {
+  background: #e1f1e9;
+  color: #3a785d;
+}
+.milestone-range-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  color: #344f67;
+  font-size: 11px;
+  font-weight: 650;
+}
+.timeline-editor-form .milestone-range-row :is(input, textarea) {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 8px;
+  border: 1px solid #c7d5e2;
+  border-radius: 6px;
+  background: #fff;
+  color: #20394f;
+  font-size: 12px;
+}
+.milestone-range-dates {
+  grid-column: 2;
+  grid-row: 2;
+  display: grid;
+  gap: 6px;
+}
+.timeline-editor-form .milestone-range-date-card input[readonly] {
+  background: var(--brand-surface-soft, #f6f8f4);
+  color: var(--brand-dark, #344736);
+  cursor: default;
+}
+.milestone-range-dates > strong,
+.milestone-range-notes > strong {
+  color: #344f67;
+  font-size: 11px;
+  font-weight: 650;
+}
+.milestone-range-dates > .milestone-range-date-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+  align-items: end;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #c3d9e9;
+  border-left: 3px solid #5586ad;
+  border-radius: 6px;
+  background: #eef6fc;
+  box-shadow: 0 1px 2px #183d5b0a;
+}
+.milestone-range-date-arrow {
+  display: grid;
+  place-items: center;
+  align-self: end;
+  height: 36px;
+  color: #4d7696;
+}
+.milestone-range-notes {
+  grid-column: 2;
+  grid-row: 3;
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  margin-top: 2px;
+  padding-top: 10px;
+  border-top: 1px solid #d8e5ef;
+}
+.milestone-range-empty,
+.milestone-preview-empty {
+  margin: 8px 0;
+  padding: 12px;
+  border: 1px dashed #c5d5e3;
+  border-radius: 6px;
+  background: #f7fafc;
+  color: #617c92;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.milestone-note-empty {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px dashed #cbd9e5;
+  border-radius: 6px;
+  background: #f8fbfd;
+  color: #698096;
+  font-size: 11px;
+}
+.milestone-note-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 25px;
+  gap: 6px 8px;
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid #e1e9f0;
+  border-radius: 6px;
+  background: #fff;
+}
+.milestone-note-row > .milestone-note-input {
+  grid-column: 1;
+  grid-row: 1;
+  gap: 5px;
+}
+.milestone-note-input .milestone-note-number {
+  align-self: flex-start;
+  padding: 2px 6px;
+  border: 1px solid #c9dbe9;
+  border-radius: 4px;
+  background: #eaf3fa;
+  color: #315f80;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.milestone-note-input textarea {
+  min-height: 72px;
+  resize: vertical;
+  line-height: 1.5;
+}
+.milestone-note-dates {
+  grid-column: 1 / 3;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 8px;
+}
+.milestone-note-dates label {
+  font-size: 10px;
+}
+.milestone-note-dates .milestone-note-report {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  align-self: end;
+  min-height: 36px;
+  white-space: nowrap;
+}
+.milestone-note-flags {
+  display: grid;
+  align-self: end;
+  gap: 4px;
+  padding-bottom: 2px;
+}
+.milestone-note-dates .milestone-note-flags label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-self: auto;
+  gap: 5px;
+  min-height: 16px;
+  white-space: nowrap;
+}
+.milestone-note-dates .milestone-note-flags .milestone-note-complete {
+  color: #277456;
+}
+.timeline-editor-form .milestone-note-row input[type="checkbox"] {
+  width: 14px;
+  min-width: 14px;
+  height: 14px;
+  min-height: 14px;
+  padding: 0;
+}
+.milestone-note-remove {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 36px;
+  border: 1px solid #d7e2eb;
+  border-radius: 5px;
+  background: #fff;
+  color: #8c5360;
+  cursor: pointer;
+}
+.milestone-note-remove:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.milestone-note-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  justify-self: start;
+  min-height: 29px;
+  padding: 5px 9px;
+  border: 1px solid #a7c5dc;
+  border-radius: 5px;
+  background: #dceefa;
+  color: #1e557b;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.milestone-note-add:hover:not(:disabled) {
+  border-color: #7eabc9;
+  background: #cce5f6;
+}
+.milestone-note-add:focus-visible {
+  outline: 2px solid #3979aa;
+  outline-offset: 2px;
+}
+.milestone-note-add:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.milestone-range-colors {
+  grid-column: 2;
+  grid-row: 4;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-height: 30px;
+}
+.milestone-range-colors span {
+  margin-right: 4px;
+  color: #344f67;
+  font-size: 11px;
+  font-weight: 650;
+}
+.timeline-editor-form .milestone-range-colors button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--range-color);
+  box-shadow: 0 0 0 1px #9eafbd;
+  cursor: pointer;
+}
+.timeline-editor-form .milestone-range-colors button.selected {
+  box-shadow:
+    0 0 0 2px #315b7d,
+    0 0 0 4px var(--range-soft);
+}
+.timeline-editor-form .milestone-range-colors button:focus-visible {
+  outline: 2px solid #315b7d;
+  outline-offset: 4px;
+}
+.milestone-range-remove {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 36px;
+  border: 1px solid #d7e2eb;
+  border-radius: 5px;
+  background: #fff;
+  color: #8c5360;
+}
+.milestone-range-remove:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.milestone-range-remove:not(:disabled):hover {
+  background: #fff0f2;
+  border-color: #d9aeb7;
+}
+.timeline-editor-form .milestone-range-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  margin-top: 11px;
+  padding: 6px 10px;
+  border: 1px solid #bbd1e1;
+  border-radius: 5px;
+  background: #fff;
+  color: #245d85;
+  font-size: 11px;
+  font-weight: 650;
+}
+.timeline-editor-form .milestone-range-add:hover:not(:disabled) {
+  background: #eaf4fb;
+}
+@media (max-width: 650px) {
+  .milestone-note-dates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .milestone-note-flags {
+    grid-column: 1 / 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+@media (max-width: 650px) {
+  .milestone-range-dates > .milestone-range-date-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .milestone-range-date-arrow {
+    justify-self: center;
+    align-self: center;
+    height: 18px;
+    transform: rotate(90deg);
+  }
+}
+.timeline-editor-form .palette {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+.timeline-editor-form .palette label {
+  justify-content: flex-start;
+  min-width: 0;
+  min-height: 37px;
+  padding: 6px 9px;
+  border-width: 1px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  transition:
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+.timeline-editor-form .palette label:has(input:checked) {
+  box-shadow: 0 0 0 2px #315b7d;
+  transform: translateY(-1px);
+}
+.timeline-editor-form .palette label:focus-within {
+  outline: 2px solid #3979aa;
+  outline-offset: 2px;
+}
+.timeline-editor-form .palette input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  accent-color: #315b7d;
+}
+.timeline-editor-form .milestone-bar-options {
+  gap: 8px;
+}
+.timeline-editor-form .milestone-bar-options button {
+  min-height: 63px;
+  padding: 9px 11px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.timeline-editor-form .milestone-bar-options button.selected,
+.timeline-editor-form .milestone-colors button.selected {
+  border-color: #315b7d;
+  background: #edf5fb;
+  box-shadow: 0 0 0 1px #315b7d;
+}
+.timeline-editor-form .milestone-colors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.timeline-editor-form .milestone-colors button {
+  min-height: 35px;
+  padding: 6px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.timeline-editor-form .milestone-colors i {
+  flex: none;
+}
+.timeline-editor-form .timeline-live-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid #d7e2eb;
+  border-radius: 7px;
+  background: #f7fafc;
+}
+.milestone-preview-list {
+  display: grid;
+  gap: 10px;
+}
+.milestone-preview-list > div {
+  display: grid;
+  gap: 4px;
+}
+.milestone-preview-list small {
+  color: #6b8193;
+  font-size: 10px;
+  font-weight: 650;
+}
+.timeline-live-preview > span {
+  color: #658096;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+}
+.timeline-live-preview .timeline-phase-preview {
+  min-height: 42px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.timeline-live-preview .timeline-milestone-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 12px;
+  border: 1px solid var(--preview-color);
+  border-radius: 6px;
+  background: var(--preview-color);
+  color: #fff;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.timeline-live-preview .timeline-milestone-preview.outline {
+  background: var(--preview-soft);
+  color: var(--preview-ink);
+}
+.timeline-live-preview .milestone-preview-notes {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.timeline-live-preview .milestone-preview-notes li {
+  line-height: 1.5;
+}
+.timeline-live-preview .milestone-preview-notes li::before {
+  content: "•";
+  margin-right: 6px;
+}
+.timeline-live-preview > small {
+  color: #6b8193;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.timeline-editor-form > .negative {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #efc6be;
+  border-radius: 6px;
+  background: #fff3f0;
+  font-size: 12px;
+}
+.timeline-editor-form .timeline-editor-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 2px -26px 0;
+  padding: 14px 26px;
+  border-top: 1px solid #dce6ef;
+  background: #fff;
+  box-shadow: 0 -5px 14px #1c3b5512;
+}
+.timeline-editor-actions .timeline-save-error {
+  flex: 1 1 100%;
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid #dfb2b9;
+  border-radius: 5px;
+  background: #fff4f5;
+  color: #8b3443;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.timeline-editor-actions .button {
+  min-width: 88px;
+  min-height: 36px;
+  padding: 7px 16px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 650;
+}
+.timeline-editor-actions .milestone-delete-button {
+  border-color: #deb8bf;
+  background: #fff7f8;
+  color: #a0394d;
+}
+.timeline-editor-actions .milestone-delete-button {
+  margin-right: auto;
+}
+.timeline-editor-actions .milestone-delete-button:hover:not(:disabled) {
+  background: #ffecef;
+  border-color: #ca8996;
+}
+.timeline-editor-actions .button.primary {
+  background: #315b7d;
+  border-color: #315b7d;
+  color: #fff;
+}
+.timeline-editor-actions .button.primary:hover:not(:disabled) {
+  background: #274c69;
+  border-color: #274c69;
+}
+@media (max-width: 650px) {
+  .editor.timeline-editor {
+    max-height: 92dvh;
+  }
+  .timeline-editor [data-slot="dialog-header"] {
+    padding: 18px 18px 15px;
+  }
+  .editor .timeline-editor-form {
+    padding: 18px 18px 0;
+  }
+  .timeline-editor-form > .phasecontext {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .timeline-editor-form .palette,
+  .timeline-editor-form .milestone-colors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .timeline-editor-form .formrow {
+    grid-template-columns: 1fr;
+  }
+  .timeline-editor-form .timeline-editor-actions {
+    margin-inline: -18px;
+    padding: 12px 18px;
+  }
+}
+
+.milestone-range-kind {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid #cbd5e1;
+}
+.milestone-range-kind > span {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+}
+.milestone-range-kind .milestone-bar-options {
+  margin: 0;
+}
+.timeline-editor-form .milestone-range-kind .milestone-bar-options button {
+  min-height: 34px;
+  font-size: 12px;
+  padding: 7px 12px;
+}
+
+.milestone-range-dates > .milestone-point-date-card {
+  grid-template-columns: minmax(0, 1fr);
+}
+.milestone-point-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.milestone-point-flags label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+.timeline-editor-form
+  .milestone-range-row
+  .milestone-point-flags
+  input[type="checkbox"] {
+  width: 14px;
+  min-width: 14px;
+  height: 14px;
+  min-height: 14px;
+  padding: 0;
+}

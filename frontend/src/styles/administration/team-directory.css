@@ -1,0 +1,453 @@
+.team-directory .panelhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.team-directory .panelhead input {
+  width: min(280px, 100%);
+  height: 32px;
+  padding: 5px 9px;
+  border: 1px solid #cbd9e8;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 12px;
+}
+.team-directory .directory-table {
+  table-layout: fixed;
+  min-width: 740px;
+}
+.directory-table .directory-lead-column {
+  width: 31%;
+}
+.directory-table .directory-team-column {
+  width: 37%;
+}
+.directory-table .directory-action-column {
+  width: 120px;
+}
+.team-directory td,
+.team-directory th {
+  padding: 10px 14px;
+  font-size: 11px;
+  border-bottom: 1px solid var(--brand-border, #dbe5d5);
+  border-right: 1px solid #e8ede4;
+  vertical-align: middle;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.app .team-directory .directory-table th {
+  height: 42px;
+  background: var(--brand-primary, #405440);
+  /* The shared legacy table header color is marked important. */
+  color: #fff !important;
+  font-weight: 650;
+  border-right-color: #ffffff26;
+}
+.team-directory th:last-child,
+.team-directory td:last-child {
+  border-right: 0;
+}
+.team-directory td:first-child {
+  color: var(--brand-muted, #68745f);
+}
+.team-directory .directory-action-cell {
+  text-align: center;
+}
+.team-directory .directory-manager-cell {
+  font-weight: 500;
+  color: var(--brand-text, #34452f);
+}
+.team-directory td input,
+.team-directory td select {
+  width: 100%;
+  height: 31px;
+  padding: 5px 8px;
+  border: 1px solid #cbd9e8;
+  border-radius: 5px;
+  background: #fff;
+  color: #263d53;
+  font-size: 11px;
+}
+.team-directory td .button {
+  min-height: 29px;
+  padding: 4px 10px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.team-directory .directory-group td {
+  background: #eef3f8;
+  color: #24445e;
+  font-size: 12px;
+  border-top: 1px solid #d5e1eb;
+}
+.team-directory .directory-group td:first-child {
+  padding-left: 10px !important;
+}
+.team-directory .directory-group small {
+  display: block;
+  margin-top: 4px;
+  color: #657d91;
+  font-size: 10px;
+  font-weight: 500;
+}
+.team-directory .directory-group .directory-team-count {
+  display: inline-block;
+  padding: 1px 7px;
+  border: 1px solid var(--brand-border, #dbe5d5);
+  border-radius: 10px;
+  background: #ffffff85;
+}
+.team-directory .directory-unit-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.team-directory .directory-unit-title > svg {
+  flex: none;
+  color: var(--brand-muted, #68745f);
+}
+.team-directory .directory-unit-kind {
+  font-size: 10px;
+  font-weight: 650;
+}
+.team-directory .directory-team td {
+  background: #fff;
+}
+.team-directory .directory-team:nth-child(even) td {
+  background: #fafbf8;
+}
+.team-directory .directory-group td input {
+  max-width: 320px;
+}
+.team-directory .directory-team td:first-child {
+  padding-left: calc(22px + var(--directory-indent, 0px)) !important;
+}
+.team-directory .directory-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  white-space: nowrap;
+}
+.team-directory .directory-actions .button {
+  min-width: 84px;
+}
+.team-directory .directory-summary {
+  margin: 4px 0 0;
+  color: #607c95;
+  font-size: 11px;
+}
+.team-directory .directory-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.team-directory .directory-management-actions {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+.team-directory .directory-management-actions .button {
+  white-space: nowrap;
+}
+.team-directory .directory-toolbar .button,
+.directory-dialog .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.directory-dialog[data-slot="dialog-content"] {
+  width: min(960px, calc(100vw - 36px));
+  max-width: min(960px, calc(100vw - 36px));
+  max-height: calc(100vh - 48px);
+  padding: 22px;
+  overflow: auto;
+  background: #f8fafc;
+}
+.directory-dialog [data-slot="dialog-title"] {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #244d6c;
+  font-size: 18px;
+}
+.directory-dialog [data-slot="dialog-description"] {
+  color: #61788d;
+  font-size: 12px;
+}
+.directory-manager-body {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.9fr) minmax(280px, 1.1fr);
+  min-height: 360px;
+  gap: 18px;
+}
+.directory-manager-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #d8e3ed;
+  border-radius: 8px;
+  background: #eef4f9;
+}
+.directory-manager-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #325570;
+  font-size: 12px;
+}
+.directory-manager-list-header span {
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #dce8f3;
+  font-size: 11px;
+}
+.directory-dialog input,
+.directory-dialog select {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  padding: 7px 10px;
+  border: 1px solid #c7d7e5;
+  border-radius: 5px;
+  background: #fff;
+  color: #29475f;
+  font-size: 12px;
+}
+.directory-dialog input:focus,
+.directory-dialog select:focus {
+  outline: 2px solid #81acd1;
+  outline-offset: 1px;
+}
+.directory-new-button {
+  width: 100%;
+}
+.directory-manager-records {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: min(430px, 48vh);
+  overflow: auto;
+}
+.directory-record {
+  flex: none;
+  width: 100%;
+  padding: 10px 11px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: #fff;
+  color: #35546e;
+  text-align: left;
+  cursor: pointer;
+}
+.directory-record:hover {
+  border-color: #bfd0df;
+}
+.directory-record.selected {
+  border-color: #6c9bbe;
+  background: #e0edf8;
+  box-shadow: inset 3px 0 #32698f;
+}
+.directory-record strong,
+.directory-record small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.directory-record strong {
+  font-size: 12px;
+}
+.directory-record small {
+  margin-top: 3px;
+  color: #6a8297;
+  font-size: 10px;
+}
+.directory-manager-details {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #dce5ee;
+  border-radius: 8px;
+  background: #fff;
+}
+.directory-manager-details fieldset {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.directory-manager-details legend {
+  margin-bottom: 18px;
+  color: #2c5371;
+  font-size: 14px;
+  font-weight: 700;
+}
+.directory-manager-details label {
+  margin-top: 6px;
+  color: #4b667d;
+  font-size: 11px;
+  font-weight: 600;
+}
+.directory-manager-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid #e0e8ef;
+}
+.directory-dialog .directory-remove {
+  margin-right: auto;
+  border-color: #e6c6c9;
+  background: #fff3f3;
+  color: #aa3d46;
+}
+.directory-manager-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 12px;
+  color: #66849c;
+  text-align: center;
+  font-size: 12px;
+}
+.directory-manager-empty {
+  padding: 18px 8px;
+  color: #6d8497;
+  font-size: 12px;
+}
+.directory-manager-error {
+  margin-top: 16px;
+}
+.directory-manager-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid #dce5ee;
+}
+.directory-manager-footer span {
+  color: #73889a;
+  font-size: 10px;
+}
+@media (max-width: 700px) {
+  .team-directory .panelhead {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .directory-manager-body {
+    grid-template-columns: 1fr;
+  }
+  .directory-manager-records {
+    max-height: 180px;
+  }
+}
+
+:is(.directory-employees, .directory-teams) {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #cdd7c8;
+}
+:is(.directory-employees-heading, .directory-teams-heading) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+:is(.directory-employees-heading, .directory-teams-heading) span,
+:is(.directory-employees, .directory-teams) p {
+  font-size: 11px;
+  color: #5d6b58;
+}
+:is(.directory-employees, .directory-teams) ul {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 210px;
+  overflow: auto;
+  border: 1px solid #d9e1d5;
+  border-radius: 6px;
+  background: #f6f8f3;
+}
+:is(.directory-employees, .directory-teams) li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e0e6dc;
+  overflow-wrap: anywhere;
+}
+:is(.directory-employees, .directory-teams) li:last-child {
+  border-bottom: none;
+}
+:is(.directory-employees, .directory-teams) li strong {
+  font-size: 12px;
+}
+:is(.directory-employees, .directory-teams) li small {
+  font-size: 10px;
+  color: #65735f;
+}
+
+.team-directory .directory-child-leadership td {
+  background: #f5f7f1;
+  border-top: 1px solid #d7dfce;
+  color: #405334;
+}
+.directory-indent {
+  display: inline-block;
+  overflow-wrap: anywhere;
+}
+
+.team-directory .directory-group.directory-child-leadership td {
+  background: #eaf0e2;
+  border-top: 1px solid #c8d4bb;
+  border-bottom: 1px solid #c8d4bb;
+}
+.team-directory .directory-team.directory-nested-team td {
+  background: #f7f9f3;
+}
+.team-directory .directory-team.directory-nested-team td:nth-child(2) {
+  box-shadow: inset 2px 0 #cbd8bd;
+}
+
+.directory-manager-details input.directory-derived-manager[readonly] {
+  background: #edf1e7;
+  border-color: #d2dbc8;
+  color: #526447;
+  cursor: default;
+}
+
+.directory-linked-name {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.directory-linked-type {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border: 1px solid #d1dbc8;
+  border-radius: 4px;
+  color: #53644a;
+  background: #edf2e6;
+  font-size: 9px;
+  line-height: 1.3;
+}
+.directory-teams li[data-directory-kind="leader"] {
+  background: #eaf0e2;
+}

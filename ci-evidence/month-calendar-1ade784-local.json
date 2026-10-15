@@ -1,0 +1,286 @@
+{
+  "recordedAt": "2026-10-11T12:57:04.240270+00:00",
+  "baseCommit": "b977f1a4395c5cf7fd3a5788f137e4c5084c1636",
+  "sourceCommit": "1ade784e2ea47e7c7c018fc6c480451b2b8b9125",
+  "environment": {
+    "os": "macOS arm64",
+    "node": "24.21.0",
+    "isolatedGitArchive": true,
+    "allowlistedProcessEnvironment": true,
+    "syntheticSqljsOnly": true,
+    "realEnvLoaded": false,
+    "realDatabaseAccessed": false,
+    "dependenciesInstalledLocally": false,
+    "serviceRestarted": false
+  },
+  "commands": [
+    {
+      "command": "node --test tests/person-month-index.test.mjs tests/actual-units.test.mjs tests/validation-records.test.mjs tests/planning-preflight.test.mjs",
+      "exitCode": 0,
+      "testTotals": {
+        "tests": 23,
+        "pass": 23,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "6916a4247e456fe5951cd58196008b6ed8bdec773ba4a25298b8983dd6bf2672"
+    },
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "testTotals": {
+        "tests": 673,
+        "pass": 673,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "5325dcd530ffd3586838865c3d3d0e5c86617ba88ad4eb738a319e95f8ce2225"
+    },
+    {
+      "command": "node scripts/verify-deployment.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "68eb595bd390f7037ed4c0a350128d6bafa2c9cd2e2c8bc016f057067c88231e"
+    },
+    {
+      "command": "node scripts/check-deployment-package.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "c9b4269167030c64d1b96d1ea2900b6751007e9d692daefdaf6bd1f9865916a1"
+    },
+    {
+      "command": "node .reference/month-benchmark.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "1beae7cc9c4ffcaa2cb470668a4555cfe88906b6f4a361f2c419add95518f1fc"
+    },
+    {
+      "command": "node .reference/full-validation-benchmark.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "8c6e1cd1da5ca0eb1873da2119ebf552ef0d77131ada44a9e80bf17576fb7c38"
+    }
+  ],
+  "deployment": {
+    "baseCommit": "b977f1a4395c5cf7fd3a5788f137e4c5084c1636",
+    "preservedRuntimeTest": "044dce3dfb9c3c86422f685e50b0d097c607d00cb19bc618008d23eb972895d4",
+    "updates": 20,
+    "sourceFiles": 410,
+    "artifactFiles": 439,
+    "releaseArtifactFiles": 7,
+    "protectedTestSha256": "1bff9c63ab2d42bbe3a9c0c3986bb05727909decf30bd3a242125a19dc03604c",
+    "files": {
+      "shared/actual-units.ts": "0f7bfeb14b09718be1443de01777da0860142492ace9a4f8202b124044374d14",
+      "tests/person-month-reference.mjs": "7b9f7379d98940a6328bcaceedce80dad9df158bd9155249b9a70bf8ef6be8c3",
+      "tests/person-month-index.test.mjs": "90e6b9440cca6f350824e8a4240e5801ffdf38a35f8327b69fe4643c0ba8e1fa",
+      "tests/mssql.integration.mjs": "40a5afac5732f6ddd2a1ea620458659bb0f9dd193bebd25e042708e082552ec1",
+      ".github/workflows/quality.yml": "fb6e4b4e5dd75775506a8492fd91a8879d851a7272ac3ee7db338103f64954fe",
+      "site/assets/app.f8056b61138a.js": "f8056b61138a57fc8d68bac47372045f540219cc31de5ec29994199edeb0f073",
+      "site/assets/app.f8056b61138a.js.gz": "3134a3f3a534a7cef6887dfef7b80b8cc471ea2dd6651223133e6edfc1d7cf9c",
+      "site/index.html": "23cd65c3c23a526ab93898b8ce0930d9cefb39b3052d0c85a5040172e1afa1e2",
+      "site/index.html.gz": "14d657b1bbcbe63f8319ac2c8a49fcc858f951f34ba8eb68ec05460265917656"
+    },
+    "backup": "/Users/beyzakap/Desktop/AA Kaynak Planlama Sistemi_1.0.0/.deployment-backups/n3-month-index-20261011T125527Z"
+  },
+  "postMirrorManifestVerification": {
+    "canonical": true,
+    "runtime": true
+  },
+  "benchmark": {
+    "baselineSharedHashesMatchBaseCommit": true,
+    "baselineActualUnitsSha256": "391d2355927c07d06fa72af5b93e882cd07edc35bd1f7737861b9ca5724faa2a",
+    "currentActualUnitsSha256": "0f7bfeb14b09718be1443de01777da0860142492ace9a4f8202b124044374d14",
+    "helper": {
+      "scope": "Pure synthetic helpers, 80 employees x 9 months, alternating order, 4 warmups, 20 samples; no DB/HTTP/capacity claim",
+      "samples": {
+        "previousIndex": [
+          16.45045799999997,
+          14.289041999999995,
+          14.210541999999975,
+          14.34983299999999,
+          14.156917000000021,
+          15.192416999999978,
+          14.63941699999998,
+          14.885125000000016,
+          14.28125,
+          14.345000000000027,
+          14.322750000000042,
+          17.099749999999972,
+          14.25704200000007,
+          14.080165999999963,
+          14.413457999999991,
+          14.117582999999968,
+          14.22700000000009,
+          14.095792000000074,
+          14.277082999999948,
+          14.551666999999952
+        ],
+        "currentIndex": [
+          7.290500000000009,
+          7.201750000000004,
+          7.151041999999961,
+          7.187417000000039,
+          7.5352080000000115,
+          7.501874999999927,
+          7.556583000000046,
+          7.194708999999989,
+          7.380750000000035,
+          6.985790999999949,
+          7.445165999999972,
+          7.079375000000027,
+          7.344125000000076,
+          7.254415999999992,
+          7.515916999999945,
+          7.22441700000013,
+          7.371291999999812,
+          6.982792000000018,
+          7.329457999999931,
+          7.042957999999999
+        ],
+        "previousDirect": [
+          14.168292000000008,
+          14.154084000000012,
+          14.568041999999991,
+          14.49145900000002,
+          14.060999999999979,
+          14.264291000000071,
+          14.155250000000024,
+          14.221333999999956,
+          13.912958000000003,
+          14.091457999999989,
+          14.050792000000001,
+          13.981416000000081,
+          13.91704100000004,
+          14.104000000000042,
+          13.903832999999963,
+          14.092249999999922,
+          13.880249999999933,
+          13.826082999999926,
+          13.871707999999899,
+          13.938458999999966
+        ],
+        "currentDirect": [
+          14.100916999999981,
+          14.252917000000025,
+          14.796249999999986,
+          14.357208000000014,
+          13.969249999999988,
+          14.111375000000066,
+          14.23679100000004,
+          14.420292000000018,
+          13.945500000000038,
+          14.504374999999982,
+          14.218375000000037,
+          14.294541999999979,
+          13.812291999999957,
+          14.258540999999923,
+          14.024374999999964,
+          14.23979200000008,
+          13.824458999999933,
+          13.94600000000014,
+          13.921375000000126,
+          14.33725000000004
+        ]
+      },
+      "summary": {
+        "previousIndex": {
+          "count": 20,
+          "medianMs": 14.289041999999995,
+          "sampleP95Ms": 16.45045799999997
+        },
+        "currentIndex": {
+          "count": 20,
+          "medianMs": 7.254415999999992,
+          "sampleP95Ms": 7.5352080000000115
+        },
+        "previousDirect": {
+          "count": 20,
+          "medianMs": 14.060999999999979,
+          "sampleP95Ms": 14.49145900000002
+        },
+        "currentDirect": {
+          "count": 20,
+          "medianMs": 14.218375000000037,
+          "sampleP95Ms": 14.504374999999982
+        }
+      }
+    },
+    "fullValidation": {
+      "scope": "Full pure validate on a synthetic SQL.js snapshot, 10000 planned/4000 actual/4000 percentages/80 employees/1000 leave days; alternate order, 4 warmups, 20 samples; no HTTP/SQL Server/capacity claim",
+      "summary": {
+        "previous": {
+          "count": 20,
+          "medianMs": 38.5498749999997,
+          "sampleP95Ms": 42.14916600000015
+        },
+        "current": {
+          "count": 20,
+          "medianMs": 30.36416599999984,
+          "sampleP95Ms": 33.264166999999816
+        }
+      },
+      "samples": {
+        "previous": [
+          40.828083000000106,
+          41.468000000000075,
+          39.29804100000001,
+          56.87845900000002,
+          37.42466599999989,
+          38.55195800000001,
+          37.339500000000044,
+          39.04037500000004,
+          36.85395799999992,
+          42.14916600000015,
+          41.480375000000095,
+          39.42595799999981,
+          42.06950000000006,
+          36.60087499999963,
+          37.77837499999987,
+          36.599874999999884,
+          37.75199999999995,
+          36.854665999999725,
+          38.5498749999997,
+          36.90391699999964
+        ],
+        "current": [
+          36.400666999999885,
+          32.556041999999934,
+          32.716874999999845,
+          33.264166999999816,
+          30.630582999999888,
+          29.456666999999925,
+          30.432542000000012,
+          29.314791999999898,
+          31.33266700000013,
+          29.663749999999936,
+          31.874249999999847,
+          29.12504200000012,
+          29.32995800000026,
+          30.36416599999984,
+          29.285624999999982,
+          29.68570899999986,
+          29.89516599999979,
+          30.62958400000025,
+          29.567999999999756,
+          30.759958000000097
+        ]
+      },
+      "fullOutputEqual": true,
+      "inputUnchanged": true
+    },
+    "reproductionScripts": {
+      "month-benchmark.mjs": {
+        "source": "import assert from \"node:assert/strict\";\nimport { performance } from \"node:perf_hooks\";\nimport { createPersonMonthHoursIndex, personMonthHours } from \"../shared/actual-units.ts\";\nimport { createPersonMonthHoursIndex as previousIndex, personMonthHours as previousPersonMonthHours } from \"./baseline-actual-units.ts\";\nimport fs from \"node:fs/promises\";\nconst resources=Array.from({length:80},(_,i)=>\"r\"+i), months=Array.from({length:9},(_,i)=>\"2026-\"+String(i+1).padStart(2,\"0\"));\nconst data={workCalendar:{},personCalendar:{},actualWorkedHours:{}};\nfor(const month of months){data.workCalendar[month+\"-01\"]={fraction:1}; data.workCalendar[month+\"-02\"]={fraction:.5}; for(const r of resources){data.actualWorkedHours[r+\"|\"+month]=230;data.personCalendar[r+\"|\"+month+\"-03|leave\"]={type:\"leave\",hours:2};}}\nconst tasks={previousIndex:()=>previousIndex(data),currentIndex:()=>createPersonMonthHoursIndex(data),previousDirect:()=>({get:(r,m)=>previousPersonMonthHours(m,r,data.actualWorkedHours[r+\"|\"+m],data.workCalendar,data.personCalendar)}),currentDirect:()=>({get:(r,m)=>personMonthHours(m,r,data.actualWorkedHours[r+\"|\"+m],data.workCalendar,data.personCalendar)})};\nconst samples=Object.fromEntries(Object.keys(tasks).map(k=>[k,[]]));\nfor(let n=0;n<24;n++){const keys=n%2?Object.keys(tasks).reverse():Object.keys(tasks);for(const key of keys){const start=performance.now(),index=tasks[key]();let total=0;for(const month of months)for(const r of resources)total+=index.get(r,month).effectiveHours;if(n>=4)samples[key].push(performance.now()-start);assert(total>0);}}\nconst percentile=(a,p)=>[...a].sort((x,y)=>x-y)[Math.ceil(a.length*p)-1];\nconst summary=Object.fromEntries(Object.entries(samples).map(([k,a])=>[k,{count:a.length,medianMs:percentile(a,.5),sampleP95Ms:percentile(a,.95)}]));\nawait fs.writeFile('.reference/month-benchmark.json',JSON.stringify({scope:\"Pure synthetic helpers, 80 employees x 9 months, alternating order, 4 warmups, 20 samples; no DB/HTTP/capacity claim\",samples,summary},null,2)+'\\n');console.log(JSON.stringify(summary,null,2));\n",
+        "sha256": "5c8dc36cf3ab9ae151cadb0047c41239d4ce7a9740c016c97af00728d6cb4788"
+      },
+      "full-validation-benchmark.mjs": {
+        "source": "import { Store } from \"../backend/store.mjs\";\nimport { seedBenchmarkStore } from \"../scripts/benchmark-fixture.mjs\";\nimport { validate as current } from \"../shared/server-domain.ts\";\nimport { validate as previous } from \"./baseline-shared/server-domain.ts\";\nimport fs from \"node:fs/promises\";\nimport os from \"node:os\";\nimport path from \"node:path\";\nimport assert from \"node:assert/strict\";\nimport { performance } from \"node:perf_hooks\";\nconst dir=await fs.mkdtemp(path.join(os.tmpdir(),\"aa-month-validation-bench-\"));\nconst store=new Store({env:{NODE_ENV:\"test\",DB_PROVIDER:\"sqljs\",SQLJS_FILE:path.join(dir,\"synthetic.sqlite\")}});\ntry{\n await store.connect();await seedBenchmarkStore(store,10000,{resources:80,actuals:4000,percentages:4000,calendarDays:1000});\n const {data}=await store.read(), input=structuredClone(data), expected=previous(data);\n assert.deepEqual(current(data),expected);assert.deepEqual(data,input);\n const samples={previous:[],current:[]};\n for(let n=0;n<24;n++)for(const key of n%2?[\"current\",\"previous\"]:[\"previous\",\"current\"]){const start=performance.now();const value=(key===\"previous\"?previous:current)(data);const elapsed=performance.now()-start;if(n>=4)samples[key].push(elapsed);assert.equal(Object.keys(value.allocations).length,10000);}\n assert.deepEqual(data,input);\n const percentile=(a,p)=>[...a].sort((x,y)=>x-y)[Math.ceil(a.length*p)-1];\n const summary=Object.fromEntries(Object.entries(samples).map(([k,a])=>[k,{count:a.length,medianMs:percentile(a,.5),sampleP95Ms:percentile(a,.95)}]));\n await fs.writeFile('.reference/full-validation-benchmark.json',JSON.stringify({scope:\"Full pure validate on a synthetic SQL.js snapshot, 10000 planned/4000 actual/4000 percentages/80 employees/1000 leave days; alternate order, 4 warmups, 20 samples; no HTTP/SQL Server/capacity claim\",summary,samples,fullOutputEqual:true,inputUnchanged:true},null,2)+'\\n');console.log(JSON.stringify(summary,null,2));\n}finally{await store.close();await fs.rm(dir,{recursive:true,force:true});}\n",
+        "sha256": "eb1bb6178d5b4a389cf5395568cc426fcda0203542074449c8079b2e2796f63a"
+      }
+    }
+  }
+}

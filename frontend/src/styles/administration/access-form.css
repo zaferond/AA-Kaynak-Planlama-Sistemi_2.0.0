@@ -1,0 +1,102 @@
+.accesspanel {
+  padding-bottom: 24px;
+}
+.accessguide {
+  margin: 0 24px 20px;
+  padding: 16px 20px;
+  background: #f1f6fc;
+  border-radius: 10px;
+  color: #4c6380;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.accessguide p + p {
+  margin-top: 8px;
+}
+.accesspanel > input,
+.accesspanel > p[role="status"] {
+  margin: 0 24px 20px;
+  width: min(450px, 90%);
+}
+.accesstable {
+  overflow: auto;
+}
+.accesstable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.accesstable td,
+.accesstable th {
+  padding: 14px 20px;
+  text-align: left;
+  border-bottom: 1px solid #e3eaf2;
+}
+.accesstable th {
+  background: #f2f6fb;
+}
+.accesstable td:nth-child(4) {
+  max-width: 480px;
+  line-height: 1.6;
+}
+.accessform {
+  margin: 24px;
+  padding: 24px;
+  background: #f7fafd;
+  border: 1px solid #dce6ef;
+  border-radius: 12px;
+  max-width: 920px;
+}
+.accessform h3 {
+  margin-bottom: 20px;
+}
+.accessform label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.accessform input,
+.accessform select {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ccd9e6;
+  border-radius: 6px;
+  background: white;
+}
+.accessform fieldset {
+  padding: 16px;
+  border: 1px solid #ccd9e6;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+.accessleaders {
+  margin-top: 15px;
+  display: grid;
+  gap: 4px;
+  max-height: 250px;
+  overflow: auto;
+}
+.accessleaders label {
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px;
+}
+.accessleaders input {
+  width: 17px;
+  height: 17px;
+}
+.accessform .actions {
+  margin-top: 20px;
+}
+.phasebutton:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.textbutton:disabled {
+  cursor: default;
+}
+.accessform small {
+  color: #60748c;
+  line-height: 1.6;
+}

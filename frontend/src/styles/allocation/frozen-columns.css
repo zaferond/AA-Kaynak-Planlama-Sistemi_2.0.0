@@ -1,0 +1,131 @@
+/* Fixed identification columns; the month cells alone scroll horizontally. */
+.app.tab-plan .project-team-view .project-phase-group > td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: var(--table-project-background) !important;
+}
+.app.tab-plan .project-team-view .summary.s2 > td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--table-summary-background);
+}
+.app.tab-plan .project-team-view .project-phase-group .project-group-name {
+  padding: 5px 10px !important;
+  text-align: left;
+  white-space: normal;
+}
+.app.tab-plan
+  .project-team-view
+  .project-phase-group
+  .project-group-name
+  strong,
+.app.tab-plan .project-team-view .project-phase-group .project-group-name span {
+  display: block;
+  position: static;
+  width: auto;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.app.tab-plan .project-team-view .project-phase-group .project-group-name span {
+  margin: 2px 0 0;
+  font-size: 9px;
+}
+.app.tab-overview .remaining-report tbody td:nth-child(-n + 2),
+.app.tab-overview
+  .remaining-report
+  thead
+  tr:not(.yearrow)
+  > th:nth-child(-n + 2) {
+  position: sticky;
+  z-index: 2;
+}
+.app.tab-overview .remaining-report :is(tbody td, thead th):nth-child(1) {
+  left: 0;
+}
+.app.tab-overview .remaining-report :is(tbody td, thead th):nth-child(2) {
+  left: 110px;
+  box-shadow: var(--table-frozen-shadow);
+}
+.app.tab-overview
+  .remaining-report
+  thead
+  tr:not(.yearrow)
+  > th:nth-child(-n + 2) {
+  z-index: 6;
+  background: var(--table-header-background);
+}
+.app.tab-overview .remaining-report .yearrow th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 7;
+  background: var(--table-year-label-background);
+}
+.app.tab-overview .remaining-report tbody tr > td:nth-child(2) {
+  background: #fff;
+}
+.app.tab-overview .remaining-report tbody tr:hover > td:nth-child(-n + 2) {
+  background: #f0f6fd;
+}
+
+/* Stronger, consistent blue disclosure for the monthly team resource summary. */
+.app.tab-plan .capacitystrip {
+  border-color: #2b5678;
+  box-shadow: 0 2px 7px #173b611c;
+}
+.app.tab-plan .capacitystrip > summary,
+.app.tab-plan .capacitystrip[open] > summary {
+  background: #315b7d;
+  color: #f5f9fc;
+}
+.app.tab-plan .capacitystrip[open] > summary {
+  background: #274b6b;
+  border-bottom: 1px solid #22415e;
+}
+.app.tab-plan .capacitystrip > summary:focus-visible {
+  outline-color: #a2c9eb;
+}
+.app.tab-plan .capacitystrip-icon {
+  border-color: #a9c4db;
+  background: #eaf3f9;
+  color: #245274;
+}
+.app.tab-plan .capacitystrip-copy > strong {
+  color: #fff;
+}
+.app.tab-plan .capacitystrip-action {
+  border-color: #b6d0e5;
+  background: #f2f7fb;
+  color: #1e4c71;
+}
+
+/* Align the capacity months with the fixed project and manager columns below. */
+.app.tab-plan .capacitystrip {
+  margin-left: 0;
+  margin-right: 0;
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+}
+.app.tab-plan .capacitystrip .planning-grid :is(th, td):first-child {
+  width: var(--label-width);
+  border-right: 2px solid #b8cbdc;
+  box-shadow: var(--table-frozen-shadow);
+}
+.app.tab-plan .capacitystrip .planning-grid tbody td:first-child {
+  background: var(--table-summary-background);
+}
+
+/* Keep horizontal scrollbars below the last visible row in planning and reports. */
+.app.tab-plan [data-slot="table-container"]:has(> .allocation-grid),
+.app.tab-overview [data-slot="table-container"]:has(> .remaining-report),
+.app.tab-overview .absence-report [data-slot="table-container"] {
+  padding-bottom: var(--table-scrollbar-clearance);
+}
+.app.tab-plan .capacitystrip .planning-grid .summary td {
+  height: 24px;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}

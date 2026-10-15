@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "commit": "cb4924edfd70c3141503a772fe31eb628fc9be2b",
+  "schema": 35,
+  "drivers": {
+    "mssql": "12.7.2",
+    "tedious": "20.3.8"
+  },
+  "sourceFiles": 600,
+  "cleanupVerified": true,
+  "releaseChecks": [
+    "currentSchemaAndHierarchy",
+    "personalCalendarPrivacy",
+    "actualReportProjection",
+    "adSessionLifecycle",
+    "encryptedNativeConnection"
+  ],
+  "reportSha256": "b562341c161f58cfc0170e1b5a434c27b6399f5c501d278061fdb006ef329f83"
+}

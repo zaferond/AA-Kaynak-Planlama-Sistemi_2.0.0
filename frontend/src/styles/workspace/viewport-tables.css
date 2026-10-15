@@ -1,0 +1,115 @@
+/* A viewport-sized panel naturally bounds page scrolling at its summary row. */
+.app .panel.workspace-dock {
+  display: flex;
+  flex-direction: column;
+  height: var(--workspace-height, calc(100dvh / 0.9));
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.app .workspace-dock > .capacitystrip {
+  margin-top: 0;
+  flex: none;
+}
+.app .workspace-dock > .workspace-view-options,
+.app .workspace-dock > .pager,
+.app .workspace-dock > .workspace-record-count,
+.app .workspace-dock > .tablefoot,
+.app .workspace-dock > .emptymsg {
+  flex: none;
+}
+.app .workspace-dock > [data-slot="table-container"] {
+  flex: 1;
+  min-height: 0;
+  max-height: none !important;
+  overflow: auto;
+  overscroll-behavior-y: auto;
+}
+.app .workspace-dock .capacitystrip [data-slot="table-container"] {
+  max-height: min(230px, 25dvh);
+  overscroll-behavior-y: auto;
+}
+/* At a table's top edge, native wheel/touch scrolling continues on the page. */
+.app .person-allocation > [data-slot="table-container"] {
+  overscroll-behavior-y: auto;
+}
+.app .project-filter-summary {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 57px;
+  padding: 9px 12px;
+  background: var(--brand-primary, #405341);
+  color: white;
+}
+.app .project-filter-summary .capacitystrip-copy > strong {
+  color: white;
+}
+
+/* Compact controls stay visible between the filter summary and scrolling grid. */
+.app .workspace-view-options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  min-height: 32px;
+  padding: 4px 12px;
+  border-bottom: 1px solid var(--brand-border, #d5dfcf);
+  background: var(--brand-surface-soft, #f6f8f4);
+}
+.app .workspace-view-options > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 24px;
+  margin: 0;
+  color: var(--brand-dark, #344736);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.app .report-posting-options {
+  border: 1px solid var(--brand-border, #d5dfcf);
+  border-radius: 8px;
+  margin: 4px 0 0;
+}
+.app .report-posting-options > small {
+  color: var(--brand-dark, #344736);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* Empty sections preserve the height of records outside the viewport. */
+.app .matrix .windowed-table-spacer,
+.app .matrix .windowed-table-spacer tr,
+.app .matrix .windowed-table-spacer td {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  position: static !important;
+  min-height: 0;
+  line-height: 0;
+}
+.app .workspace-record-count {
+  padding: 5px 12px;
+  font-size: 11px;
+  color: var(--brand-dark, #344736);
+  border-bottom: 1px solid var(--brand-border, #d5dfcf);
+}
+
+/* Freeze reports from the applied-filter summary; filter inputs scroll away. */
+.app.tab-overview .reports-filter-dock {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin: 0 0 10px;
+  background: var(--brand-surface-soft, #f6f8f4);
+  border-radius: 10px;
+  box-shadow: 0 3px 12px #29372d26;
+}
+.app.tab-overview .reports-filter-summary {
+  margin: 0;
+}

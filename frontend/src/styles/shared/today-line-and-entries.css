@@ -1,0 +1,68 @@
+/* The current day follows the calendar column while the table scrolls. */
+[data-slot="table-container"] > .today-date-line {
+  position: absolute;
+  display: none;
+  width: var(--table-today-width, 2px);
+  z-index: 0;
+  pointer-events: none;
+  background: var(--table-today-color, #397ba8);
+  box-shadow:
+    0 0 0 1px #ffffffa6,
+    0 0 4px #315f8059;
+}
+[data-slot="table-container"] > .today-date-line::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transform: translate(-50%, -2px);
+  background: var(--table-today-color, #397ba8);
+  box-shadow: 0 0 0 2px #fff;
+}
+
+/* Project rows have opaque sticky backgrounds. Keep today's line above their
+   calendar cells; the viewport hook hides it behind frozen name/code columns. */
+[data-slot="table-container"] > .today-date-line.today-date-overlay {
+  z-index: 5;
+}
+
+/* Saved positive entries remain easy to scan in each distribution grid. */
+.app.tab-plan .allocation-grid td.has-entry .cell input:not(:focus) {
+  background: var(--table-planned-entry-background);
+  border-color: var(--table-planned-entry-border);
+  color: var(--table-planned-entry-color);
+  font-weight: 700;
+}
+.app.tab-plan .allocation-grid td:has(> .cell) {
+  vertical-align: middle !important;
+}
+.app.tab-plan .allocation-grid .cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.app.tab-plan .allocation-grid .cell input {
+  text-align: center;
+}
+.app.tab-plan
+  .allocation-grid
+  .actual-row
+  td.has-entry:not(.actual-exceeds-plan) {
+  color: #205d53;
+}
+.app.tab-actual .allocation-grid td.has-entry {
+  background: var(--table-actual-cell-background);
+}
+.person-allocation
+  .allocation-grid
+  td.has-entry
+  .person-amount
+  input:not(:focus) {
+  background: var(--table-actual-entry-background);
+  border-color: var(--table-actual-entry-border);
+  color: var(--table-actual-entry-color);
+  font-weight: 700;
+}

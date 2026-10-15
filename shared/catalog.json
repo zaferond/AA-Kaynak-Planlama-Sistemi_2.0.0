@@ -1,0 +1,391 @@
+{
+  "leaders": [
+    "AA Mühendislik Liderliği",
+    "AA Ürün Teknik Yönetimi Liderliği",
+    "AA Yapısal Tasarım Liderliği",
+    "AA Sistem Mühendisliği Liderliği",
+    "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+    "AA Alt Sistemler Tasarım Liderliği",
+    "AA Mühendislik Proje Yönetimi Takımı"
+  ],
+  "teams": [
+    {
+      "id": "cat_1",
+      "name": "AA Mühendislik Liderliği Destek Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "cat_2",
+      "name": "AA Kule Kontrol Sistemleri Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "cat_3",
+      "name": "AA Yaşam Destek Sistemleri Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "t8",
+      "name": "AA Ürün Tasarım Kontrol Takımı",
+      "lead": "AA Ürün Teknik Yönetimi Liderliği",
+      "excelCapacity": 5.0,
+      "catalog": true
+    },
+    {
+      "id": "t4",
+      "name": "AA Teknik Dokümantasyon Takımı",
+      "lead": "AA Ürün Teknik Yönetimi Liderliği",
+      "excelCapacity": 7.0,
+      "catalog": true
+    },
+    {
+      "id": "t1",
+      "name": "AA Lojistik Destek Analiz Takımı",
+      "lead": "AA Ürün Teknik Yönetimi Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "cat_7",
+      "name": "AA Ergonomi ve Endüstriyel Tasarım Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "t48",
+      "name": "AA Elektronik Sistem Müh Takımı",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "t50",
+      "name": "AA Paletli Platformlar Sist Müh Takımı",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 2.0,
+      "catalog": true
+    },
+    {
+      "id": "t35",
+      "name": "AA Şasi Alt Sistemleri Takımı",
+      "lead": "AA Alt Sistemler Tasarım Liderliği",
+      "excelCapacity": 6.0,
+      "catalog": true
+    },
+    {
+      "id": "t16",
+      "name": "AA Kule Yapısal Tasarım Takımı",
+      "lead": "AA Yapısal Tasarım Liderliği",
+      "excelCapacity": 3.0,
+      "catalog": true
+    },
+    {
+      "id": "t54",
+      "name": "AA Kule Platformları Sistem Mühendisliği Takımı",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "cat_13",
+      "name": "AA Kule Mekanik Sistemleri Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "t13",
+      "name": "AA Zırh Entegrasyonu Takımı",
+      "lead": "AA Yapısal Tasarım Liderliği",
+      "excelCapacity": 5.0,
+      "catalog": true
+    },
+    {
+      "id": "cat_15",
+      "name": "AA Hidrolik ve Beka Sistemleri Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "t14",
+      "name": "AA Detay Tasarım Takımı",
+      "lead": "AA Yapısal Tasarım Liderliği",
+      "excelCapacity": 6.0,
+      "catalog": true
+    },
+    {
+      "id": "t22",
+      "name": "AA Uygulama Yazılımları Takımı",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 6.0,
+      "catalog": true
+    },
+    {
+      "id": "t52",
+      "name": "AA Yazılım Sistem Mühendisliği Takımı",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "cat_19",
+      "name": "AA Prototip Montaj Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "cat_20",
+      "name": "AA Prototip Kaynak ve Metot Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "t9",
+      "name": "AA Olgunluk Yönetimi CoE",
+      "lead": "AA Ürün Teknik Yönetimi Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t38",
+      "name": "AA Mekanik Alt Sistemler CoE",
+      "lead": "AA Alt Sistemler Tasarım Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t51",
+      "name": "AA Gereksinim Yönetimi CoE",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t23",
+      "name": "AA Gömülü Yazılımlar Takımı",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 6.0,
+      "catalog": true
+    },
+    {
+      "id": "cat_25",
+      "name": "AA Trim Tasarım Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "t30",
+      "name": "AA Elektronik Donanımlar Tasarım Takımı",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "t24",
+      "name": "AA Elektro Birimler Mek Tas & Metod Tak",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "t49",
+      "name": "AA Entegrasyon Sistem Müh Takımı",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "t25",
+      "name": "AA Prog Devre Yazılımları Takımı",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 3.0,
+      "catalog": true
+    },
+    {
+      "id": "cat_30",
+      "name": "AA 6x6 Platformlar Sistem Mühendisliği Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "t43",
+      "name": "AA Paramiliter Araç Platformlar Takımı",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 2.0,
+      "catalog": true
+    },
+    {
+      "id": "t45",
+      "name": "AA 4x4 Yeni Araç Platformlar Sistem Mühendisliği Takımı",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 3.0,
+      "catalog": true
+    },
+    {
+      "id": "t17",
+      "name": "AA Paletli Gövde Geliştirme Takımı",
+      "lead": "AA Yapısal Tasarım Liderliği",
+      "excelCapacity": 3.0,
+      "catalog": true
+    },
+    {
+      "id": "t44",
+      "name": "AA 4x4 Türev Araç Platformlar Sistem Mühendisliği Takımı",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "t18",
+      "name": "AA 4x4 Gövde Geliştirme Takımı",
+      "lead": "AA Yapısal Tasarım Liderliği",
+      "excelCapacity": 7.0,
+      "catalog": true
+    },
+    {
+      "id": "t34",
+      "name": "AA Güç Paketi Geliştirme Takımı",
+      "lead": "AA Alt Sistemler Tasarım Liderliği",
+      "excelCapacity": 5.0,
+      "catalog": true
+    },
+    {
+      "id": "cat_37",
+      "name": "AA 8x8 Platformlar Sistem Mühendisliği Takımı",
+      "lead": "",
+      "excelCapacity": 0,
+      "catalog": true
+    },
+    {
+      "id": "t28",
+      "name": "AA 4x4 EE Sistemler Tasarım Takımı",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 5.0,
+      "catalog": true
+    },
+    {
+      "id": "t36",
+      "name": "AA Güç Paketi Destek Takımı",
+      "lead": "AA Alt Sistemler Tasarım Liderliği",
+      "excelCapacity": 2.0,
+      "catalog": true
+    },
+    {
+      "id": "t15",
+      "name": "AA 6x6 / 8x8 Gövde Geliştirme Takımı",
+      "lead": "AA Yapısal Tasarım Liderliği",
+      "excelCapacity": 5.0,
+      "catalog": true
+    },
+    {
+      "id": "t29",
+      "name": "AA EE Sistemler Gereksinim ve Kalifikasyon Yönetimi CoE",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t27",
+      "name": "AA 6x6/8x8/Paletli/Kule EE Sis. Tasarım Takımı",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 5.0,
+      "catalog": true
+    },
+    {
+      "id": "t21",
+      "name": "AA EE Entegre Çözümler Takımı",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "t53",
+      "name": "AA Beka Sistem Mühendisliği CoE",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t5",
+      "name": "AA Konfigürasyon Yönetimi Takımı",
+      "lead": "AA Ürün Teknik Yönetimi Liderliği",
+      "excelCapacity": 3.0,
+      "catalog": true
+    },
+    {
+      "id": "t7",
+      "name": "AA Ürün Ağacı ve Kütüphane Yönetimi Takımı",
+      "lead": "AA Ürün Teknik Yönetimi Liderliği",
+      "excelCapacity": 6.0,
+      "catalog": true
+    },
+    {
+      "id": "t6",
+      "name": "AA PLM Yönetimi Takımı",
+      "lead": "AA Ürün Teknik Yönetimi Liderliği",
+      "excelCapacity": 4.0,
+      "catalog": true
+    },
+    {
+      "id": "t39",
+      "name": "AA Mühendislik Proje Yönetimi Takımı",
+      "lead": "AA Mühendislik Proje Yönetimi Takımı",
+      "excelCapacity": 5.0,
+      "catalog": true
+    },
+    {
+      "id": "t55",
+      "name": "AA Mühendislik Liderliği",
+      "lead": "AA Mühendislik Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t2",
+      "name": "AA Ürün Teknik Yönetimi Liderliği",
+      "lead": "AA Ürün Teknik Yönetimi Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t10",
+      "name": "AA Yapısal Tasarım Liderliği",
+      "lead": "AA Yapısal Tasarım Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t40",
+      "name": "AA Sistem Mühendisliği Liderliği",
+      "lead": "AA Sistem Mühendisliği Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t19",
+      "name": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "lead": "AA Elektrik Elektronik Sistemler Tasarım Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    },
+    {
+      "id": "t31",
+      "name": "AA Alt Sistemler Tasarım Liderliği",
+      "lead": "AA Alt Sistemler Tasarım Liderliği",
+      "excelCapacity": 1.0,
+      "catalog": true
+    }
+  ]
+}

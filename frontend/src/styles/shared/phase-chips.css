@@ -1,0 +1,120 @@
+/* One phase treatment for actual, planned and project timelines. No raised
+   stacking layer or size-changing hover: frozen labels keep their precedence. */
+:is(.app, [data-slot="dialog-content"]) .phase-chip {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  height: auto;
+  margin: 0;
+  padding: 6px 7px;
+  border: 1px solid #252525;
+  border-radius: 3px;
+  background: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / var(--phase-chip-highlight, 30%)),
+      rgb(255 255 255 / 0%) 55%,
+      rgb(24 39 52 / 3%)
+    )
+    var(--phase-chip-background, #dce2e7);
+  color: var(--phase-chip-ink, #5b6975);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 75%),
+    inset 0 -1px 0 rgb(24 39 52 / 6%),
+    0 1px 2px rgb(24 39 52 / 12%);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+.app .planning-grid .phase-chip {
+  display: flex;
+  justify-content: flex-start;
+  min-height: 36px;
+  padding: 6px 7px;
+  border-radius: 3px;
+  font-size: 11px;
+  text-align: left;
+  line-height: 1.35;
+}
+.app .planning-grid .phase-chip .phasepreview {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-align: left;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+}
+.app .person-allocation .actual-phase-cell .phase-chip {
+  justify-content: flex-start;
+  text-align: left;
+  padding-inline: 2px;
+  font-size: 10px;
+}
+.app:is(.dense-detail, .dense-compact) .planning-grid .phase-chip {
+  min-height: 36px;
+}
+:is(.app, [data-slot="dialog-content"]) .phase-chip[data-phase-empty="true"] {
+  border: 1px solid #252525;
+  background: #f3f5f2;
+  color: #68735e;
+  box-shadow: none;
+  font-weight: 400;
+}
+.app button.phase-chip:not(:disabled) {
+  cursor: pointer;
+}
+.app button.phase-chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+@media (hover: hover) {
+  .app button.phase-chip:not(:disabled):hover {
+    border-color: #252525;
+    filter: brightness(0.96);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 75%),
+      inset 0 -1px 0 rgb(24 39 52 / 8%),
+      0 1px 3px rgb(24 39 52 / 18%);
+  }
+}
+.app button.phase-chip:not(:disabled):focus-visible {
+  outline: 2px solid var(--brand-focus, #405341);
+  outline-offset: -2px;
+}
+.app .projectmatrix td.phase-cell-selected .phase-chip {
+  outline: 2px solid var(--brand-focus, #405341);
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 3px #f2f6ec;
+}
+.app.dense-overview .planning-grid .phase-chip {
+  min-height: 28px;
+  height: auto;
+  padding: 3px 1px;
+  border-radius: 2px;
+  font-size: 10px;
+  text-align: left;
+}
+:is(.app, [data-slot="dialog-content"]) .phase-chip.phase-chip-preview,
+:is(.app, [data-slot="dialog-content"]) .phase-chip.phase-chip-detail {
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 12px;
+}

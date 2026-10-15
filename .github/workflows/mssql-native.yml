@@ -1,0 +1,93 @@
+name: Native MSSQL verification
+on:
+  workflow_call:
+    inputs:
+      size:
+        type: string
+        default: "1000"
+      contention:
+        type: boolean
+        default: false
+  schedule:
+    - cron: "20 2 * * 1"
+  workflow_dispatch:
+    inputs:
+      size:
+        description: Synthetic planned allocation count (24–100000)
+        required: true
+        default: "1000"
+      contention:
+        description: Run bounded synthetic contention and memory profile
+        type: boolean
+        required: false
+        default: false
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Create isolated SQL Server container
+        shell: bash
+        run: |
+          password="$(node -e "process.stdout.write('Aa!' + require('node:crypto').randomBytes(24).toString('hex'))")"
+          echo "::add-mask::$password"
+          echo "MSSQL_SA_PASSWORD=$password" >> "$GITHUB_ENV"
+          export MSSQL_SA_PASSWORD="$password"
+          docker run --detach --name aa-native-sql --memory=4g \
+            -e ACCEPT_EULA=Y -e MSSQL_PID=Developer -e MSSQL_SA_PASSWORD \
+            -p 127.0.0.1:1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+      - name: Wait for SQL Server and create empty test database
+        shell: bash
+        run: |
+          ready=false
+          for attempt in $(seq 1 60); do
+            if docker exec -e SQLCMDPASSWORD="$MSSQL_SA_PASSWORD" aa-native-sql \
+              /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -b -Q 'SELECT 1' >/dev/null 2>&1; then
+              ready=true
+              break
+            fi
+            sleep 2
+          done
+          if [ "$ready" != true ]; then echo 'SQL Server did not become ready'; exit 1; fi
+          docker exec -e SQLCMDPASSWORD="$MSSQL_SA_PASSWORD" aa-native-sql \
+            /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -b \
+            -Q 'CREATE DATABASE AA_native_test'
+      - name: Run native assertions and synthetic SQL profile
+        env:
+          TEST_DB_SERVER: 127.0.0.1
+          TEST_DB_PORT: "1433"
+          TEST_DB_DATABASE: AA_native_test
+          TEST_DB_AUTH: sql
+          TEST_DB_USER: sa
+          TEST_DB_ENCRYPT: "true"
+          TEST_DB_TRUST_SERVER_CERTIFICATE: "true"
+          TEST_SIZE: ${{ inputs.size || '1000' }}
+          TEST_CONTENTION: ${{ inputs.contention || 'false' }}
+        shell: bash
+        run: |
+          export TEST_DB_PASSWORD="$MSSQL_SA_PASSWORD"
+          args=(--size "$TEST_SIZE" --samples 3 --report native-mssql-report.json)
+          if [ "$TEST_CONTENTION" = "true" ]; then args+=(--contention); fi
+          npm run test:db -- "${args[@]}"
+      - name: Verify native evidence against this commit and current sources
+        shell: bash
+        run: node scripts/verify-native-evidence.mjs --report native-mssql-report.json --commit "$GITHUB_SHA" > native-mssql-verification.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-mssql-report
+          path: |
+            native-mssql-report.json
+            native-mssql-verification.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Remove test container
+        if: always()
+        run: docker rm --force aa-native-sql >/dev/null 2>&1 || true

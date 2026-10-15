@@ -1,0 +1,173 @@
+/* Current eligible headcount beside each planned team. */
+.app.tab-plan .allocation-grid .team-heading,
+.app.tab-plan .allocation-grid .team-row-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+}
+.app.tab-plan .allocation-grid .team-heading strong,
+.app.tab-plan .allocation-grid .team-row-title > span:first-child {
+  min-width: 0;
+  flex: 1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.app.tab-plan .allocation-grid .team-member-badge,
+.app.tab-plan .allocation-grid .team-group-label span.team-member-badge {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 23px;
+  height: 21px;
+  margin: 0;
+  padding: 0 5px;
+  border: 1px solid #a7cfbd;
+  border-radius: 5px;
+  background: #e2f2e8;
+  color: #23654b;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: help;
+  overflow: visible;
+}
+.app.tab-plan .allocation-grid .team-member-badge:focus-visible {
+  outline: 2px solid #2c8061;
+  outline-offset: 2px;
+}
+.app.tab-overview .remaining-report td:nth-child(2):has(.team-member-badge) {
+  overflow: visible;
+}
+.app.tab-overview .remaining-report .report-unit-title {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
+}
+.app.tab-overview .remaining-report .report-unit-title > .report-unit-name {
+  min-width: 0;
+  flex: 1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.app.tab-overview .remaining-report .team-member-badge {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 23px;
+  height: 21px;
+  margin: 0;
+  padding: 0 5px;
+  border: 1px solid #a7cfbd;
+  border-radius: 5px;
+  background: #e2f2e8;
+  color: #23654b;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: help;
+}
+.app.tab-overview .remaining-report .team-member-badge:focus-visible {
+  outline: 2px solid #2c8061;
+  outline-offset: 2px;
+}
+
+/* Portalled outside table scroll/sticky layers; placement flips at viewport edges. */
+.team-member-floating[data-slot="popover-content"] {
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  max-width: calc(100vw - 32px);
+  max-height: min(
+    280px,
+    calc(
+      var(--radix-popover-content-available-height) /
+        var(--popover-page-scale, 1)
+    )
+  );
+  padding: 12px;
+  border: 1px solid #bbcbb0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px #23351b26;
+  color: #30452b;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  white-space: normal;
+}
+.team-member-floating > strong {
+  flex: none;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e0e7da;
+  color: #344e28;
+  font-size: 11px;
+}
+.team-member-floating .team-member-names {
+  display: grid;
+  gap: 5px;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.team-member-floating .team-member-names > span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+/* Manager is a quiet second line in the fixed team column. */
+.app.tab-plan .project-team-view .rowname {
+  vertical-align: middle;
+}
+.app.tab-plan .project-team-view .team-row-block {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  vertical-align: middle;
+  width: calc(100% - 27px);
+  min-width: 0;
+}
+.app.tab-plan .project-team-view .team-row-title {
+  width: 100%;
+}
+.app.tab-plan .project-team-view .team-manager {
+  display: block;
+  max-width: 100%;
+  color: #60788d;
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Leadership rows contain their descendant subtotals; the total footer deduplicates units. */
+.app.tab-overview
+  .leader-report
+  tr[data-report-depth="0"]
+  td:nth-child(-n + 2) {
+  background: var(--brand-surface-soft, #edf2e8);
+  font-weight: 700;
+}
+.app.tab-overview .leader-report .report-unit-branch {
+  flex: none;
+  color: var(--brand-muted, #697b66);
+}
+.app.tab-overview
+  .leader-report
+  tr[data-report-depth]:not([data-report-depth="0"])
+  .report-unit-name {
+  font-size: 11px;
+  font-weight: 500;
+}

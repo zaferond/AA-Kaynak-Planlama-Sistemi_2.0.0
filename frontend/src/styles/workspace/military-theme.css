@@ -1,0 +1,1305 @@
+/* Optional brand layer. The classic palette stays in the feature styles.
+   Scope to html so dialogs and popup menus rendered in portals share the theme.
+   Risk severity, user-selected timeline colors and warning/success states keep
+   their meaning; this layer only changes the surrounding interface. */
+html[data-theme="military"] {
+  --brand-dark: #29372d;
+  --brand-primary: #405341;
+  --brand-hover: #263c28;
+  --brand-mid: #617052;
+  --brand-text: #293a2d;
+  --brand-muted: #60715e;
+  --brand-surface: #edf1e8;
+  --brand-surface-soft: #f6f8f2;
+  --brand-selected: #e0e9d8;
+  --brand-border: #ccd6c5;
+  --brand-border-strong: #96a889;
+  --brand-focus: #6d855e;
+  --brand-focus-shadow: #61705226;
+  --brand-gradient: linear-gradient(
+    147deg,
+    #29372d 0%,
+    #405341 60%,
+    #617052 100%
+  );
+  --report-current-color: #087f6a;
+  --report-planned-color: #1d4ed8;
+  --report-shortage-color: #c2410c;
+  --report-forecast-color: #b45309;
+  --report-effectiveness-color: #6d28d9;
+  --report-grid-color: #dce3e7;
+  --report-label-color: #475569;
+  --background: #f3f4ef;
+  --foreground: var(--brand-text);
+  --card-foreground: var(--brand-text);
+  --popover-foreground: var(--brand-text);
+  --primary: var(--brand-primary);
+  --primary-foreground: #fff;
+  --secondary: var(--brand-surface-soft);
+  --secondary-foreground: var(--brand-text);
+  --muted: var(--brand-surface);
+  --muted-foreground: var(--brand-muted);
+  --accent: var(--brand-surface);
+  --accent-foreground: var(--brand-text);
+  --border: var(--brand-border);
+  --input: var(--brand-border);
+  --ring: var(--brand-focus);
+}
+
+/* Shared table colors; year bands remain distinguishable across long plans. */
+html[data-theme="military"] .app {
+  --active-nav-blue: var(--brand-primary);
+  --table-grid-border: #ccd6c5;
+  --table-label-border: #b5c3ad;
+  --table-year-divider: #a5b49b;
+  --table-header-background: #f1f4ec;
+  --table-year-label-background: #e3eadb;
+  --table-project-background: #e8eee1;
+  --table-summary-background: #f6f8f2;
+  --table-frozen-shadow: 7px 0 8px -9px #29372d;
+  --table-today-color: #6a7e58;
+  --table-planned-entry-background: #e1ead8;
+  --table-planned-entry-border: #b4c6a6;
+  --table-planned-entry-color: #344e30;
+}
+html[data-theme="military"] .app .year-band-0 {
+  --table-year-background: #e9efdf;
+  --table-year-color: #475a36;
+  --table-year-border: #c1cfad;
+}
+html[data-theme="military"] .app .year-band-1 {
+  --table-year-background: #e7efea;
+  --table-year-color: #3c6150;
+  --table-year-border: #bacfc1;
+}
+html[data-theme="military"] .app .year-band-2 {
+  --table-year-background: #f2eddf;
+  --table-year-color: #715e35;
+  --table-year-border: #d9cdb0;
+}
+html[data-theme="military"] .app .year-band-3 {
+  --table-year-background: #edece5;
+  --table-year-color: #5d5e4d;
+  --table-year-border: #cecebc;
+}
+html[data-theme="military"] .app .year-band-4 {
+  --table-year-background: #e5eeec;
+  --table-year-color: #3e625b;
+  --table-year-border: #b9cfca;
+}
+html[data-theme="military"] .app .year-band-5 {
+  --table-year-background: #f0e9e0;
+  --table-year-color: #745b41;
+  --table-year-border: #d8c8b7;
+}
+
+/* Login and brand header use the same forest/olive palette. */
+html[data-theme="military"] .auth-screen {
+  color: var(--brand-text);
+}
+html[data-theme="military"] .auth-shell {
+  border-color: var(--brand-border);
+  box-shadow:
+    0 24px 70px #29372d20,
+    0 2px 12px #29372d0a;
+}
+html[data-theme="military"] .auth-form > label {
+  color: var(--brand-primary);
+}
+html[data-theme="military"] .auth-field {
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] .auth-field:focus-within {
+  border-color: var(--brand-focus);
+  box-shadow: 0 0 0 3px var(--brand-focus-shadow);
+}
+html[data-theme="military"] .auth-field > svg,
+html[data-theme="military"] .auth-visibility {
+  color: #82917a;
+}
+html[data-theme="military"] .auth-field input {
+  color: var(--brand-text);
+}
+html[data-theme="military"] .auth-field input::placeholder {
+  color: #8f9a89;
+}
+html[data-theme="military"] .auth-visibility:hover {
+  background: var(--brand-surface);
+  color: var(--brand-primary);
+}
+html[data-theme="military"] .auth-form .auth-remember {
+  color: var(--brand-muted);
+}
+html[data-theme="military"] .auth-remember input {
+  accent-color: var(--brand-primary);
+}
+html[data-theme="military"] .auth-submit {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  box-shadow: 0 5px 15px #40534129;
+}
+html[data-theme="military"] .auth-submit:hover:not(:disabled) {
+  background: var(--brand-hover);
+  box-shadow: 0 7px 20px #40534133;
+}
+html[data-theme="military"] .auth-submit:focus-visible {
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"] .app > .mast,
+html[data-theme="military"] .app.full-plan .full-plan-header {
+  background: var(--brand-gradient);
+  color: #f5f7f0;
+}
+html[data-theme="military"] .mark {
+  background: #ffffff16;
+  box-shadow: inset 0 0 0 1px #ffffff20;
+}
+html[data-theme="military"] .mast .button,
+html[data-theme="military"] .mast .iconbutton {
+  color: #f0f4e9;
+  border-color: #ffffff40;
+  background: #ffffff0d;
+}
+html[data-theme="military"] .app .masttopright .default-tab-control,
+html[data-theme="military"] .full-plan-header span {
+  color: #dfe7d5;
+}
+html[data-theme="military"] .app .masttopright .default-tab-control select {
+  color: var(--brand-dark);
+  background: #f2f5ec;
+  border-color: #b4c1a7;
+}
+html[data-theme="military"]
+  .app
+  .masttopright
+  .default-tab-control
+  select:focus-visible {
+  outline-color: #d8e6c8;
+}
+
+/* Navigation, view switches and filter state. */
+html[data-theme="military"] .app .workspace-nav {
+  border-bottom-color: var(--brand-border);
+}
+html[data-theme="military"] .app .workspace-nav .navtabs {
+  background: var(--brand-surface);
+  border-color: var(--brand-border) !important;
+  box-shadow: inset 0 1px 2px #29372d0b;
+  scrollbar-color: #a2b196 transparent;
+}
+html[data-theme="military"] .app .workspace-nav .navtabs [role="tab"] {
+  color: #4e6145;
+}
+html[data-theme="military"]
+  .app
+  .workspace-nav
+  .navtabs
+  [role="tab"]:hover:not([data-state="active"]) {
+  color: var(--brand-dark);
+  border-color: #bccbae;
+  background: var(--brand-surface-soft);
+}
+html[data-theme="military"]
+  .app
+  .workspace-nav
+  .navtabs
+  [role="tab"][data-state="active"],
+html[data-theme="military"]
+  .app:is(.tab-plan, .tab-resources, .tab-overview)
+  .workspace-nav-actions
+  :is(.plan-view-switch, .organization-view-switch)
+  [role="tab"][data-state="active"] {
+  color: #fff;
+  border-color: var(--brand-primary);
+  background: var(--brand-primary);
+  box-shadow: 0 2px 5px #29372d26;
+}
+html[data-theme="military"]
+  .app
+  .workspace-nav
+  .navtabs
+  [role="tab"]:focus-visible {
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"] .app .workspace-nav-actions [role="tablist"],
+html[data-theme="military"]
+  .app:is(.tab-plan, .tab-resources, .tab-overview)
+  .workspace-nav-actions
+  :is(.plan-view-switch, .organization-view-switch) {
+  background: var(--brand-surface);
+  border-color: var(--brand-border-strong);
+  box-shadow: inset 0 1px 2px #29372d12;
+}
+html[data-theme="military"] .app .workspace-nav-actions [role="tab"] {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  .app:is(.tab-plan, .tab-resources, .tab-overview)
+  .workspace-nav-actions
+  :is(.plan-view-switch, .organization-view-switch)
+  [role="tab"] {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  .app
+  .workspace-nav-actions
+  [role="tab"]:hover:not([data-state="active"]) {
+  color: var(--brand-dark);
+  background: var(--brand-surface-soft);
+}
+html[data-theme="military"]
+  .app
+  .workspace-nav-actions
+  [role="tab"][data-state="active"] {
+  color: var(--brand-primary);
+  background: #fff;
+}
+html[data-theme="military"] .app .workspace-nav-actions .project-create,
+html[data-theme="military"]
+  :is(.app, .editor, .directory-dialog)
+  .button.primary {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #fff;
+  box-shadow: 0 1px 3px #29372d24;
+}
+html[data-theme="military"]
+  .app
+  .workspace-nav-actions
+  .project-create:hover:not(:disabled),
+html[data-theme="military"]
+  :is(.app, .editor, .directory-dialog)
+  .button.primary:hover:not(:disabled) {
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
+}
+html[data-theme="military"] .app.tab-projects .project-details-toggle {
+  border-color: var(--brand-border);
+  background: var(--brand-surface-soft);
+  color: var(--brand-primary);
+}
+html[data-theme="military"] .app.tab-projects .project-details-toggle:hover,
+html[data-theme="military"]
+  .app.tab-projects
+  .project-week-toggle:has([data-state="checked"]) {
+  background: var(--brand-selected);
+  color: var(--brand-primary);
+  border-color: var(--brand-border-strong);
+}
+html[data-theme="military"] .app.tab-projects .project-week-hint {
+  color: var(--brand-muted);
+}
+html[data-theme="military"] .app .planning-filterbar {
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
+  box-shadow: inset 0 1px 2px #29372d0b;
+}
+html[data-theme="military"] .app .planning-filterbar .filterbar-title,
+html[data-theme="military"] .app .planning-filterbar .filteractions {
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] .app .planning-filterbar .filters > .pick > span {
+  color: var(--brand-muted);
+}
+html[data-theme="military"]
+  .app
+  .planning-filterbar
+  .filters
+  :is(.pickerbutton, input, select) {
+  border-color: var(--brand-border);
+  color: var(--brand-text);
+  box-shadow: 0 1px 2px #29372d10;
+}
+html[data-theme="military"]
+  .app
+  .planning-filterbar
+  .filters
+  :is(.pickerbutton, input, select):hover {
+  border-color: var(--brand-border-strong);
+}
+html[data-theme="military"]
+  .app
+  .planning-filterbar
+  .filters
+  .filter-active
+  .pickerbutton {
+  background: var(--brand-surface-soft);
+  color: var(--brand-primary);
+  border-color: var(--brand-border-strong);
+  box-shadow: inset 0 0 0 1px #c3d2b7;
+}
+html[data-theme="military"]
+  .app
+  .planning-filterbar
+  .filters
+  .filter-active
+  > span {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  .app
+  .planning-filterbar
+  .filters
+  :is(.pickerbutton, input, select):focus-visible {
+  border-color: var(--brand-focus);
+}
+html[data-theme="military"]
+  .app
+  .planning-filterbar
+  .filteractions
+  .resetfilters {
+  color: var(--brand-primary);
+  border-color: var(--brand-border-strong);
+}
+html[data-theme="military"]
+  .app
+  .planning-filterbar
+  .filteractions
+  .resetfilters:hover {
+  background: var(--brand-surface-soft);
+  border-color: var(--brand-focus);
+}
+
+/* Menus and form controls, including popup content outside .app. */
+html[data-theme="military"]
+  :where(.button:not(.primary):not(.deletebutton), .pickerbutton, select) {
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  :is(
+    .textbutton:not(.deletebutton),
+    .filterline button,
+    .pickeractions,
+    .average
+  ) {
+  color: var(--brand-primary);
+}
+html[data-theme="military"] :is(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(.pickeroptions .option:hover, .pickeroptions .chosen) {
+  background: var(--brand-selected);
+}
+html[data-theme="military"] :is(.pickerbutton, .option):focus-visible {
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"] .pickersearch {
+  border-bottom-color: var(--brand-border);
+}
+html[data-theme="military"] .pickeroptions,
+html[data-theme="military"] .risk-table-scroll {
+  scrollbar-color: #a1b093 var(--brand-surface-soft);
+}
+html[data-theme="military"] .pickeroptions::-webkit-scrollbar-track {
+  background: var(--brand-surface-soft);
+}
+html[data-theme="military"] .pickeroptions::-webkit-scrollbar-thumb {
+  background: #a1b093;
+}
+html[data-theme="military"] :is(.phase-menu, .risk-project-menu) {
+  border-color: var(--brand-border);
+  box-shadow: 0 10px 30px #29372d30;
+  color: var(--brand-text);
+}
+html[data-theme="military"] :is(.phase-menu-title, .phase-menu-divider) {
+  border-color: var(--brand-border);
+  color: var(--brand-muted);
+}
+html[data-theme="military"] .phase-menu-divider {
+  background: var(--brand-border);
+}
+html[data-theme="military"]
+  :is(.phase-menu button, .risk-project-option, .risk-project-toggle) {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .phase-menu button:hover:not(:disabled),
+    .phase-menu button:focus-visible,
+    .risk-project-option:hover
+  ) {
+  background: var(--brand-surface);
+}
+html[data-theme="military"]
+  :is(.editor, .directory-dialog, .work-calendar-dialog, .access-control-panel)
+  :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+    textarea,
+    select,
+    .pickerbutton
+  ) {
+  color: var(--brand-text);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  :is(.editor, .directory-dialog, .work-calendar-dialog, .access-control-panel)
+  :is(input, textarea, select, .pickerbutton):focus-visible {
+  outline-color: var(--brand-focus);
+  border-color: var(--brand-focus);
+  box-shadow: 0 0 0 2px var(--brand-focus-shadow);
+}
+html[data-theme="military"]
+  :is(.editor, .directory-dialog, .work-calendar-dialog)
+  :is([data-slot="dialog-title"], label, legend) {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(.editor, .directory-dialog, .work-calendar-dialog)
+  :is([data-slot="dialog-description"], small) {
+  color: var(--brand-muted);
+}
+html[data-theme="military"]
+  :is(.editor.timeline-editor, .editor.bulk-resource-editor) {
+  border-color: var(--brand-border);
+  box-shadow: 0 24px 70px #29372d40;
+}
+html[data-theme="military"]
+  :is(.timeline-editor, .bulk-resource-editor)
+  [data-slot="dialog-header"] {
+  border-color: var(--brand-border);
+  background: var(--brand-surface-soft);
+}
+html[data-theme="military"] .timeline-editor [data-slot="dialog-header"] {
+  border-top-color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .phasecontext,
+    .timeline-editor-form > .phasecontext,
+    .bulk-edit-context
+  ) {
+  border-color: var(--brand-border);
+  border-left-color: var(--brand-mid);
+  background: var(--brand-surface);
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .phasecontext strong,
+    .phasecontext span,
+    .bulk-edit-context strong,
+    .milestone-range-dates > strong,
+    .milestone-range-notes > strong
+  ) {
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  :is(
+    .timeline-fieldset,
+    .milestone-style,
+    .milestone-ranges,
+    .timeline-live-preview,
+    .switchrow,
+    .bulk-edit-actions
+  ) {
+  background: var(--brand-surface-soft);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] .milestone-range-row {
+  border-color: var(--brand-border);
+  border-left-color: var(--brand-mid);
+  box-shadow: 0 1px 3px #29372d10;
+}
+html[data-theme="military"] .milestone-range-row:nth-child(even) {
+  background: #f3f6ec;
+  border-color: #ccd6bb;
+  border-left-color: #85986b;
+}
+html[data-theme="military"]
+  .milestone-range-dates
+  > .milestone-range-date-card {
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
+  border-left-color: var(--brand-mid);
+}
+html[data-theme="military"]
+  :is(
+    .milestone-range-number,
+    .milestone-note-input .milestone-note-number,
+    .milestone-range-date-arrow
+  ) {
+  background: var(--brand-surface);
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  :is(.milestone-note-add, .timeline-editor-form .milestone-range-add) {
+  background: var(--brand-selected);
+  border-color: var(--brand-border-strong);
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .milestone-note-add,
+    .timeline-editor-form .milestone-range-add
+  ):hover:not(:disabled) {
+  background: #d4e1c8;
+  border-color: var(--brand-focus);
+}
+html[data-theme="military"]
+  .timeline-editor-form
+  .milestone-bar-options
+  button.selected,
+html[data-theme="military"]
+  .timeline-editor-form
+  .milestone-colors
+  button.selected {
+  background: var(--brand-surface);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 1px var(--brand-primary);
+}
+html[data-theme="military"]
+  .timeline-editor-form
+  .palette
+  label:has(input:checked) {
+  box-shadow: 0 0 0 2px var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .milestone-range-notes,
+    .milestone-note-row,
+    .milestone-range-kind,
+    .timeline-editor-form .timeline-editor-actions,
+    .bulk-edit-actions
+  ) {
+  border-color: var(--brand-border);
+}
+
+/* Capacity, reports and editable allocation grids. */
+html[data-theme="military"]
+  :is(
+    .panel,
+    .stats > div,
+    .project-info-group,
+    .shortage-summary,
+    .headcount-metrics > div
+  ) {
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  .stats
+  > div:not(.accentstat):not(.dangerstat):not(.over-warning):not(
+    .over-critical
+  ):not(.within-capacity) {
+  border-top-color: var(--brand-border-strong);
+}
+html[data-theme="military"]
+  :is(
+    .heading p,
+    .panelhead p,
+    .stats span,
+    .stats small,
+    .stats p,
+    .chartnote,
+    .subline,
+    .emptymsg,
+    .filterline,
+    .tablefoot,
+    .project-responsible,
+    .phase-selection-hint
+  ) {
+  color: var(--brand-muted);
+}
+html[data-theme="military"]
+  :is(
+    .panelhead h2,
+    .shortage-summary strong,
+    .headcount-metrics strong,
+    .phase-selection-hint strong
+  ) {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .bulkbar,
+    .pager,
+    .shortage-summary,
+    .headcount-metrics > div,
+    .project-info-report
+  ) {
+  background: var(--brand-surface-soft);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  .headcount-metrics
+  > div:last-child:not(:first-child) {
+  background: #fffaf4;
+  border-color: #eddfce;
+}
+html[data-theme="military"]
+  .headcount-metrics
+  > div:last-child:not(:first-child)
+  strong {
+  color: var(--report-forecast-color);
+}
+html[data-theme="military"] .headcount-key:not(.projected) {
+  border-top-color: var(--report-current-color);
+}
+html[data-theme="military"] .headcount-metrics > div:first-child strong {
+  color: var(--report-current-color);
+}
+html[data-theme="military"] .monthly-shortage-trend .shortage-summary {
+  background: #fff7ed;
+  border-color: #f2c6a6;
+}
+html[data-theme="military"] .monthly-shortage-trend .shortage-summary strong {
+  color: var(--report-shortage-color);
+}
+html[data-theme="military"] .app .capacitystrip {
+  border-color: var(--brand-border);
+  box-shadow: 0 1px 3px #29372d10;
+}
+html[data-theme="military"] .app .capacitystrip > summary,
+html[data-theme="military"] .app .capacitystrip[open] > summary {
+  background: var(--brand-gradient);
+  border-color: var(--brand-border);
+  color: #fff;
+}
+html[data-theme="military"] .app .capacitystrip-copy strong {
+  color: #fff;
+}
+html[data-theme="military"]
+  .app
+  :is(.capacitystrip-icon, .capacitystrip-action) {
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] .app .capacity-filter-chip > span {
+  color: #dfe7d5;
+}
+html[data-theme="military"] .app .capacity-filter-chip.is-active {
+  background: #f0f5e8;
+  border-color: #d4e1c8;
+}
+html[data-theme="military"] .app .capacity-filter-chip.is-active > span {
+  color: var(--brand-muted);
+}
+html[data-theme="military"] .app .capacity-filter-chip.is-active > strong {
+  color: var(--brand-dark);
+}
+html[data-theme="military"] .matrix td.selectedcell {
+  background: var(--brand-selected);
+  box-shadow: inset 0 0 0 2px var(--brand-focus);
+}
+html[data-theme="military"]
+  .app
+  .planning-grid
+  td.selectedcell:has(.cell input[title*="Ctrl+Enter"]) {
+  box-shadow:
+    inset 0 0 0 2px var(--brand-primary),
+    inset 0 0 0 4px #e7efdf;
+}
+html[data-theme="military"] .app .planning-grid .cell input:focus {
+  border-color: var(--brand-focus);
+  box-shadow: 0 2px 10px #29372d30;
+}
+html[data-theme="military"] .projectmatrix td.phase-cell-selected .phasebutton {
+  box-shadow: inset 0 0 0 3px #f2f6ec;
+}
+html[data-theme="military"]
+  .person-allocation
+  .actual-control-fields
+  > .actual-unit-item:last-child {
+  border-color: var(--brand-border-strong);
+  background: var(--brand-surface);
+}
+html[data-theme="military"]
+  .person-allocation
+  :is(
+    .actual-unit-item > span,
+    .actual-unit-item select,
+    .actual-context-item strong
+  ) {
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  .person-allocation
+  :is(.actual-shared-calendar-button, .person-calendar-trigger) {
+  background: var(--brand-surface);
+  color: var(--brand-primary);
+  border-color: var(--brand-border-strong);
+}
+html[data-theme="military"]
+  .person-allocation
+  :is(.actual-shared-calendar-button, .person-calendar-trigger):hover {
+  background: var(--brand-selected);
+  border-color: var(--brand-focus);
+}
+html[data-theme="military"] .app.tab-resources .resource-table td {
+  color: var(--brand-muted);
+}
+html[data-theme="military"] .app.tab-resources .resource-table td strong {
+  color: var(--brand-text);
+}
+html[data-theme="military"] .project-info-group > header {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+}
+html[data-theme="military"] .project-info-project-mark {
+  background: #a8c498;
+}
+html[data-theme="military"] .project-info-group h3 {
+  color: #fff;
+}
+html[data-theme="military"] .project-info-entry h4 {
+  color: var(--brand-dark);
+}
+html[data-theme="military"]
+  :is(
+    .project-info-add,
+    .project-info-edit,
+    .project-info-topic-actions button:not(.complete):not(.remove)
+  ) {
+  color: var(--brand-primary);
+  border-color: var(--brand-border-strong);
+}
+html[data-theme="military"]
+  :is(
+    .project-info-add,
+    .project-info-edit,
+    .project-info-topic-actions button:not(.complete):not(.remove)
+  ):hover:not(:disabled) {
+  background: var(--brand-selected);
+  border-color: var(--brand-focus);
+}
+html[data-theme="military"] .project-info-topic-content small {
+  background: #e9efea;
+  color: #3b5042;
+}
+html[data-theme="military"] .project-info-entry li:not(.completed) {
+  background: #fff;
+  border-color: #d7e0dc;
+  color: #22332c;
+}
+html[data-theme="military"]
+  .project-info-entry
+  li:nth-child(even):not(.completed) {
+  background: #f3f6f4;
+}
+html[data-theme="military"] .project-info-entry li:not(.completed)::before {
+  background: #405e4d;
+}
+
+/* Leadership, team management, permissions and working calendars. */
+html[data-theme="military"] .team-directory .directory-group td {
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
+  color: var(--brand-primary);
+}
+html[data-theme="military"] .directory-dialog[data-slot="dialog-content"] {
+  background: var(--brand-surface-soft);
+}
+html[data-theme="military"]
+  :is(
+    .directory-manager-list,
+    .access-role-overview > div,
+    .access-user-count,
+    .access-role-badge,
+    .access-permission-form,
+    .access-admin-note
+  ) {
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .directory-manager-list-header,
+    .directory-manager-details legend,
+    .access-field,
+    .access-form-heading h3
+  ) {
+  color: var(--brand-primary);
+}
+html[data-theme="military"] .directory-manager-list-header span {
+  background: var(--brand-selected);
+}
+html[data-theme="military"] .directory-record.selected {
+  color: var(--brand-primary);
+  border-color: var(--brand-border-strong);
+  background: var(--brand-selected);
+  box-shadow: inset 3px 0 var(--brand-primary);
+}
+html[data-theme="military"] .directory-record,
+html[data-theme="military"] .directory-manager-placeholder {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .directory-record,
+    .directory-manager-details,
+    .directory-manager-footer,
+    .access-search,
+    .access-leader-field,
+    .access-form-actions
+  ) {
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] .access-permission-form {
+  border-top-color: var(--brand-primary);
+}
+html[data-theme="military"]
+  .access-control-panel
+  .accesstable
+  tr.access-selected-row
+  td {
+  background: var(--brand-surface);
+}
+html[data-theme="military"]
+  :is(
+    .work-calendar-personal,
+    .work-calendar-form,
+    .work-calendar-list,
+    .work-calendar-year,
+    .work-calendar-actions
+  ) {
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  :is(.work-calendar-personal, .work-calendar-year button) {
+  background: var(--brand-surface-soft);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  :is(
+    .work-calendar-year,
+    .work-calendar-personal h3,
+    .work-calendar-list h3,
+    .work-calendar-form-title,
+    .work-calendar-year button,
+    .work-calendar-list time
+  ) {
+  color: var(--brand-primary);
+}
+
+/* Risk headers change with the brand; the Excel risk matrix colors stay intact. */
+html[data-theme="military"] .risk-workspace {
+  background: var(--brand-surface-soft);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] .risk-header {
+  background: var(--brand-gradient);
+  border-bottom-color: #96a879;
+}
+html[data-theme="military"] .risk-toolbar .risk-field {
+  color: #eef3e7;
+}
+html[data-theme="military"] .risk-toolbar .button.primary {
+  background: #e4ecd9;
+  border-color: #d3dfc4;
+  color: var(--brand-dark);
+}
+html[data-theme="military"] .risk-toolbar .button.primary:hover {
+  background: #f1f5ea;
+}
+html[data-theme="military"] .risk-export-button {
+  border-color: #b3c3a5 !important;
+}
+html[data-theme="military"]
+  :is(
+    .risk-summary > div,
+    .risk-register,
+    .risk-register-head,
+    .risk-matrix-panel,
+    .risk-project-toggle,
+    .risk-project-all
+  ) {
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] .risk-summary > div:first-child::before {
+  background: var(--brand-mid);
+}
+html[data-theme="military"]
+  :is(
+    .risk-summary strong,
+    .risk-register-head h3,
+    .risk-definition strong,
+    .risk-project-name,
+    .risk-matrix-panel summary
+  ) {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .risk-summary small,
+    .risk-register-title span,
+    .risk-scroll-hint,
+    .risk-legend,
+    .risk-placeholder
+  ) {
+  color: var(--brand-muted);
+}
+html[data-theme="military"] .risk-table {
+  color: var(--brand-text);
+}
+html[data-theme="military"] .risk-group-head th {
+  background: var(--brand-primary);
+  border-color: #7b8d6d;
+}
+html[data-theme="military"] .risk-group-head th:nth-child(2),
+html[data-theme="military"] .risk-group-head th:nth-child(5) {
+  background: #536748;
+}
+html[data-theme="military"] .app .risk-table .risk-column-head th {
+  background: var(--brand-surface);
+  border-color: var(--brand-border-strong);
+  color: var(--brand-primary) !important;
+}
+html[data-theme="military"]
+  .risk-column-head
+  :is(th.risk-head-initial, th.risk-head-residual) {
+  background: var(--brand-selected);
+}
+html[data-theme="military"] .risk-table tbody td {
+  border-color: #dce3d7;
+}
+html[data-theme="military"] .risk-table tbody tr:nth-child(even) td {
+  background: #f8faf5;
+}
+html[data-theme="military"] :is(.risk-row-number, .risk-new-badge) {
+  color: var(--brand-primary);
+  background: var(--brand-selected);
+}
+html[data-theme="military"]
+  .risk-table
+  tbody
+  tr:is(.risk-editing-row, .risk-new-row, .risk-new-actions-row)
+  td {
+  background: #f0f5e9;
+}
+html[data-theme="military"]
+  .risk-table
+  tbody
+  tr:is(.risk-new-row, .risk-new-actions-row)
+  td:first-child {
+  box-shadow: inset 3px 0 0 var(--brand-mid);
+}
+html[data-theme="military"]
+  :is(
+    .risk-inline-input,
+    .risk-inline-strategy:not(.selected),
+    .risk-row-cancel
+  ) {
+  border-color: var(--brand-border-strong);
+  color: var(--brand-primary);
+}
+html[data-theme="military"] .risk-inline-input:focus,
+html[data-theme="military"] .risk-field :is(input, select, textarea):focus {
+  border-color: var(--brand-focus);
+  box-shadow: 0 0 0 2px var(--brand-focus-shadow);
+}
+html[data-theme="military"]
+  :is(
+    .risk-cell-trigger,
+    .risk-project-toggle,
+    .risk-row-cancel
+  ):focus-visible {
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"] .risk-field .risk-project-option input {
+  accent-color: var(--brand-primary);
+}
+
+/* Finish the smaller shared controls and timeline surroundings. */
+html[data-theme="military"] .app th {
+  /* The legacy base stylesheet marks all header text important. */
+  color: var(--table-year-color, var(--brand-primary)) !important;
+}
+html[data-theme="military"] .app > footer,
+html[data-theme="military"] .app .bottomnote,
+html[data-theme="military"]
+  :is(
+    .headcount-legend,
+    .headcount-metrics span,
+    .shortage-summary span,
+    .shortage-summary small,
+    .absence-report-summary,
+    .milestone-date-hint,
+    .milestone-range-kind > span,
+    .milestone-range-colors span
+  ),
+html[data-theme="military"]
+  :is(
+    .pick > span,
+    .pager,
+    .pager small,
+    .bulkbar small,
+    .risk-definition small,
+    .risk-matrix-panel th
+  ) {
+  color: var(--brand-muted);
+}
+html[data-theme="military"] .absence-report-summary strong,
+html[data-theme="military"]
+  .app
+  .allocation-grid
+  .team-group-label
+  :is(strong, span:not(.team-member-badge):not(.team-member-tooltip)),
+html[data-theme="military"] .timeline-editor-form .milestone-bar-options button,
+html[data-theme="military"] .timeline-editor-form .milestone-colors button {
+  color: var(--brand-primary);
+}
+html[data-theme="military"] .actual-expand {
+  color: var(--brand-primary);
+  border-color: var(--brand-border-strong);
+}
+html[data-theme="military"]
+  .timeline-editor-form
+  .milestone-range-colors
+  button.selected {
+  box-shadow:
+    0 0 0 2px var(--brand-primary),
+    0 0 0 4px var(--range-soft);
+}
+html[data-theme="military"] :where(input, textarea, select):focus {
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"] .app .workspace-nav-actions .densitycontrol,
+html[data-theme="military"] .app .workspace-nav-actions .densitycontrol select {
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] .app .filteractions .bulk-toggle {
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+  background: var(--brand-surface-soft);
+}
+html[data-theme="military"]
+  .app
+  .capacitystrip
+  :is(.capacitystrip-icon, .capacitystrip-action) {
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+  background: var(--brand-surface-soft);
+}
+html[data-theme="military"] .app .capacitystrip > summary:focus-visible {
+  outline-color: #c8d8b7;
+}
+html[data-theme="military"] .capacitystrip .planning-grid tbody td {
+  border-color: var(--brand-border);
+  background: #fafbf7;
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  .app
+  .capacitystrip
+  .planning-grid
+  tbody
+  .summary
+  td:first-child {
+  padding-inline: 12px;
+  background: #eef1f4;
+  color: #344654;
+  border-right: 1px solid #c7d0d7;
+  border-bottom: 1px solid #c7d0d7;
+  font-weight: 600;
+  vertical-align: middle;
+}
+html[data-theme="military"]
+  .app
+  .capacitystrip
+  .planning-grid
+  tbody
+  .summary.s3
+  td:first-child {
+  background: #e3ebe7;
+  color: #2d5142;
+  font-weight: 700;
+}
+html[data-theme="military"] .capacitystrip .capacity-months .summary.s3 td {
+  color: #25796f;
+}
+html[data-theme="military"] .capacity-months .capacity-unit,
+html[data-theme="military"] .remaining-report th:first-child {
+  background: var(--brand-surface);
+}
+html[data-theme="military"] .capacity-months .capacity-kind {
+  color: var(--brand-muted);
+}
+html[data-theme="military"]
+  .app.tab-overview
+  .remaining-report
+  tbody
+  tr:hover
+  td {
+  background: var(--brand-surface-soft);
+}
+html[data-theme="military"] .app .planning-grid .cell input:focus,
+html[data-theme="military"] .projectmatrix td.phase-cell-selected .phasebutton {
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"] .cell input:hover:not(:disabled) {
+  background: var(--brand-surface-soft);
+  border-color: var(--brand-border-strong);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.milestone-row, .milestone-row td) {
+  background: #f4f5f7;
+  border-color: #d4dce3;
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.milestone-section-row, .milestone-section-row td) {
+  background: #e8edf1;
+  border-color: #c6d0d9;
+}
+html[data-theme="military"] .app .projectmatrix .milestone-track {
+  background-image: linear-gradient(
+    to right,
+    transparent calc(100% - 1px),
+    #dde2e7 calc(100% - 1px)
+  );
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.milestone-count, .project-expand) {
+  background: var(--brand-surface);
+  border-color: var(--brand-border-strong);
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.project-expand:hover, .project-expand:focus-visible) {
+  background: var(--brand-selected);
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.milestone-add, .milestone-name-copy strong, .milestone-section strong) {
+  color: var(--brand-primary);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.milestone-add:hover, .milestone-actions button:not(:last-child):hover) {
+  background: var(--brand-selected);
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(
+    .milestone-name-copy small,
+    .milestone-actions button,
+    .topic-reorder-handle
+  ) {
+  color: var(--brand-muted);
+}
+html[data-theme="military"] .app .project-reorder-handle {
+  color: var(--brand-muted);
+}
+html[data-theme="military"]
+  .app
+  :is(.project-reorder-handle:hover, .project-reorder-handle:focus-visible),
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.topic-reorder-handle:hover, .topic-reorder-handle:focus-visible) {
+  color: var(--brand-primary);
+  background: var(--brand-selected);
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.project-drop-before, .topic-drop-before)
+  > td {
+  box-shadow: inset 0 3px var(--brand-mid);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(.project-drop-after, .topic-drop-after)
+  > td {
+  box-shadow: inset 0 -3px var(--brand-mid);
+}
+html[data-theme="military"]
+  .app
+  [data-sticky-projects="true"]
+  .project-freeze-row
+  > td {
+  box-shadow: inset 0 -1px var(--brand-border-strong);
+}
+html[data-theme="military"] .project-phase-tooltip,
+html[data-theme="military"] .gantt-drag-status:not(.invalid) {
+  color: var(--brand-text);
+  background: var(--brand-surface-soft);
+  border-color: var(--brand-border-strong);
+  box-shadow: 0 10px 28px #29372d30;
+}
+html[data-theme="military"] .gantt-drag-status:not(.invalid) > strong span {
+  color: var(--brand-primary);
+}
+html[data-theme="military"]
+  :is(
+    .gantt-drag-status small,
+    .gantt-drag-status em,
+    .weekly-note-tooltip small
+  ) {
+  color: var(--brand-muted);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  :is(
+    .gantt-bar:focus-visible,
+    .weekly-note-box:hover,
+    .weekly-note-box:focus-visible
+  ) {
+  outline-color: var(--brand-focus);
+}
+html[data-theme="military"]
+  .app
+  .projectmatrix
+  .weekly-undated-notes
+  button:not(.completed) {
+  color: var(--brand-primary);
+  background: var(--brand-selected);
+}
+html[data-theme="military"] .milestone-bar-options .sample {
+  background: var(--brand-mid);
+}
+html[data-theme="military"] .milestone-bar-options .sample.outline {
+  border-color: var(--brand-mid);
+  background: var(--brand-surface);
+}
+html[data-theme="military"]
+  .timeline-editor-form
+  .milestone-note-dates
+  .milestone-note-flags
+  .milestone-note-complete {
+  color: #277456;
+}
+html[data-theme="military"]
+  :is(.milestone-range-empty, .milestone-preview-empty, .milestone-note-empty) {
+  color: var(--brand-muted);
+  background: var(--brand-surface-soft);
+  border-color: var(--brand-border);
+}
+html[data-theme="military"] [data-slot="table-container"] > .today-date-line {
+  box-shadow:
+    0 0 0 1px #ffffffa6,
+    0 0 4px #61705259;
+}
+
+/* Stronger pointer feedback for action buttons, including portalled dialogs.
+   Tabs, switches and color-bearing timeline controls retain their own states. */
+@media (hover: hover) {
+  html[data-theme="military"]
+    button:not(:disabled):not([aria-disabled="true"]):not([role="tab"]):not(
+      [role="switch"]
+    ):not([data-timeline-item]):not(.phasebutton):not(.phase-chip):hover {
+    filter: brightness(0.84);
+  }
+}

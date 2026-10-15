@@ -1,0 +1,94 @@
+/* Show more project rows before the project timeline needs vertical scrolling. */
+@media (min-width: 1001px) {
+  .app.tab-projects
+    .panel
+    > [data-slot="table-container"]:has(> .projectmatrix) {
+    max-height: min(970px, calc(135dvh - 260px));
+  }
+}
+@media (min-width: 651px) and (max-width: 1000px) {
+  .app.tab-projects
+    .panel
+    > [data-slot="table-container"]:has(> .projectmatrix) {
+    max-height: calc(100dvh - 225px);
+  }
+}
+
+/* Keep both calendar header rows visible while scrolling project rows. */
+.app.tab-projects .projectmatrix thead {
+  position: static;
+}
+.app.tab-projects .projectmatrix .yearrow th {
+  position: sticky;
+  top: 0;
+  height: var(--table-project-year-height);
+  z-index: 11;
+}
+.app.tab-projects .projectmatrix thead tr:not(.yearrow) > th {
+  position: sticky;
+  top: var(--table-project-year-height);
+  z-index: 10;
+  background: var(--table-header-background);
+  box-shadow: 0 2px 3px #1b3d5b1c;
+}
+.app.tab-projects .projectmatrix thead .yearrow th:first-child {
+  z-index: 13;
+}
+.app.tab-projects .projectmatrix thead tr:not(.yearrow) > th:first-child {
+  z-index: 12;
+}
+.app.tab-projects .projectmatrix .weekhead {
+  text-align: center;
+  padding: 3px 2px;
+}
+.app.tab-projects .projectmatrix .weekhead > span {
+  display: block;
+  writing-mode: horizontal-tb;
+  transform: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app.tab-projects .projectmatrix .weekhead .week-number {
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+.app.tab-projects .projectmatrix .weekhead .week-range {
+  margin-top: 2px;
+  font-size: 9px;
+  font-weight: 550;
+  line-height: 1.2;
+}
+
+.projectmatrix td.phase-cell-selected .phasebutton {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 3px #eff6ff;
+}
+.phase-grid-dragging,
+.phase-grid-dragging * {
+  user-select: none !important;
+  cursor: cell !important;
+}
+
+/* Optional code is a second frozen label, including detail rows. */
+.app.tab-projects .projectmatrix .project-code-cell {
+  position: sticky;
+  left: var(--project-name-width);
+  z-index: 3;
+  padding: 6px 8px !important;
+  background: var(--table-project-background);
+  border-right: 1px solid var(--table-label-border);
+  box-shadow: var(--table-frozen-shadow);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 10px;
+  font-weight: 650;
+}
+.app.tab-projects .projectmatrix thead tr:not(.yearrow) > .project-code-cell {
+  z-index: 12;
+  background: var(--table-header-background);
+}

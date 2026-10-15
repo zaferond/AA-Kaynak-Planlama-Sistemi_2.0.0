@@ -1,0 +1,155 @@
+/* Filter controls share the main navigation's calm blue surface and clear selection state. */
+.app .planning-filterbar {
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid #d3e0ea;
+  border-radius: 9px;
+  background: #eaf1f6;
+  box-shadow: inset 0 1px 2px #1b3e5c0b;
+}
+.app .planning-filterbar .filterbar-title {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  flex: 0 0 auto;
+  gap: 7px;
+  min-height: 34px;
+  padding-right: 12px;
+  border-right: 1px solid #c8d8e4;
+  color: #315f80;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.app .planning-filterbar .filterbar-title svg {
+  flex: none;
+  stroke-width: 2.2;
+}
+.app .planning-filterbar .filters {
+  flex: 1 1 620px;
+  max-width: none;
+  gap: 9px;
+  margin: 0;
+}
+.app .planning-filterbar .filters > .pick {
+  min-width: 0;
+  gap: 4px;
+}
+.app .planning-filterbar .filters > .pick > span {
+  color: #435f75;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.app .planning-filterbar .filters :is(.pickerbutton, input, select) {
+  width: 100%;
+  height: 34px;
+  min-height: 34px;
+  min-width: 0;
+  padding: 5px 9px;
+  border: 1px solid #c4d4e1;
+  border-radius: 6px;
+  background: #fff;
+  color: #263e53;
+  font-size: 11px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px #1a3a5310;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background-color 0.15s;
+}
+.app .planning-filterbar .filters :is(.pickerbutton, input, select):hover {
+  border-color: #8eacc1;
+}
+.app .planning-filterbar .filters .filter-active .pickerbutton {
+  border-color: #7fa7c3;
+  background: #f5faff;
+  color: #205579;
+  box-shadow: inset 0 0 0 1px #b9d4e7;
+}
+.app .planning-filterbar .filters .filter-active > span {
+  color: #245f86;
+}
+.app
+  .planning-filterbar
+  .filters
+  :is(.pickerbutton, input, select):focus-visible {
+  outline: 2px solid #3a86b8;
+  outline-offset: 1px;
+  border-color: #397ba8;
+}
+.app .planning-filterbar .filteractions {
+  align-self: flex-end;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0;
+  margin-left: auto;
+}
+.app .planning-filterbar .filteractions .button,
+.app .planning-filterbar .filteractions .bulk-toggle {
+  height: 34px;
+  min-height: 34px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.app .planning-filterbar .filteractions .resetfilters {
+  background: #fff;
+  color: #315f80;
+  border-color: #b9ccdb;
+}
+.app .planning-filterbar .filteractions .resetfilters:hover {
+  background: #f7fbfe;
+  border-color: #7fa7c3;
+}
+@media (max-width: 1250px) {
+  .app .planning-filterbar .filters {
+    flex: 1 1 calc(100% - 120px);
+    width: auto;
+  }
+  .app .planning-filterbar .filteractions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    min-height: 0;
+    padding-top: 8px;
+    border-top: 1px solid #cbdbe7;
+  }
+}
+@media (max-width: 650px) {
+  .app .planning-filterbar {
+    gap: 9px;
+    padding: 10px;
+  }
+  .app .planning-filterbar .filterbar-title {
+    width: 100%;
+    min-height: 20px;
+    padding: 0 0 8px;
+    border-right: 0;
+    border-bottom: 1px solid #cbdbe7;
+  }
+  .app .planning-filterbar .filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 9px;
+  }
+  .app .planning-filterbar .filters > .pick:nth-child(n) {
+    width: 100%;
+    min-width: 0;
+    flex: none;
+  }
+  .app .planning-filterbar .filteractions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 360px) {
+  .app .planning-filterbar .filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

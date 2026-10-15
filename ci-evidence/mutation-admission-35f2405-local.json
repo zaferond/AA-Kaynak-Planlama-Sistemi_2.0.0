@@ -1,0 +1,69 @@
+{
+  "sourceCommit": "35f240510b05e7f0d0fc2d1dfb4ba2bbd3f9ff4e",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "macOS",
+    "database": "temporary synthetic SQL.js only",
+    "network": "loopback synthetic HTTP only; GitHub CI separately",
+    "realEnvironmentOrDataUsed": false,
+    "runningServiceRestarted": false
+  },
+  "verify": {
+    "command": "npm run verify",
+    "exit": 0,
+    "testTotals": {
+      "tests": 654,
+      "pass": 654,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "formatDomainTypecheckBuild": "passed"
+  },
+  "targetedTests": {
+    "command": "node --test tests/mutation-admission.test.mjs tests/mutation-admission-http.test.mjs tests/http-config.test.mjs tests/login-security.test.mjs tests/record-access-http.test.mjs tests/storage-order.test.mjs tests/http-transport.test.mjs",
+    "pass": 66,
+    "note": "Targeted run preceded final sixth HTTP rollback test; final full verify includes it."
+  },
+  "browserProbe": {
+    "checks": 1,
+    "pass": 1,
+    "assertions": [
+      "actual HTTP 503",
+      "draft retained",
+      "no automatic retry",
+      "explicit retry commits once",
+      "no page errors"
+    ]
+  },
+  "deployment": {
+    "sourceFiles": 409,
+    "artifactFilesOnDisk": 437,
+    "releaseArtifactFiles": 7,
+    "historicalArtifactsExcludedFromCleanPackage": 430,
+    "canonicalAndRuntimeManifestVerification": "passed",
+    "runtimeDivergentHttpConfigTestPreserved": true,
+    "runtimeMilestoneTestPreserved": true
+  },
+  "files": {
+    "backend/app.mjs": "dc216084a37b151839f03793a6f66592de66de81ccc020b07eff0cb6d8b084bd",
+    "backend/server.mjs": "532bc8b776a9f40a19a5e8f88e552539823ca5a8010aed1dd78a487261a3ab30",
+    "backend/mutation-admission.mjs": "048dff453dcb1a37ba119105456be8cccd75b846b80cbb2eb0facb5daffa4e03",
+    "tests/mutation-admission.test.mjs": "49fdbdc5af1174bd2f32591461026cd6ef052157a10f4cd840572ae090f80514",
+    "tests/mutation-admission-http.test.mjs": "60d681252048017a7bcdd420efa491fe21442512e8e8dde165d473be9dc71461",
+    "tests/http-config.test.mjs": "039a32a8d79e83061086ea2301334887f3443646ba67e35425b8768723f075c2",
+    "tests/storage-order.test.mjs": "108855e6687423f69ed2dcdd45b0616cad5dcf1b5e2eaafe62c422b8bd190c1e",
+    "tests/concurrency-suite.mjs": "f41a5775a5a7721d8441c159c70f1021f5cf27130d540f74db2466503bcf4c8d",
+    "scripts/browser-checks/mutation-admission.mjs": "128a094f40f13d49d1d43ae57685334bbbb659da853793ff18da7b6b074478c6",
+    "scripts/browser-checks/fixture.mjs": "30980dc7ed0f17d4d7c11da0a6050b788f3a6d89504416d2ee85b3e7153f57da",
+    "scripts/run-browser-checks.mjs": "21183bf1fa5d6a5aea7ce23031f3406c016d52d6262efa90999c83891b3eb41b",
+    ".github/workflows/quality.yml": "e8d45e06ee4e5e8aa3a2e31f5bfafa1aa0ce7bc093aa108f48e94e0def7f6303",
+    "README.md": "ba60cfad2aa6b6a7f6f79cbeb231ccad7d7eab295b1e0366b4711d067049186a"
+  },
+  "localLogHashes": {
+    "verify-final.log": "b23c1fb18faa4576cf53ba54073600aff94b8f11cbe8f9bde4c4d65190fbda22",
+    "admission-tests-final.log": "281b9dd55bee2ffb45064dcd277f911bc151ffd46af14fe4b07cb151706c6c37",
+    "admission-browser-final.log": "5680a803557d00c6ee1c872e43ab027cccae0aec40f48c71086d1202a85e4858"
+  }
+}

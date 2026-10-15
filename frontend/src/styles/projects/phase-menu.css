@@ -1,0 +1,199 @@
+/* Project details and month-specific phase editing */
+.app .projectmatrix .phasebutton:disabled {
+  background: #f3f5f8 !important;
+  color: #97a7b7 !important;
+  border-left-color: #d3dce6 !important;
+  cursor: default;
+}
+.app .planning-grid .month-work:disabled {
+  background: #f3f5f8 !important;
+  color: #97a7b7 !important;
+  border-left-color: #d3dce6 !important;
+  cursor: default;
+}
+.phasecontext {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #d5e2ef;
+  border-radius: 6px;
+  background: #f4f8fd;
+  color: #244e77;
+  font-size: 13px;
+}
+.phasecontext strong {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.phasecontext span {
+  flex: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Right-click phase text actions */
+.phase-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: transparent;
+}
+.phase-menu {
+  position: fixed;
+  z-index: 81;
+  width: 204px;
+  padding: 5px;
+  border: 1px solid #cbd9e7;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 10px 30px #102f5030;
+  color: #1e3f5e;
+  outline: none;
+}
+.phase-menu-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 7px 9px 6px;
+  border-bottom: 1px solid #e4ebf3;
+  color: #637a90;
+  font-size: 10px;
+  font-weight: 700;
+}
+.phase-menu button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #244d75;
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+.phase-menu button:hover:not(:disabled),
+.phase-menu button:focus-visible {
+  background: #eaf3fd;
+  outline: none;
+}
+.phase-menu button:disabled {
+  color: #a0aebc;
+  cursor: not-allowed;
+}
+.phase-menu button svg {
+  flex: none;
+}
+.plan-cell-menu {
+  width: 218px;
+}
+.plan-cell-menu button small {
+  margin-left: auto;
+  color: #71869b;
+  font-size: 10px;
+}
+.app .planning-grid td[data-plan-cell] {
+  cursor: cell;
+}
+.app .planning-grid td[data-plan-cell]:has(input:disabled) {
+  cursor: default;
+}
+.plan-dragging,
+.plan-dragging * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+.plan-dragging .planning-grid td[data-plan-cell] {
+  cursor: crosshair;
+}
+.app .planning-grid td.selectedcell:has(.cell input[title*="Ctrl+Enter"]) {
+  box-shadow:
+    inset 0 0 0 2px #2876bd,
+    inset 0 0 0 4px #d7eafd;
+}
+.phase-menu-divider {
+  height: 1px;
+  margin: 5px 4px;
+  background: #e4ebf3;
+}
+.phase-color-swatch {
+  width: 15px;
+  height: 15px;
+  margin-left: auto;
+  border: 1px solid;
+  border-radius: 3px;
+  flex: none;
+}
+
+.milestone-report-menu {
+  width: 360px;
+  max-width: calc(100vw - 24px);
+  max-height: min(480px, calc(100vh - 24px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.milestone-report-menu .phase-menu-title {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  color: #244d75;
+}
+.milestone-report-heading {
+  padding: 10px 9px 4px;
+  color: #687f94;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.phase-menu .milestone-report-item {
+  align-items: flex-start;
+  padding: 9px;
+}
+.milestone-report-item + .milestone-report-item {
+  border-top: 1px solid #edf1f5;
+}
+.milestone-report-item svg {
+  margin-top: 1px;
+  color: #9aabba;
+}
+.milestone-report-item svg.report-checked {
+  color: #268166;
+}
+.milestone-report-note {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.milestone-report-note > span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.milestone-report-note small {
+  width: fit-content;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.report-included {
+  background: #eaf5f0;
+  color: #25775e;
+}
+.report-excluded {
+  background: #f0f3f6;
+  color: #758797;
+}
+.milestone-report-empty {
+  padding: 12px 9px;
+  font-size: 12px;
+  color: #758797;
+}

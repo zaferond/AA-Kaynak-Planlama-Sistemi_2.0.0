@@ -1,0 +1,18 @@
+{
+  "testedNativeCommit": "ae28c2c261d3f3a846a14bd9bf3b05fb76547fb4",
+  "comparedQualityCommit": "4bec49706b5986ad1d8e07d6b1318d08961000e8",
+  "filesCompared": 467,
+  "identicalFiles": 466,
+  "applicationBuildAndProfileInputs": {
+    "files": 380,
+    "differences": []
+  },
+  "differences": [
+    {
+      "file": "tests/planning-snapshot.test.mjs",
+      "testedSha256": "2105ec701bd1b05e0a8def37c63de2b3640b2358b4964af3c68be89892ceb552",
+      "comparedSha256": "08cc661aed9246daf707a09442c6138389f67b9443e7329a81c0f901af29f46d"
+    }
+  ],
+  "reason": "The sole difference is the exact blocked rename errno predicate in a SQL.js planning snapshot test not executed by the native runner; no runtime, native execution module or workflow differs. Separate quality CI verifies this test on Windows. No claim of a native run at the compared commit."
+}

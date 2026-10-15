@@ -1,0 +1,126 @@
+.audit-log-dialog {
+  width: min(1100px, 94vw);
+  max-width: 1100px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.audit-log-dialog h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.audit-log-list {
+  overflow: auto;
+  min-height: 180px;
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+  padding: 2px 6px 2px 0;
+}
+.audit-log-entry {
+  border: 1px solid #d8e2eb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  min-width: 0;
+}
+.audit-log-entry header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+.audit-log-entry header > div {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+.audit-log-entry strong {
+  overflow-wrap: anywhere;
+  color: #29465f;
+}
+.audit-log-entry time,
+.audit-log-entry > p {
+  font-size: 12px;
+  color: #657b8e;
+}
+.audit-log-entry time {
+  white-space: nowrap;
+}
+.audit-log-entry > p {
+  margin: 6px 0 10px;
+}
+.audit-action {
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 3px 7px;
+  background: #e2edf7;
+  color: #315e83;
+  white-space: nowrap;
+}
+.audit-action.create {
+  background: #e3f1e8;
+  color: #2d7046;
+}
+.audit-action.delete {
+  background: #f4e7e8;
+  color: #92424d;
+}
+.audit-log-entry summary {
+  cursor: pointer;
+  color: #3d607d;
+  font-size: 12px;
+  font-weight: 600;
+}
+.audit-log-entry table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #fff;
+}
+.audit-log-entry th,
+.audit-log-entry td {
+  border: 1px solid #dce5ed;
+  padding: 9px;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 12px;
+}
+.audit-log-entry thead {
+  background: #eaf0f5;
+}
+.audit-log-entry th {
+  font-weight: 600;
+}
+.audit-log-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #dce5ed;
+  padding-top: 12px;
+}
+.audit-log-footer > span {
+  margin-right: auto;
+  color: #657b8e;
+  font-size: 12px;
+}
+@media (max-width: 700px) {
+  .audit-log-entry header {
+    flex-direction: column;
+    gap: 5px;
+  }
+  .audit-log-entry header > div {
+    flex-wrap: wrap;
+  }
+  .audit-log-footer {
+    flex-wrap: wrap;
+  }
+}

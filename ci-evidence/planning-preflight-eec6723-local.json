@@ -1,0 +1,49 @@
+{
+  "sourceCommit": "eec67232ff8f7b8628c1e2fd264aecbef3db4331",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "macOS",
+    "database": "temporary synthetic SQL.js only",
+    "realEnvironmentOrDataUsed": false,
+    "runningServiceRestarted": false
+  },
+  "verify": {
+    "command": "npm run verify",
+    "testTotals": {
+      "tests": 662,
+      "pass": 662,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "formatDomainTypecheckBuild": "passed"
+  },
+  "targeted": {
+    "command": "node --test tests/planning-preflight.test.mjs tests/mutation-snapshot.test.mjs tests/planning-read-scope.test.mjs tests/planning-snapshot.test.mjs tests/concurrency.test.mjs",
+    "pass": 57,
+    "fail": 0
+  },
+  "deployment": {
+    "sourceFiles": 410,
+    "artifactFilesOnDisk": 437,
+    "releaseArtifactFiles": 7,
+    "historicalArtifactsExcluded": 430,
+    "canonicalAndRuntimeVerification": "passed",
+    "protectedLocalTests": "preserved"
+  },
+  "files": {
+    "backend/operations.mjs": "4a00e01a9e25a504d0cc4169453e59261906a01f03a96ed07aea43d2c4aae2cd",
+    "backend/store.mjs": "814ccc76fa54eb43785cc54d317ea299d28e9fe4ad6279f0406e4987a77e1918",
+    "backend/planning-preflight.mjs": "9464df9178e1a0f53305ac4aa997fabe1c37d37e48c72bdbf63039a593858a9d",
+    "tests/planning-preflight-suite.mjs": "180284c9c65cce111cefa7c0b328aaa584959a70e73c6373a16cdaeeaad11bb3",
+    "tests/planning-preflight.test.mjs": "18fb969fb6362892a8c80d42490bb53aef47b6e8c4139deac871eb7109b7cc8d",
+    "tests/mssql.integration.mjs": "706cdb23bc0da38b30a44d89ad38c8fe3d43464f1c1998841df372105c65ab02",
+    ".github/workflows/quality.yml": "71e7c2ad5e60913f16138e12574bbf513d0e78ea70b10d95aed3a0d083f7584c",
+    "README.md": "f0eb975d30a25803f86517ea38f5a1d92d1251fdd0e6e7de030f04aea9482a47"
+  },
+  "localLogHashes": {
+    "verify.log": "0499df002b1ba72096fb0bbde24fd0583c00f6cda7615ac2cba3c2fe385b3434",
+    "targeted.log": "5b985e0ca9b871e25d6d55cc1e84fb7a7009b1dd8a2f7baf5688b33935f11901"
+  }
+}

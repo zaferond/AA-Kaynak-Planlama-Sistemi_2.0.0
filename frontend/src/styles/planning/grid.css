@@ -1,0 +1,115 @@
+/* Kaynak dağılımı: ay sütunları ve geniş çalışma sekmesi. */
+.app:is(.tab-plan, .tab-actual) .allocation-grid {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.app.tab-plan .allocation-grid tr > th:not(:first-child),
+.app.tab-plan .allocation-grid tr > td:not(:first-child) {
+  border-left: 1px solid var(--table-grid-border);
+}
+.app.tab-plan .allocation-grid tr > th:first-child,
+.app.tab-plan .allocation-grid tr > td:first-child {
+  border-right: 1px solid var(--table-label-border);
+}
+.app.tab-plan .allocation-grid .yearrow th:not(:first-child) {
+  border-left-color: var(--table-year-divider);
+}
+.app.full-plan {
+  min-height: 100dvh;
+  background: #f6f9fc;
+}
+.app.full-plan > .mast {
+  display: none;
+}
+.app.full-plan > main {
+  max-width: none;
+  width: 100%;
+  padding: 7px 10px 10px;
+}
+.app.full-plan .full-plan-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 39px;
+  margin-bottom: 7px;
+  padding: 6px 12px;
+  background: #102f50;
+  color: #f4f8ff;
+  border-radius: 5px;
+}
+.app.full-plan .full-plan-header > div:first-child {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.app.full-plan .full-plan-header strong {
+  font-size: 14px;
+}
+.app.full-plan .full-plan-header span {
+  font-size: 11px;
+  color: #c1d5eb;
+}
+.app.full-plan .full-plan-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.app.full-plan .full-plan-header .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 27px;
+  padding: 4px 9px;
+  border: 1px solid #ffffff56;
+  background: #ffffff12;
+  color: #f4f8ff;
+  border-radius: 4px;
+  font-size: 11px;
+  text-decoration: none;
+}
+.app.full-plan .full-plan-header .button:hover {
+  background: #ffffff29;
+}
+.app.full-plan .workspace-nav {
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+.app.full-plan .workspace-nav .navtabs,
+.app.full-plan .stats,
+.app.full-plan .bottomnote,
+.app.full-plan .tab-plan .infonote {
+  display: none !important;
+}
+.app.full-plan .planning-filterbar {
+  margin-bottom: 6px;
+}
+.app.full-plan .filterline {
+  margin-bottom: 5px;
+}
+.app.full-plan [data-slot="table-container"]:has(> .allocation-grid) {
+  max-height: calc(100dvh - 190px) !important;
+}
+@media (max-width: 750px) {
+  .app.full-plan .full-plan-header {
+    flex-wrap: wrap;
+  }
+  .app.full-plan .full-plan-header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .app.full-plan [data-slot="table-container"]:has(> .allocation-grid) {
+    max-height: 65dvh !important;
+  }
+}
+
+.leadership-unit-label {
+  display: block;
+  margin-top: 2px;
+  color: #53674a;
+  font-size: 9px;
+  font-weight: 600;
+}
+.leadership-planning-row .rowname {
+  background: #edf2e7;
+}

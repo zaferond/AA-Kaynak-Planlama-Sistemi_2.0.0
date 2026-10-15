@@ -1,0 +1,826 @@
+/* Project milestone Gantt rows. */
+.project-phase-tooltip {
+  position: fixed;
+  z-index: 100;
+  max-width: min(360px, calc(100vw - 24px));
+  max-height: min(50vh, 320px);
+  padding: 10px 13px;
+  border: 1px solid #c4d5e3;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 10px 28px #183b5a30;
+  color: #263f54;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow-y: auto;
+  pointer-events: none;
+}
+.app.tab-projects.dense-overview .projectmatrix .phase-initial {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+}
+.app .projectmatrix .project-main-row td:not(:first-child) {
+  vertical-align: middle;
+}
+.app .projectmatrix .project-name-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+.app .projectmatrix .project-expand {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 21px;
+  height: 21px;
+  margin-top: 1px;
+  border: 1px solid #b9cee3;
+  border-radius: 4px;
+  background: #edf5fd;
+  color: #245d90;
+  cursor: pointer;
+}
+.app .projectmatrix .project-expand:hover,
+.app .projectmatrix .project-expand:focus-visible {
+  background: #dcecff;
+  outline: 2px solid #8cb8e0;
+  outline-offset: 1px;
+}
+.app .projectmatrix .project-name-copy {
+  flex: 1;
+  min-width: 0;
+}
+.app .projectmatrix .project-name-copy .textbutton {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.app .projectmatrix .project-name-copy small {
+  margin-top: 4px;
+  font-size: 9px;
+  line-height: 1.3;
+}
+.app .projectmatrix .milestone-count {
+  display: grid;
+  place-items: center;
+  flex: none;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 3px;
+  border-radius: 9px;
+  background: #e5eff9;
+  color: #2b5e89;
+  font-size: 10px;
+  font-weight: 700;
+}
+.app .projectmatrix .milestone-section-row {
+  background: #edf4fb;
+}
+.app .projectmatrix .milestone-section-row td {
+  position: static !important;
+  padding: 5px 10px !important;
+  border-block: 1px solid #d5e2ef;
+  background: #edf4fb;
+}
+.app .projectmatrix .milestone-section {
+  position: sticky;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: min(580px, calc(100vw - 64px));
+  min-height: 28px;
+}
+.app .projectmatrix .milestone-section > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  white-space: nowrap;
+}
+.app .projectmatrix .milestone-section strong {
+  color: #24547f;
+  font-size: 11px;
+}
+.app .projectmatrix .milestone-section span {
+  color: #6c839a;
+  font-size: 10px;
+}
+.app .projectmatrix .milestone-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 25px;
+  padding: 3px 7px;
+  border: 1px solid #bdcee0;
+  border-radius: 4px;
+  background: #fff;
+  color: #245d90;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.app .projectmatrix .milestone-add:hover {
+  background: #e4f0fc;
+}
+.app .projectmatrix .milestone-row {
+  background: #edf4fb;
+}
+.app .projectmatrix .milestone-row td:first-child {
+  padding: 8px 6px 8px 17px;
+  vertical-align: middle;
+  border-bottom: 3px solid #b4c8d9;
+  background: #edf4fb;
+}
+.app .projectmatrix .milestone-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.app .projectmatrix .topic-reorder-handle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 28px;
+  border: 0;
+  border-radius: 4px;
+  color: #71869b;
+  background: transparent;
+  cursor: grab;
+}
+.app .projectmatrix .topic-reorder-handle:hover,
+.app .projectmatrix .topic-reorder-handle:focus-visible {
+  background: #dce8f5;
+  color: #315b83;
+}
+.app .projectmatrix .topic-reorder-handle:active {
+  cursor: grabbing;
+}
+.app .projectmatrix .topic-reorder-handle:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.app .projectmatrix .topic-dragging td {
+  opacity: 0.55;
+}
+.app .projectmatrix .topic-drop-before td {
+  box-shadow: inset 0 2px #4d7fa9;
+}
+.app .projectmatrix .topic-drop-after td {
+  box-shadow: inset 0 -2px #4d7fa9;
+}
+.app .projectmatrix .milestone-symbol {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #a55060;
+  transform: rotate(45deg);
+  background: #fff;
+}
+.app .projectmatrix .milestone-name-copy {
+  flex: 1;
+  min-width: 0;
+}
+.app .projectmatrix .milestone-name-copy strong {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: #314f68;
+  font-size: 10px;
+  line-height: 1.3;
+}
+.app .projectmatrix .milestone-name-copy small {
+  display: block;
+  margin: 2px 0 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: #76899d;
+  font-size: 9px;
+  line-height: 1.2;
+}
+.app .projectmatrix .milestone-actions {
+  display: flex;
+  flex: none;
+  gap: 1px;
+}
+.app .projectmatrix .milestone-actions button {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 20px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #66809a;
+  cursor: pointer;
+}
+.app .projectmatrix .milestone-actions button:hover {
+  background: #e5eff8;
+  color: #245d90;
+}
+.app .projectmatrix .milestone-actions button:last-child:hover {
+  background: #feecef;
+  color: #ad4051;
+}
+.app .projectmatrix .milestone-row td.milestone-month {
+  position: relative;
+  /* Keep hover, drag and resize layers inside the scrolling timeline cell. */
+  z-index: 0;
+  isolation: isolate;
+  height: 36px;
+  padding: 8px 0 !important;
+  vertical-align: middle;
+  border-bottom: 3px solid #b4c8d9;
+  background: #edf4fb;
+  overflow: hidden;
+}
+.app .projectmatrix .milestone-row td.milestone-range {
+  padding: 5px 0 !important;
+}
+.app .projectmatrix .milestone-track {
+  position: relative;
+  width: 100%;
+  height: 36px;
+  background-image: linear-gradient(
+    to right,
+    transparent calc(100% - 1px),
+    #dce7f0 calc(100% - 1px)
+  );
+  background-size: var(--milestone-period-width) 100%;
+}
+.app .projectmatrix .milestone-track-empty {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 12px;
+  color: #8697a7;
+  font-size: 10px;
+  font-style: italic;
+}
+.app .projectmatrix .milestone-track .gantt-bar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 6px;
+  min-height: 24px;
+  padding: 3px 5px;
+  overflow: visible;
+}
+.app .projectmatrix .milestone-track .gantt-bar span {
+  max-height: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.app .projectmatrix .gantt-note-list {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.app .projectmatrix .gantt-note-list li {
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 17px;
+}
+.app .projectmatrix .gantt-note-list li::before {
+  content: "•";
+  margin-right: 4px;
+}
+.app .projectmatrix .gantt-note-list li + li {
+  margin-top: 5px;
+  padding-top: 4px;
+  border-top: 1px solid currentColor;
+}
+.app .projectmatrix .gantt-note-list .gantt-note-text {
+  font-weight: 700;
+}
+.app .projectmatrix .gantt-note-list li.completed .gantt-note-text {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: currentColor;
+  opacity: 0.8;
+}
+.app .projectmatrix .gantt-note-list li.completed .gantt-note-dates {
+  opacity: 1;
+}
+.app .projectmatrix .gantt-note-dates {
+  display: block;
+  margin: 1px 0 0 9px;
+  color: #17212e;
+  opacity: 1;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.app .projectmatrix .gantt-bar.solid .gantt-note-dates {
+  color: #fff;
+  font-weight: 800;
+}
+.app .projectmatrix .gantt-note-dates time {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.app .projectmatrix .gantt-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 6px;
+  min-height: 22px;
+  height: auto;
+  padding: 4px 6px;
+  border: 1px solid var(--gantt-color);
+  background: var(--gantt-color);
+  color: #fff;
+  box-shadow: 0 1px 2px #1c38502a;
+  cursor: context-menu;
+}
+.app .projectmatrix .gantt-bar.editable {
+  cursor: grab;
+  touch-action: pan-x pan-y;
+  user-select: none;
+}
+.app .projectmatrix .gantt-bar.editable:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 2px 6px #1c385044;
+}
+.app .projectmatrix .gantt-bar.dragging {
+  z-index: 4;
+  cursor: grabbing;
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px #183b6280;
+}
+.app .projectmatrix .gantt-bar .gantt-resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  display: block;
+  width: 9px;
+  min-width: 9px;
+  max-height: none;
+  overflow: visible;
+  background: #ffffff35;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+.app .projectmatrix .gantt-bar .gantt-resize-handle.start {
+  left: -4px;
+  border-radius: 8px 0 0 8px;
+}
+.app .projectmatrix .gantt-bar .gantt-resize-handle.end {
+  right: -4px;
+  border-radius: 0 8px 8px 0;
+}
+.app .projectmatrix .gantt-bar .gantt-resize-handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 12px;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 0 0 1px #183b6280;
+  opacity: 0.75;
+  transform: translate(-50%, -50%);
+}
+.app .projectmatrix .gantt-bar.outline .gantt-resize-handle::after {
+  background: var(--gantt-ink);
+}
+.app .projectmatrix .gantt-bar.dragging .gantt-resize-handle {
+  background: #ffffff80;
+}
+.gantt-drag-status {
+  position: fixed;
+  z-index: 100;
+  width: 214px;
+  max-width: calc(100vw - 16px);
+  padding: 8px 10px;
+  border: 1px solid #8fb0c9;
+  border-radius: 7px;
+  background: #f8fcff;
+  color: #214b6d;
+  box-shadow: 0 7px 20px #173b6138;
+  font-size: 10px;
+  line-height: 1.35;
+  pointer-events: none;
+}
+.gantt-drag-status > strong {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+}
+.gantt-drag-status > strong span {
+  color: #3b779d;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.gantt-drag-status > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.gantt-drag-status > div span {
+  display: block;
+}
+.gantt-drag-status small {
+  display: block;
+  margin-bottom: 2px;
+  color: #668098;
+  font-size: 9px;
+  font-weight: 600;
+}
+.gantt-drag-status em {
+  display: block;
+  margin-top: 5px;
+  color: #607b91;
+  font-size: 9px;
+  font-style: normal;
+}
+.gantt-drag-status.invalid {
+  border-color: #d3a0a8;
+  background: #fff6f6;
+  color: #8d3441;
+}
+.gantt-drag-status.invalid > strong span {
+  color: #a34c57;
+}
+.gantt-drag-status.invalid p {
+  margin: 6px 0 0;
+  font-size: 10px;
+  line-height: 1.35;
+}
+.app .projectmatrix .gantt-bar.start {
+  border-radius: 9px 0 0 9px;
+}
+.app .projectmatrix .gantt-bar.end {
+  border-radius: 0 9px 9px 0;
+}
+.app .projectmatrix .gantt-bar.start.end {
+  border-radius: 9px;
+}
+.app .projectmatrix .gantt-bar.outline {
+  background: var(--gantt-soft);
+  color: var(--gantt-ink);
+  box-shadow: inset 0 0 0 1px var(--gantt-color);
+}
+.app .projectmatrix .gantt-bar:focus-visible {
+  outline: 2px solid #245d90;
+  outline-offset: 2px;
+}
+.app .projectmatrix .gantt-bar span {
+  display: block;
+  min-width: 0;
+  max-height: 160px;
+  width: 100%;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.app .projectmatrix .weekly-note-box {
+  position: absolute;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 39px;
+  min-width: 0;
+  padding: 4px 11px;
+  border: 1px solid var(--gantt-color);
+  border-left-width: 3px;
+  border-radius: 5px;
+  background: var(--gantt-soft);
+  color: var(--gantt-ink);
+  box-shadow: 0 1px 2px #1c38501c;
+  text-align: left;
+  overflow: hidden;
+  cursor: default;
+}
+.app .projectmatrix .weekly-note-box.solid {
+  background: var(--gantt-color);
+  color: #fff;
+}
+.app.dense-overview .projectmatrix .weekly-note-box {
+  padding: 4px 5px;
+}
+.app.dense-compact .projectmatrix .weekly-note-box {
+  padding: 4px 8px;
+}
+.app .projectmatrix .weekly-note-box.editable {
+  cursor: grab;
+  touch-action: pan-x pan-y;
+  user-select: none;
+}
+.app .projectmatrix .weekly-note-box:hover,
+.app .projectmatrix .weekly-note-box:focus-visible {
+  z-index: 3;
+  outline: 2px solid #2d70a6;
+  outline-offset: 1px;
+  box-shadow: 0 3px 8px #1c38503b;
+}
+.app .projectmatrix .weekly-note-box.dragging {
+  z-index: 4;
+  cursor: grabbing;
+  box-shadow: 0 4px 12px #183b6280;
+}
+.app .projectmatrix .weekly-note-box .weekly-note-resize {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  display: block;
+  width: 9px;
+  background: var(--gantt-color);
+  opacity: 0.35;
+  cursor: ew-resize;
+  touch-action: none;
+}
+.app .projectmatrix .weekly-note-box .weekly-note-resize.start {
+  left: 0;
+  border-radius: 4px 0 0 4px;
+}
+.app .projectmatrix .weekly-note-box .weekly-note-resize.end {
+  right: 0;
+  border-radius: 0 4px 4px 0;
+}
+.app .projectmatrix .weekly-note-box:hover .weekly-note-resize,
+.app .projectmatrix .weekly-note-box:focus-visible .weekly-note-resize,
+.app .projectmatrix .weekly-note-box.dragging .weekly-note-resize {
+  opacity: 0.72;
+}
+.app .projectmatrix .weekly-note-box .weekly-note-resize::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 13px;
+  border-radius: 2px;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+.app .projectmatrix .weekly-note-box .weekly-note-text {
+  display: block;
+  width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.app .projectmatrix .weekly-note-box small {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: #17212e;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  opacity: 1;
+}
+.app .projectmatrix .weekly-note-box.solid small {
+  color: #fff;
+  font-weight: 800;
+}
+.app .projectmatrix .weekly-note-box.completed .weekly-note-text {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  opacity: 0.8;
+}
+.weekly-note-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 180px;
+  max-width: min(390px, calc(100vw - 24px));
+  white-space: normal;
+}
+.weekly-note-tooltip strong {
+  font-size: 11px;
+  line-height: 1.4;
+}
+.weekly-note-tooltip strong.completed {
+  text-decoration: line-through;
+  color: #36845a;
+}
+.weekly-note-tooltip small {
+  color: #647e94;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.weekly-note-tooltip em {
+  color: #36845a;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+}
+.app .projectmatrix .weekly-undated-notes {
+  display: grid;
+  gap: 3px;
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid #d6e4f0;
+}
+.app .projectmatrix .weekly-undated-notes > span {
+  color: #6b8299;
+  font-size: 9px;
+  font-weight: 700;
+}
+.app .projectmatrix .weekly-undated-notes button {
+  display: block;
+  width: 100%;
+  padding: 2px 3px;
+  border: 0;
+  border-radius: 3px;
+  background: #e2edf7;
+  color: #3b5d79;
+  text-align: left;
+  font-size: 9px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.app .projectmatrix .weekly-undated-notes button:hover,
+.app .projectmatrix .weekly-undated-notes button:focus-visible {
+  background: #d4e7f7;
+  outline: 1px solid #76a4c8;
+}
+.app .projectmatrix .weekly-undated-notes button.completed {
+  color: #36845a;
+  text-decoration: line-through;
+}
+.milestone-bar-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+.milestone-bar-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 9px;
+  border: 1px solid #d4e0ec;
+  border-radius: 5px;
+  background: #fff;
+  color: #43617d;
+  font-size: 11px;
+  cursor: pointer;
+}
+.milestone-bar-options button.selected {
+  border-color: #3172aa;
+  background: #eff7ff;
+  box-shadow: inset 0 0 0 1px #3172aa;
+}
+.milestone-bar-options .sample {
+  display: block;
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  background: #477eb2;
+}
+.milestone-bar-options .sample.outline {
+  border: 2px solid #477eb2;
+  background: #eaf3fe;
+}
+.milestone-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.milestone-colors button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid #d4e0ec;
+  border-radius: 5px;
+  background: #fff;
+  color: #46627d;
+  font-size: 11px;
+  cursor: pointer;
+}
+.milestone-colors button.selected {
+  border-color: #3172aa;
+  box-shadow: inset 0 0 0 1px #3172aa;
+  background: #eff7ff;
+}
+.milestone-colors i {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.milestone-point {
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+  /* Above bars and their hover/drag layers, within the isolated timeline cell. */
+  z-index: 6;
+}
+.milestone-diamond {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  border: 1px solid #0002;
+  border-radius: 2px;
+  box-shadow: 0 2px 3px #0f172a20;
+  flex-shrink: 0;
+}
+.milestone-diamond.solid {
+  background: var(--diamond-color);
+}
+.milestone-diamond.outline {
+  background: transparent;
+  border: 2px solid var(--diamond-color);
+  box-shadow: none;
+}
+.milestone-diamond-options {
+  margin: 12px 0;
+  padding: 10px;
+  border: 1px solid #d4e0ec;
+  border-radius: 6px;
+}
+.milestone-diamond-options legend {
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #43617d;
+}
+.milestone-diamond-options .milestone-bar-options button {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+.milestone-point:hover .milestone-diamond,
+.milestone-point:focus-visible .milestone-diamond {
+  outline: 2px solid #94a3b8;
+  outline-offset: 3px;
+}
+.milestone-point.dragging {
+  cursor: grabbing;
+}
+.milestone-point-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+}
+.milestone-point-preview strong,
+.milestone-point-preview small {
+  display: block;
+  overflow-wrap: anywhere;
+}

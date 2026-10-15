@@ -1,0 +1,202 @@
+/* Planned distribution switches sit directly below the filter row. */
+.app.tab-plan .planning-filterbar {
+  margin-bottom: 5px;
+}
+.app.tab-plan .plan-filter-options {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 30px;
+  margin: 0 0 9px;
+  padding: 0;
+}
+
+/* Keep the planned-view controls left and team labels inside their own column. */
+.app.tab-plan .plan-filter-options {
+  justify-content: flex-start;
+  margin-left: 0;
+}
+.app.tab-plan .allocation-grid .team-group-label {
+  width: calc(var(--label-width) - 20px);
+  max-width: calc(var(--label-width) - 20px);
+  min-width: 0;
+}
+.app.tab-plan .allocation-grid .team-group-label > div {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+.app.tab-plan .allocation-grid .team-group-label strong,
+.app.tab-plan .allocation-grid .team-group-label span {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Make the planned allocation orientation easy to distinguish at a glance. */
+.app:is(.tab-plan, .tab-resources, .tab-overview)
+  .workspace-nav-actions
+  :is(.plan-view-switch, .organization-view-switch) {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  height: 34px;
+  min-height: 34px;
+  padding: 3px;
+  border: 1px solid #a9c1d3;
+  border-radius: 7px;
+  background: #e8f0f5;
+  box-shadow: inset 0 1px 2px #24455f12;
+}
+.app:is(.tab-plan, .tab-resources, .tab-overview)
+  .workspace-nav-actions
+  :is(.plan-view-switch, .organization-view-switch)
+  [role="tab"] {
+  flex: 0 0 auto;
+  min-width: 124px;
+  height: 26px;
+  min-height: 26px;
+  padding: 4px 9px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: #31536d;
+  font-size: 11px;
+  font-weight: 700;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+.app:is(.tab-plan, .tab-resources, .tab-overview)
+  .workspace-nav-actions
+  :is(.plan-view-switch, .organization-view-switch)
+  [role="tab"]:hover:not([data-state="active"]) {
+  background: #f8fbfd;
+  color: #173f5e;
+}
+.app:is(.tab-plan, .tab-resources, .tab-overview)
+  .workspace-nav-actions
+  :is(.plan-view-switch, .organization-view-switch)
+  [role="tab"][data-state="active"] {
+  border-color: #315b7d;
+  background: #315b7d;
+  color: #fff;
+  box-shadow: 0 1px 4px #183a5650;
+}
+.app:is(.tab-plan, .tab-resources, .tab-overview)
+  .workspace-nav-actions
+  :is(.plan-view-switch, .organization-view-switch)
+  [role="tab"]:focus-visible {
+  outline: 2px solid #2c75a8;
+  outline-offset: 2px;
+}
+
+/* A team's monthly capacity stays with its frozen identity above its projects. */
+.app.tab-plan .allocation-grid .team-capacity-header > td {
+  padding: 6px 4px !important;
+  vertical-align: middle;
+  border-bottom: 2px solid var(--brand-border-strong, #aebfd1);
+}
+.app.tab-plan .allocation-grid .team-capacity-header .team-capacity-label {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  padding: 7px 10px !important;
+  border-right: 1px solid var(--table-label-border);
+  box-shadow: var(--table-frozen-shadow);
+}
+.app.tab-plan .allocation-grid .team-capacity-label .team-group-label {
+  position: static;
+  width: auto;
+  max-width: 100%;
+}
+/* Initials keep the monthly summary legible without adding rows below the team. */
+.app.tab-plan .allocation-grid .team-capacity-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+}
+.app.tab-plan .allocation-grid .team-capacity-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d4dfcf;
+  border-radius: 4px;
+  background: #f9fbf6;
+  color: #35543c;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  min-width: 0;
+  min-height: 28px;
+  margin: 0;
+  gap: 3px;
+  padding: 2px;
+  overflow-wrap: anywhere;
+}
+/* Large totals remain inside the month; the full value is available on hover. */
+.app.tab-plan .allocation-grid .team-capacity-number {
+  min-width: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app.tab-plan .allocation-grid .team-capacity-value::before {
+  content: attr(data-capacity-symbol);
+  font-size: 8px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+.app.tab-plan:is(.dense-compact, .dense-overview)
+  .allocation-grid
+  .team-capacity-values {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+}
+.app.tab-plan:is(.dense-compact, .dense-overview)
+  .allocation-grid
+  .team-capacity-value {
+  min-height: 14px;
+  padding: 0 1px;
+  font-size: 9px;
+}
+.app.tab-plan.dense-overview
+  .allocation-grid
+  .team-capacity-header
+  > td:not(:first-child) {
+  padding: 4px 1px !important;
+}
+.app.tab-plan.dense-overview .allocation-grid .team-capacity-value {
+  font-size: 8px;
+  border-radius: 2px;
+}
+.app.tab-plan.dense-overview .allocation-grid .team-capacity-value::before {
+  display: none;
+}
+.app.tab-plan .allocation-grid .team-capacity-value.team-capacity-kind-1 {
+  border-color: #d4dfe8;
+  background: #f4f8fb;
+  color: #335c7b;
+}
+.app.tab-plan .allocation-grid .team-capacity-value.team-capacity-kind-2 {
+  background: #e8f1e3;
+  border-color: #bfcfb5;
+  color: #315c40;
+}
+.app.tab-plan .allocation-grid .team-capacity-value.over-warning {
+  border-color: #e8cd94;
+  background: #fff0d6;
+  color: #93520a;
+}
+.app.tab-plan .allocation-grid .team-capacity-value.over-critical {
+  border-color: #e6b4b4;
+  background: #ffe4e4;
+  color: #b32c32;
+}

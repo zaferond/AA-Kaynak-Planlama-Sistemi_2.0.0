@@ -1,0 +1,23 @@
+node_modules/
+.env
+.env.mssql.test
+data/
+*.log
+frontend/.compiled/
+.DS_Store
+site/
+tests/local-test-*/
+*.sqlite
+*.sqlite.lock
+aa-backup-*/
+aa-audit-*/
+.aa-pending-*/
+
+# Yerel kopya, yedek ve üretilen çıktılar
+/AA Kaynak Planlama Sistemi/
+.deployment-backups/
+output/
+tmp/
+# macOS Finder kopya dosyaları ("dosya 2.json" vb.)
+* [0-9].*
+* [0-9]

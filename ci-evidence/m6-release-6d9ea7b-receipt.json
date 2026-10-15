@@ -1,0 +1,353 @@
+{
+  "capturedAt": "2026-10-13T18:34:33.371976+00:00",
+  "run": {
+    "id": 38447278448,
+    "name": "Quality checks",
+    "event": "push",
+    "head_sha": "6d9ea7b7a98950ebbed0f1881b07e57dd59a087e",
+    "status": "completed",
+    "conclusion": "failure",
+    "html_url": "https://github.com/zaferond/AA-Kaynak-Planlama-Sistemi/actions/runs/38447278448",
+    "created_at": "2026-10-13T18:30:17Z",
+    "updated_at": "2026-10-13T18:34:07Z",
+    "run_attempt": 1
+  },
+  "jobs": [
+    {
+      "id": 115468831287,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-13T18:30:20Z",
+      "completed_at": "2026-10-13T18:33:58Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm --prefix frontend ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run verify",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run deploy:verify",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Clean release package acceptance (temporary directory, no database)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npx playwright install --with-deps chromium",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser security and draft regression checks (synthetic database)",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Run npm audit --audit-level=moderate",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run npm --prefix frontend audit --audit-level=high",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": {
+        "tests": 811,
+        "suites": 0,
+        "pass": 811,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "downloadedJobLogSha256": "f92bce86eb7946fc2dff7678dc63a6b8108c032267b722e7b627751a07b5379f",
+      "browserFinalSharedFixtureChecks": null,
+      "browserPassedAssertionsInLog": 80,
+      "auditSummaryMatches": [
+        "found 0 vulnerabilities",
+        "found 0 vulnerabilities"
+      ]
+    },
+    {
+      "id": 115468831842,
+      "name": "windows-synthetic",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-13T18:30:20Z",
+      "completed_at": "2026-10-13T18:32:06Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm --prefix frontend ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Shared domain, TypeScript and site build on Windows",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Synthetic sessions, file locks, recovery, rollback, restart and concurrency",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Clean release package acceptance (temporary directory, no database)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": {
+        "tests": 405,
+        "suites": 0,
+        "pass": 405,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "downloadedJobLogSha256": "3c0d253024717b67c7a756aedf6eb462157aea0b4d34f99a1f70d8bb74116f88",
+      "browserFinalSharedFixtureChecks": null,
+      "browserPassedAssertionsInLog": null,
+      "auditSummaryMatches": [
+        "found 0 vulnerabilities",
+        "found 0 vulnerabilities"
+      ]
+    },
+    {
+      "id": 115468832285,
+      "name": "native-mssql / native",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-13T18:30:20Z",
+      "completed_at": "2026-10-13T18:31:14Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Create isolated SQL Server container",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Wait for SQL Server and create empty test database",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run native assertions and synthetic SQL profile",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify native evidence against this commit and current sources",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Remove test container",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": {
+        "tests": 40,
+        "suites": 0,
+        "pass": 40,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "downloadedJobLogSha256": "690142632c6276f56f517d290b3e7f8396bf37dd67e34cf65d33129c468034b8",
+      "browserFinalSharedFixtureChecks": null,
+      "browserPassedAssertionsInLog": null,
+      "auditSummaryMatches": [
+        "found 0 vulnerabilities"
+      ]
+    },
+    {
+      "id": 115470568656,
+      "name": "Release acceptance",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-13T18:34:01Z",
+      "completed_at": "2026-10-13T18:34:06Z",
+      "run_attempt": 1,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Require quality, Windows and native MSSQL success for the same commit",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "testTotals": null,
+      "downloadedJobLogSha256": "d30fbce7ae5b45860349f3b42857bff1d4487467782e0d917e8149368dddde46",
+      "browserFinalSharedFixtureChecks": null,
+      "browserPassedAssertionsInLog": null,
+      "auditSummaryMatches": []
+    }
+  ],
+  "artifact": {
+    "id": 11839256011,
+    "name": "native-mssql-report",
+    "size_in_bytes": 29299,
+    "digest": "sha256:a0aaf95906c0f93827fab495aeace519f1c348520600838659146c63985ca3ef",
+    "expired": false,
+    "created_at": "2026-10-13T18:31:11Z",
+    "expires_at": "2027-01-11T18:30:18Z",
+    "downloadedZipSha256": "a0aaf95906c0f93827fab495aeace519f1c348520600838659146c63985ca3ef"
+  },
+  "nativeEvidence": {
+    "file": "native-mssql-6d9ea7b.json",
+    "sha256": "ebfbf4c5e2fa98fc1cc0b417a5fc8f7f9e4ccece050d8efe9af96cc811ea1456",
+    "schema": 35,
+    "sourceFileCount": 600,
+    "drivers": {
+      "mssql": "12.7.2",
+      "tedious": "20.3.8"
+    },
+    "releaseChecks": {
+      "currentSchemaAndHierarchy": true,
+      "personalCalendarPrivacy": true,
+      "actualReportProjection": true,
+      "adSessionLifecycle": true,
+      "encryptedNativeConnection": true
+    },
+    "cleanupVerified": true,
+    "sourceComparison": "All native hashes verified against current source bytes with verify-native-evidence.mjs; no secret or database read."
+  },
+  "scope": "Synthetic Linux SQL Server 2022 Developer + Ubuntu quality/Chromium + Windows synthetic SQL.js. Job log bytes only hashed in memory, not archived. No real AD, institution CA/proxy/NTLM/service, real workload or production data."
+}

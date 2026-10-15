@@ -1,0 +1,4221 @@
+{
+  "date": "2026-10-11",
+  "baseCommit": "ff91440",
+  "environment": "Temporary synthetic SQL.js; no application .env, accounts or database",
+  "referenceSources": {
+    "backend/mutation-settings.mjs": "c5c1e3e4633916a78a34bc8d32ade4e90334fb9fc1dc793bf698f68c29ff9b6c",
+    "backend/change-set.mjs": "be6d66568b205ad5893bca479285131440d2f100d31dd21d4fda7875a2152439",
+    "backend/planning-writer.mjs": "6e2fee14de7f16781f2342cdd9047be42c5c4eef99f986af59b0c232ad5bbfe4",
+    "backend/store.mjs": "f8f746dc82adcc9296f1659a1b3477ffffb05bfdf40d0cd9cfe9fc451e4356e0"
+  },
+  "candidateSources": {
+    "backend/mutation-settings.mjs": "d2c2c70170cdd520a891f0c878a1b6c6c22caeb0790bdf36246230b263bbf143",
+    "backend/change-set.mjs": "0dda707f70209d87e30358fdfccb95fbd5d3e6d5a7d66a253e3b817343051a4d",
+    "backend/planning-writer.mjs": "dffc33a80b7a401abb25bf46142da81f85f96ab4455f204f975e2b8238ff6032",
+    "backend/store.mjs": "cd2b31848111497ffaa7f68c708da31955641484c81ebb5409fadb382f7569cd"
+  },
+  "testSha256": "1e8305faad4b2ff92aa11e3f9f9209abd6ef480601a59d4bed6a133c25cba358",
+  "before": {
+    "measuredAt": "2026-10-11T10:35:23.163Z",
+    "node": "v24.21.0",
+    "provider": "sqljs",
+    "samples": 7,
+    "responseMode": "delta",
+    "validationMode": "single",
+    "snapshotCopy": "numeric",
+    "commandMode": "production",
+    "domainTimingScope": "domainMs measures callback staging only, excludes Store final validation, and is null for owned planning commands to preserve their marker. Other stage medians overlap and must not be added.",
+    "mutationTimingScope": "validateSnapshotMs is final full validation; prepareMutationSettingsMs is settings JSON comparison/preparation; prepareMutationViewMs includes metadata comparison, delta/full projection and any transaction-local re-read. These are separate stages but readMs overlaps response re-reads; medians must not be added.",
+    "commandSha256": "0aaf85ed82f13ffac33f1da5816b07a026d2037801a49e890244b98a33f4b316",
+    "recordReaderSha256": "0bf908f6c9a3e6ad8986a5db5a48296a0ac02f101158730d44f75e801398c2df",
+    "mutationSnapshotSha256": "f0cb5fcd623fccc8762cad94b44c14df9e14cdd4c6f8658e47ab9444614c774d",
+    "storeSha256": "f8f746dc82adcc9296f1659a1b3477ffffb05bfdf40d0cd9cfe9fc451e4356e0",
+    "repositorySha256": {
+      "backend/identity-repository.mjs": "a77fd23a459ef78293ad6824d7749477cf9024b36ccfa04de0c991fdfdd8856f",
+      "backend/planning-reader.mjs": "dd79f9f725d40fd1fc743a0728085eda256930ac160aac362e5dc0701d86dbde",
+      "backend/planning-writer.mjs": "6e2fee14de7f16781f2342cdd9047be42c5c4eef99f986af59b0c232ad5bbfe4",
+      "backend/schema-migrations.mjs": "3877eef3e98ce15310355a4a4c17694c92c3f0db902cbe5e0e96e48e3ac27bb0",
+      "backend/migration-catalog.mjs": "bada87b2cbfbd63f9c53582b814871b3b014014c2d5fd8915ebf807268935bd6"
+    },
+    "operationsSha256": "a8bb88b6dacda0c9963f3dc49028743dbbc2ed4e8d1d7e4e263373916ac19541",
+    "changeServiceSha256": "65a0c443fd2684c50683ed472050fc92d6d25a6277a128fc50367769f18a6dc5",
+    "auditSha256": "ae66df2889c7b5560371b840d01c138cc1abcf2ecab2df4b0fcb7f88f9b6e417",
+    "sqlJsAdapterSha256": "26d1e23372ba2224e598153e9e84a02a86d4be277ce04fa399e708a29ddc5f1e",
+    "schemaSha256": "f7b4bfdf33ed3d2bfd5770263ada14f3851063a56098ba696a721bbf7447a427",
+    "benchmarkSha256": "ec5e2d37a9380e176ca42926175ca87d6470f868161a7bb48c0a45037eddbe78",
+    "changeSetSha256": "be6d66568b205ad5893bca479285131440d2f100d31dd21d4fda7875a2152439",
+    "scope": "Local synthetic write + full/delta response pipeline with JSON encode/decode and immutable client merge; no HTTP/network or native MSSQL performance claim. All databases created and removed in os.tmpdir().",
+    "results": [
+      {
+        "allocations": 10000,
+        "operation": "allocation",
+        "responseMode": "delta",
+        "validationMode": "single",
+        "snapshotCopy": "numeric",
+        "commandMode": "production",
+        "resources": 200,
+        "actualAllocations": 10000,
+        "actualPercentEntries": 1000,
+        "calendarDays": 10000,
+        "initialAuditEvents": 0,
+        "databaseBytes": 5754880,
+        "medians": {
+          "pipelineMs": 157.46,
+          "mutateMs": 157.45,
+          "viewMs": 0,
+          "readMs": 44.13,
+          "persistMs": 13.02,
+          "validateSnapshotMs": 72.67,
+          "prepareMutationSettingsMs": 4.75,
+          "prepareMutationViewMs": 4.98,
+          "domainMs": null,
+          "cloneMs": 0,
+          "snapshotCopyMs": 4.37,
+          "exportMs": 1.12,
+          "fileCommitMs": 9.01,
+          "jsonMs": 0.01,
+          "parseMs": 0.01,
+          "mergeMs": 7.34
+        },
+        "p95PipelineMs": 187.12,
+        "snapshotSha256": "f410bd49ed770f2aaef1a97a2055c4497174007ba21695f53dfedf1012d08b57",
+        "observations": [
+          {
+            "readMs": 49.586291000000074,
+            "readCalls": 1,
+            "persistMs": 13.216583000000128,
+            "persistCalls": 1,
+            "validateSnapshotMs": 82.85950000000003,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.943917000000056,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.976499999999987,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.989790999999968,
+            "exportMs": 1.2457500000000437,
+            "exportCalls": 2,
+            "exportBytes": 10817536,
+            "fileCommitMs": 8.740916999999854,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.493541999999934
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.06566700000007586
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6744589999998425
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.028624999999919964
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.10329200000001038
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.13562500000011823
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.038000000000010914
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.01262500000007094
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010166999999910331
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.03220899999996618
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.25558299999988776
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6933330000001661
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.305834000000004
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 9.087125000000015
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.038000000000010914
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 1.1295840000000226
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 25.042416000000003
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 173.2226250000001,
+            "viewMs": 0,
+            "pipelineMs": 173.2325840000001,
+            "jsonMs": 0.008249999999861757,
+            "responseBytes": 277,
+            "parseMs": 0.009499999999889042,
+            "mergeMs": 6.952792000000045
+          },
+          {
+            "readMs": 42.628124999999955,
+            "readCalls": 1,
+            "persistMs": 14.351500000000215,
+            "persistCalls": 1,
+            "validateSnapshotMs": 103.2448330000002,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.831374999999753,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 5.219583000000057,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 5.274916999999732,
+            "exportMs": 1.3690000000001419,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 8.641082999999526,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.37041599999997743
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019000000000005457
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6574580000001333
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.026708000000098764
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.08874999999989086
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11570900000015172
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.03541599999994105
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010166999999910331
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007624999999961801
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.0204590000000735
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.21858399999996436
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6019999999998618
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.8497080000001915
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.089082999999846
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.027208999999857042
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8924999999999272
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 19.97020799999973
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 187.1081250000002,
+            "viewMs": 0,
+            "pipelineMs": 187.11820799999987,
+            "jsonMs": 0.008666999999604741,
+            "responseBytes": 276,
+            "parseMs": 0.011833000000024185,
+            "mergeMs": 7.355999999999767
+          },
+          {
+            "readMs": 44.251250000000255,
+            "readCalls": 1,
+            "persistMs": 13.021999999999935,
+            "persistCalls": 1,
+            "validateSnapshotMs": 71.87595899999997,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.723375000000033,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.942917000000307,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.372499999999945,
+            "exportMs": 1.1208339999998316,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 9.014916999999514,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3879580000002534
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019959000000199012
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6900829999999587
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.026541000000179338
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09791700000005221
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.1170830000000933
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.03366699999969569
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010333000000173342
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007875000000240107
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.021083999999973457
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22895800000014788
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.621375000000171
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.926042000000052
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.012499999999818
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02599999999983993
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8927079999998568
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 21.44558300000017
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 154.66750000000002,
+            "viewMs": 0,
+            "pipelineMs": 154.67258300000003,
+            "jsonMs": 0.00937500000009095,
+            "responseBytes": 277,
+            "parseMs": 0.012208999999984371,
+            "mergeMs": 7.336291999999958
+          },
+          {
+            "readMs": 44.12941600000022,
+            "readCalls": 1,
+            "persistMs": 12.813540999999987,
+            "persistCalls": 1,
+            "validateSnapshotMs": 71.11587499999996,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.694625000000087,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 5.01279199999999,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.346708999999919,
+            "exportMs": 1.0697509999995418,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 9.90216700000019,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3820410000002994
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.020500000000083674
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6913330000002134
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.026041000000077474
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09375
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11554200000000492
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.0343750000001819
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.01025000000026921
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.0076249999997344275
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.021375000000261934
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22462499999983265
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6194590000000062
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.776749999999993
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.88308300000017
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.025040999999873748
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.863416000000143
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 21.700832999999875
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 154.44516699999986,
+            "viewMs": 0,
+            "pipelineMs": 154.4497919999999,
+            "jsonMs": 0.009875000000192813,
+            "responseBytes": 276,
+            "parseMs": 0.014583000000129687,
+            "mergeMs": 7.388332999999875
+          },
+          {
+            "readMs": 44.71299999999974,
+            "readCalls": 1,
+            "persistMs": 13.580707999999959,
+            "persistCalls": 1,
+            "validateSnapshotMs": 71.40970800000014,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.958875000000262,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 5.776292000000012,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.343249999999898,
+            "exportMs": 1.1287090000000717,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 10.599583000000166,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.37725000000000364
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.018874999999752617
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.7072920000000522
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.025125000000116415
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09262499999977081
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11504100000001927
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.0340000000001055
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.009874999999738066
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007250000000112777
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02095900000040274
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22529199999962657
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.617207999999664
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.833833000000141
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 11.064875000000029
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.039874999999938154
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.902458999999908
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 18.95245799999975
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 157.88979199999994,
+            "viewMs": 0,
+            "pipelineMs": 157.8946249999999,
+            "jsonMs": 0.009332999999969616,
+            "responseBytes": 277,
+            "parseMs": 0.016375000000152795,
+            "mergeMs": 7.346541999999772
+          },
+          {
+            "readMs": 41.50933399999985,
+            "readCalls": 1,
+            "persistMs": 12.923291000000063,
+            "persistCalls": 1,
+            "validateSnapshotMs": 76.95024999999987,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.718249999999898,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.9768340000000535,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 5.155625000000327,
+            "exportMs": 0.9710000000004584,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 8.928209000000152,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3802920000002814
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019667000000026746
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.7057920000002014
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.04479200000014316
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09695800000008603
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.12195799999972223
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.03408300000000963
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010209000000031665
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007333000000016909
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02216699999962657
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22687500000029104
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6206670000001395
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.853041999999732
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.91866600000003
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.024667000000135886
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.86850000000004
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 18.90208399999983
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 157.45154100000036,
+            "viewMs": 0,
+            "pipelineMs": 157.46254100000033,
+            "jsonMs": 0.01187500000014552,
+            "responseBytes": 276,
+            "parseMs": 0.01479200000039782,
+            "mergeMs": 7.335959000000003
+          },
+          {
+            "readMs": 44.12583399999994,
+            "readCalls": 1,
+            "persistMs": 12.771999999999935,
+            "persistCalls": 1,
+            "validateSnapshotMs": 72.6654169999997,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.751917000000049,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.9142079999996895,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.269041999999899,
+            "exportMs": 1.0446259999998802,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 9.843000000000302,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3775829999999587
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.017999999999574356
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.7046669999999722
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.02516700000023775
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09733300000016243
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11983299999974406
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.03412500000013097
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010042000000339613
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007458999999926164
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.021375000000261934
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.23366600000008475
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6392500000001746
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.87258299999985
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.961999999999989
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.026000000000294676
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8701249999999163
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 21.43670800000018
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 155.6982079999998,
+            "viewMs": 0,
+            "pipelineMs": 155.70199999999977,
+            "jsonMs": 0.008333000000220636,
+            "responseBytes": 277,
+            "parseMs": 0.010499999999865395,
+            "mergeMs": 6.866833000000042
+          }
+        ]
+      },
+      {
+        "allocations": 50000,
+        "operation": "allocation",
+        "responseMode": "delta",
+        "validationMode": "single",
+        "snapshotCopy": "numeric",
+        "commandMode": "production",
+        "resources": 200,
+        "actualAllocations": 10000,
+        "actualPercentEntries": 1000,
+        "calendarDays": 10000,
+        "initialAuditEvents": 0,
+        "databaseBytes": 13201408,
+        "medians": {
+          "pipelineMs": 337.43,
+          "mutateMs": 337.42,
+          "viewMs": 0,
+          "readMs": 121.59,
+          "persistMs": 29.6,
+          "validateSnapshotMs": 126.83,
+          "prepareMutationSettingsMs": 4.9,
+          "prepareMutationViewMs": 15.17,
+          "domainMs": null,
+          "cloneMs": 0,
+          "snapshotCopyMs": 19.06,
+          "exportMs": 2.47,
+          "fileCommitMs": 12.25,
+          "jsonMs": 0.01,
+          "parseMs": 0.01,
+          "mergeMs": 28.5
+        },
+        "p95PipelineMs": 394.85,
+        "snapshotSha256": "87d2fd103d5729c7966f2105f415d9dbe13e61cde0768800c2a4d22ebfaa53e6",
+        "observations": [
+          {
+            "readMs": 123.5711250000004,
+            "readCalls": 1,
+            "persistMs": 30.37208399999963,
+            "persistCalls": 1,
+            "validateSnapshotMs": 126.82641600000079,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.930167000000438,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 16.456833999999617,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 19.0625,
+            "exportMs": 2.474750000000313,
+            "exportCalls": 2,
+            "exportBytes": 25710592,
+            "fileCommitMs": 12.24554100000023,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.30145900000024994
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.014042000000699772
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6310000000003129
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.023290999999517226
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.08899999999994179
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11154199999964476
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.08629099999961909
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.009833000000071479
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.006833000000369793
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019707999999809545
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22329199999967386
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6002089999992677
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 46.564667000000554
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.087875000000167
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.030332999999700405
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9058340000001408
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 62.29004200000054
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 337.42283300000054,
+            "viewMs": 0,
+            "pipelineMs": 337.4274580000001,
+            "jsonMs": 0.009583999999449588,
+            "responseBytes": 277,
+            "parseMs": 0.01320899999973335,
+            "mergeMs": 28.594750000000204
+          },
+          {
+            "readMs": 120.19762499999979,
+            "readCalls": 1,
+            "persistMs": 29.452249999999367,
+            "persistCalls": 1,
+            "validateSnapshotMs": 111.13829199999964,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.89745800000037,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.078499999999622,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 19.292207999999846,
+            "exportMs": 2.5105830000002243,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 11.123790999999073,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3539169999994556
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.016499999999723514
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6640409999999974
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.02420799999981682
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.08799999999973807
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11041699999987031
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.0678330000000642
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.009250000000065484
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.006624999999985448
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.018875000000662112
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.21641699999963748
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.594625000000633
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 40.43004199999996
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.033333000000312
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.027416999999331892
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8835420000004888
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 65.0307499999999
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 315.0852500000001,
+            "viewMs": 0,
+            "pipelineMs": 315.0913330000003,
+            "jsonMs": 0.013667000000168628,
+            "responseBytes": 276,
+            "parseMs": 0.01724999999987631,
+            "mergeMs": 28.104707999999846
+          },
+          {
+            "readMs": 120.40283299999919,
+            "readCalls": 1,
+            "persistMs": 29.047499999999673,
+            "persistCalls": 1,
+            "validateSnapshotMs": 112.27549999999974,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.827457999999751,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.042334000000665,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 19.31275000000005,
+            "exportMs": 2.297207999999955,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 20.9177920000011,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.34904199999982666
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.016792000000350527
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6440419999998994
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.023457999999664025
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.08791600000040489
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11133300000074087
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.06762500000058935
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.008958000000347965
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.006167000000459666
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019333000000187894
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22470800000064628
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.5949170000003505
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 45.32883299999958
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.14929200000006
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.026625000000422006
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8740410000000338
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 60.171875
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 325.4593329999998,
+            "viewMs": 0,
+            "pipelineMs": 325.46516599999995,
+            "jsonMs": 0.008042000000386906,
+            "responseBytes": 277,
+            "parseMs": 0.011625000000094587,
+            "mergeMs": 28.35974999999962
+          },
+          {
+            "readMs": 121.59408299999996,
+            "readCalls": 1,
+            "persistMs": 30.635999999999513,
+            "persistCalls": 1,
+            "validateSnapshotMs": 132.4539589999995,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 5.014083000000028,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.386207999999897,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 19.060958000000028,
+            "exportMs": 2.6594999999997526,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 12.21808400000009,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.370375000000422
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.016792000000350527
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.690417000000707
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.024833000000398897
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09095799999977316
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.13354200000048877
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.07304199999998673
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.009584000000359083
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.006665999999313499
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.020125000000007276
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.2376250000006621
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6270829999994021
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 40.838708000000224
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.12908299999981
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02420799999981682
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8782499999997526
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 65.82087500000034
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 340.52583400000003,
+            "viewMs": 0,
+            "pipelineMs": 340.5315419999997,
+            "jsonMs": 0.01041700000041601,
+            "responseBytes": 276,
+            "parseMs": 0.013958999999886146,
+            "mergeMs": 28.50487499999963
+          },
+          {
+            "readMs": 119.87470799999937,
+            "readCalls": 1,
+            "persistMs": 29.59504199999992,
+            "persistCalls": 1,
+            "validateSnapshotMs": 187.32554100000016,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.875208999999813,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.166583999999602,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 18.856540999999197,
+            "exportMs": 2.561000000000604,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 15.275626000000557,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3638329999994312
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.018082999999933236
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6361660000002303
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.02449999999953434
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.08895799999936571
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11154200000055425
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.0678330000000642
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.009415999999873748
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.006832999999460299
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019082999999227468
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.2157919999999649
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.5990419999998267
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 40.24895800000013
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 12.908667000000605
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.04541700000027049
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9208339999995587
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 59.950958000000355
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 394.84920800000054,
+            "viewMs": 0,
+            "pipelineMs": 394.8549579999999,
+            "jsonMs": 0.009957999999642198,
+            "responseBytes": 277,
+            "parseMs": 0.014749999999366992,
+            "mergeMs": 29.636625000000095
+          },
+          {
+            "readMs": 124.38916599999993,
+            "readCalls": 1,
+            "persistMs": 29.119582999999693,
+            "persistCalls": 1,
+            "validateSnapshotMs": 111.31108300000051,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.773583999999573,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.062249999999949,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 18.735374999999294,
+            "exportMs": 2.2714579999992566,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 23.9137090000022,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3616249999995489
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.01804100000026665
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 3.2242919999998776
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.026749999999992724
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09224999999969441
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.12229100000058679
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.07399999999961437
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010124999999788997
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.0072909999998955755
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.03795799999988958
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.2375000000001819
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6482500000001892
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 45.89416700000038
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.171249999999418
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02758300000004965
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8762919999999212
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 60.613292
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 330.83254099999976,
+            "viewMs": 0,
+            "pipelineMs": 330.83916599999975,
+            "jsonMs": 0.008665999999720952,
+            "responseBytes": 276,
+            "parseMs": 0.012499999999818101,
+            "mergeMs": 28.506916000000274
+          },
+          {
+            "readMs": 122.52320800000052,
+            "readCalls": 1,
+            "persistMs": 30.911042000001544,
+            "persistCalls": 1,
+            "validateSnapshotMs": 138.452624999999,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 5.0897080000013375,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.365166999999929,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 18.959499999999935,
+            "exportMs": 2.1426659999997355,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 12.092083999998067,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3724999999994907
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019083999999566004
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.715874999999869
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.025042000000212283
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.08916700000008859
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11450000000058935
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.07070899999962421
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.009707999999591266
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.006833000000369793
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019209000000046217
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.21600000000034925
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.5977499999999054
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 40.69458300000042
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.09387499999957
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02495900000030815
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8669159999999465
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 66.93624999999975
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 347.0545000000002,
+            "viewMs": 0,
+            "pipelineMs": 347.059666000001,
+            "jsonMs": 0.009749999999257852,
+            "responseBytes": 277,
+            "parseMs": 0.01316699999915727,
+            "mergeMs": 28.382207999999082
+          }
+        ]
+      }
+    ]
+  },
+  "after": {
+    "measuredAt": "2026-10-11T10:41:47.148Z",
+    "node": "v24.21.0",
+    "provider": "sqljs",
+    "samples": 7,
+    "responseMode": "delta",
+    "validationMode": "single",
+    "snapshotCopy": "numeric",
+    "commandMode": "production",
+    "domainTimingScope": "domainMs measures callback staging only, excludes Store final validation, and is null for owned planning commands to preserve their marker. Other stage medians overlap and must not be added.",
+    "mutationTimingScope": "validateSnapshotMs is final full validation; prepareMutationSettingsMs is settings JSON comparison/preparation; prepareMutationViewMs includes metadata comparison, delta/full projection and any transaction-local re-read. These are separate stages but readMs overlaps response re-reads; medians must not be added.",
+    "commandSha256": "0aaf85ed82f13ffac33f1da5816b07a026d2037801a49e890244b98a33f4b316",
+    "recordReaderSha256": "0bf908f6c9a3e6ad8986a5db5a48296a0ac02f101158730d44f75e801398c2df",
+    "mutationSnapshotSha256": "f0cb5fcd623fccc8762cad94b44c14df9e14cdd4c6f8658e47ab9444614c774d",
+    "storeSha256": "cd2b31848111497ffaa7f68c708da31955641484c81ebb5409fadb382f7569cd",
+    "repositorySha256": {
+      "backend/identity-repository.mjs": "a77fd23a459ef78293ad6824d7749477cf9024b36ccfa04de0c991fdfdd8856f",
+      "backend/planning-reader.mjs": "dd79f9f725d40fd1fc743a0728085eda256930ac160aac362e5dc0701d86dbde",
+      "backend/planning-writer.mjs": "dffc33a80b7a401abb25bf46142da81f85f96ab4455f204f975e2b8238ff6032",
+      "backend/schema-migrations.mjs": "3877eef3e98ce15310355a4a4c17694c92c3f0db902cbe5e0e96e48e3ac27bb0",
+      "backend/migration-catalog.mjs": "bada87b2cbfbd63f9c53582b814871b3b014014c2d5fd8915ebf807268935bd6"
+    },
+    "operationsSha256": "a8bb88b6dacda0c9963f3dc49028743dbbc2ed4e8d1d7e4e263373916ac19541",
+    "changeServiceSha256": "65a0c443fd2684c50683ed472050fc92d6d25a6277a128fc50367769f18a6dc5",
+    "auditSha256": "ae66df2889c7b5560371b840d01c138cc1abcf2ecab2df4b0fcb7f88f9b6e417",
+    "sqlJsAdapterSha256": "26d1e23372ba2224e598153e9e84a02a86d4be277ce04fa399e708a29ddc5f1e",
+    "schemaSha256": "f7b4bfdf33ed3d2bfd5770263ada14f3851063a56098ba696a721bbf7447a427",
+    "benchmarkSha256": "ec5e2d37a9380e176ca42926175ca87d6470f868161a7bb48c0a45037eddbe78",
+    "changeSetSha256": "0dda707f70209d87e30358fdfccb95fbd5d3e6d5a7d66a253e3b817343051a4d",
+    "scope": "Local synthetic write + full/delta response pipeline with JSON encode/decode and immutable client merge; no HTTP/network or native MSSQL performance claim. All databases created and removed in os.tmpdir().",
+    "results": [
+      {
+        "allocations": 10000,
+        "operation": "allocation",
+        "responseMode": "delta",
+        "validationMode": "single",
+        "snapshotCopy": "numeric",
+        "commandMode": "production",
+        "resources": 200,
+        "actualAllocations": 10000,
+        "actualPercentEntries": 1000,
+        "calendarDays": 10000,
+        "initialAuditEvents": 0,
+        "databaseBytes": 5754880,
+        "medians": {
+          "pipelineMs": 158.99,
+          "mutateMs": 158.99,
+          "viewMs": 0,
+          "readMs": 44.68,
+          "persistMs": 7.64,
+          "validateSnapshotMs": 79.2,
+          "prepareMutationSettingsMs": 4.86,
+          "prepareMutationViewMs": 4.94,
+          "domainMs": null,
+          "cloneMs": 0,
+          "snapshotCopyMs": 4.46,
+          "exportMs": 1.1,
+          "fileCommitMs": 9.47,
+          "jsonMs": 0.01,
+          "parseMs": 0.01,
+          "mergeMs": 7.28
+        },
+        "p95PipelineMs": 187.05,
+        "snapshotSha256": "f410bd49ed770f2aaef1a97a2055c4497174007ba21695f53dfedf1012d08b57",
+        "observations": [
+          {
+            "readMs": 46.484958000000006,
+            "readCalls": 1,
+            "persistMs": 8.208292000000029,
+            "persistCalls": 1,
+            "validateSnapshotMs": 82.30829099999983,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.830916000000116,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 5.4214170000000195,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 7.444916000000148,
+            "exportMs": 1.3065840000001572,
+            "exportCalls": 2,
+            "exportBytes": 10817536,
+            "fileCommitMs": 17.899708999999802,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.48654199999987213
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.06683300000008785
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.7217499999999291
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.029334000000062588
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.10229200000003402
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.14279199999987213
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.03995899999995345
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.012917000000015832
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010459000000082597
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.03337499999997817
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.25749999999993634
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6883749999999509
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.320042000000058
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.46962499999995
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.052957999999989624
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9051249999999982
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 22.6736249999999
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 176.48804100000007,
+            "viewMs": 0,
+            "pipelineMs": 176.49937499999987,
+            "jsonMs": 0.008417000000008557,
+            "responseBytes": 277,
+            "parseMs": 0.011583999999857042,
+            "mergeMs": 7.725750000000062
+          },
+          {
+            "readMs": 44.14083399999981,
+            "readCalls": 1,
+            "persistMs": 8.826792000000069,
+            "persistCalls": 1,
+            "validateSnapshotMs": 106.00562500000001,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 5.045499999999947,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 5.249415999999883,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 5.293666999999914,
+            "exportMs": 1.6901660000000902,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 9.219708999999739,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3935839999999189
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02070800000001327
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.7347090000000662
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.03791700000010678
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09704099999999016
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.1356670000000122
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.04158299999994597
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.012291999999888503
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.008624999999938154
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02358300000014424
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.23320800000010422
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6408750000000509
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.00079199999982
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.599917000000005
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.049500000000080036
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9263750000000073
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 20.42558299999996
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 187.03412500000013,
+            "viewMs": 0,
+            "pipelineMs": 187.045167,
+            "jsonMs": 0.009499999999889042,
+            "responseBytes": 276,
+            "parseMs": 0.012917000000015832,
+            "mergeMs": 7.259374999999864
+          },
+          {
+            "readMs": 45.77729199999999,
+            "readCalls": 1,
+            "persistMs": 7.638625000000047,
+            "persistCalls": 1,
+            "validateSnapshotMs": 78.33887500000014,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.863042000000405,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.847209000000021,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.31512500000008,
+            "exportMs": 1.029540999999881,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 9.71933399999989,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.375583000000006
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019708000000036918
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6734160000000884
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.026292000000012195
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09204099999988102
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.1173750000000382
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.034165999999913765
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010500000000092768
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007667000000083135
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02204200000005585
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22595899999987523
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6122919999997976
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.036708999999973
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.919917000000169
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.03683399999999892
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9061249999999745
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 23.131208000000015
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 157.83075000000008,
+            "viewMs": 0,
+            "pipelineMs": 157.8364590000001,
+            "jsonMs": 0.00912499999958527,
+            "responseBytes": 277,
+            "parseMs": 0.012000000000170985,
+            "mergeMs": 7.313415999999961
+          },
+          {
+            "readMs": 44.6818330000001,
+            "readCalls": 1,
+            "persistMs": 7.523666999999932,
+            "persistCalls": 1,
+            "validateSnapshotMs": 79.20083300000033,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.9050000000002,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.937125000000378,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.272749999999633,
+            "exportMs": 1.1236250000001746,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 8.436417999999321,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.38466699999980847
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02016600000024482
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.7232500000000073
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.026041999999961263
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09358300000030795
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.119499999999789
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.035833999999795196
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010499999999865395
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.008041999999932159
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02195899999969697
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.23345800000015515
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6337090000001808
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.042042000000038
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.06637499999988
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.030666999999994005
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8947079999998095
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 21.669417000000067
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 156.45104200000014,
+            "viewMs": 0,
+            "pipelineMs": 156.45600000000013,
+            "jsonMs": 0.008916999999655673,
+            "responseBytes": 276,
+            "parseMs": 0.012124999999741704,
+            "mergeMs": 7.269958000000315
+          },
+          {
+            "readMs": 44.153957999999875,
+            "readCalls": 1,
+            "persistMs": 9.025666999999885,
+            "persistCalls": 1,
+            "validateSnapshotMs": 78.55191700000023,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 5.870625000000018,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.998333000000002,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.461250000000291,
+            "exportMs": 1.0954589999996642,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 9.46833400000014,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.38295800000014424
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019042000000354165
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.8185419999999795
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.03516700000000128
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.10062500000003638
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.12295899999980975
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.03670800000008967
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.011084000000209926
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.008207999999740423
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.022916999999779364
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22583399999984977
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6114999999999782
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.948583999999755
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 9.680000000000291
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.04375000000027285
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.891208000000006
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 19.16037499999993
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 158.98708299999998,
+            "viewMs": 0,
+            "pipelineMs": 158.99199999999973,
+            "jsonMs": 0.008834000000206288,
+            "responseBytes": 277,
+            "parseMs": 0.012416999999913969,
+            "mergeMs": 7.27883299999985
+          },
+          {
+            "readMs": 43.193333000000166,
+            "readCalls": 1,
+            "persistMs": 7.507791999999881,
+            "persistCalls": 1,
+            "validateSnapshotMs": 83.09925000000021,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.814834000000246,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.906207999999879,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 5.278583999999682,
+            "exportMs": 1.0698740000002545,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 8.380792000000383,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.37800000000015643
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019166999999924883
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.7146659999998519
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.04454199999963748
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09508299999970404
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.13149999999995998
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.03595899999982066
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.01062499999989086
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.008165999999619089
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02233299999988958
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.23495899999988978
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6227909999997792
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.984791999999743
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 9.234124999999949
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.035499999999956344
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9047080000000278
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 18.964500000000044
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 159.55454199999986,
+            "viewMs": 0,
+            "pipelineMs": 159.55937499999982,
+            "jsonMs": 0.009250000000065484,
+            "responseBytes": 276,
+            "parseMs": 0.013167000000066764,
+            "mergeMs": 7.300832999999784
+          },
+          {
+            "readMs": 45.047207999999955,
+            "readCalls": 1,
+            "persistMs": 7.5362920000002305,
+            "persistCalls": 1,
+            "validateSnapshotMs": 72.92879099999982,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.796707999999853,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 4.875707999999577,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 4.2222499999998035,
+            "exportMs": 0.9909160000001975,
+            "exportCalls": 2,
+            "exportBytes": 11509760,
+            "fileCommitMs": 13.456209000000399,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3789170000000013
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.01983299999983501
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.7045420000004015
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.02645799999982046
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09308300000020608
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11483300000008967
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 6,
+                "ms": 0.03433299999960582
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010458000000198808
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007499999999708962
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02091599999994287
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22454199999992852
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6144580000000133
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 7.922583999999915
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.002958999999919
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.035499999999956344
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8848329999996167
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 20000,
+                "ms": 22.351083000000017
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 41544,
+            "materializedRows": 544,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 155.1521670000002,
+            "viewMs": 0,
+            "pipelineMs": 155.15854200000012,
+            "jsonMs": 0.00858299999981682,
+            "responseBytes": 277,
+            "parseMs": 0.012124999999741704,
+            "mergeMs": 7.028999999999996
+          }
+        ]
+      },
+      {
+        "allocations": 50000,
+        "operation": "allocation",
+        "responseMode": "delta",
+        "validationMode": "single",
+        "snapshotCopy": "numeric",
+        "commandMode": "production",
+        "resources": 200,
+        "actualAllocations": 10000,
+        "actualPercentEntries": 1000,
+        "calendarDays": 10000,
+        "initialAuditEvents": 0,
+        "databaseBytes": 13201408,
+        "medians": {
+          "pipelineMs": 327.98,
+          "mutateMs": 327.97,
+          "viewMs": 0,
+          "readMs": 121.59,
+          "persistMs": 24.39,
+          "validateSnapshotMs": 113.49,
+          "prepareMutationSettingsMs": 4.9,
+          "prepareMutationViewMs": 15.28,
+          "domainMs": null,
+          "cloneMs": 0,
+          "snapshotCopyMs": 19.42,
+          "exportMs": 2.18,
+          "fileCommitMs": 12.36,
+          "jsonMs": 0.01,
+          "parseMs": 0.01,
+          "mergeMs": 28.98
+        },
+        "p95PipelineMs": 359.38,
+        "snapshotSha256": "87d2fd103d5729c7966f2105f415d9dbe13e61cde0768800c2a4d22ebfaa53e6",
+        "observations": [
+          {
+            "readMs": 123.7842499999997,
+            "readCalls": 1,
+            "persistMs": 27.43183300000055,
+            "persistCalls": 1,
+            "validateSnapshotMs": 139.15379099999973,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 5.05004099999951,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.83087499999965,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 19.41899999999987,
+            "exportMs": 2.683958999999959,
+            "exportCalls": 2,
+            "exportBytes": 25710592,
+            "fileCommitMs": 15.68370799999957,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3438750000004802
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.01787499999954889
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6547080000000278
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.031458999999813386
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09370899999976245
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.12045800000032614
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.0904579999996713
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010416999999506515
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007625000000189175
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.020166999999673862
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.23020899999937683
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6056670000007216
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 46.68458399999963
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.155124999999316
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.04233399999975518
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9351249999999709
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 62.26204200000029
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 350.5679170000003,
+            "viewMs": 0,
+            "pipelineMs": 350.57316700000047,
+            "jsonMs": 0.009332999999969616,
+            "responseBytes": 277,
+            "parseMs": 0.012416000000484928,
+            "mergeMs": 29.52191700000003
+          },
+          {
+            "readMs": 121.08454200000051,
+            "readCalls": 1,
+            "persistMs": 24.12462499999947,
+            "persistCalls": 1,
+            "validateSnapshotMs": 112.64362500000061,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.942749999999251,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.336624999999913,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 19.55633399999988,
+            "exportMs": 2.171041999999943,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 12.357210000001032,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.37774999999965075
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.020125000000007276
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6744580000004134
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.031833000000005995
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09695899999951507
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.12233400000059191
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.07745900000008987
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.010333999999602383
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007333000000471657
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.0198339999997188
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.23666700000012497
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6117500000000291
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 41.01329100000021
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 12.73974999999973
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.04195900000013353
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9370829999998023
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 60.33158300000014
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 313.6669579999998,
+            "viewMs": 0,
+            "pipelineMs": 313.6728329999996,
+            "jsonMs": 0.01079100000060862,
+            "responseBytes": 276,
+            "parseMs": 0.014250000000174623,
+            "mergeMs": 29.10741599999983
+          },
+          {
+            "readMs": 121.24512500000037,
+            "readCalls": 1,
+            "persistMs": 24.177832999999737,
+            "persistCalls": 1,
+            "validateSnapshotMs": 113.40062500000022,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.804707999999664,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.016082999999526,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 19.558332999999948,
+            "exportMs": 2.1302080000004935,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 26.296124000000418,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.38341599999967
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.020125000000007276
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6966659999998228
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.03137499999957072
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.09587499999997817
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.1553750000002765
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.08458400000017718
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.013125000000400178
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007875000000240107
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02104200000030687
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22495900000012625
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6029170000001614
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 44.78062500000033
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.065459000000374
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.036291000000346685
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.894083000000137
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 61.25975000000017
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 327.97416599999997,
+            "viewMs": 0,
+            "pipelineMs": 327.9819159999997,
+            "jsonMs": 0.009000000000014552,
+            "responseBytes": 277,
+            "parseMs": 0.012708000000202446,
+            "mergeMs": 29.452374999999847
+          },
+          {
+            "readMs": 123.0405839999994,
+            "readCalls": 1,
+            "persistMs": 25.719624999999724,
+            "persistCalls": 1,
+            "validateSnapshotMs": 142.88133299999936,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.898415999999997,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.284083000000464,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 18.9007500000007,
+            "exportMs": 2.592999999999847,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 10.962583999999879,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.37791699999979755
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.01937499999985448
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6632499999996071
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.028792000000066764
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.110833000000639
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.17070800000055897
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.08929199999965931
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.01008300000012241
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007332999999562162
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.020292000000154076
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.3202080000000933
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.8680420000000595
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 42.279875000000175
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.599749999999403
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.041916000000128406
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.9131250000000364
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 64.94245899999987
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 345.79929099999936,
+            "viewMs": 0,
+            "pipelineMs": 345.80529099999967,
+            "jsonMs": 0.010166999999455584,
+            "responseBytes": 276,
+            "parseMs": 0.01229200000034325,
+            "mergeMs": 28.528583000000253
+          },
+          {
+            "readMs": 121.58962500000052,
+            "readCalls": 1,
+            "persistMs": 24.0912500000004,
+            "persistCalls": 1,
+            "validateSnapshotMs": 113.48541599999953,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.831957999999759,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.202249999999367,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 18.961583000000246,
+            "exportMs": 2.3436250000004293,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 10.997041999999055,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.36049999999977445
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.0185830000000351
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6402090000001408
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.02479200000016135
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.08762500000011642
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.13829200000054698
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.07770799999980227
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.011458999999376829
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007916999999906693
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.02087500000016007
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.2306669999998121
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.5947500000002037
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 46.285249999999905
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.120624999999563
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.04150000000026921
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8879170000000158
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 60.47674999999981
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 312.8312910000004,
+            "viewMs": 0,
+            "pipelineMs": 312.8369580000008,
+            "jsonMs": 0.009874999999738066,
+            "responseBytes": 277,
+            "parseMs": 0.012999999999919964,
+            "mergeMs": 28.60529200000019
+          },
+          {
+            "readMs": 120.86962500000027,
+            "readCalls": 1,
+            "persistMs": 24.391999999999825,
+            "persistCalls": 1,
+            "validateSnapshotMs": 112.47858400000041,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.839584000000286,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.091333000000304,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 18.890333000000282,
+            "exportMs": 2.17779100000007,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 24.54933500000152,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.4302499999994325
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.020582999999533058
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6699159999998301
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.024625000000014552
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.08970899999985704
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.11200000000008004
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.06850000000031287
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.00891700000011042
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.006832999999460299
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.035208000000238826
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.22479199999997945
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.6132079999997586
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 45.033832999999504
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.03241700000035
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.03191700000024866
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.8744159999996555
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 61.07191700000021
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 333,
+            "mutateMs": 324.6075000000001,
+            "viewMs": 0,
+            "pipelineMs": 324.6147090000004,
+            "jsonMs": 0.009374999999636202,
+            "responseBytes": 276,
+            "parseMs": 0.012166999999863037,
+            "mergeMs": 28.77049999999963
+          },
+          {
+            "readMs": 124.93924999999945,
+            "readCalls": 1,
+            "persistMs": 26.775415999999495,
+            "persistCalls": 1,
+            "validateSnapshotMs": 152.3608749999994,
+            "validateSnapshotCalls": 1,
+            "prepareMutationSettingsMs": 4.940832999999657,
+            "prepareMutationSettingsCalls": 1,
+            "prepareMutationViewMs": 15.810958999999457,
+            "prepareMutationViewCalls": 1,
+            "domainMs": null,
+            "planningDraftCopies": 1,
+            "generalDraftCopies": 0,
+            "cloneMs": 0,
+            "cloneCalls": 0,
+            "snapshotCopyMs": 19.894209000000046,
+            "exportMs": 2.0904579999996713,
+            "exportCalls": 2,
+            "exportBytes": 26402816,
+            "fileCommitMs": 11.00620699999945,
+            "sqlReads": {
+              "users": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.3766670000004524
+              },
+              "user_leaders": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019624999999905413
+              },
+              "settings": {
+                "calls": 1,
+                "rows": 1,
+                "ms": 0.6651670000001104
+              },
+              "leaders": {
+                "calls": 1,
+                "rows": 7,
+                "ms": 0.028167000000394182
+              },
+              "risk_systems": {
+                "calls": 1,
+                "rows": 75,
+                "ms": 0.10820899999998801
+              },
+              "teams": {
+                "calls": 1,
+                "rows": 54,
+                "ms": 0.14995799999996962
+              },
+              "projects": {
+                "calls": 1,
+                "rows": 25,
+                "ms": 0.08670799999981682
+              },
+              "project_risks": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.009708999999929802
+              },
+              "project_phases": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.007250000000567525
+              },
+              "project_milestones": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.019458000000668108
+              },
+              "resources": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.3007920000000013
+              },
+              "resource_versions": {
+                "calls": 1,
+                "rows": 200,
+                "ms": 0.7919999999994616
+              },
+              "allocations": {
+                "calls": 1,
+                "rows": 50000,
+                "ms": 43.309541999999965
+              },
+              "actual_allocations": {
+                "calls": 1,
+                "rows": 10000,
+                "ms": 8.005041999999776
+              },
+              "actual_worked_hours": {
+                "calls": 1,
+                "rows": 0,
+                "ms": 0.031415999999808264
+              },
+              "actual_percent_entries": {
+                "calls": 1,
+                "rows": 1000,
+                "ms": 0.866624999999658
+              },
+              "revisions": {
+                "calls": 1,
+                "rows": 60000,
+                "ms": 66.57537499999944
+              }
+            },
+            "sqlStatements": 21,
+            "selectedRows": 121563,
+            "materializedRows": 563,
+            "writtenRows": {
+              "allocations": 1,
+              "revisions": 1,
+              "audit_events": 1,
+              "settings": 1
+            },
+            "changedRecords": {
+              "team": 0,
+              "project": 0,
+              "risk": 0,
+              "riskSystem": 0,
+              "resource": 0,
+              "allocation": 1,
+              "actual": 0,
+              "workedHours": 0,
+              "percent": 0,
+              "calendar": 0,
+              "personDay": 0,
+              "leader": 0
+            },
+            "writeParameterBytes": 334,
+            "mutateMs": 359.37195800000063,
+            "viewMs": 0,
+            "pipelineMs": 359.3779170000007,
+            "jsonMs": 0.009791999999833934,
+            "responseBytes": 277,
+            "parseMs": 0.012458000000151515,
+            "mergeMs": 28.980249999999614
+          }
+        ]
+      }
+    ]
+  },
+  "alternatingDiffProbe": [
+    {
+      "calendarDays": 1000,
+      "samples": {
+        "reference": [
+          17.92541699999998,
+          17.067958999999973,
+          17.376666,
+          16.233249999999998,
+          14.821875000000034,
+          14.800375000000031,
+          14.378458000000023,
+          14.378207999999972,
+          14.57833400000004
+        ],
+        "candidate": [
+          16.71995899999996,
+          16.84258299999999,
+          16.915291999999965,
+          15.930667000000028,
+          14.02049999999997,
+          14.117166999999995,
+          14.346209000000044,
+          13.958666999999991,
+          13.735290999999961
+        ]
+      },
+      "changeSetSha256": "1bab38aeea164813b38ecb2c8f19612b977523400b75887bf4a78d2c403d68d8"
+    },
+    {
+      "calendarDays": 10000,
+      "samples": {
+        "reference": [
+          25.82791700000007,
+          23.25400000000002,
+          23.305582999999956,
+          23.2333339999999,
+          23.016666999999984,
+          24.860416999999984,
+          23.916541999999936,
+          24.45287499999995,
+          24.036000000000058
+        ],
+        "candidate": [
+          18.363291000000004,
+          18.328666999999996,
+          20.248707999999965,
+          18.698750000000018,
+          19.509791999999948,
+          19.282666999999947,
+          22.35620899999992,
+          19.211749999999938,
+          18.717333999999937
+        ]
+      },
+      "changeSetSha256": "1bab38aeea164813b38ecb2c8f19612b977523400b75887bf4a78d2c403d68d8"
+    }
+  ],
+  "diffProbeSource": "import fs from \"node:fs/promises\";\nimport assert from \"node:assert/strict\";\nimport {performance} from \"node:perf_hooks\";\nimport {createHash} from \"node:crypto\";\nimport {dataChanges} from \"../backend/change-set.mjs\";\nimport {prepareMutationSettings} from \"../backend/mutation-settings.mjs\";\nimport {dataChanges as originalChanges} from \"./reference-change-set.mjs\";\nimport {prepareMutationSettings as originalSettings} from \"./reference-mutation-settings.mjs\";\nconst observations=[];\nfor(const count of [1000,10000]){\n const before={teams:[],projects:[],resources:[],risks:[],allocations:{},actualAllocations:{},workCalendar:{},personCalendar:{}};\n for(let i=0;i<50000;i++)before.allocations[\"t|p\"+i+\"|2026-01\"]=0.25;\n for(let i=0;i<10000;i++)before.actualAllocations[\"r|p\"+i+\"|2026-01\"]=0.01;\n for(let i=0;i<count;i++){\n   const date=new Date(Date.UTC(2026,0,1+Math.floor(i/200))).toISOString().slice(0,10);\n   before.personCalendar[\"r\"+(i%200)+\"|\"+date+\"|leave\"]={type:\"leave\",hours:1,label:\"Synthetic calendar\"};\n }\n const after=structuredClone(before);after.allocations[\"t|p0|2026-01\"]=0.5;\n const results={};\n const measure=(name)=>{const start=performance.now();let settings,changes;if(name===\"reference\"){settings=originalSettings(before,after);changes=originalChanges(before,after)}else{settings=prepareMutationSettings(before,after,{validatedCalendars:true});changes=dataChanges(before,after,{settings})}return {ms:performance.now()-start,changes,sql:{assignments:settings.assignments,values:settings.values}}};\n for(const name of [\"reference\",\"candidate\"])measure(name);\n const samples={reference:[],candidate:[]};\n for(let i=0;i<9;i++)for(const name of i%2?[\"candidate\",\"reference\"]:[\"reference\",\"candidate\"]){const result=measure(name);samples[name].push(result.ms);results[name]=result;}\n assert.deepEqual(results.reference.changes,results.candidate.changes);assert.deepEqual(results.reference.sql,results.candidate.sql);\n observations.push({calendarDays:count,samples,changeSetSha256:createHash(\"sha256\").update(JSON.stringify(results.candidate.changes)).digest(\"hex\")});\n}\nawait fs.writeFile(new URL(\"./diff-cost.json\",import.meta.url),JSON.stringify(observations,null,2)+\"\\n\");console.log(JSON.stringify(observations.map(r=>({calendarDays:r.calendarDays,medians:Object.fromEntries(Object.entries(r.samples).map(([k,v])=>[k,[...v].sort((a,b)=>a-b)[4]]))}))));\n",
+  "assertions": {
+    "fullFinalSnapshotsEqual": true,
+    "sqlRowsAndWritesEqual": true,
+    "validationSettingsResponseCallCountsEqual": true,
+    "calendarEntrySerializationOmittedOnlyForUnchangedValidatedPair": true,
+    "tests": 102,
+    "failed": 0,
+    "skipped": 0
+  },
+  "limits": [
+    "Local sequential measurements, not native MSSQL/Windows/HTTP/concurrent capacity acceptance",
+    "Total pipeline latency did not consistently improve; GC/OS/order effects remain",
+    "Full snapshot reads, final validation, global transaction locks and all numeric map scans remain"
+  ]
+}

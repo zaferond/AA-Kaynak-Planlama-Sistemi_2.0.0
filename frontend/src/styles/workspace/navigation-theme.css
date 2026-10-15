@@ -1,0 +1,121 @@
+/* Compact opening-tab preference in the blue masthead. */
+.app .masttopright .default-tab-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+  color: #dce9f8;
+  font-size: 10px;
+  font-weight: 650;
+}
+.app .masttopright .default-tab-control select {
+  width: 145px;
+  height: 27px;
+  min-height: 27px;
+  padding: 3px 6px;
+  border: 1px solid #aabfd4;
+  border-radius: 5px;
+  background: #f2f7fb;
+  color: #173b62;
+  font-size: 10px;
+  text-overflow: ellipsis;
+}
+.app .masttopright .default-tab-control select:focus-visible {
+  outline: 2px solid #c9e6ff;
+  outline-offset: 2px;
+}
+@media (max-width: 650px) {
+  .app .masttopright .default-tab-control select {
+    width: 135px;
+  }
+}
+
+/* Main navigation: a clear active state and a compact horizontal strip. */
+.app .workspace-nav {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #dce6ee;
+}
+.app .workspace-nav .navtabs {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 4px !important;
+  width: 100%;
+  height: auto !important;
+  min-height: 52px;
+  margin: 0 0 2px;
+  padding: 4px 4px 10px;
+  border: 1px solid #d3e0ea !important;
+  border-radius: 9px;
+  background: #eaf1f6;
+  box-shadow: inset 0 1px 2px #1b3e5c0b;
+  flex-wrap: nowrap !important;
+  scrollbar-width: thin;
+  scrollbar-color: #9eb8ca transparent;
+  scroll-snap-type: x proximity;
+}
+.app .workspace-nav .navtabs [role="tab"] {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  min-height: 36px;
+  margin: 0;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #3a5b73;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: 0;
+  box-shadow: none;
+  scroll-snap-align: start;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+.app .workspace-nav .navtabs [role="tab"]::after {
+  display: none !important;
+}
+.app .workspace-nav .navtabs [role="tab"] svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  stroke-width: 2;
+}
+.app .workspace-nav .navtabs [role="tab"]:hover:not([data-state="active"]) {
+  border-color: #c4d7e5;
+  background: #f9fcfe;
+  color: #244d6a;
+}
+.app .workspace-nav .navtabs [role="tab"][data-state="active"] {
+  border-color: #2b5775;
+  background: var(--active-nav-blue);
+  color: #fff;
+  box-shadow: 0 2px 5px #1c405b36;
+}
+.app .workspace-nav .navtabs [role="tab"]:focus-visible {
+  outline: 2px solid #3a86b8;
+  outline-offset: 2px;
+}
+@media (max-width: 650px) {
+  .app .workspace-nav .navtabs {
+    min-height: 52px;
+    scrollbar-width: none;
+  }
+  .app .workspace-nav .navtabs::-webkit-scrollbar {
+    display: none;
+  }
+  .app .workspace-nav .navtabs [role="tab"] {
+    height: 36px;
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+}

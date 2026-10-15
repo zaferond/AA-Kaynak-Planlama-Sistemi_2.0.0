@@ -1,0 +1,8 @@
+[
+  {
+    "provider": "sqljs",
+    "schemaVersion": 30,
+    "sha256": "e5df33f546bd71c2efdb31e080abc687c8b9a2609ec576d9f1b3949f88bc0ceb",
+    "reason": "Schema 30 catalog before startup version guards; identical DDL and data transformations. Current schema/model/credential validation is still mandatory."
+  }
+]

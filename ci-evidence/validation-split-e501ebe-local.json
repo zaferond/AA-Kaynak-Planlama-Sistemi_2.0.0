@@ -1,0 +1,89 @@
+{
+  "recordedAt": "2026-10-11T15:46:28.083747+00:00",
+  "baseCommit": "bc76c9f45f8101f8e3daaf8a6ceab8cf7569f173",
+  "sourceCommit": "e501ebe301fbb5ac133424638346855e56d8e5a4",
+  "environment": {
+    "os": "macOS arm64",
+    "node": "24.21.0",
+    "isolatedGitArchive": true,
+    "allowlistedProcessEnvironment": true,
+    "syntheticSqljsOnly": true,
+    "realEnvLoaded": false,
+    "realDatabaseAccessed": false,
+    "dependenciesInstalledLocally": false,
+    "serviceRestarted": false
+  },
+  "priorObservedCommands": [
+    {
+      "command": "node --test tests/snapshot-validation.test.mjs tests/validation-records.test.mjs tests/planning-snapshot.test.mjs tests/planning-preflight.test.mjs tests/record-access.test.mjs tests/person-month-index.test.mjs",
+      "exitCode": 0,
+      "tests": 56,
+      "pass": 56,
+      "fail": 0
+    },
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "tests": 679,
+      "pass": 679,
+      "fail": 0
+    },
+    {
+      "command": "node --check tests/mssql.integration.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/verify-deployment.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/check-deployment-package.mjs",
+      "exitCode": 0,
+      "sourceFiles": 416,
+      "releaseArtifactFiles": 7
+    }
+  ],
+  "localLogAvailability": "Original isolated-stage logs were no longer present after the session resumed. These results were observed in earlier tool output; no log hashes are reconstructed. Archived GitHub receipts independently prove the full Linux/Windows/browser/native gates for the exact source commit.",
+  "deployment": {
+    "baseCommit": "bc76c9f45f8101f8e3daaf8a6ceab8cf7569f173",
+    "preservedRuntimeTest": "044dce3dfb9c3c86422f685e50b0d097c607d00cb19bc618008d23eb972895d4",
+    "updates": 26,
+    "sourceFiles": 416,
+    "artifactFiles": 439,
+    "releaseArtifactFiles": 7,
+    "protectedTestSha256": "1bff9c63ab2d42bbe3a9c0c3986bb05727909decf30bd3a242125a19dc03604c",
+    "files": {
+      "shared/server-domain.ts": "c527c80bf25d532fe5209d9c5acc620a20251756cc42214b24dd7f896455a0cf",
+      "shared/snapshot-schema.ts": "39180863dfe622f5f98a65d0ed2734eeda985bdc1beb35bf5dbb3cf69c36e31d",
+      "shared/snapshot-validation-error.ts": "1579d236d12ff1c36d099d53453ac4a3401632303a255e16c122dd01f94b64c6",
+      "shared/snapshot-calendar-validation.ts": "cdaf115d3419d1f81821a16fff3506208f3c3a85108b8d96707c3007a7097efd",
+      "shared/snapshot-reference-validation.ts": "51b0c8a6029e1dbbda2da94b864d9066e792ca3b0b8a79f8505bb1c68b23ac7d",
+      "shared/snapshot-timeline-validation.ts": "d2757eaa6e0391ce88500f42b858460efa223480bb91eceead57d4cc731b1353",
+      "shared/snapshot-allocation-validation.ts": "f8e8f1365d430ed5e67e1be294ec50fa5142f9154f9d151364cc25c10457a540",
+      "tests/snapshot-validation-reference.mjs": "a00c6ccb107f30ffb17c18bff1c0d9f33e93d94e6b4ea436042646d7333f4a1d",
+      "tests/snapshot-validation-suite.mjs": "a64181c3e755da3f2c5dfac96ee0e418ead851d7c7432be446dabab648ca49ad",
+      "tests/snapshot-validation.test.mjs": "8eb86f1bec0a95c7e5db3fbd2620a21686927a3f9acfa43cbb188ed77c44c241",
+      ".github/workflows/quality.yml": "ee295e1c7e69a79af1149893266303a1a1d9af35b14c24987fb9dc313b6d9dc4",
+      "tests/mssql.integration.mjs": "004a6b0838e141f64e2f7cb7a9a0d7fe24da105dd161ffcb0e0df7ee0146faf0"
+    }
+  },
+  "postResumeVerification": {
+    "bothManifestInventoriesMatch": true,
+    "bothChangedFileHashesMatchMirrorReceipt": true,
+    "protectedRuntimeTestsUnchanged": true
+  },
+  "differentialValidation": {
+    "frozenValidatorCommit": "bc76c9f45f8101f8e3daaf8a6ceab8cf7569f173",
+    "frozenSourceSha256": "f7b4bfdf33ed3d2bfd5770263ada14f3851063a56098ba696a721bbf7447a427",
+    "referenceModuleSha256": "a00c6ccb107f30ffb17c18bff1c0d9f33e93d94e6b4ea436042646d7333f4a1d",
+    "domainFaults": 45,
+    "orderedFaultPairs": 2025,
+    "scope": "Frozen validator body/schema with unchanged shared policy dependencies; finite comparisons, not an exhaustive proof."
+  },
+  "initialVerificationCorrection": "One new test expectation assumed a monthly maximum of 744; the existing production limit is 1000. Only the expectation changed; the validators already matched. Final focused/full gates passed.",
+  "nativeRowCountComparison": {
+    "baselineCommit": "1ade784e2ea47e7c7c018fc6c480451b2b8b9125",
+    "tableGroupSummariesCompared": 425,
+    "mismatches": 0
+  }
+}

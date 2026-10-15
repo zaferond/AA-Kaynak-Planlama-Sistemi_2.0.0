@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-13",
+  "baseCommit": "ee4ebbd3d014454fadf7dbfaba40892028fea1f0",
+  "scope": "Local synthetic checks on the working tree with M1-M5; not a GitHub CI attestation",
+  "quality": {
+    "command": "npm run verify",
+    "tests": 802,
+    "passed": 802,
+    "failed": 0,
+    "skipped": 0
+  },
+  "focusedBrowser": {
+    "checks": 13,
+    "pageErrors": 0
+  },
+  "benchmarks": [
+    {
+      "date": "2026-10-13",
+      "node": "v24.21.0",
+      "provider": "temporary-synthetic-sqljs",
+      "size": 10000,
+      "resources": 200,
+      "actuals": 4000,
+      "months": 3,
+      "exactResultComparison": true,
+      "results": [
+        {
+          "kind": "actual",
+          "mode": "full-reference",
+          "medianMs": 45.42,
+          "returnedSqlRows": 32556,
+          "sqlCalls": 15,
+          "samples": 3
+        },
+        {
+          "kind": "actual",
+          "mode": "scoped",
+          "medianMs": 8.08,
+          "returnedSqlRows": 1809,
+          "sqlCalls": 13,
+          "samples": 3
+        },
+        {
+          "kind": "activity",
+          "mode": "full-reference",
+          "medianMs": 34.12,
+          "returnedSqlRows": 32556,
+          "sqlCalls": 15,
+          "samples": 3
+        },
+        {
+          "kind": "activity",
+          "mode": "scoped",
+          "medianMs": 1.84,
+          "returnedSqlRows": 489,
+          "sqlCalls": 8,
+          "samples": 3
+        }
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "node": "v24.21.0",
+      "provider": "temporary-synthetic-sqljs",
+      "size": 50000,
+      "resources": 200,
+      "actuals": 4000,
+      "months": 3,
+      "exactResultComparison": true,
+      "results": [
+        {
+          "kind": "actual",
+          "mode": "full-reference",
+          "medianMs": 134.74,
+          "returnedSqlRows": 112572,
+          "sqlCalls": 15,
+          "samples": 3
+        },
+        {
+          "kind": "actual",
+          "mode": "scoped",
+          "medianMs": 16.79,
+          "returnedSqlRows": 1825,
+          "sqlCalls": 13,
+          "samples": 3
+        },
+        {
+          "kind": "activity",
+          "mode": "full-reference",
+          "medianMs": 113.94,
+          "returnedSqlRows": 112572,
+          "sqlCalls": 15,
+          "samples": 3
+        },
+        {
+          "kind": "activity",
+          "mode": "scoped",
+          "medianMs": 2.07,
+          "returnedSqlRows": 505,
+          "sqlCalls": 8,
+          "samples": 3
+        }
+      ]
+    }
+  ],
+  "nativeMssql": "not_run",
+  "realAccountsOrDatabaseUsed": false,
+  "localBuildAndDeployment": {
+    "repo": "passed",
+    "runtimeCopy": "passed",
+    "sourceFilesMatch": true,
+    "serverRestarted": false
+  }
+}

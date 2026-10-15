@@ -1,0 +1,65 @@
+name: Quality checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  native-mssql:
+    uses: ./.github/workflows/mssql-native.yml
+  release-acceptance:
+    name: Release acceptance
+    if: ${{ always() }}
+    needs: [verify, windows-synthetic, native-mssql]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require quality, Windows and native MSSQL success for the same commit
+        env:
+          QUALITY: ${{ needs.verify.result }}
+          WINDOWS: ${{ needs.windows-synthetic.result }}
+          NATIVE: ${{ needs.native-mssql.result }}
+        run: test "$QUALITY" = success && test "$WINDOWS" = success && test "$NATIVE" = success
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
+      - run: npm ci
+      - run: npm --prefix frontend ci
+      - run: npm run verify
+      - run: npm run deploy:verify
+      - name: Clean release package acceptance (temporary directory, no database)
+        run: node scripts/check-deployment-package.mjs
+      - run: npx playwright install --with-deps chromium
+      - name: Browser security and draft regression checks (synthetic database)
+        run: node scripts/run-browser-checks-isolated.mjs
+      - run: npm audit --audit-level=moderate
+      - run: npm --prefix frontend audit --audit-level=high
+  windows-synthetic:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
+      - run: npm ci
+      - run: npm --prefix frontend ci
+      - name: Shared domain, TypeScript and site build on Windows
+        run: npm run check:domain && npm run build && npm run deploy:verify
+        shell: cmd
+      - name: Synthetic sessions, file locks, recovery, rollback, restart and concurrency
+        run: node --test tests/active-directory.test.mjs tests/planning-contract.test.mjs tests/planning-preflight.test.mjs tests/mutation-admission.test.mjs tests/mutation-admission-http.test.mjs tests/calendar-diff.test.mjs tests/activity-report.test.mjs tests/config.test.mjs tests/http-config.test.mjs tests/proxy-transport.test.mjs tests/sqljs.test.mjs tests/concurrency.test.mjs tests/restore.test.mjs tests/recovery-acceptance.test.mjs tests/storage-order.test.mjs tests/workspace-navigation.test.mjs tests/portal-refresh.test.mjs tests/http-transport.test.mjs tests/data-response.test.mjs tests/login-security.test.mjs tests/xlsx-workbook.test.mjs tests/xlsx-cell-limits.test.mjs tests/xlsx-xml-characters.test.mjs tests/domain-boundaries.test.mjs tests/risk-systems.test.mjs tests/record-access-http.test.mjs tests/startup-tools.test.mjs tests/deployment-manifest.test.mjs tests/dependency-security.test.mjs tests/transaction-profile.test.mjs tests/benchmark-command.test.mjs tests/mutation-settings.test.mjs tests/numeric-record-schema.test.mjs tests/planning-snapshot.test.mjs tests/mutation-snapshot.test.mjs tests/snapshot-metadata.test.mjs tests/mssql-batch.test.mjs tests/mssql-scan.test.mjs tests/read-records.test.mjs tests/person-month-index.test.mjs tests/snapshot-validation.test.mjs tests/directory-session-http.test.mjs tests/actual-report-reader.test.mjs tests/report-read-admission.test.mjs tests/native-evidence.test.mjs tests/native-release.test.mjs tests/windows-launcher.integration.mjs
+      - name: Clean release package acceptance (temporary directory, no database)
+        run: node scripts/check-deployment-package.mjs

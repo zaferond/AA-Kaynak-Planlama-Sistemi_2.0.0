@@ -1,0 +1,83 @@
+{
+  "recordedAt": "2026-10-11T12:37:57.134493+00:00",
+  "baseCommit": "06c523aa5a207bc7c72c05e42f543055540c449f",
+  "sourceCommit": "6bcf0faae3595b65ce704f564b10653e4473f8a7",
+  "environment": {
+    "os": "macOS arm64",
+    "node": "24.21.0",
+    "isolatedGitArchive": true,
+    "syntheticSqljsOnly": true,
+    "allowlistedProcessEnvironment": true,
+    "realEnvLoaded": false,
+    "realDatabaseAccessed": false,
+    "dependenciesInstalled": false,
+    "serviceRestarted": false
+  },
+  "commands": [
+    {
+      "command": "node --test tests/mssql-scan.test.mjs tests/read-records.test.mjs tests/transaction-profile.test.mjs",
+      "exitCode": 0,
+      "testTotals": {
+        "tests": 33,
+        "pass": 33,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "f3c2be850e556120cf8801e4561809ae961be7ad281d61d03cd3b33fc1c897ec"
+    },
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "testTotals": {
+        "tests": 669,
+        "pass": 669,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "d0ed7af3438ce270fef2a8080acac1ef13411bd41dc34d1625be90fccce87f88"
+    },
+    {
+      "command": "node scripts/verify-deployment.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "68eb595bd390f7037ed4c0a350128d6bafa2c9cd2e2c8bc016f057067c88231e"
+    },
+    {
+      "command": "node scripts/check-deployment-package.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "f77ca72dcd2546deacc52547805f14a9d6ec87ce8c3d7abc254991475f7abf36"
+    }
+  ],
+  "deployment": {
+    "baseCommit": "06c523aa5a207bc7c72c05e42f543055540c449f",
+    "preservedRuntimeTest": "044dce3dfb9c3c86422f685e50b0d097c607d00cb19bc618008d23eb972895d4",
+    "updates": 22,
+    "sourceFiles": 410,
+    "artifactFiles": 437,
+    "releaseArtifactFiles": 7,
+    "protectedTestSha256": "1bff9c63ab2d42bbe3a9c0c3986bb05727909decf30bd3a242125a19dc03604c",
+    "files": {
+      "backend/adapters/mssql.mjs": "a59c170a37913ecd96e9b682f9e3437c5b9724585468c4c51faedbdea242b158",
+      "backend/read-records.mjs": "83879506c14bd922125a495ee56af2556c78337a774d19a0d37bae388cc10158",
+      "backend/planning-reader.mjs": "3245a82107bffd65a00dc465316fff1e88a333f3ac1b99a177e4b183b1e5610a",
+      "scripts/transaction-profile.mjs": "6c6b9ea3e676442b04e49d48ecd6c48d751e72209aaaa55bae8801d898cd0b12",
+      "scripts/native-contention-profile.mjs": "007f909241bcccdb1e7c35dd936dfb042188370c1dcbc69eb036d16c32387498",
+      "tests/mssql-scan.test.mjs": "05ad27442fa19f86b32002e3aad8d946ef59f96e72b6ffcbe888baf7f9f6eb6a",
+      "tests/read-records.test.mjs": "40e09e2ef57a128114b87f6d8681f0878faddf801d6838bbb219d5b6400f899a",
+      "tests/transaction-profile.test.mjs": "c1576bc1cd4bdadb8879ae2d4666c180c8b10bae7b1fc9de98b287147eae2bfc",
+      "tests/mssql-native-suite.mjs": "045953fa2ead180c2b90fafb75714e22f6937d996cf4fab8071a95267a71aced",
+      ".github/workflows/quality.yml": "87b1f2dae1e94648316370b34dbf3dcb933fd0486f8d4e68f85750f60cd2891e"
+    },
+    "backup": "/Users/beyzakap/Desktop/AA Kaynak Planlama Sistemi_1.0.0/.deployment-backups/n3-numeric-batch-20261011T123701Z"
+  },
+  "postMirrorVerification": {
+    "canonicalManifest": true,
+    "runtimeManifest": true,
+    "gitDiffCheck": true
+  }
+}

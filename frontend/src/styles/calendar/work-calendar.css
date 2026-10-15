@@ -1,0 +1,451 @@
+/* Shared and personal working calendar */
+.work-calendar-dialog {
+  width: min(920px, calc(100vw - 28px));
+  max-width: 920px;
+  height: 790px;
+  max-height: 92dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 14px;
+}
+.work-calendar-dialog [data-slot="dialog-header"] {
+  flex-shrink: 0;
+  padding: 0 26px 12px 0;
+  border-bottom: 1px solid var(--brand-border, #dbe6ef);
+}
+.work-calendar-dialog [data-slot="dialog-title"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brand-primary, #36583a);
+  font-size: 16px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.work-calendar-dialog [data-slot="dialog-title"] > svg {
+  flex: none;
+  box-sizing: content-box;
+  padding: 7px;
+  border-radius: 8px;
+  background: var(--brand-surface-soft, #f4f7f1);
+}
+.work-calendar-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 2px 3px 4px 0;
+}
+.work-calendar-year {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--brand-border, #dbe6ee);
+  border-radius: 7px;
+  background: var(--brand-surface-soft, #f4f7f1);
+  color: #244e6d;
+}
+.work-calendar-year button {
+  width: 27px;
+  height: 27px;
+  border: 1px solid #d1e0eb;
+  border-radius: 5px;
+  background: #f6f9fc;
+  color: #295b7f;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.work-calendar-year strong {
+  min-width: 42px;
+  text-align: center;
+  font-size: 14px;
+}
+.work-calendar-year span {
+  margin-left: auto;
+  color: #74889b;
+  font-size: 11px;
+  font-weight: 600;
+}
+.work-calendar-personal,
+.work-calendar-form,
+.work-calendar-list {
+  border: 1px solid #dbe6ef;
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+}
+.work-calendar-personal {
+  background: #fff;
+}
+.work-calendar-personal h3,
+.work-calendar-list h3,
+.work-calendar-form-title {
+  margin: 0 0 10px;
+  color: #244761;
+  font-size: 13px;
+  font-weight: 700;
+}
+.work-calendar-fields {
+  display: grid;
+  align-items: end;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(140px, 1fr)) repeat(
+      2,
+      minmax(90px, 0.7fr)
+    );
+}
+.work-calendar-fields label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  color: #536d80;
+  font-size: 11px;
+  font-weight: 600;
+}
+.work-calendar-fields label.work-calendar-label {
+  grid-column: span 2;
+}
+.work-calendar-fields input,
+.work-calendar-fields select {
+  height: 33px;
+  min-height: 33px;
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid #c9d9e5;
+  border-radius: 5px;
+  background: #fff;
+  color: #223d54;
+  font-size: 12px;
+}
+.work-calendar-fields button {
+  height: 33px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+.work-calendar-form-actions {
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+.work-calendar-form-actions > button {
+  min-width: 94px;
+}
+.work-calendar-range-preview {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border: 1px solid #c9d8c7;
+  border-radius: 5px;
+  background: #eef4ec;
+  color: #36583a;
+  font-size: 12px;
+  font-weight: 600;
+}
+.work-calendar-range-preview.work-calendar-error {
+  color: #a43939;
+}
+.work-calendar-personal .work-calendar-list {
+  margin-top: 14px;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid var(--brand-border, #dbe6ef);
+  background: transparent;
+}
+.work-calendar-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 336px;
+  max-height: 40dvh;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+.work-calendar-list li {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 2px;
+  border-top: 1px solid #edf1f5;
+  color: #314e65;
+  font-size: 12px;
+}
+.work-calendar-list time {
+  font-weight: 600;
+  color: #365d7b;
+}
+.work-calendar-list li span {
+  overflow-wrap: anywhere;
+}
+.work-calendar-list li small {
+  display: block;
+  margin-top: 2px;
+  color: #7d91a2;
+  font-size: 10px;
+}
+.work-calendar-list li.work-calendar-range-row {
+  min-height: 56px;
+  grid-template-columns: minmax(180px, 0.9fr) minmax(0, 1.3fr) auto;
+  padding: 9px 6px;
+}
+.work-calendar-list li.work-calendar-range-row:first-child {
+  border-top: 0;
+}
+.work-calendar-list li.work-calendar-range-row:nth-child(even) {
+  background: var(--brand-surface-soft, #f4f7f1);
+  border-radius: 4px;
+}
+.work-calendar-range-dates {
+  font-weight: 650;
+  color: #36583a;
+}
+.work-calendar-range-actions {
+  display: flex;
+  gap: 6px;
+}
+.work-calendar-list .work-calendar-range-actions button {
+  width: auto;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid #c9d8c7;
+  border-radius: 5px;
+  background: #f4f7f1;
+  color: #36583a;
+  font-size: 11px;
+  font-weight: 600;
+}
+.work-calendar-list .work-calendar-range-actions button:hover {
+  background: #e6eee1;
+}
+.work-calendar-list .work-calendar-range-actions button.danger {
+  color: #9b3d3d;
+  border-color: #e6cdcd;
+  background: #fff5f5;
+}
+.work-calendar-list li button {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #a55454;
+  cursor: pointer;
+}
+.work-calendar-list li button:hover {
+  background: #faeaea;
+}
+.work-calendar-list > p {
+  min-height: min(336px, 40dvh);
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 16px 10px;
+  border: 1px dashed var(--brand-border, #dbe6ef);
+  border-radius: 6px;
+  text-align: center;
+  color: #748a9b;
+  font-size: 12px;
+}
+.work-calendar-actions {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #e1e9ef;
+}
+.work-calendar-error {
+  margin: 0;
+  color: #a43939;
+  font-size: 12px;
+}
+.absence-report .panelhead {
+  align-items: center;
+}
+.absence-report-summary {
+  color: #6d8496;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.absence-report-summary strong {
+  color: #285e84;
+  font-size: 16px;
+}
+.absence-report-summary span {
+  padding: 0 5px;
+}
+.absence-report [data-slot="table-container"] {
+  max-height: 420px;
+  overflow: auto;
+}
+.absence-report th,
+.absence-report td {
+  font-size: 12px;
+  padding: 8px 12px;
+}
+.absence-type {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 650;
+}
+.absence-type.leave {
+  background: #fff0df;
+  color: #94571f;
+}
+.absence-type.training {
+  background: #e6f2ff;
+  color: #286393;
+}
+.absence-filtered-part {
+  display: block;
+  margin-top: 3px;
+  color: #678095;
+  font-size: 10px;
+}
+.absence-range-actions {
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+.absence-range-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  min-height: 28px;
+  font-size: 11px;
+}
+@media (max-width: 700px) {
+  .work-calendar-list li.work-calendar-range-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  .work-calendar-range-actions {
+    justify-content: flex-end;
+  }
+  .work-calendar-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .work-calendar-fields .work-calendar-label {
+    grid-column: span 2;
+  }
+  .work-calendar-dialog {
+    padding: 16px;
+  }
+  .work-calendar-list li {
+    grid-template-columns: 100px minmax(0, 1fr) 26px;
+  }
+}
+
+/* Company calendar sits directly beside the selected employee; personal calendars stay in employee rows. */
+.person-allocation .actual-person-value {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  min-width: 0;
+  width: 100%;
+}
+.person-allocation .actual-control-fields:has(.actual-shared-calendar-button) {
+  grid-template-columns: minmax(250px, 1fr) 105px 140px 158px;
+}
+.person-allocation .actual-person-value > strong {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.person-allocation .actual-shared-calendar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: none;
+  height: 29px;
+  padding: 4px 7px;
+  border: 1px solid #9bbbd1;
+  border-radius: 5px;
+  background: #eaf3f9;
+  color: #245d81;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.person-allocation .actual-shared-calendar-button:hover {
+  background: #dcecf6;
+  border-color: #6f9cb8;
+}
+.person-allocation .actual-shared-calendar-button:focus-visible {
+  outline: 2px solid #4c92bd;
+  outline-offset: 2px;
+}
+/* Reserve the same calendar column for every employee, including read-only peers. */
+.person-allocation .actual-person-label {
+  display: grid;
+  grid-template-columns: 24px 10px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 5px;
+}
+.person-allocation .person-calendar-slot {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+}
+.app .person-allocation .actual-person-label .indent {
+  margin-right: 0;
+}
+.person-allocation .actual-person-name {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.person-allocation .person-calendar-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 0;
+  vertical-align: middle;
+  border: 1px solid #c7d9e8;
+  border-radius: 5px;
+  background: #f0f7fc;
+  color: #28608d;
+  cursor: pointer;
+}
+.person-allocation .person-calendar-trigger:hover,
+.person-allocation .person-calendar-trigger:focus-visible {
+  background: #dceef9;
+  border-color: #8db8d3;
+  outline: 2px solid #c7e2f2;
+  outline-offset: 1px;
+}
+@media (max-width: 760px) {
+  .person-allocation
+    .actual-control-fields:has(.actual-shared-calendar-button) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .person-allocation .actual-shared-calendar-button span {
+    display: none;
+  }
+  .person-allocation .actual-shared-calendar-button {
+    width: 30px;
+    padding: 4px;
+  }
+}

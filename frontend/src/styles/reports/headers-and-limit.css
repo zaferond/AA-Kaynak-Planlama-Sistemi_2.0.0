@@ -1,0 +1,160 @@
+/* Keep report labels consistent while distinguishing year and month bands. */
+.app.tab-overview
+  .remaining-report
+  thead
+  tr:not(.yearrow)
+  > th:nth-child(-n + 2) {
+  color: #334b64;
+}
+.app.tab-overview .remaining-report thead tr:not(.yearrow) > th:nth-child(1),
+.app.tab-overview .remaining-report thead tr:not(.yearrow) > th:nth-child(2) {
+  text-align: center;
+}
+.app.tab-overview .remaining-report .yearrow th:first-child {
+  text-align: center;
+  padding-left: 4px;
+}
+.app.tab-overview .remaining-report .yearrow th {
+  text-align: center;
+}
+.app.tab-overview .remaining-report tbody td:nth-child(2) {
+  text-align: left;
+}
+
+.person-allocation .actual-fully-allocated {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-height: 28px;
+  padding: 2px;
+  border: 1px solid #c6d7cd;
+  border-radius: 3px;
+  background: #edf5ef;
+  color: #3c6250;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: not-allowed;
+}
+
+.app.tab-actual .actual-person-total td {
+  background: #f4f8fb;
+  color: #385c75;
+  border-top: 1px solid #dfebf2;
+}
+.app.tab-actual .actual-person-total td:first-child {
+  padding-left: 24px !important;
+  font-size: 10px;
+  font-weight: 600;
+}
+.app.tab-actual .actual-person-total td:not(:first-child) {
+  padding: 4px 2px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.app.tab-actual .actual-person-total td.actual-total-full {
+  background: #eaf4ef;
+  color: #286049;
+}
+
+.actual-limit-dialog {
+  max-width: 430px;
+  padding: 24px;
+  border: 1px solid #d8e2eb;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 18px 50px #17344b33;
+}
+.actual-limit-dialog [data-slot="dialog-title"] {
+  color: #27445b;
+  font-size: 17px;
+  line-height: 1.35;
+}
+.actual-limit-dialog [data-slot="dialog-description"] {
+  color: #4c6377;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.actual-limit-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+.actual-limit-actions .button {
+  min-width: 86px;
+}
+
+/* Keep the total row compact with room below its centered text for overlay scrollbars. */
+.app.tab-overview
+  .panel
+  > [data-slot="table-container"]:has(> .remaining-report) {
+  max-height: 672px;
+  padding-bottom: 0;
+  scrollbar-gutter: stable;
+}
+.app.tab-overview .remaining-report .remaining-report-totals td {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  height: 52px;
+  padding: 4px;
+  vertical-align: middle;
+  border-top: 2px solid var(--brand-border-strong, #96a889);
+  background: var(--brand-surface, #edf1e8);
+  color: #25796f;
+  text-align: center;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 -3px 6px #29372d0d;
+}
+.app.tab-overview
+  .remaining-report
+  .remaining-report-totals
+  .remaining-total-label {
+  left: 0;
+  z-index: 4;
+  padding: 4px 10px;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  background: var(--brand-primary, #405341);
+  color: #fff;
+}
+
+.app.tab-overview .remaining-report .remaining-total-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.app.tab-overview .remaining-report .remaining-total-heading strong {
+  display: block;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.app.tab-overview .remaining-report .remaining-total-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ffffff40;
+  border-radius: 4px;
+  background: #ffffff12;
+  font-size: 13px;
+}
+.app.tab-overview .remaining-report .remaining-total-value {
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 750;
+}
+/* Cell borders remain uniform even on the final row and frozen label columns. */
+.app.tab-overview .remaining-report tbody > tr > td {
+  border-bottom: 1px solid var(--table-grid-border, #bdcede);
+  border-right: 1px solid var(--table-grid-border, #bdcede);
+}

@@ -1,0 +1,89 @@
+.resourceimport {
+  margin: 16px 24px 24px;
+  border: 1px solid #c9daef;
+  background: #f7faff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.resourceimport h3 {
+  font-weight: 650;
+  font-size: 19px;
+}
+.importbody {
+  padding: 0 24px 24px;
+}
+.importbody ol {
+  margin: 0 0 20px 22px;
+  list-style: decimal;
+  color: #506780;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.importbody .actions {
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.importbody select {
+  padding: 8px;
+  border: 1px solid #c9daef;
+  border-radius: 6px;
+  background: white;
+}
+.importhint {
+  font-size: 13px;
+  color: #60738a;
+  line-height: 1.6;
+  margin: 12px 0;
+}
+.importcounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 16px 0;
+  font-weight: 600;
+}
+.importerrorfilter {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.importtable {
+  overflow: auto;
+  max-height: 430px;
+  background: white;
+  border: 1px solid #dce6ef;
+}
+.importtable table {
+  min-width: 1450px;
+  width: 100%;
+  font-size: 13px;
+  border-collapse: collapse;
+}
+.importtable th,
+.importtable td {
+  padding: 10px 12px;
+  text-align: left;
+  border: 1px solid #e3eaf2;
+  vertical-align: top;
+  max-width: 250px;
+  overflow-wrap: anywhere;
+}
+.importtable th {
+  background: #eaf1fa;
+  position: sticky;
+  top: 0;
+}
+.importtable tr.import-error {
+  background: #fff0ef;
+}
+.importtable tr.import-duplicate {
+  background: #fff8e9;
+}
+.importpagination {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 16px 0;
+}

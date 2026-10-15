@@ -1,0 +1,54 @@
+/* Table-only theme values. Keep selector precedence in the feature styles. */
+.app {
+  --table-grid-border: #bdcede;
+  --table-label-border: #aebfd1;
+  --table-year-divider: #9fb5cb;
+  --table-header-background: #f2f6fb;
+  --table-year-label-background: #e3edf8;
+  --table-project-background: #eaf0f7;
+  --table-summary-background: #f7fafc;
+  --table-frozen-shadow: 7px 0 8px -9px #1a3b59;
+  --table-project-year-height: 24px;
+  --table-scrollbar-clearance: 24px;
+  --table-today-color: #397ba8;
+  --table-today-width: 2px;
+  --table-planned-entry-background: #dcecf9;
+  --table-planned-entry-border: #afcee8;
+  --table-planned-entry-color: #184e78;
+  --table-actual-cell-background: #e4f4f0;
+  --table-actual-entry-background: #d8eee8;
+  --table-actual-entry-border: #9bcbbf;
+  --table-actual-entry-color: #1f5f54;
+}
+
+/* A year band supplies its palette; the table rule decides where it applies. */
+.app .year-band-0 {
+  --table-year-background: #e9f1fa;
+  --table-year-color: #285074;
+  --table-year-border: #b9cfdf;
+}
+.app .year-band-1 {
+  --table-year-background: #eaf4ee;
+  --table-year-color: #2c6549;
+  --table-year-border: #bdd8c8;
+}
+.app .year-band-2 {
+  --table-year-background: #f6efe4;
+  --table-year-color: #755a35;
+  --table-year-border: #e0d0b7;
+}
+.app .year-band-3 {
+  --table-year-background: #f1ecf8;
+  --table-year-color: #675384;
+  --table-year-border: #d6c8e4;
+}
+.app .year-band-4 {
+  --table-year-background: #e9f4f5;
+  --table-year-color: #2d6570;
+  --table-year-border: #bddbdf;
+}
+.app .year-band-5 {
+  --table-year-background: #f8edef;
+  --table-year-color: #805265;
+  --table-year-border: #e4c9d2;
+}

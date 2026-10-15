@@ -1,0 +1,337 @@
+/* Section navigation and contextual controls */
+.app > .mast {
+  display: flex;
+  flex-direction: column;
+}
+.app .mastbrandrow,
+.app .masttoolbar {
+  width: 100%;
+}
+.app .masttoolbar {
+  justify-content: flex-end;
+}
+.app .mastglobalactions {
+  margin-left: auto;
+}
+.app .mastbulk {
+  align-self: flex-end;
+  justify-content: flex-end;
+  width: max-content;
+  max-width: 100%;
+  margin: 8px 0 0;
+  padding: 7px 9px;
+  border: 1px solid #ffffff2b;
+  border-radius: 7px;
+  background: #ffffff0d;
+}
+.app .workspace-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+  margin-bottom: 9px;
+  border-bottom: 1px solid #dbe2eb;
+}
+.app .workspace-nav .navtabs {
+  flex: 0 1 auto;
+  width: auto;
+  margin: 0;
+  border-bottom: 0 !important;
+}
+.app .workspace-nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  flex: 0 0 auto;
+  min-height: 36px;
+  white-space: nowrap;
+}
+.app .workspace-nav-actions [data-slot="tabs"] {
+  flex: none;
+  gap: 0;
+}
+.app .workspace-nav-actions [role="tablist"] {
+  height: 31px;
+  min-height: 31px;
+  padding: 2px;
+  border: 1px solid #d1dfed;
+  border-radius: 7px;
+  background: #eff4fa;
+}
+.app .workspace-nav-actions [role="tab"] {
+  height: 25px;
+  min-height: 25px;
+  padding: 3px 8px;
+  color: #496987;
+  font-size: 11px;
+}
+.app .workspace-nav-actions [role="tab"][data-state="active"] {
+  background: #fff;
+  color: #174e82;
+  box-shadow: 0 1px 3px #173b611c;
+}
+.app .workspace-nav-actions .densitycontrol {
+  color: #506a83;
+  font-weight: 600;
+}
+.app .workspace-nav-actions .densitycontrol select {
+  height: 31px;
+  min-height: 31px;
+  background: #fff;
+  color: #173b62;
+  border-color: #c6d6e6;
+}
+.app .workspace-nav-actions .button,
+.app .workspace-nav-actions .iconbutton {
+  height: 31px;
+  min-height: 31px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  gap: 5px;
+}
+.app .workspace-nav-actions .iconbutton {
+  width: 31px;
+  padding: 5px;
+}
+.app .workspace-nav-actions .resetfilters {
+  width: auto;
+  background: #f3f7fb;
+  color: #315f8c;
+  border-color: #cbd9e8;
+}
+.app .workspace-nav-actions .project-create {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 31px;
+  min-height: 31px;
+  min-width: 112px;
+  padding: 0 10px;
+  border: 1px solid #102f50;
+  border-radius: 3px;
+  background: #102f50;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: none;
+}
+.app .workspace-nav-actions .project-create:hover {
+  background: #1b466f;
+  border-color: #1b466f;
+}
+.app .workspace-nav-actions .project-create:focus-visible {
+  outline: 2px solid #102f50;
+  outline-offset: 2px;
+}
+@media (max-width: 1160px) {
+  .app .workspace-nav {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .app .workspace-nav .navtabs {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .app .workspace-nav-actions {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    padding: 5px 0 8px;
+  }
+}
+@media (max-width: 650px) {
+  .app .workspace-nav-actions {
+    justify-content: flex-start;
+  }
+  .app .workspace-nav-actions .densitycontrol {
+    flex: 1 1 160px;
+  }
+  .app .workspace-nav-actions .densitycontrol select {
+    width: 100%;
+  }
+  .app .mastbulk {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* Compact blue header: account and global actions share the top row. */
+.app > .mast {
+  padding: 11px 18px 10px;
+}
+.app .mastbrandrow {
+  align-items: center;
+  gap: 12px;
+  min-height: 38px;
+  margin: 0;
+}
+.app .mastbrandrow .systembrand {
+  font-size: 14px;
+  line-height: 1.25;
+}
+.app .mastbrandrow .mark {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+}
+.app .masttopright {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+  margin-left: auto;
+}
+.app .mastuser {
+  min-height: 27px;
+  margin-left: 0;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+.app .mastglobalactions {
+  justify-content: flex-end;
+  gap: 5px;
+  flex-wrap: nowrap;
+  margin-left: 0;
+}
+.app .mastglobalactions .button {
+  height: 27px;
+  min-height: 27px;
+  padding: 3px 7px;
+  font-size: 10px;
+}
+.app .mastbulk {
+  margin-top: 5px;
+  padding: 4px 7px;
+  gap: 7px;
+}
+.app .mastbulk .button {
+  height: 26px;
+  min-height: 26px;
+  padding: 3px 7px;
+  font-size: 10px;
+}
+@media (max-width: 1000px) {
+  .app .mastbrandrow {
+    flex-wrap: wrap;
+  }
+  .app .masttopright {
+    width: 100%;
+    margin-left: 0;
+  }
+  .app .mastbulk {
+    margin-top: 6px;
+  }
+}
+@media (max-width: 650px) {
+  .app > .mast {
+    padding: 10px 12px 9px;
+  }
+  .app .masttopright,
+  .app .mastglobalactions {
+    flex-wrap: wrap;
+  }
+  .app .mastuser {
+    margin-right: auto;
+  }
+  .app .mastbrandrow .systembrand {
+    font-size: 12px;
+  }
+}
+
+/* Filters stay left; planning actions share the same row on the right. */
+.app .planning-filterbar {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.app .planning-filterbar .filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  gap: 8px;
+  min-width: 0;
+  max-width: 900px;
+}
+.app .planning-filterbar .filters > .pick:nth-child(-n + 3) {
+  flex: 1 1 125px;
+  min-width: 100px;
+}
+.app .planning-filterbar .filters > .pick:nth-child(4) {
+  flex: 0 0 140px;
+}
+.app .planning-filterbar .filters > .period {
+  flex: 0 0 130px;
+}
+.app .filteractions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-height: 31px;
+  margin-left: auto;
+  padding-bottom: 1px;
+  white-space: nowrap;
+}
+.app .filteractions .button {
+  height: 30px;
+  min-height: 30px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+}
+.app .filteractions .resetfilters {
+  width: auto;
+  background: #f3f7fb;
+  color: #315f8c;
+  border-color: #cbd9e8;
+}
+.app .filteractions .bulk-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 4px 8px;
+  border: 1px solid #c9d9e8;
+  border-radius: 6px;
+  background: #f2f7fc;
+  color: #315a7c;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+@media (max-width: 1150px) {
+  .app .planning-filterbar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .app .planning-filterbar .filters {
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: none;
+  }
+  .app .filteractions {
+    flex: 1 1 100%;
+  }
+}
+@media (max-width: 650px) {
+  .app .planning-filterbar .filters {
+    flex-wrap: wrap;
+  }
+  .app .planning-filterbar .filters > .pick:nth-child(-n + 3) {
+    flex: 1 1 140px;
+  }
+  .app .planning-filterbar .filters > .pick:nth-child(4),
+  .app .planning-filterbar .filters > .period {
+    flex: 1 1 130px;
+  }
+  .app .filteractions {
+    flex-wrap: wrap;
+  }
+}

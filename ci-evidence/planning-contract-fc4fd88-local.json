@@ -1,0 +1,127 @@
+{
+  "recordedAt": "2026-10-11T16:04:14.097149+00:00",
+  "baseCommit": "81a00732d4b2e5a1fe83a931e29ee5f402e0315c",
+  "sourceCommit": "fc4fd88ec6ff3e0e8d242a0ef74c0938cf4212c4",
+  "environment": {
+    "os": "macOS arm64",
+    "node": "24.21.0",
+    "isolatedGitArchive": true,
+    "allowlistedProcessEnvironment": true,
+    "syntheticSqljsOnly": true,
+    "realEnvLoaded": false,
+    "realDatabaseAccessed": false,
+    "serviceRestarted": false,
+    "dependenciesInstalledLocally": false
+  },
+  "commands": [
+    {
+      "command": "node --test tests/planning-contract.test.mjs tests/planning-preflight.test.mjs tests/planning-snapshot.test.mjs tests/snapshot-validation.test.mjs",
+      "exitCode": 0,
+      "testTotals": {
+        "tests": 42,
+        "pass": 42,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "020b48a1fb3f75fdfbfce819aa5f6e3813068c14f430bc649f85224bd850dbc0"
+    },
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "testTotals": {
+        "tests": 684,
+        "pass": 684,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "logSha256": "9167c0069875232a51c167699cb7c7089e2eb35f02af8745c7a4f34ff966b0fc"
+    },
+    {
+      "command": "node scripts/verify-deployment.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "68eb595bd390f7037ed4c0a350128d6bafa2c9cd2e2c8bc016f057067c88231e"
+    },
+    {
+      "command": "node scripts/check-deployment-package.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "97f10bf8119e2d3478378b1b48e630a1ba06a708ad5eba0ba5e6a89400a86f2f"
+    },
+    {
+      "command": "node --check tests/mssql.integration.mjs",
+      "exitCode": 0,
+      "testTotals": {},
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "initialVerifyBlock": {
+    "exitCode": 1,
+    "stage": "check:domain before unit tests",
+    "reason": "TypeScript was absent from root node_modules",
+    "resolution": "Existing frontend TypeScript linked into a temporary-only dependency overlay; application dependencies unchanged",
+    "logSha256": "5304936699e74004d8a94bf408fc0365dcb41a506a1e03147c1acbbc488a11da"
+  },
+  "deployment": {
+    "baseCommit": "81a00732d4b2e5a1fe83a931e29ee5f402e0315c",
+    "files": {
+      "tests/planning-contract-suite.mjs": "0a3c1e3324cece72ac4a3455f0f0803a0e15203dfc58973a19602dfc8d8fffc8",
+      "tests/planning-contract.test.mjs": "39e1cd61743236e9b3072b13914865bdcb70e5febe2109a2862182f3bc26cd61",
+      "tests/mssql.integration.mjs": "3e384e0119862774a6a2c29a7b3b6cfec5b51553ae2db9f366d27589e555601b",
+      ".github/workflows/quality.yml": "5017300bb2dfb3e43fe192a89129efc9c6035c9cd7af8a929eb37ab71b2bd6d3"
+    },
+    "updates": 10,
+    "productionManifestUnchanged": true,
+    "sourceFiles": 416,
+    "artifactFiles": 439,
+    "releaseArtifactFiles": 7,
+    "protectedRuntimeTests": {
+      "tests/http-config.test.mjs": "044dce3dfb9c3c86422f685e50b0d097c607d00cb19bc618008d23eb972895d4",
+      "tests/milestone-note-dates.test.mjs": "1bff9c63ab2d42bbe3a9c0c3986bb05727909decf30bd3a242125a19dc03604c"
+    },
+    "backup": "/Users/beyzakap/Desktop/AA Kaynak Planlama Sistemi_1.0.0/.deployment-backups/n3-planning-contract-20261011T155906Z",
+    "followupBaseCommit": "fece261c47a635264953bff5fb7af1dfec83880d"
+  },
+  "comparisonScope": {
+    "acceptedCellCommits": 20,
+    "commandOrDomainRejections": 17,
+    "unrelatedFaults": 20,
+    "simultaneousFaultPairs": 4,
+    "legacyNormalizationCommit": 1,
+    "totalComparisons": 62,
+    "referenceValidatorCommit": "bc76c9f45f8101f8e3daaf8a6ceab8cf7569f173",
+    "referenceRollback": true,
+    "referenceModuleSha256": "a00c6ccb107f30ffb17c18bff1c0d9f33e93d94e6b4ea436042646d7333f4a1d",
+    "auditExcludedFields": [
+      "id",
+      "occurred_at"
+    ],
+    "sharedImplementations": [
+      "SQL writer",
+      "audit builder",
+      "command staging",
+      "permission helpers"
+    ],
+    "limits": "Sequential finite cases; not a new narrow commit algorithm, not an independent proof of shared components, not a concurrency/load capacity guarantee."
+  },
+  "supersededSourceCommit": "fece261c47a635264953bff5fb7af1dfec83880d",
+  "supersededCiRuns": [
+    "38153561883",
+    "38153547386"
+  ],
+  "supersededCiReason": "Cancelled after adding an explicit directory revision normalization assertion; final source gets new CI runs.",
+  "nativeRowCountComparison": {
+    "baselineCommit": "e501ebe301fbb5ac133424638346855e56d8e5a4",
+    "tableGroupSummariesCompared": 425,
+    "mismatches": 0
+  },
+  "postMirrorVerification": {
+    "bothProductionManifestsUnchanged": true,
+    "bothChangedFileHashesMatch": true,
+    "protectedRuntimeTestsUnchanged": true
+  }
+}

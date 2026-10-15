@@ -1,0 +1,64 @@
+{
+  "capturedAt": "2026-10-11T17:45:00.190519+00:00",
+  "baseCommit": "8b0ac30b4daff9b9c2946af239971d6146dd60b6",
+  "testedCommit": "8fcd188a04be29d2b9c74fc1a722855c6cc6e90e",
+  "environment": {
+    "node": "v24.21.0",
+    "os": "macOS arm64",
+    "source": "separate git archive",
+    "database": "generated temporary synthetic SQL.js fixtures only",
+    "environmentFileLoaded": false,
+    "dependencyInstall": false,
+    "serviceStartedOrRestarted": false,
+    "realADConnected": false
+  },
+  "commands": [
+    {
+      "command": "node --test tests/transaction-profile.test.mjs",
+      "exitCode": 0,
+      "tests": 17,
+      "log": "focused.log"
+    },
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "tests": 705,
+      "log": "verify.log"
+    },
+    {
+      "command": "node scripts/verify-deployment.mjs",
+      "exitCode": 0,
+      "log": "deployment.log"
+    },
+    {
+      "command": "node scripts/check-deployment-package.mjs",
+      "exitCode": 0,
+      "log": "package.log"
+    }
+  ],
+  "logHashes": {
+    "focused.log": "0add281acef7d086e1ad30b6e84c93396f858cf5137597245e485b3bbb583753",
+    "verify.log": "602075d37268b7ac6da8f20abb662941ade04ce047b1d183e9a795fb02315904",
+    "deployment.log": "68eb595bd390f7037ed4c0a350128d6bafa2c9cd2e2c8bc016f057067c88231e",
+    "package.log": "fe974c0763720bf6bcd3c14d6b400d959b3316d2f5d1492d9b2fc938abe8b0df"
+  },
+  "unchangedArtifactCount": 447,
+  "releaseArtifactCount": 7,
+  "sourceFileCount": 423,
+  "runtimeMirror": {
+    "baseCommit": "8b0ac30b4daff9b9c2946af239971d6146dd60b6",
+    "files": {
+      "deployment-manifest.json": "49251fba99be665adfc48b2bf8e66bdfe7a54398da568cca73de2daa240494fb",
+      "scripts/native-contention-profile.mjs": "2fc01684b8b6ee8e2a55c8dcbff7423f7b865fe5d80892d79cb8a653e2fbfc9f",
+      "scripts/transaction-profile.mjs": "a23348342f5e8f9e841fcd849b31efe0aac2671a69b675eb5d462425b531a13f",
+      "tests/transaction-profile.test.mjs": "51bf3fcdfad0f00797b3a4c2d42dfddb89a771b54b2db3cc37606e8243174998"
+    },
+    "updates": 8,
+    "protectedRuntimeTests": {
+      "tests/http-config.test.mjs": "044dce3dfb9c3c86422f685e50b0d097c607d00cb19bc618008d23eb972895d4",
+      "tests/milestone-note-dates.test.mjs": "1bff9c63ab2d42bbe3a9c0c3986bb05727909decf30bd3a242125a19dc03604c"
+    },
+    "backup": "/Users/beyzakap/Desktop/AA Kaynak Planlama Sistemi_1.0.0/.deployment-backups/n3-read-breakdown-20261011T173720Z",
+    "previousRuntimeTestHashes": {}
+  }
+}

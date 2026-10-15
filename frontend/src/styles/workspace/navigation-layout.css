@@ -1,0 +1,33 @@
+/* Leadership directory and actual resource distribution */
+.app .workspace-nav {
+  align-items: flex-start;
+}
+.app .navtabs {
+  height: auto !important;
+  min-height: 36px;
+  flex-wrap: wrap;
+  row-gap: 3px !important;
+}
+/* Section tabs share the upper row; view and page actions start at the left below. */
+.app .workspace-nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+}
+.app .workspace-nav .navtabs {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  row-gap: 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+.app .workspace-nav-actions {
+  width: 100%;
+  min-width: 0;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 5px 0 7px;
+}

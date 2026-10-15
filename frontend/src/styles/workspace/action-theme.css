@@ -1,0 +1,106 @@
+/* Use the selected main-tab blue for related actions and allocation controls. */
+.app.tab-projects .project-details-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -2px 0 10px;
+}
+.app.tab-projects .project-details-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 32px;
+  padding: 5px 10px;
+  border: 1px solid #c7d8e5;
+  border-radius: 6px;
+  background: #f5f9fc;
+  color: #315b7d;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.app.tab-projects .project-details-toggle:hover {
+  border-color: #8dafc8;
+  background: #edf5fb;
+}
+.app.tab-projects .project-week-toggle:has([data-state="checked"]) {
+  border-color: #8db6d4;
+  background: #eaf4fb;
+  color: #1d557e;
+}
+.app.tab-projects .project-week-hint {
+  color: #59738b;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.app {
+  --active-nav-blue: #315f80;
+}
+.app .workspace-nav-actions .project-create {
+  border-color: var(--active-nav-blue);
+  background: var(--active-nav-blue);
+  color: #fff;
+  box-shadow: 0 1px 3px #1b405b24;
+}
+.app .workspace-nav-actions .project-create:hover:not(:disabled) {
+  border-color: #284f6b;
+  background: #284f6b;
+}
+.app .workspace-nav-actions .project-create:focus-visible {
+  outline-color: #315f80;
+}
+.person-allocation .actual-control-fields {
+  grid-template-columns: minmax(150px, 1fr) 125px 145px 158px;
+}
+.person-allocation .actual-control-fields > .actual-unit-item:last-child {
+  gap: 5px;
+  width: 158px;
+  max-width: 100%;
+  justify-self: end;
+  margin: -5px 0;
+  padding: 5px 8px;
+  border: 1px solid #aec9dc;
+  border-radius: 7px;
+  background: #eaf1f6;
+  box-shadow: inset 3px 0 0 var(--active-nav-blue);
+}
+.person-allocation .actual-unit-item > span {
+  color: #315f80;
+  font-size: 10px;
+  font-weight: 750;
+}
+.person-allocation .actual-unit-item select {
+  width: 102px;
+  max-width: 100%;
+  height: 32px;
+  min-height: 32px;
+  padding: 4px 7px;
+  border-color: #a9c5d8;
+  border-radius: 5px;
+  background: #fff;
+  color: #245678;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+  text-align-last: right;
+  margin-left: auto;
+  box-shadow: 0 1px 2px #1a3a5310;
+}
+.person-allocation .actual-unit-item select:hover {
+  border-color: #6b9cbe;
+}
+.person-allocation .actual-unit-item select:focus-visible {
+  outline: 2px solid #3a86b8;
+  outline-offset: 1px;
+}
+@media (max-width: 600px) {
+  .person-allocation .actual-control-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .person-allocation .actual-control-fields > .actual-unit-item:last-child {
+    margin: 0;
+    padding: 7px 8px;
+  }
+}

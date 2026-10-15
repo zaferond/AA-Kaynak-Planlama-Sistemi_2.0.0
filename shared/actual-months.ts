@@ -1,5 +1,8 @@
 import type { Data } from "./model.ts";
-import { DEFAULT_MONTHLY_HOURS, personMonthHours } from "./actual-units.ts";
+import {
+  DEFAULT_MONTHLY_HOURS,
+  createPersonMonthHoursIndex,
+} from "./actual-units.ts";
 
 export type ActualMonthData = Pick<
   Data,
@@ -17,15 +20,12 @@ export function createActualMonthIndex(data: ActualMonthData) {
     const personMonth = resourceId + "|" + month;
     projects.set(personMonth, (projects.get(personMonth) || 0) + value);
   }
+  // Shared month plans and an indexed personal calendar: the actuals screen
+  // asks for every person × visible month on each open.
+  const hoursIndex = createPersonMonthHoursIndex(data);
   function calculate(resourceId: string, month: string) {
     const key = resourceId + "|" + month;
-    const hours = personMonthHours(
-      month,
-      resourceId,
-      data.actualWorkedHours?.[key],
-      data.workCalendar,
-      data.personCalendar,
-    );
+    const hours = hoursIndex.get(resourceId, month);
     const projectFte = projects.get(key) || 0;
     const trainingFte = hours.trainingHours / DEFAULT_MONTHLY_HOURS;
     return {

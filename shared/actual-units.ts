@@ -150,6 +150,44 @@ function personalMonthTotals(
   return { baseHours, leaveHours, trainingHours };
 }
 
+/** Same totals as personalMonthTotals, visiting only dates that have personal
+ * entries. Days without entries add no leave or training; base hours were
+ * summed in day order once per month, so every result is bit-identical. */
+function personalMonthTotalsOnDates(
+  resourceId: string,
+  personal: PersonCalendar,
+  plan: Readonly<{ days: readonly CalendarMonthDay[]; baseHours: number }>,
+  dates: readonly string[] | undefined,
+  month: string,
+) {
+  let leaveHours = 0,
+    trainingHours = 0,
+    previous = "";
+  for (const date of dates || []) {
+    if (date === previous || date.slice(0, 7) !== month) continue;
+    previous = date;
+    const planned = plan.days[Number(date.slice(8, 10)) - 1];
+    if (!planned || planned.date !== date) continue;
+    const available = planned.available;
+    const entries = personalDayEntries(resourceId, date, personal);
+    const leave = Math.min(
+      entries
+        .filter((entry) => entry.type === "leave")
+        .reduce((sum, entry) => sum + entry.hours, 0),
+      available,
+    );
+    const training = Math.min(
+      entries
+        .filter((entry) => entry.type === "training")
+        .reduce((sum, entry) => sum + entry.hours, 0),
+      available - leave,
+    );
+    leaveHours += leave;
+    trainingHours += training;
+  }
+  return { baseHours: plan.baseHours, leaveHours, trainingHours };
+}
+
 export function personHoursInMonth(
   month: string,
   resourceId: string,
@@ -254,8 +292,26 @@ export function createPersonMonthHoursIndex(data: PersonMonthData) {
   // Build lazily, once per requested month; personal totals remain independent.
   const months = new Map<
     string,
-    { days: CalendarMonthDay[]; workdayHours: number }
+    { days: CalendarMonthDay[]; workdayHours: number; baseHours: number }
   >();
+  // Personal leave/training dates per resource, found once per snapshot. Most
+  // people have none in a month; their totals then need no day-by-day pass.
+  let personalDates: Map<string, string[]> | undefined;
+  const datesOf = (resourceId: string) => {
+    if (personalDates === undefined) {
+      personalDates = new Map();
+      for (const key of Object.keys(data.personCalendar || {})) {
+        const match =
+          /^(.*)\|(\d{4}-\d{2}-\d{2})(?:\|(?:leave|training))?$/.exec(key);
+        if (!match) continue;
+        const list = personalDates.get(match[1]);
+        if (list) list.push(match[2]);
+        else personalDates.set(match[1], [match[2]]);
+      }
+      for (const list of personalDates.values()) list.sort();
+    }
+    return personalDates.get(resourceId);
+  };
   return {
     get(resourceId: string, month: string) {
       const key = resourceId + "|" + month;
@@ -265,22 +321,26 @@ export function createPersonMonthHoursIndex(data: PersonMonthData) {
         const manual = data.actualWorkedHours?.[key];
         let plan = months.get(month);
         if (plan === undefined) {
+          const days = calendarMonthDays(
+            month,
+            data.workCalendar === undefined ? {} : data.workCalendar,
+          );
+          let baseHours = 0;
+          for (const day of days) baseHours += day.available;
           plan = {
-            days: calendarMonthDays(
-              month,
-              data.workCalendar === undefined ? {} : data.workCalendar,
-            ),
+            days,
             workdayHours: workdaysInMonth(month) * HOURS_PER_WORKDAY,
+            baseHours,
           };
           months.set(month, plan);
         }
         result = hoursFromTotals(
-          personalMonthTotals(
-            month,
+          personalMonthTotalsOnDates(
             resourceId,
-            data.workCalendar === undefined ? {} : data.workCalendar,
             data.personCalendar === undefined ? {} : data.personCalendar,
-            plan.days,
+            plan,
+            datesOf(resourceId),
+            month,
           ),
           manual,
           plan.workdayHours,

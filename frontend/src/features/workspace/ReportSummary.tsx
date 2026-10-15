@@ -20,6 +20,26 @@ const sections = [
   ["rapor-calisan", "Çalışan öngörüsü"],
 ] as const;
 
+const SECTION_GAP = 16;
+/** Bring a section heading just below the window top. The page is drawn with
+ * CSS zoom, which some browsers ignore in scrollIntoView and overshoot; measure
+ * the result and correct with the observed scroll-to-pixel ratio instead. */
+function scrollToSection(id: string) {
+  const target = document.getElementById(id);
+  if (!target) return;
+  const offset = () => target.getBoundingClientRect().top - SECTION_GAP;
+  let ratio = 1;
+  for (let step = 0; step < 4; step++) {
+    const before = offset();
+    if (Math.abs(before) < 2) break;
+    const startY = window.scrollY;
+    window.scrollTo(0, startY + before / ratio);
+    const moved = before - offset();
+    if (Math.abs(moved) < 1) break;
+    ratio = moved / (window.scrollY - startY || 1);
+  }
+}
+
 /** Headline figures for the selected scope, computed with the same functions
  * as the charts below, and links to each report section. */
 export default function ReportSummary({
@@ -112,15 +132,7 @@ export default function ReportSummary({
       <nav className="report-sections" aria-label="Rapor bölümleri">
         <span>Bölümler:</span>
         {sections.map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() =>
-              document
-                .getElementById(id)
-                ?.scrollIntoView({ behavior: "smooth", block: "start" })
-            }
-          >
+          <button key={id} type="button" onClick={() => scrollToSection(id)}>
             {label}
           </button>
         ))}

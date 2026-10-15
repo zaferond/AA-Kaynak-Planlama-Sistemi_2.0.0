@@ -19,7 +19,7 @@
   align-items: center;
   gap: 8px;
   color: var(--brand-primary, #36583a);
-  font-size: 16px;
+  font-size: var(--fs-lg);
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
@@ -56,19 +56,19 @@
   border-radius: 5px;
   background: #f6f9fc;
   color: #295b7f;
-  font-size: 20px;
+  font-size: var(--fs-2xl);
   line-height: 1;
   cursor: pointer;
 }
 .work-calendar-year strong {
   min-width: 42px;
   text-align: center;
-  font-size: 14px;
+  font-size: var(--fs-md);
 }
 .work-calendar-year span {
   margin-left: auto;
   color: #74889b;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .work-calendar-personal,
@@ -87,7 +87,7 @@
 .work-calendar-form-title {
   margin: 0 0 10px;
   color: #244761;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 .work-calendar-fields {
@@ -104,7 +104,7 @@
   gap: 5px;
   min-width: 0;
   color: #536d80;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .work-calendar-fields label.work-calendar-label {
@@ -120,7 +120,7 @@
   border-radius: 5px;
   background: #fff;
   color: #223d54;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .work-calendar-fields button {
   height: 33px;
@@ -147,7 +147,7 @@
   border-radius: 5px;
   background: #eef4ec;
   color: #36583a;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .work-calendar-range-preview.work-calendar-error {
@@ -177,7 +177,7 @@
   padding: 7px 2px;
   border-top: 1px solid #edf1f5;
   color: #314e65;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .work-calendar-list time {
   font-weight: 600;
@@ -190,7 +190,7 @@
   display: block;
   margin-top: 2px;
   color: #7d91a2;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .work-calendar-list li.work-calendar-range-row {
   min-height: 56px;
@@ -224,7 +224,7 @@
   border-radius: 5px;
   background: #f4f7f1;
   color: #36583a;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .work-calendar-list .work-calendar-range-actions button:hover {
@@ -259,7 +259,7 @@
   border-radius: 6px;
   text-align: center;
   color: #748a9b;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .work-calendar-actions {
   flex-shrink: 0;
@@ -272,19 +272,19 @@
 .work-calendar-error {
   margin: 0;
   color: #a43939;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .absence-report .panelhead {
   align-items: center;
 }
 .absence-report-summary {
   color: #6d8496;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   white-space: nowrap;
 }
 .absence-report-summary strong {
   color: #285e84;
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 .absence-report-summary span {
   padding: 0 5px;
@@ -295,14 +295,14 @@
 }
 .absence-report th,
 .absence-report td {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   padding: 8px 12px;
 }
 .absence-type {
   display: inline-block;
   padding: 3px 8px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .absence-type.leave {
@@ -317,7 +317,7 @@
   display: block;
   margin-top: 3px;
   color: #678095;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .absence-range-actions {
   display: flex;
@@ -330,7 +330,7 @@
   gap: 4px;
   padding: 4px 8px;
   min-height: 28px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 @media (max-width: 700px) {
   .work-calendar-list li.work-calendar-range-row {
@@ -382,7 +382,7 @@
   border-radius: 5px;
   background: #eaf3f9;
   color: #245d81;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;

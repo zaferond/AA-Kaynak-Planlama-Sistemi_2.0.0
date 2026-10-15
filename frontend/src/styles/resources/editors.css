@@ -1,41 +1,41 @@
 /* Compact employee list and aligned employee editor. */
 .app.tab-resources .resource-table {
   width: 100%;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   table-layout: auto;
 }
 .app.tab-resources .resource-table th {
   padding: 9px 12px !important;
-  font-size: 10px !important;
+  font-size: var(--fs-xs) !important;
   line-height: 1.25;
   white-space: nowrap;
 }
 .app.tab-resources .resource-table td {
   padding: 8px 12px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.35;
   vertical-align: middle;
   color: #38516b;
 }
 .app.tab-resources .resource-table td strong {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 650;
   color: #253f59;
 }
 .app.tab-resources .resource-table .subline {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   margin-top: 3px;
 }
 .app.tab-resources .resource-table .badge {
   padding: 3px 6px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   white-space: nowrap;
 }
 .app.tab-resources .resource-table .resourceactions {
   gap: 9px;
 }
 .app.tab-resources .resource-table .textbutton {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .app.tab-resources .resource-table input[type="checkbox"] {
@@ -49,7 +49,7 @@
 .editor .resource-editor-form label,
 .editor .resource-editor-form .pick {
   min-width: 0;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: #405b76;
 }
@@ -58,7 +58,7 @@
   gap: 6px;
 }
 .editor .resource-editor-form .pick > span {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .editor .resource-editor-form input:not([type="checkbox"]),
@@ -72,7 +72,7 @@
   border-radius: 5px;
   background: #fff;
   color: #233c55;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 400;
 }
 .editor .resource-editor-form textarea {
@@ -99,7 +99,7 @@
   gap: 10px;
 }
 .editor .resource-editor-form small {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
   color: #6d8196;
 }
@@ -138,12 +138,12 @@
   text-align: left;
 }
 .bulk-resource-editor [data-slot="dialog-title"] {
-  font-size: 17px;
+  font-size: var(--fs-xl);
   line-height: 1.25;
   color: #263f57;
 }
 .bulk-resource-editor [data-slot="dialog-description"] {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
   color: #60768b;
 }
@@ -159,10 +159,10 @@
   border-bottom: 1px solid #e1eaf2;
   background: #f5f9fd;
   color: #395b78;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .bulk-edit-context strong {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: #214d73;
 }
@@ -176,7 +176,7 @@
 .bulk-edit-grid label {
   min-width: 0;
   gap: 5px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: #405b76;
 }
@@ -184,20 +184,20 @@
   flex: none;
 }
 .bulk-edit-grid .pick > span {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .bulk-edit-grid .pickerbutton,
 .bulk-edit-grid select {
   height: 34px;
   min-height: 34px;
   padding: 5px 9px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .bulk-edit-hint {
   margin: 0;
   padding: 0 22px 14px;
   color: #6d8196;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .bulk-edit-actions {
@@ -211,11 +211,11 @@
 .bulk-edit-actions .button {
   min-height: 33px;
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .bulk-resource-form > .negative {
   margin: 0 22px 12px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 @media (max-width: 600px) {
   .bulk-resource-editor [data-slot="dialog-header"] {
@@ -239,13 +239,13 @@
 
 /* Compact organisation pickers wrap long unit names inside the employee form. */
 .editor .resource-editor-form .pick-compact > span {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .editor .resource-derived-leadership {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .editor .resource-editor-form .resource-derived-leadership input {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   background: var(--brand-surface-soft, #f6f8f4);
   cursor: default;
 }
@@ -254,7 +254,7 @@
   min-height: 36px;
   padding: 6px 8px;
   gap: 6px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.35;
 }
 .editor .resource-editor-form .pick-compact .pickerbutton > span {
@@ -270,7 +270,7 @@
 }
 .pickerpanel.pickerpanel-compact .option,
 .pickerpanel.pickerpanel-compact .pickersearch input {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .pickerpanel.pickerpanel-compact .option {

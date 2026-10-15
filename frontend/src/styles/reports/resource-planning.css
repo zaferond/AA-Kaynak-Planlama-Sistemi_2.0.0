@@ -26,14 +26,14 @@
 .resource-report-head p,
 .resource-report-note {
   color: var(--brand-muted, #60715e);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1.6;
 }
 .resource-report-head p {
   margin: 0;
 }
 .resource-report-eyebrow {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.12em;
   font-weight: 700;
   color: var(--brand-muted, #60715e);
@@ -43,7 +43,7 @@
   background: var(--brand-surface-soft, #f6f8f2);
   border-radius: 6px;
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .resource-report-note {
@@ -64,7 +64,7 @@
 }
 .resource-chart-axis {
   fill: var(--report-label-color, #60715e);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 500;
 }
 .resource-chart-legend {
@@ -72,7 +72,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 12px 22px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   margin-bottom: 12px;
 }
 .resource-chart-legend span {
@@ -102,7 +102,7 @@
 .resource-chart-values summary {
   cursor: pointer;
   color: var(--brand-muted, #60715e);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   width: fit-content;
   padding: 6px 0;
 }
@@ -111,7 +111,7 @@
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .resource-chart-values th,
 .resource-chart-values td {
@@ -127,7 +127,7 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 14px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .utilization-legend span {
   border-radius: 5px;
@@ -185,7 +185,7 @@
 }
 .resource-heatmap small {
   display: block;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   margin-top: 4px;
 }
@@ -209,16 +209,16 @@
   place-items: center;
   background: var(--brand-surface, #edf1e8);
   border-radius: 6px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .resource-rank-team {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   overflow-wrap: anywhere;
 }
 .resource-rank-team small {
   display: block;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--brand-muted, #60715e);
   margin-top: 3px;
 }
@@ -237,17 +237,17 @@
 .resource-rank-value {
   text-align: right;
   font-variant-numeric: tabular-nums;
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 .resource-rank-value small {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 400;
 }
 .resource-scenario-control {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .resource-scenario-control select {
@@ -263,13 +263,13 @@
   background: var(--brand-surface-soft, #f6f8f2);
   border: 1px solid var(--brand-border, #ccd6c5);
   border-radius: 8px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 .resource-scenario-summary strong {
-  font-size: 24px;
+  font-size: var(--fs-2xl);
 }
 .resource-scenario-summary small {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   color: var(--brand-muted, #60715e);
 }
@@ -305,7 +305,7 @@
   align-items: center;
   gap: 7px;
   color: var(--brand-text, #293a2d);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   cursor: pointer;
 }
@@ -317,7 +317,7 @@
 .resource-project-options small {
   margin-left: auto;
   color: var(--brand-muted, #60715e);
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .resource-project-point:focus {
   outline: none;
@@ -328,6 +328,6 @@
   stroke-width: 2px;
 }
 .resource-bar-value {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }

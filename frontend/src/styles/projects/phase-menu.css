@@ -21,7 +21,7 @@
   border-radius: 6px;
   background: #f4f8fd;
   color: #244e77;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 .phasecontext strong {
   font-weight: 700;
@@ -59,7 +59,7 @@
   padding: 7px 9px 6px;
   border-bottom: 1px solid #e4ebf3;
   color: #637a90;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .phase-menu button {
@@ -73,7 +73,7 @@
   background: transparent;
   color: #244d75;
   text-align: left;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   cursor: pointer;
 }
 .phase-menu button:hover:not(:disabled),
@@ -94,7 +94,7 @@
 .plan-cell-menu button small {
   margin-left: auto;
   color: #71869b;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .app .planning-grid td[data-plan-cell] {
   cursor: cell;
@@ -139,13 +139,13 @@
 .milestone-report-menu .phase-menu-title {
   white-space: normal;
   overflow-wrap: anywhere;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: #244d75;
 }
 .milestone-report-heading {
   padding: 10px 9px 4px;
   color: #687f94;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -181,7 +181,7 @@
   width: fit-content;
   padding: 1px 6px;
   border-radius: 4px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .report-included {
@@ -194,6 +194,6 @@
 }
 .milestone-report-empty {
   padding: 12px 9px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: #758797;
 }

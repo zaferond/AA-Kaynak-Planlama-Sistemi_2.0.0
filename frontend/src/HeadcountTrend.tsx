@@ -127,7 +127,7 @@ export default function HeadcountTrend({
                 x={47}
                 y={y(fraction * maxValue) + 4}
                 textAnchor="end"
-                fontSize={11}
+                fontSize={12}
                 fill="var(--report-label-color, #6d8092)"
               >
                 {fmt(fraction * maxValue)}
@@ -147,7 +147,7 @@ export default function HeadcountTrend({
               <text
                 x={x(firstFuture) - 18}
                 y={31}
-                fontSize={11}
+                fontSize={12}
                 fill="var(--report-forecast-color, #b45309)"
               >
                 Öngörü
@@ -207,7 +207,7 @@ export default function HeadcountTrend({
                     x={x(index)}
                     y={225}
                     textAnchor="middle"
-                    fontSize={11}
+                    fontSize={12}
                     fill="var(--report-label-color, #61758b)"
                   >
                     {monthLabel(point.month)}

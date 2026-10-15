@@ -44,10 +44,10 @@
   gap: 12px;
 }
 .app.full-plan .full-plan-header strong {
-  font-size: 14px;
+  font-size: var(--fs-md);
 }
 .app.full-plan .full-plan-header span {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #c1d5eb;
 }
 .app.full-plan .full-plan-header-actions {
@@ -65,7 +65,7 @@
   background: #ffffff12;
   color: #f4f8ff;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-decoration: none;
 }
 .app.full-plan .full-plan-header .button:hover {
@@ -107,7 +107,7 @@
   display: block;
   margin-top: 2px;
   color: #53674a;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .leadership-planning-row .rowname {

@@ -23,15 +23,15 @@
 }
 .shortage-summary span {
   color: #647b91;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .shortage-summary strong {
   color: #254f76;
-  font-size: 17px;
+  font-size: var(--fs-xl);
 }
 .shortage-summary small {
   color: #647b91;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 500;
 }
 .monthly-shortage-trend .chartnote {
@@ -60,13 +60,13 @@
 .project-info-report .panelhead h2 {
   margin: 0;
   color: #243b2d;
-  font-size: 18px;
+  font-size: var(--fs-xl);
   line-height: 1.3;
 }
 .project-info-report .panelhead p {
   margin: 5px 0 0;
   color: #52665b;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.5;
 }
 .project-info-export {
@@ -120,7 +120,7 @@
 .project-info-group h3 {
   margin: 0;
   color: #fff;
-  font-size: 16px;
+  font-size: var(--fs-lg);
   font-weight: 700;
   line-height: 1.4;
   overflow-wrap: anywhere;
@@ -129,7 +129,7 @@
   display: block;
   margin-top: 4px;
   color: #dbe7d6;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .project-info-add,
@@ -145,7 +145,7 @@
   border-radius: 5px;
   background: #fff;
   color: #245d90;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 650;
   white-space: nowrap;
   cursor: pointer;
@@ -198,14 +198,14 @@
   border-radius: 5px;
   background: var(--brand-primary, #405341);
   color: #fff;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .project-info-entry h4 {
   min-width: 0;
   margin: 0;
   color: #243b2d;
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 700;
   line-height: 1.4;
   overflow-wrap: anywhere;
@@ -217,7 +217,7 @@
   border-radius: 4px;
   background: #fff;
   color: #405341;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   white-space: nowrap;
 }
 .project-info-entry ul {
@@ -240,7 +240,7 @@
   border-radius: 0;
   background: #fff;
   color: #22332c;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
@@ -302,7 +302,7 @@
   border-radius: 4px;
   background: #d9efe1;
   color: #17643b;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-style: normal;
   font-weight: 700;
 }
@@ -315,7 +315,7 @@
   display: grid;
   gap: 4px;
   color: #46627a;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .project-info-editor-fields :is(input, textarea) {
@@ -327,7 +327,7 @@
   border-radius: 5px;
   background: #fff;
   color: #263f55;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .project-info-editor-fields textarea {
   resize: vertical;
@@ -350,7 +350,7 @@
   border-radius: 4px;
   background: #e9efea;
   color: #3b5042;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   line-height: 1.4;
   white-space: normal;
@@ -371,7 +371,7 @@
   border-radius: 4px;
   background: #fff;
   color: #2c638d;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 650;
   white-space: nowrap;
   cursor: pointer;
@@ -409,7 +409,7 @@
   border-radius: 5px;
   background: #fff4f5;
   color: #8b3443;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .project-info-inline-error {
   margin: 8px 0 3px;
@@ -418,7 +418,7 @@
   border-radius: 5px;
   background: #fff4f5;
   color: #8b3443;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 @media (max-width: 700px) {
   .project-info-groups {
@@ -475,14 +475,14 @@
 .headcount-metrics span {
   display: block;
   color: #65798c;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
 }
 .headcount-metrics strong {
   display: block;
   margin-top: 4px;
   color: #1c568f;
-  font-size: 22px;
+  font-size: var(--fs-2xl);
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
@@ -490,7 +490,7 @@
   color: #a46123;
 }
 .headcount-metrics small {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 500;
 }
 .headcount-legend {
@@ -500,7 +500,7 @@
   align-items: center;
   padding: 0 22px 10px;
   color: #566f85;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .headcount-legend span {
   display: inline-flex;
@@ -542,7 +542,7 @@
   display: block;
   margin-top: 2px;
   color: #64788b;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: 0;
@@ -561,12 +561,12 @@
   overflow-wrap: anywhere;
 }
 .phasecontext .project-responsible {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0;
   color: #60758b;
 }
 .editor [data-slot="dialog-title"] .project-responsible {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 500;
 }

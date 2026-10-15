@@ -74,7 +74,7 @@ export default function Portal() {
     project: Project;
     month: string;
   } | null>(null);
-  const projectLabelWidth = 180;
+  const projectLabelWidth = 230;
   const planningLabelWidth = 220;
   const [browserFullScreen, setBrowserFullScreen] = useState(
     !!document.fullscreenElement,
@@ -203,6 +203,8 @@ export default function Portal() {
   const planMonthWidth =
     density === "overview" ? 23 : density === "compact" ? 65 : 144;
   const labelWidth = density === "overview" ? 210 : 240;
+  // 5 yıllık genel bakışta haftalık sütunlar okunamaz; görünüm aylık kalır.
+  const timelineWeekly = projectWeekly && density !== "overview";
   const {
     editor,
     setEditor,
@@ -354,7 +356,7 @@ export default function Portal() {
       start,
       count,
       search,
-      projectWeekly,
+      timelineWeekly,
     ]),
     isAdmin: !!isAdmin,
     saving,
@@ -404,7 +406,7 @@ export default function Portal() {
     projects,
     months,
     density,
-    projectWeekly,
+    projectWeekly: timelineWeekly,
     showProjectCodes,
     currentMonth,
     start,
@@ -681,7 +683,7 @@ export default function Portal() {
                       },
                       {
                         label: "Görünüm",
-                        values: [projectWeekly ? "Haftalık" : "Aylık"],
+                        values: [timelineWeekly ? "Haftalık" : "Aylık"],
                         active: true,
                       },
                     ]}
@@ -689,7 +691,7 @@ export default function Portal() {
                     projects={projects}
                     revisions={data.revisions}
                     months={months}
-                    weekly={projectWeekly}
+                    weekly={timelineWeekly}
                     showCodes={showProjectCodes}
                     onCodesChange={setShowProjectCodes}
                     todayDate={todayDate}

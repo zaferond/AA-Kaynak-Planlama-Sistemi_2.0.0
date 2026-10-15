@@ -63,3 +63,35 @@ export function phaseChipStyle(project: Project, month: string): CSSProperties {
 export function phaseChipEmpty(project: Project, month: string) {
   return !project.phases[month]?.trim() && !project.phaseColors?.[month];
 }
+
+export type PhaseRunPart = "single" | "start" | "middle" | "end";
+
+/** Identity of a filled phase cell; equal neighbours are drawn as one bar. */
+export function phaseRunKey(project: Project, month: string, active = true) {
+  const text = active ? project.phases[month]?.trim() : "";
+  return text ? text + "\u0000" + phaseColor(project, month).id : "";
+}
+
+/** Gantt-style position of each cell inside a run of identical phases. */
+export function phaseRunParts(keys: readonly string[]) {
+  return keys.map((key, index): PhaseRunPart | undefined => {
+    if (!key) return undefined;
+    const joinsBefore = keys[index - 1] === key,
+      joinsAfter = keys[index + 1] === key;
+    return joinsBefore
+      ? joinsAfter
+        ? "middle"
+        : "end"
+      : joinsAfter
+        ? "start"
+        : "single";
+  });
+}
+
+export function shiftMonth(month: string, delta: number) {
+  const [year, value] = month.split("-").map(Number);
+  const index = year * 12 + value - 1 + delta;
+  return (
+    Math.floor(index / 12) + "-" + String((index % 12) + 1).padStart(2, "0")
+  );
+}

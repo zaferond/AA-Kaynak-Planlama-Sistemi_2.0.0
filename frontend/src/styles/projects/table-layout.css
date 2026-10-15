@@ -50,19 +50,19 @@
   text-overflow: ellipsis;
 }
 .app.tab-projects .projectmatrix .weekhead .week-number {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 750;
   line-height: 1.2;
 }
 .app.tab-projects .projectmatrix .weekhead .week-range {
   margin-top: 2px;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 550;
   line-height: 1.2;
 }
 
 .projectmatrix td.phase-cell-selected .phasebutton {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--brand-focus, #6d855e);
   outline-offset: -2px;
   box-shadow: inset 0 0 0 3px #eff6ff;
 }
@@ -85,7 +85,7 @@
   overflow-wrap: anywhere;
   text-align: center;
   vertical-align: middle;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .app.tab-projects .projectmatrix thead tr:not(.yearrow) > .project-code-cell {

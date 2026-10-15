@@ -22,7 +22,7 @@
 }
 .app.tab-plan .allocation-grid .team-group-label strong {
   display: block;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #294966;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -30,7 +30,7 @@
 .app.tab-plan .allocation-grid .team-group-label span {
   display: block;
   margin: 2px 0 0;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: #526f89;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -69,7 +69,7 @@
   border: 1px solid #c8d8e6;
   border-radius: 4px;
   text-align: right;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #223c54;
   background: #fff;
 }
@@ -109,7 +109,7 @@
   border-radius: 3px;
   background: #fff9ec;
   color: #886529;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   cursor: pointer;
 }
 .person-allocation .actual-hours-required:hover {
@@ -159,7 +159,7 @@
   margin: 0;
   padding: 0 12px;
   color: #587083;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 650;
   line-height: 1.2;
   text-align: right;
@@ -191,7 +191,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #23435d;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 18px;
 }
@@ -214,7 +214,7 @@
   border-radius: 4px;
   background: #fff;
   color: #223c54;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   text-align: right;
 }
@@ -233,7 +233,7 @@
   min-height: 29px;
   padding: 7px 0 4px;
   color: #8a9aab;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   line-height: 18px;
   white-space: nowrap;
@@ -246,7 +246,7 @@
   display: block;
   max-width: 100%;
   color: #7a8e9f;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
   text-align: right;
 }

@@ -200,6 +200,7 @@ export default function ProjectTimelinePanel({
           <Switch
             size="sm"
             checked={weekly}
+            disabled={density === "overview"}
             onCheckedChange={onWeeklyChange}
             aria-label="Haftalık proje görünümü"
           />

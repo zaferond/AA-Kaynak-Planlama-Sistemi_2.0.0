@@ -11,7 +11,7 @@
   border: 1px solid #cbd9e8;
   border-radius: 5px;
   background: #fff;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .team-directory .directory-table {
   table-layout: fixed;
@@ -29,7 +29,7 @@
 .team-directory td,
 .team-directory th {
   padding: 10px 14px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   border-bottom: 1px solid var(--brand-border, #dbe5d5);
   border-right: 1px solid #e8ede4;
   vertical-align: middle;
@@ -68,12 +68,12 @@
   border-radius: 5px;
   background: #fff;
   color: #263d53;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .team-directory td .button {
   min-height: 29px;
   padding: 4px 10px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -82,7 +82,7 @@
 .team-directory .directory-group td {
   background: #eef3f8;
   color: #24445e;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   border-top: 1px solid #d5e1eb;
 }
 .team-directory .directory-group td:first-child {
@@ -92,7 +92,7 @@
   display: block;
   margin-top: 4px;
   color: #657d91;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 500;
 }
 .team-directory .directory-group .directory-team-count {
@@ -112,7 +112,7 @@
   color: var(--brand-muted, #68745f);
 }
 .team-directory .directory-unit-kind {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .team-directory .directory-team td {
@@ -139,7 +139,7 @@
 .team-directory .directory-summary {
   margin: 4px 0 0;
   color: #607c95;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .team-directory .directory-toolbar {
   display: flex;
@@ -176,11 +176,11 @@
   align-items: center;
   gap: 9px;
   color: #244d6c;
-  font-size: 18px;
+  font-size: var(--fs-xl);
 }
 .directory-dialog [data-slot="dialog-description"] {
   color: #61788d;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .directory-manager-body {
   display: grid;
@@ -203,13 +203,13 @@
   align-items: center;
   justify-content: space-between;
   color: #325570;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .directory-manager-list-header span {
   padding: 2px 8px;
   border-radius: 12px;
   background: #dce8f3;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .directory-dialog input,
 .directory-dialog select {
@@ -221,7 +221,7 @@
   border-radius: 5px;
   background: #fff;
   color: #29475f;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .directory-dialog input:focus,
 .directory-dialog select:focus {
@@ -264,12 +264,12 @@
   overflow-wrap: anywhere;
 }
 .directory-record strong {
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .directory-record small {
   margin-top: 3px;
   color: #6a8297;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .directory-manager-details {
   min-width: 0;
@@ -290,13 +290,13 @@
 .directory-manager-details legend {
   margin-bottom: 18px;
   color: #2c5371;
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 700;
 }
 .directory-manager-details label {
   margin-top: 6px;
   color: #4b667d;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .directory-manager-form-actions {
@@ -323,12 +323,12 @@
   gap: 12px;
   color: #66849c;
   text-align: center;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .directory-manager-empty {
   padding: 18px 8px;
   color: #6d8497;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .directory-manager-error {
   margin-top: 16px;
@@ -343,7 +343,7 @@
 }
 .directory-manager-footer span {
   color: #73889a;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 @media (max-width: 700px) {
   .team-directory .panelhead {
@@ -371,7 +371,7 @@
 }
 :is(.directory-employees-heading, .directory-teams-heading) span,
 :is(.directory-employees, .directory-teams) p {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #5d6b58;
 }
 :is(.directory-employees, .directory-teams) ul {
@@ -396,10 +396,10 @@
   border-bottom: none;
 }
 :is(.directory-employees, .directory-teams) li strong {
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 :is(.directory-employees, .directory-teams) li small {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: #65735f;
 }
 
@@ -445,7 +445,7 @@
   border-radius: 4px;
   color: #53644a;
   background: #edf2e6;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
 }
 .directory-teams li[data-directory-kind="leader"] {

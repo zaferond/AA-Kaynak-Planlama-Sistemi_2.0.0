@@ -30,7 +30,7 @@
   border-radius: 5px;
   background: #e2f2e8;
   color: #23654b;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   line-height: 1;
   cursor: help;
@@ -71,7 +71,7 @@
   border-radius: 5px;
   background: #e2f2e8;
   color: #23654b;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   line-height: 1;
   cursor: help;
@@ -101,7 +101,7 @@
   background: #fff;
   box-shadow: 0 8px 24px #23351b26;
   color: #30452b;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   line-height: 1.5;
   text-align: left;
@@ -113,7 +113,7 @@
   margin-bottom: 8px;
   border-bottom: 1px solid #e0e7da;
   color: #344e28;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .team-member-floating .team-member-names {
   display: grid;
@@ -145,7 +145,7 @@
   display: block;
   max-width: 100%;
   color: #60788d;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   line-height: 1.25;
   white-space: normal;
@@ -168,6 +168,6 @@
   .leader-report
   tr[data-report-depth]:not([data-report-depth="0"])
   .report-unit-name {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 500;
 }

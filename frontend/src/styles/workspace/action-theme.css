@@ -17,7 +17,7 @@
   border-radius: 6px;
   background: #f5f9fc;
   color: #315b7d;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   cursor: pointer;
 }
@@ -32,7 +32,7 @@
 }
 .app.tab-projects .project-week-hint {
   color: #59738b;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .app {
@@ -68,7 +68,7 @@
 }
 .person-allocation .actual-unit-item > span {
   color: #315f80;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 750;
 }
 .person-allocation .actual-unit-item select {
@@ -81,7 +81,7 @@
   border-radius: 5px;
   background: #fff;
   color: #245678;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   text-align: right;
   text-align-last: right;

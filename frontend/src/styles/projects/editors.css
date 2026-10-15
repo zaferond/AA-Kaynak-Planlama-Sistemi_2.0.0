@@ -22,13 +22,13 @@
 .timeline-editor [data-slot="dialog-title"] {
   padding-right: 25px;
   color: #223e55;
-  font-size: 20px;
+  font-size: var(--fs-2xl);
   font-weight: 700;
   line-height: 1.25;
 }
 .timeline-editor [data-slot="dialog-description"] {
   color: #64798a;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .timeline-editor [data-slot="dialog-close"] {
@@ -63,13 +63,13 @@
   gap: 3px;
 }
 .timeline-editor-form > .phasecontext small {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #69849b;
 }
 .timeline-editor-form > .phasecontext strong {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   line-height: 1.35;
 }
 .timeline-editor-form > .phasecontext span {
@@ -78,14 +78,14 @@
   border-radius: 5px;
   background: #fff;
   color: #3b5e7b;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .timeline-editor-form > label,
 .timeline-editor-form .formrow > label {
   gap: 6px;
   min-width: 0;
   color: #344f67;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .timeline-editor-form > label input,
@@ -98,7 +98,7 @@
   border-radius: 6px;
   background: #fff;
   color: #20394f;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 400;
   line-height: 1.4;
   transition:
@@ -133,7 +133,7 @@
   legend {
   padding: 0 6px;
   color: #344f67;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .milestone-range-list {
@@ -143,7 +143,7 @@
 .milestone-date-hint {
   margin: 0 0 11px;
   color: #61798d;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .milestone-range-row {
@@ -179,7 +179,7 @@
   border-radius: 5px;
   background: #e7f0f7;
   color: #3d6b90;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .milestone-range-row:nth-child(even) .milestone-range-number {
@@ -192,7 +192,7 @@
   gap: 5px;
   min-width: 0;
   color: #344f67;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .timeline-editor-form .milestone-range-row :is(input, textarea) {
@@ -204,7 +204,7 @@
   border-radius: 6px;
   background: #fff;
   color: #20394f;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .milestone-range-dates {
   grid-column: 2;
@@ -220,7 +220,7 @@
 .milestone-range-dates > strong,
 .milestone-range-notes > strong {
   color: #344f67;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .milestone-range-dates > .milestone-range-date-card {
@@ -261,7 +261,7 @@
   border-radius: 6px;
   background: #f7fafc;
   color: #617c92;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .milestone-note-empty {
@@ -271,7 +271,7 @@
   border-radius: 6px;
   background: #f8fbfd;
   color: #698096;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .milestone-note-row {
   display: grid;
@@ -295,7 +295,7 @@
   border-radius: 4px;
   background: #eaf3fa;
   color: #315f80;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 1.3;
 }
@@ -313,7 +313,7 @@
   gap: 8px;
 }
 .milestone-note-dates label {
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .milestone-note-dates .milestone-note-report {
   display: flex;
@@ -377,7 +377,7 @@
   border-radius: 5px;
   background: #dceefa;
   color: #1e557b;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   cursor: pointer;
 }
@@ -405,7 +405,7 @@
 .milestone-range-colors span {
   margin-right: 4px;
   color: #344f67;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .timeline-editor-form .milestone-range-colors button {
@@ -459,7 +459,7 @@
   border-radius: 5px;
   background: #fff;
   color: #245d85;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .timeline-editor-form .milestone-range-add:hover:not(:disabled) {
@@ -500,7 +500,7 @@
   padding: 6px 9px;
   border-width: 1px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   transition:
     box-shadow 0.15s,
@@ -527,7 +527,7 @@
   min-height: 63px;
   padding: 9px 11px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .timeline-editor-form .milestone-bar-options button.selected,
@@ -545,7 +545,7 @@
   min-height: 35px;
   padding: 6px 9px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .timeline-editor-form .milestone-colors i {
@@ -570,12 +570,12 @@
 }
 .milestone-preview-list small {
   color: #6b8193;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .timeline-live-preview > span {
   color: #658096;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 750;
   letter-spacing: 0.08em;
 }
@@ -585,7 +585,7 @@
   border-radius: 4px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .timeline-live-preview .timeline-milestone-preview {
@@ -601,7 +601,7 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   text-align: center;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 1.4;
 }
@@ -625,7 +625,7 @@
 }
 .timeline-live-preview > small {
   color: #6b8193;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .timeline-editor-form > .negative {
@@ -634,7 +634,7 @@
   border: 1px solid #efc6be;
   border-radius: 6px;
   background: #fff3f0;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .timeline-editor-form .timeline-editor-actions {
   position: sticky;
@@ -658,7 +658,7 @@
   border-radius: 5px;
   background: #fff4f5;
   color: #8b3443;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .timeline-editor-actions .button {
@@ -666,7 +666,7 @@
   min-height: 36px;
   padding: 7px 16px;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .timeline-editor-actions .milestone-delete-button {
@@ -730,7 +730,7 @@
 }
 .milestone-range-kind > span {
   color: #475569;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .milestone-range-kind .milestone-bar-options {
@@ -738,7 +738,7 @@
 }
 .timeline-editor-form .milestone-range-kind .milestone-bar-options button {
   min-height: 34px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   padding: 7px 12px;
 }
 

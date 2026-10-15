@@ -9,7 +9,12 @@ import {
   phaseMonthForPeriod,
 } from "./timeline-periods";
 import { phasePalette } from "./model";
-import { phaseChipStyle, phaseChipEmpty } from "./phase-chip";
+import {
+  phaseChipStyle,
+  phaseChipEmpty,
+  phaseRunKey,
+  phaseRunParts,
+} from "./phase-chip";
 import ProjectResponsible from "./ProjectResponsible";
 import { milestoneRanges } from "./milestone-ranges";
 import { milestoneBarsForPeriods } from "./milestone-bars";
@@ -160,118 +165,130 @@ export default function ProjectTimelineRows({
             {project.code || "—"}
           </TableCell>
         )}
-        {periods.map((period) => {
-          const active = periodOverlapsProject(period, project);
-          const month = phaseMonthForPeriod(period, project);
-          const phaseText = active ? project.phases[month]?.trim() : "";
-          return (
-            <TableCell
-              key={period.key}
-              data-phase-cell={phaseSelection.key(project.id, month)}
-              className={
-                phaseSelection.cells.includes(
-                  phaseSelection.key(project.id, month),
-                )
-                  ? "phase-cell-selected"
-                  : undefined
-              }
-              onPointerDown={(event) =>
-                phaseSelection.startDrag(
-                  event,
-                  phaseSelection.key(project.id, month),
-                )
-              }
-            >
-              <button
-                className="phasebutton phase-chip"
-                disabled={!active}
-                style={phaseChipStyle(project, month)}
-                data-phase-empty={!active || phaseChipEmpty(project, month)}
-                aria-label={
-                  project.name +
-                  " / " +
-                  (period.kind === "week"
-                    ? period.fullLabel
-                    : monthLabel(month)) +
-                  " aşama ayrıntısı" +
-                  (phaseText ? ": " + phaseText : "")
-                }
-                onMouseEnter={
-                  phaseText
-                    ? (event) => {
-                        phasePointerRef.current = {
-                          x: event.clientX,
-                          y: event.clientY,
-                        };
-                        setHoveredPhase(phaseText);
-                      }
+        {(() => {
+          const phaseRuns = phaseRunParts(
+            periods.map((period) =>
+              phaseRunKey(
+                project,
+                phaseMonthForPeriod(period, project),
+                periodOverlapsProject(period, project),
+              ),
+            ),
+          );
+          return periods.map((period, periodIndex) => {
+            const active = periodOverlapsProject(period, project);
+            const month = phaseMonthForPeriod(period, project);
+            const phaseText = active ? project.phases[month]?.trim() : "";
+            return (
+              <TableCell
+                key={period.key}
+                data-phase-cell={phaseSelection.key(project.id, month)}
+                className={
+                  phaseSelection.cells.includes(
+                    phaseSelection.key(project.id, month),
+                  )
+                    ? "phase-cell-selected"
                     : undefined
                 }
-                onMouseMove={
-                  phaseText
-                    ? (event) =>
-                        positionPhaseTooltip(event.clientX, event.clientY)
-                    : undefined
-                }
-                onMouseLeave={() => setHoveredPhase("")}
-                onFocus={
-                  phaseText
-                    ? (event) => {
-                        const rect =
-                          event.currentTarget.getBoundingClientRect();
-                        phasePointerRef.current = {
-                          x: rect.left + rect.width / 2,
-                          y: rect.bottom,
-                        };
-                        setHoveredPhase(phaseText);
-                      }
-                    : undefined
-                }
-                onBlur={() => setHoveredPhase("")}
-                onContextMenu={(event) => {
-                  setHoveredPhase("");
-                  onPhaseContextMenu(event, month);
-                }}
-                aria-pressed={phaseSelection.cells.includes(
-                  phaseSelection.key(project.id, month),
-                )}
-                onClick={(event) => {
-                  setHoveredPhase("");
-                  phaseSelection.choose(
+                onPointerDown={(event) =>
+                  phaseSelection.startDrag(
                     event,
                     phaseSelection.key(project.id, month),
-                  );
-                }}
-                onDoubleClick={() => {
-                  setHoveredPhase("");
-                  onPhaseClick(month);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    onPhaseClick(month);
-                  }
-                }}
+                  )
+                }
               >
-                <span className="phasepreview">
-                  {!active ? (
-                    "-"
-                  ) : density === "overview" ? (
-                    phaseText ? (
-                      <strong className="phase-initial">
-                        {phaseInitial(phaseText)}
-                      </strong>
-                    ) : (
-                      "-"
-                    )
-                  ) : (
-                    phaseText || "-"
+                <button
+                  className="phasebutton phase-chip"
+                  disabled={!active}
+                  style={phaseChipStyle(project, month)}
+                  data-phase-empty={!active || phaseChipEmpty(project, month)}
+                  data-phase-run={phaseRuns[periodIndex]}
+                  aria-label={
+                    project.name +
+                    " / " +
+                    (period.kind === "week"
+                      ? period.fullLabel
+                      : monthLabel(month)) +
+                    " aşama ayrıntısı" +
+                    (phaseText ? ": " + phaseText : "")
+                  }
+                  onMouseEnter={
+                    phaseText
+                      ? (event) => {
+                          phasePointerRef.current = {
+                            x: event.clientX,
+                            y: event.clientY,
+                          };
+                          setHoveredPhase(phaseText);
+                        }
+                      : undefined
+                  }
+                  onMouseMove={
+                    phaseText
+                      ? (event) =>
+                          positionPhaseTooltip(event.clientX, event.clientY)
+                      : undefined
+                  }
+                  onMouseLeave={() => setHoveredPhase("")}
+                  onFocus={
+                    phaseText
+                      ? (event) => {
+                          const rect =
+                            event.currentTarget.getBoundingClientRect();
+                          phasePointerRef.current = {
+                            x: rect.left + rect.width / 2,
+                            y: rect.bottom,
+                          };
+                          setHoveredPhase(phaseText);
+                        }
+                      : undefined
+                  }
+                  onBlur={() => setHoveredPhase("")}
+                  onContextMenu={(event) => {
+                    setHoveredPhase("");
+                    onPhaseContextMenu(event, month);
+                  }}
+                  aria-pressed={phaseSelection.cells.includes(
+                    phaseSelection.key(project.id, month),
                   )}
-                </span>
-              </button>
-            </TableCell>
-          );
-        })}
+                  onClick={(event) => {
+                    setHoveredPhase("");
+                    phaseSelection.choose(
+                      event,
+                      phaseSelection.key(project.id, month),
+                    );
+                  }}
+                  onDoubleClick={() => {
+                    setHoveredPhase("");
+                    onPhaseClick(month);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      onPhaseClick(month);
+                    }
+                  }}
+                >
+                  <span className="phasepreview">
+                    {!active ? (
+                      "-"
+                    ) : density === "overview" ? (
+                      phaseText ? (
+                        <strong className="phase-initial">
+                          {phaseInitial(phaseText)}
+                        </strong>
+                      ) : (
+                        "-"
+                      )
+                    ) : (
+                      phaseText || "-"
+                    )}
+                  </span>
+                </button>
+              </TableCell>
+            );
+          });
+        })()}
       </TableRow>
       {expanded && (
         <>

@@ -65,7 +65,7 @@
   min-height: 25px;
   padding: 3px 8px;
   color: #496987;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .app .workspace-nav-actions [role="tab"][data-state="active"] {
   background: #fff;
@@ -89,7 +89,7 @@
   min-height: 31px;
   padding: 4px 9px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   gap: 5px;
 }
 .app .workspace-nav-actions .iconbutton {
@@ -114,7 +114,7 @@
   border: 1px solid #102f50;
   border-radius: 3px;
   background: #102f50;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   box-shadow: none;
 }
@@ -168,7 +168,7 @@
   margin: 0;
 }
 .app .mastbrandrow .systembrand {
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.25;
 }
 .app .mastbrandrow .mark {
@@ -188,7 +188,7 @@
   min-height: 27px;
   margin-left: 0;
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .app .mastglobalactions {
   justify-content: flex-end;
@@ -200,7 +200,7 @@
   height: 27px;
   min-height: 27px;
   padding: 3px 7px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .app .mastbulk {
   margin-top: 5px;
@@ -211,7 +211,7 @@
   height: 26px;
   min-height: 26px;
   padding: 3px 7px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 @media (max-width: 1000px) {
   .app .mastbrandrow {
@@ -237,7 +237,7 @@
     margin-right: auto;
   }
   .app .mastbrandrow .systembrand {
-    font-size: 12px;
+    font-size: var(--fs-xs);
   }
 }
 
@@ -284,7 +284,7 @@
   min-height: 30px;
   padding: 4px 8px;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .app .filteractions .resetfilters {
   width: auto;
@@ -302,7 +302,7 @@
   border-radius: 6px;
   background: #f2f7fc;
   color: #315a7c;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   cursor: pointer;
 }

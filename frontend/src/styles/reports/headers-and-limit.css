@@ -34,7 +34,7 @@
   color: #3c6250;
   text-align: center;
   white-space: nowrap;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 1;
   cursor: not-allowed;
@@ -47,13 +47,13 @@
 }
 .app.tab-actual .actual-person-total td:first-child {
   padding-left: 24px !important;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .app.tab-actual .actual-person-total td:not(:first-child) {
   padding: 4px 2px;
   text-align: center;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 650;
   font-variant-numeric: tabular-nums;
 }
@@ -72,12 +72,12 @@
 }
 .actual-limit-dialog [data-slot="dialog-title"] {
   color: #27445b;
-  font-size: 17px;
+  font-size: var(--fs-xl);
   line-height: 1.35;
 }
 .actual-limit-dialog [data-slot="dialog-description"] {
   color: #4c6377;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   line-height: 1.6;
 }
 .actual-limit-actions {
@@ -134,7 +134,7 @@
 }
 .app.tab-overview .remaining-report .remaining-total-heading strong {
   display: block;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .app.tab-overview .remaining-report .remaining-total-icon {
@@ -146,10 +146,10 @@
   border: 1px solid #ffffff40;
   border-radius: 4px;
   background: #ffffff12;
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 .app.tab-overview .remaining-report .remaining-total-value {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
   font-weight: 750;
 }

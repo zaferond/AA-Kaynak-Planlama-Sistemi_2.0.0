@@ -10,35 +10,35 @@ export const HEADCOUNT_COLUMNS = [
     key: "active",
     status: "Aktif Çalışan",
     label: "Aktif Çalışan",
-    headerColor: "#3f6256",
+    headerColor: "#405341",
   },
   {
     key: "gearUp",
     status: "Gear Up",
     label: "Gear Up",
-    headerColor: "#53668c",
+    headerColor: "#405341",
   },
   {
     key: "hourly",
     status: "SAAT Ücretli Ofis Ç.",
     label: "Saat Ücretli Çalışan",
-    headerColor: "#756346",
+    headerColor: "#405341",
   },
   {
     key: "activePosting",
     status: "Aktif İlan",
     label: "Aktif İlan",
-    headerColor: "#3c7180",
+    headerColor: "#405341",
   },
   {
     key: "passivePosting",
     status: "Pasif İlan",
     label: "Pasif İlan",
-    headerColor: "#626b76",
+    headerColor: "#405341",
   },
 ] as const;
-export const HEADCOUNT_TOTAL_HEADER_COLOR = "#5e5076";
-export const HEADCOUNT_TOTAL_CELL_COLOR = "#eee9f4";
+export const HEADCOUNT_TOTAL_HEADER_COLOR = "#263c28";
+export const HEADCOUNT_TOTAL_CELL_COLOR = "#edf1e8";
 export type HeadcountKey = (typeof HEADCOUNT_COLUMNS)[number]["key"];
 export type HeadcountCounts = Record<HeadcountKey, number>;
 export const HEADCOUNT_REPORTS: readonly {

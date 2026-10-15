@@ -31,7 +31,7 @@
 }
 .app.tab-plan .project-team-view .project-phase-group .project-group-name span {
   margin: 2px 0 0;
-  font-size: 9px;
+  font-size: var(--fs-xs);
 }
 .app.tab-overview .remaining-report tbody td:nth-child(-n + 2),
 .app.tab-overview

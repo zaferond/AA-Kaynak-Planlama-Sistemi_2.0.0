@@ -20,7 +20,7 @@
   padding-right: 12px;
   border-right: 1px solid #c8d8e4;
   color: #315f80;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 750;
   white-space: nowrap;
 }
@@ -40,7 +40,7 @@
 }
 .app .planning-filterbar .filters > .pick > span {
   color: #435f75;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 1.25;
 }
@@ -54,7 +54,7 @@
   border-radius: 6px;
   background: #fff;
   color: #263e53;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   box-shadow: 0 1px 2px #1a3a5310;
   transition:
@@ -95,7 +95,7 @@
   min-height: 34px;
   padding: 5px 10px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .app .planning-filterbar .filteractions .resetfilters {

@@ -10,7 +10,7 @@
 .headcount-report-date {
   margin: 4px 0 0;
   color: var(--brand-muted, #68745f);
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .headcount-panel [data-slot="table-container"] {
   height: auto;
@@ -36,7 +36,7 @@
   vertical-align: middle;
   white-space: normal;
   overflow-wrap: anywhere;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
 }
 .headcount-table :is(th, td):last-child {
@@ -84,9 +84,9 @@
 }
 .app.tab-overview .headcount-table td.headcount-row-total {
   font-weight: 750;
-  background: var(--headcount-total-background, #eee9f4);
-  color: #544367;
-  box-shadow: inset 2px 0 #d0c3df;
+  background: var(--headcount-total-background, #edf1e8);
+  color: var(--brand-hover, #263c28);
+  box-shadow: inset 2px 0 var(--brand-border-strong, #96a889);
 }
 .headcount-table tfoot {
   position: static;
@@ -94,7 +94,7 @@
 .headcount-table .headcount-grand-total td {
   background: var(--brand-surface, #edf2e8);
   border-top: 2px solid var(--brand-border-strong, #a8b89d);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 750;
   color: var(--brand-primary, #405341);
 }
@@ -109,14 +109,14 @@
   width: 23px;
   height: 23px;
   border-radius: 5px;
-  background: var(--brand-primary, #405341);
+  background: var(--headcount-header-color, var(--brand-primary, #405341));
   color: #fff;
 }
 .headcount-table .headcount-with-postings td {
   background: var(--brand-surface, #edf2e8);
   border-top: 1px solid var(--brand-border-strong, #a8b89d);
   padding: 10px 12px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 750;
   color: var(--brand-primary, #405341);
 }

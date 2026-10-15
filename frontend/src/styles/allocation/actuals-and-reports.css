@@ -1,7 +1,7 @@
 .app.tab-plan .allocation-grid .actual-row td {
   background: #edf6f8;
   color: #22596a;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   border-top: 1px solid #c3dce3;
 }
@@ -25,7 +25,7 @@
   background: #fff;
   color: #235581;
   border-radius: 3px;
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
@@ -81,7 +81,7 @@
   border-color: var(--table-year-border);
 }
 .person-allocation .panelhead p {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #60758b;
 }
 .person-allocation .person-amount {
@@ -101,12 +101,12 @@
   overflow-wrap: anywhere;
 }
 .person-allocation .actual-project-name strong {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.35;
 }
 .person-allocation .actual-project-name span {
   margin-top: 3px;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   color: #60758b;
 }
 .person-allocation .actual-phase-cell {
@@ -121,7 +121,7 @@
   border-radius: 3px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.25;
   text-align: left;
   cursor: pointer;
@@ -148,7 +148,7 @@
   border: 1px solid #d2dfeb;
   border-radius: 3px;
   background: #fff;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
 }
 .person-allocation .person-amount input:focus {

@@ -102,7 +102,7 @@ export default function MonthlyShortageTrend({
                   x={left - 10}
                   y={y(index * tick) + 4}
                   textAnchor="end"
-                  fontSize={11}
+                  fontSize={12}
                   fill="var(--report-label-color, #6d8092)"
                 >
                   {fmt(index * tick)}
@@ -132,7 +132,7 @@ export default function MonthlyShortageTrend({
                       x={x}
                       y={239}
                       textAnchor="middle"
-                      fontSize={11}
+                      fontSize={12}
                       fill="var(--report-label-color, #61758b)"
                     >
                       {monthLabel(point.month)}

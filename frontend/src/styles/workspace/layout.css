@@ -24,7 +24,7 @@
   border-radius: 7px;
 }
 .mastbrandrow .systembrand {
-  font-size: 16px;
+  font-size: var(--fs-lg);
   line-height: 1.3;
   letter-spacing: 0;
   font-weight: 650;
@@ -35,7 +35,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   white-space: nowrap;
   background: #ffffff12;
   border: 1px solid #ffffff25;
@@ -67,7 +67,7 @@
   min-height: 29px;
   height: 29px;
   padding: 4px 9px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   white-space: nowrap;
   gap: 5px;
   border-radius: 5px;
@@ -103,7 +103,7 @@
 }
 .mast [role="tab"] {
   color: #dceafb;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   min-height: 24px;
   height: 24px;
   padding: 3px 9px;
@@ -118,13 +118,13 @@
   align-items: center;
   gap: 6px;
   color: #dce9f8;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .densitycontrol select {
   min-height: 29px;
   height: 29px;
   padding: 3px 7px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   background: #eaf3ff;
   color: #173b62;
   border-color: #bed1e7;
@@ -137,7 +137,7 @@
   margin-top: 7px;
   padding-top: 7px;
   border-top: 1px solid #ffffff1a;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #dce9f8;
 }
 .mastbulk label {
@@ -153,10 +153,10 @@
   color: #173b62;
   border: 1px solid #c7d8ee;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .mastbulk small {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: #bcd0e7;
 }
 .app > main {
@@ -170,7 +170,7 @@
   gap: 22px !important;
 }
 .app .navtabs button {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   padding: 7px 0;
 }
 .app .navtabs svg {
@@ -189,18 +189,18 @@
   gap: 3px;
 }
 .app .filters .pick > span {
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .app .filters .pickerbutton,
 .app .filters input,
 .app .filters select {
   height: 30px;
   min-height: 30px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   padding: 4px 8px;
 }
 .app .filterline {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   margin: 0 0 8px;
   gap: 8px;
 }
@@ -217,22 +217,22 @@
   gap: 3px 10px;
 }
 .app:is(.tab-plan, .tab-projects) .stats span {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.25px;
 }
 .app:is(.tab-plan, .tab-projects) .stats strong {
   grid-column: 2;
   grid-row: 1/3;
   margin: 0;
-  font-size: 22px;
+  font-size: var(--fs-2xl);
   line-height: 1.2;
 }
 .app:is(.tab-plan, .tab-projects) .stats small {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   margin-left: 4px;
 }
 .app:is(.tab-plan, .tab-projects) .stats p {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   grid-column: 1;
   margin: 0;
 }
@@ -243,12 +243,12 @@
   padding: 7px 12px;
 }
 .app .projectcaption p {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   margin: 0;
 }
 .app.tab-plan .infonote {
   padding: 7px 12px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   margin: 0;
   border-radius: 0;
 }
@@ -263,7 +263,7 @@
 }
 .app .capacitystrip > summary {
   padding: 7px 12px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: #295a85;
   background: #f4f8fd;
@@ -275,7 +275,7 @@
 }
 .app .planning-grid {
   table-layout: fixed;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   min-width: 0;
 }
 .app .planning-grid th:first-child,
@@ -290,7 +290,7 @@
   overflow: visible;
 }
 .app .planning-grid .rowname {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   padding: 5px 10px !important;
   line-height: 1.35;
   overflow-wrap: anywhere;
@@ -305,11 +305,11 @@
 .app .planning-grid .group td[colspan] > span {
   left: 10px;
   width: calc(var(--label-width) - 20px);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
 }
 .app .planning-grid .group td[colspan] > span {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   margin-top: 2px;
 }
 .app .planning-grid .cell {
@@ -318,7 +318,7 @@
   margin: 0;
 }
 .app .planning-grid .cell input {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   height: 27px;
   min-height: 0;
   padding: 2px 0;
@@ -335,7 +335,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 82px;
-  font-size: 14px;
+  font-size: var(--fs-md);
   z-index: 8;
   background: #fff;
   box-shadow: 0 2px 10px #10283f30;
@@ -368,11 +368,11 @@
   background: #fff4f3;
   border: 1px solid #dc9999;
   padding: 5px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .app .planning-grid .summary td {
   height: 27px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   padding: 4px 2px !important;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -388,7 +388,7 @@
   padding: 4px;
   border-radius: 3px;
   border-left-width: 2px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   text-align: left;
   cursor: pointer;
 }
@@ -402,17 +402,17 @@
   min-height: 32px;
   padding: 4px;
   border-radius: 3px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
 }
 .app .projectmatrix td:first-child button {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   white-space: normal;
   text-align: left;
   line-height: 1.35;
 }
 .app .projectmatrix td:first-child small {
-  font-size: 9px;
+  font-size: var(--fs-xs);
 }
 .app .planning-grid td.allocation-with-work {
   padding: 3px 2px;
@@ -420,7 +420,7 @@
 .app :is(.planning-grid, .remaining-report) .yearrow th {
   height: 22px;
   padding: 2px 4px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #224e7a;
   background: var(--table-year-label-background);
   border-right: 2px solid #c0d1e4;
@@ -435,7 +435,7 @@
   height: 48px;
   padding: 3px 0;
   text-align: center;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   background: var(--table-header-background);
 }
 .app .monthhead > span {
@@ -446,7 +446,7 @@
   letter-spacing: 0.4px;
 }
 .app .planning-grid thead tr:not(.yearrow) > th:first-child {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   background: var(--table-header-background);
 }
 .app [data-slot="table-container"]:has(> .planning-grid) {
@@ -465,22 +465,22 @@
   max-height: 230px;
 }
 .app .tablefoot {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   padding: 7px 12px;
   gap: 10px;
 }
 .app .bottomnote {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   margin-top: 12px;
 }
 .app .remaining-report {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   table-layout: fixed;
 }
 .app .remaining-report td,
 .app .remaining-report th {
   padding: 5px 2px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -494,22 +494,22 @@
 }
 .app.tab-overview .panelhead h2,
 .app.tab-overview .resource-report-head h2 {
-  font-size: 14px;
+  font-size: var(--fs-md);
 }
 .app.tab-overview .panelhead p {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .app.dense-overview .planning-grid .cell input {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: -0.5px;
 }
 .app.dense-overview .planning-grid .cell input:focus {
-  font-size: 14px;
+  font-size: var(--fs-md);
   letter-spacing: 0;
 }
 .app.dense-overview .planning-grid .summary td,
 .app.dense-overview .remaining-report td:not(:first-child) {
-  font-size: 9px;
+  font-size: var(--fs-xs);
   letter-spacing: -0.4px;
   padding: 3px 1px !important;
 }
@@ -519,7 +519,7 @@
   height: 24px;
   padding: 2px 0;
   text-align: center;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   border-left-width: 1px;
 }
 .app.dense-overview .planning-grid th:not(:first-child),
@@ -541,20 +541,20 @@
   border-radius: 8px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.7;
   max-height: 50vh;
   overflow: auto;
 }
 @media (max-width: 1000px) {
   .mastbrandrow .systembrand {
-    font-size: 14px;
+    font-size: var(--fs-md);
   }
   .mastbrandrow {
     gap: 10px;
   }
   .mastuser {
-    font-size: 10px;
+    font-size: var(--fs-xs);
   }
   .mastglobalactions {
     margin-left: 0;
@@ -563,7 +563,7 @@
     padding: 6px 8px;
   }
   .app:is(.tab-plan, .tab-projects) .stats strong {
-    font-size: 18px;
+    font-size: var(--fs-xl);
   }
   .app [data-slot="table-container"]:has(> .planning-grid) {
     max-height: 65vh;
@@ -577,13 +577,13 @@
     align-items: flex-start;
   }
   .mastbrandrow .systembrand {
-    font-size: 12px;
+    font-size: var(--fs-xs);
   }
   .mastbrandrow .mark {
     display: none;
   }
   .mastuser {
-    font-size: 9px;
+    font-size: var(--fs-xs);
     padding: 5px;
     white-space: normal;
   }
@@ -620,7 +620,7 @@
   padding: 6px 12px;
   background: #f5f8fc;
   border-block: 1px solid #dce6ef;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #46617e;
 }
 .pager label {
@@ -632,11 +632,11 @@
 .pager select {
   min-height: 25px;
   height: 25px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   padding: 2px 8px;
 }
 .pager small {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: #72869a;
   margin-left: auto;
 }
@@ -662,7 +662,7 @@ html {
   background: #f3faf4;
   color: #28633a;
   box-shadow: 0 5px 20px rgb(31 69 41 / 14%);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   line-height: 1.4;
   pointer-events: none;
@@ -689,7 +689,7 @@ html {
 }
 .write-recovery-notice p {
   margin: 4px 0 0;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   line-height: 1.5;
 }
 .write-recovery-actions {

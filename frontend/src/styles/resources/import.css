@@ -7,7 +7,7 @@
 }
 .resourceimport h3 {
   font-weight: 650;
-  font-size: 19px;
+  font-size: var(--fs-xl);
 }
 .importbody {
   padding: 0 24px 24px;
@@ -16,7 +16,7 @@
   margin: 0 0 20px 22px;
   list-style: decimal;
   color: #506780;
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.8;
 }
 .importbody .actions {
@@ -30,7 +30,7 @@
   background: white;
 }
 .importhint {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: #60738a;
   line-height: 1.6;
   margin: 12px 0;
@@ -46,7 +46,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  font-size: 14px;
+  font-size: var(--fs-md);
   margin-bottom: 16px;
 }
 .importtable {
@@ -58,7 +58,7 @@
 .importtable table {
   min-width: 1450px;
   width: 100%;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   border-collapse: collapse;
 }
 .importtable th,

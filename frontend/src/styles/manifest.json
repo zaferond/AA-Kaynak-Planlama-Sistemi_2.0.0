@@ -1,4 +1,5 @@
 [
+  "shared/design-tokens.css",
   "shared/table-tokens.css",
   "shared/controls.css",
   "administration/access-form.css",

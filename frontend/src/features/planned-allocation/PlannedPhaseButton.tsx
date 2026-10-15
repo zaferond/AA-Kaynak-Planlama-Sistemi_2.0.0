@@ -1,5 +1,11 @@
 import type { Project } from "../../model";
-import { phaseChipStyle, phaseChipEmpty } from "../../phase-chip";
+import {
+  phaseChipStyle,
+  phaseChipEmpty,
+  phaseRunKey,
+  phaseRunParts,
+  shiftMonth,
+} from "../../phase-chip";
 import { phaseInitial } from "../../timeline-periods";
 import { monthLabel } from "../../format";
 import type { PlannedAllocationProps } from "./types";
@@ -19,11 +25,19 @@ export default function PlannedPhaseButton({
   "density" | "onPhaseClick" | "onPhaseContextMenu"
 > & { project: Project; month: string }) {
   const text = phaseText(p, m);
+  const inProject = (month: string) => month >= p.start && month <= p.end;
+  const run = phaseRunParts(
+    [-1, 0, 1].map((delta) => {
+      const month = shiftMonth(m, delta);
+      return phaseRunKey(p, month, inProject(month));
+    }),
+  )[1];
   return (
     <button
       className="month-work phase-chip"
       style={phaseChipStyle(p, m)}
       data-phase-empty={m < p.start || m > p.end || phaseChipEmpty(p, m)}
+      data-phase-run={run}
       title={p.name + " / " + monthLabel(m) + "\n" + text}
       aria-label={p.name + " / " + monthLabel(m) + " planlanan çalışma"}
       onContextMenu={(e) => onPhaseContextMenu(e, p, m)}

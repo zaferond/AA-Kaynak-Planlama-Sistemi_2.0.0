@@ -5,7 +5,7 @@ import {
 } from "../workspace/useWindowedSections";
 import { CalendarDays } from "lucide-react";
 import type { Data, Project, Resource } from "../../model";
-import { phaseChipStyle } from "../../phase-chip";
+import { phaseChipStyle, phaseRunKey, phaseRunParts } from "../../phase-chip";
 import { ACTUAL_FTE_TOLERANCE } from "../../../../shared/actual-months.ts";
 import { ActualAmount as Amount } from "../ActualAllocationInputs";
 import ProjectResponsible from "../../ProjectResponsible";
@@ -118,38 +118,50 @@ export default function ActualAllocationTable({
                     {project.start} — {project.end}
                   </span>
                 </TableCell>
-                {months.map((month) => {
-                  const text =
-                    month >= project.start && month <= project.end
-                      ? project.phases[month]?.trim()
-                      : "";
-                  return (
-                    <TableCell key={month} className="actual-phase-cell">
-                      {text ? (
-                        <button
-                          type="button"
-                          className="actual-phase-button phase-chip"
-                          style={phaseChipStyle(project, month)}
-                          title={text}
-                          aria-label={
-                            project.name + " / " + month + " aşaması: " + text
-                          }
-                          onClick={() => onPhaseDetail({ project, month })}
-                        >
-                          {text}
-                        </button>
-                      ) : month >= project.start && month <= project.end ? (
-                        <span
-                          className="phase-chip"
-                          data-phase-empty="true"
-                          title="Aşama girilmemiş"
-                        >
-                          -
-                        </span>
-                      ) : null}
-                    </TableCell>
+                {(() => {
+                  const phaseRuns = phaseRunParts(
+                    months.map((month) =>
+                      phaseRunKey(
+                        project,
+                        month,
+                        month >= project.start && month <= project.end,
+                      ),
+                    ),
                   );
-                })}
+                  return months.map((month, monthIndex) => {
+                    const text =
+                      month >= project.start && month <= project.end
+                        ? project.phases[month]?.trim()
+                        : "";
+                    return (
+                      <TableCell key={month} className="actual-phase-cell">
+                        {text ? (
+                          <button
+                            type="button"
+                            className="actual-phase-button phase-chip"
+                            style={phaseChipStyle(project, month)}
+                            data-phase-run={phaseRuns[monthIndex]}
+                            title={text}
+                            aria-label={
+                              project.name + " / " + month + " aşaması: " + text
+                            }
+                            onClick={() => onPhaseDetail({ project, month })}
+                          >
+                            <span className="phasepreview">{text}</span>
+                          </button>
+                        ) : month >= project.start && month <= project.end ? (
+                          <span
+                            className="phase-chip"
+                            data-phase-empty="true"
+                            title="Aşama girilmemiş"
+                          >
+                            -
+                          </span>
+                        ) : null}
+                      </TableCell>
+                    );
+                  });
+                })()}
               </TableRow>
             )}
             {people.length > 0 &&

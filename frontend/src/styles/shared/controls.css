@@ -9,7 +9,7 @@
   border-radius: 6px;
   background: white;
   padding: 8px 10px;
-  font-size: 14px;
+  font-size: var(--fs-md);
   text-align: left;
   min-width: 0;
 }
@@ -58,7 +58,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 10px 0;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: #1766bd;
 }
 .pickeroptions {
@@ -91,7 +91,7 @@
   text-align: left;
   padding: 10px 7px;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.4;
 }
 .pickeroptions .option:hover,
@@ -117,7 +117,7 @@ input[type="radio"] {
   cursor: pointer;
 }
 select {
-  font-size: 14px;
+  font-size: var(--fs-md);
   border: 1px solid #d5dfe9;
   border-radius: 6px;
   padding: 9px 10px;
@@ -137,7 +137,7 @@ select {
   gap: 15px;
   flex-wrap: wrap;
   color: #61758b;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   margin: -8px 0 18px;
 }
 .filterline button {
@@ -155,7 +155,7 @@ select {
   padding: 14px 20px;
   background: #f7fafc;
   border-block: 1px solid #e2eaf1;
-  font-size: 14px;
+  font-size: var(--fs-md);
 }
 .bulkbar label {
   display: flex;
@@ -168,7 +168,7 @@ select {
 .bulkbar small {
   width: 100%;
   color: #738599;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .matrix td.selectedcell {
   background: #e4f0ff;
@@ -186,7 +186,7 @@ select {
 }
 .capacitystrip h3 {
   padding: 14px 18px;
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 600;
   color: #306389;
 }
@@ -209,7 +209,7 @@ select {
   display: block;
 }
 .chartnote {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: #6d8092;
   line-height: 1.6;
   padding: 0 22px 20px;
@@ -222,16 +222,16 @@ select {
   gap: 5px;
 }
 .average strong {
-  font-size: 30px;
+  font-size: var(--fs-3xl);
 }
 .average span {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: #698198;
 }
 .subline {
   display: block;
   color: #7d8ea1;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   margin-top: 5px;
   white-space: normal;
 }
@@ -249,7 +249,7 @@ select {
   padding: 8px 10px;
   border: 1px solid;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: var(--fs-md);
   cursor: pointer;
 }
 .emptymsg {
@@ -265,7 +265,7 @@ select {
   opacity: 0.8;
 }
 .month-work {
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.5;
 }
 .matrix .group td[colspan] > strong,
@@ -305,13 +305,13 @@ select {
 }
 .capacity-months .capacity-kind {
   display: block;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: #526b83;
   margin-top: 8px;
   font-weight: 400;
 }
 .capacity-months .capacity-unit strong {
-  font-size: 14px;
+  font-size: var(--fs-md);
   line-height: 1.5;
 }
 .capacity-months .summary.s3 {
@@ -360,17 +360,17 @@ select {
 }
 
 .brand .systembrand {
-  font-size: 17px;
+  font-size: var(--fs-xl);
   letter-spacing: 0.2px;
   line-height: 1.4;
 }
 .brand .systembrand span {
-  font-size: 14px;
+  font-size: var(--fs-md);
   letter-spacing: 0.3px;
   font-weight: 500;
 }
 .heading h1 {
-  font-size: 28px;
+  font-size: var(--fs-3xl);
   line-height: 1.25;
   letter-spacing: -0.5px;
   max-width: 1050px;
@@ -404,13 +404,13 @@ select {
 }
 @media (max-width: 650px) {
   .heading h1 {
-    font-size: 23px;
+    font-size: var(--fs-2xl);
   }
   .brand .systembrand {
-    font-size: 15px;
+    font-size: var(--fs-lg);
   }
   .brand .systembrand span {
-    font-size: 13px;
+    font-size: var(--fs-sm);
   }
   .resetfilters {
     width: calc(100% - 54px);

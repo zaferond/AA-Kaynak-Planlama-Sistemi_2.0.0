@@ -1,0 +1,12 @@
+/* Ortak yazı ölçeği. Renkler workspace/military-theme.css içindeki --brand-*
+   değişkenlerindedir. Yeni kurallar sabit px yerine bu değişkenleri
+   kullanmalıdır; en küçük metin boyutu --fs-xs (12px) değeridir. */
+:root {
+  --fs-xs: 12px; /* tablo hücreleri, rozetler, yardımcı metin */
+  --fs-sm: 13px; /* form alanları, ikincil başlıklar */
+  --fs-md: 14px; /* gövde metni, düğmeler */
+  --fs-lg: 16px; /* bölüm başlıkları */
+  --fs-xl: 18px; /* panel başlıkları */
+  --fs-2xl: 22px; /* sayfa başlıkları, öne çıkan sayılar */
+  --fs-3xl: 28px; /* giriş ekranı başlığı */
+}

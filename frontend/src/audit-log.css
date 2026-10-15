@@ -44,7 +44,7 @@
 }
 .audit-log-entry time,
 .audit-log-entry > p {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: #657b8e;
 }
 .audit-log-entry time {
@@ -54,7 +54,7 @@
   margin: 6px 0 10px;
 }
 .audit-action {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   border-radius: 5px;
   padding: 3px 7px;
@@ -73,7 +73,7 @@
 .audit-log-entry summary {
   cursor: pointer;
   color: #3d607d;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .audit-log-entry table {
@@ -91,7 +91,7 @@
   vertical-align: top;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .audit-log-entry thead {
   background: #eaf0f5;
@@ -110,7 +110,7 @@
 .audit-log-footer > span {
   margin-right: auto;
   color: #657b8e;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 @media (max-width: 700px) {
   .audit-log-entry header {

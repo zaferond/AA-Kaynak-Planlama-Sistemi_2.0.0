@@ -24,7 +24,7 @@
     inset 0 1px 0 rgb(255 255 255 / 75%),
     inset 0 -1px 0 rgb(24 39 52 / 6%),
     0 1px 2px rgb(24 39 52 / 12%);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   line-height: 1.35;
   text-align: left;
@@ -43,7 +43,7 @@
   min-height: 36px;
   padding: 6px 7px;
   border-radius: 3px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   text-align: left;
   line-height: 1.35;
 }
@@ -66,7 +66,7 @@
   justify-content: flex-start;
   text-align: left;
   padding-inline: 2px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .app:is(.dense-detail, .dense-compact) .planning-grid .phase-chip {
   min-height: 36px;
@@ -109,12 +109,80 @@
   height: auto;
   padding: 3px 1px;
   border-radius: 2px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   text-align: left;
 }
 :is(.app, [data-slot="dialog-content"]) .phase-chip.phase-chip-preview,
 :is(.app, [data-slot="dialog-content"]) .phase-chip.phase-chip-detail {
   min-height: 44px;
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
+}
+
+/* Gantt görünümü: aynı aşamanın ardışık ayları tek çubuk olarak çizilir.
+   Her ay kendi düğmesi olarak kalır; seçim, menü ve düzenleme değişmez.
+   --phase-run-bleed hücre iç boşluğu + ızgara çizgisi kadar taşar. */
+.app .phase-chip {
+  --phase-run-bleed: calc(var(--phase-cell-pad, 2px) + 1px);
+}
+.app .phase-chip.month-work {
+  --phase-cell-pad: 17px;
+}
+.app
+  .phase-chip:is(
+    [data-phase-run="start"],
+    [data-phase-run="middle"],
+    [data-phase-run="end"]
+  ) {
+  box-shadow: none;
+}
+.app .phase-chip:is([data-phase-run="start"], [data-phase-run="end"]) {
+  width: calc(100% + var(--phase-run-bleed));
+  max-width: none;
+}
+.app .phase-chip[data-phase-run="middle"] {
+  width: calc(100% + 2 * var(--phase-run-bleed));
+  max-width: none;
+}
+.app .phase-chip:is([data-phase-run="start"], [data-phase-run="middle"]) {
+  margin-inline-end: calc(-1 * var(--phase-run-bleed));
+  border-inline-end-color: transparent;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.app .phase-chip:is([data-phase-run="middle"], [data-phase-run="end"]) {
+  margin-inline-start: calc(-1 * var(--phase-run-bleed));
+  border-inline-start-color: transparent;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.app
+  .phase-chip:is([data-phase-run="middle"], [data-phase-run="end"])
+  .phasepreview {
+  visibility: hidden;
+}
+.app .phase-chip[data-phase-run="start"] .phasepreview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Boş ay: kutu ve "-" yerine sade alan; düzenlenebilirlik üzerine gelince görünür. */
+.app .phase-chip[data-phase-empty="true"] .phasepreview {
+  visibility: hidden;
+}
+.app .phase-chip[data-phase-empty="true"] {
+  border-color: transparent;
+  background: transparent;
+  color: transparent;
+  box-shadow: none;
+}
+.app
+  button.phase-chip[data-phase-empty="true"]:not(:disabled):is(
+    :hover,
+    :focus-visible
+  ) {
+  border: 1px dashed var(--color-muted);
+  background: var(--color-brand-soft);
+  filter: none;
+  box-shadow: none;
 }

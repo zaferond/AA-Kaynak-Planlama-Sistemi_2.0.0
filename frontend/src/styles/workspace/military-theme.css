@@ -23,10 +23,10 @@ html[data-theme="military"] {
     #617052 100%
   );
   --report-current-color: #087f6a;
-  --report-planned-color: #1d4ed8;
-  --report-shortage-color: #c2410c;
-  --report-forecast-color: #b45309;
-  --report-effectiveness-color: #6d28d9;
+  --report-planned-color: #3e6a8a;
+  --report-shortage-color: #b5562e;
+  --report-forecast-color: #9a6a12;
+  --report-effectiveness-color: #6b5b95;
   --report-grid-color: #dce3e7;
   --report-label-color: #475569;
   --background: #f3f4ef;
@@ -256,7 +256,7 @@ html[data-theme="military"]
 }
 html[data-theme="military"] .app .workspace-nav-actions .project-create,
 html[data-theme="military"]
-  :is(.app, .editor, .directory-dialog)
+  :is(.app, .editor, .directory-dialog, [data-slot="dialog-content"])
   .button.primary {
   background: var(--brand-primary);
   border-color: var(--brand-primary);
@@ -268,7 +268,7 @@ html[data-theme="military"]
   .workspace-nav-actions
   .project-create:hover:not(:disabled),
 html[data-theme="military"]
-  :is(.app, .editor, .directory-dialog)
+  :is(.app, .editor, .directory-dialog, [data-slot="dialog-content"])
   .button.primary:hover:not(:disabled) {
   background: var(--brand-hover);
   border-color: var(--brand-hover);

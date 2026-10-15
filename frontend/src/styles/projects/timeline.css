@@ -10,7 +10,7 @@
   background: #fff;
   box-shadow: 0 10px 28px #183b5a30;
   color: #263f54;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   line-height: 1.5;
   white-space: pre-wrap;
@@ -19,7 +19,7 @@
   pointer-events: none;
 }
 .app.tab-projects.dense-overview .projectmatrix .phase-initial {
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 800;
   line-height: 1;
 }
@@ -59,12 +59,12 @@
   display: block;
   max-width: 100%;
   overflow-wrap: anywhere;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .app .projectmatrix .project-name-copy small {
   margin-top: 4px;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
 }
 .app .projectmatrix .milestone-count {
@@ -77,7 +77,7 @@
   border-radius: 9px;
   background: #e5eff9;
   color: #2b5e89;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .app .projectmatrix .milestone-section-row {
@@ -107,11 +107,11 @@
 }
 .app .projectmatrix .milestone-section strong {
   color: #24547f;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .app .projectmatrix .milestone-section span {
   color: #6c839a;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .app .projectmatrix .milestone-add {
   display: inline-flex;
@@ -123,7 +123,7 @@
   border-radius: 4px;
   background: #fff;
   color: #245d90;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -195,7 +195,7 @@
   white-space: normal;
   overflow-wrap: anywhere;
   color: #314f68;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
 }
 .app .projectmatrix .milestone-name-copy small {
@@ -204,7 +204,7 @@
   white-space: normal;
   overflow-wrap: anywhere;
   color: #76899d;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   line-height: 1.2;
 }
 .app .projectmatrix .milestone-actions {
@@ -263,7 +263,7 @@
   justify-content: flex-start;
   padding: 0 12px;
   color: #8697a7;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-style: italic;
 }
 .app .projectmatrix .milestone-track .gantt-bar {
@@ -294,7 +294,7 @@
   display: block;
   white-space: normal;
   overflow-wrap: anywhere;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 17px;
 }
@@ -324,7 +324,7 @@
   margin: 1px 0 0 9px;
   color: #17212e;
   opacity: 1;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   line-height: 1.35;
   white-space: normal;
@@ -423,7 +423,7 @@
   background: #f8fcff;
   color: #214b6d;
   box-shadow: 0 7px 20px #173b6138;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.35;
   pointer-events: none;
 }
@@ -431,7 +431,7 @@
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .gantt-drag-status > strong span {
   color: #3b779d;
@@ -454,14 +454,14 @@
   display: block;
   margin-bottom: 2px;
   color: #668098;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 600;
 }
 .gantt-drag-status em {
   display: block;
   margin-top: 5px;
   color: #607b91;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-style: normal;
 }
 .gantt-drag-status.invalid {
@@ -474,7 +474,7 @@
 }
 .gantt-drag-status.invalid p {
   margin: 6px 0 0;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.35;
 }
 .app .projectmatrix .gantt-bar.start {
@@ -504,7 +504,7 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   text-align: center;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 1.35;
 }
@@ -537,6 +537,16 @@
 .app.dense-overview .projectmatrix .weekly-note-box {
   padding: 4px 5px;
 }
+/* Dar 5 yıllık sütunlarda not metni harf harf alt alta kırılıyordu. Bu
+   görünümde çubuk yalnızca renk/süre gösterir; ayrıntı ipucunda kalır. */
+.app.dense-overview .projectmatrix .gantt-bar .gantt-note-list {
+  display: none;
+}
+.app.dense-overview .projectmatrix .weekly-note-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
 .app.dense-compact .projectmatrix .weekly-note-box {
   padding: 4px 8px;
 }
@@ -548,7 +558,7 @@
 .app .projectmatrix .weekly-note-box:hover,
 .app .projectmatrix .weekly-note-box:focus-visible {
   z-index: 3;
-  outline: 2px solid #2d70a6;
+  outline: 2px solid var(--brand-focus, #6d855e);
   outline-offset: 1px;
   box-shadow: 0 3px 8px #1c38503b;
 }
@@ -598,7 +608,7 @@
   width: 100%;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 1.3;
 }
@@ -609,7 +619,7 @@
   white-space: normal;
   overflow-wrap: anywhere;
   color: #17212e;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
@@ -633,7 +643,7 @@
   white-space: normal;
 }
 .weekly-note-tooltip strong {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .weekly-note-tooltip strong.completed {
@@ -642,12 +652,12 @@
 }
 .weekly-note-tooltip small {
   color: #647e94;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
 }
 .weekly-note-tooltip em {
   color: #36845a;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-style: normal;
   font-weight: 700;
 }
@@ -660,7 +670,7 @@
 }
 .app .projectmatrix .weekly-undated-notes > span {
   color: #6b8299;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .app .projectmatrix .weekly-undated-notes button {
@@ -672,7 +682,7 @@
   background: #e2edf7;
   color: #3b5d79;
   text-align: left;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   line-height: 1.3;
   overflow-wrap: anywhere;
   cursor: pointer;
@@ -701,7 +711,7 @@
   border-radius: 5px;
   background: #fff;
   color: #43617d;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   cursor: pointer;
 }
 .milestone-bar-options button.selected {
@@ -734,7 +744,7 @@
   border-radius: 5px;
   background: #fff;
   color: #46627d;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   cursor: pointer;
 }
 .milestone-colors button.selected {
@@ -792,7 +802,7 @@
 }
 .milestone-diamond-options legend {
   padding: 0 5px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: #43617d;
 }

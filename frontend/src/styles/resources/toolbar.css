@@ -11,11 +11,11 @@
   flex-wrap: wrap;
 }
 .app.tab-resources .panelhead h2 {
-  font-size: 16px;
+  font-size: var(--fs-lg);
   line-height: 1.3;
 }
 .app.tab-resources .panelhead p {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .app.tab-resources .resource-toolbar {
@@ -32,7 +32,7 @@
   border: 1px solid #cdd9e6;
   border-radius: 5px;
   background: #fff;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .app.tab-resources .resource-toolbar .button {
   height: 32px;
@@ -40,7 +40,7 @@
   padding: 5px 10px;
   border-radius: 5px;
   gap: 5px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -51,18 +51,18 @@
 .app.tab-resources .resource-bulkbar {
   gap: 8px;
   padding: 9px 16px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .app.tab-resources .resource-bulkbar .button {
   height: 30px;
   min-height: 30px;
   padding: 4px 9px;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.2;
 }
 .app.tab-resources .resource-bulkbar .textbutton {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 @media (max-width: 650px) {
   .app.tab-resources .planning-filterbar .filters > .pick:nth-child(3) {

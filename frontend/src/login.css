@@ -102,7 +102,7 @@
   max-width: 320px;
   margin: 14px 0 0;
   color: #e9eee4;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   line-height: 1.65;
   text-shadow: 0 1px 8px #0009;
 }
@@ -112,7 +112,7 @@
   align-items: center;
   gap: 8px;
   color: #dce5d4;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.5;
 }
 .auth-brand-footer span {
@@ -150,7 +150,7 @@
 .auth-form > label:not(.auth-remember) {
   margin: 0 0 7px;
   color: #314a60;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .auth-field {
@@ -185,7 +185,7 @@
   background: transparent;
   color: #19344d;
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-md);
 }
 .auth-field input::placeholder {
   color: #9aaaba;
@@ -219,7 +219,7 @@
   width: max-content;
   margin: 0 0 24px;
   color: #5d7285;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   cursor: pointer;
 }
 .auth-remember input {
@@ -236,7 +236,7 @@
   border-radius: 7px;
   background: #fff5f4;
   color: #a33333;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .auth-submit {
@@ -251,7 +251,7 @@
   border-radius: 8px;
   background: #166d9e;
   color: #fff;
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 700;
   box-shadow: 0 8px 16px #1b6e9829;
   cursor: pointer;
@@ -289,11 +289,11 @@
     gap: 20px;
   }
   .auth-brand h1 {
-    font-size: 24px;
+    font-size: var(--fs-2xl);
   }
   .auth-brand p {
     margin-top: 10px;
-    font-size: 12px;
+    font-size: var(--fs-xs);
   }
   .auth-brand-footer {
     display: none;

@@ -63,7 +63,7 @@
   border-radius: 5px;
   background: transparent;
   color: #31536d;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   transition:
     background-color 0.15s,
@@ -127,7 +127,7 @@
   border-radius: 4px;
   background: #f9fbf6;
   color: #35543c;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
@@ -150,7 +150,7 @@
 }
 .app.tab-plan .allocation-grid .team-capacity-value::before {
   content: attr(data-capacity-symbol);
-  font-size: 8px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   opacity: 0.8;
 }
@@ -165,7 +165,7 @@
   .team-capacity-value {
   min-height: 14px;
   padding: 0 1px;
-  font-size: 9px;
+  font-size: var(--fs-xs);
 }
 .app.tab-plan.dense-overview
   .allocation-grid
@@ -174,7 +174,7 @@
   padding: 4px 1px !important;
 }
 .app.tab-plan.dense-overview .allocation-grid .team-capacity-value {
-  font-size: 8px;
+  font-size: var(--fs-xs);
   border-radius: 2px;
 }
 .app.tab-plan.dense-overview .allocation-grid .team-capacity-value::before {

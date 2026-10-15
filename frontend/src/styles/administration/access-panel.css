@@ -11,7 +11,7 @@
   border-radius: 6px;
   background: #f3f8fb;
   color: #315f80;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -33,12 +33,12 @@
   color: #315f80;
 }
 .access-role-overview strong {
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .access-role-overview span {
   grid-column: 2;
   color: #5d7588;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 .access-content {
@@ -75,7 +75,7 @@
   border: 0;
   outline: 0;
   background: transparent;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .access-search:focus-within {
   border-color: #397ba8;
@@ -87,7 +87,7 @@
   border-radius: 8px;
 }
 .access-control-panel .accesstable table {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .access-control-panel .accesstable th,
 .access-control-panel .accesstable td {
@@ -101,7 +101,7 @@
 .access-control-panel .accesstable td small {
   margin-top: 3px;
   color: #73889a;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .access-control-panel .accesstable tr.access-selected-row td {
   background: #eef6fb;
@@ -114,7 +114,7 @@
   border-radius: 5px;
   background: #edf5fa;
   color: #315f80;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -136,7 +136,7 @@
   min-height: 27px;
   height: 27px;
   padding: 3px 8px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   white-space: nowrap;
 }
 .access-notice {
@@ -146,7 +146,7 @@
   border-radius: 6px;
   background: #eff8f2;
   color: #28644a;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .access-permission-form {
   display: flex;
@@ -169,26 +169,26 @@
 }
 .access-form-heading span:first-child {
   color: #688398;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 750;
   letter-spacing: 0.08em;
 }
 .access-form-heading h3 {
   margin: 4px 0 0;
   color: #203e56;
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 .access-form-heading p {
   margin: 2px 0 0;
   color: #6b8395;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .access-field {
   display: flex;
   flex-direction: column;
   gap: 6px;
   color: #36566e;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .access-field select,
@@ -198,11 +198,11 @@
   padding: 6px 8px;
   border-color: #bfd0df;
   background: #fff;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .access-field small {
   color: #6c8192;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   line-height: 1.45;
 }
@@ -217,13 +217,13 @@
 .access-leader-field legend {
   padding: 0 5px;
   color: #36566e;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 700;
 }
 .access-leader-field p {
   margin: 0 0 8px;
   color: #6a8092;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .access-leader-field > input {
@@ -232,7 +232,7 @@
   padding: 5px 8px;
   border: 1px solid #cbd9e5;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .access-leader-field .accessleaders {
   margin-top: 7px;
@@ -244,7 +244,7 @@
   gap: 7px;
   padding: 5px 2px;
   color: #35536b;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .access-admin-note {
   margin: 0;
@@ -252,7 +252,7 @@
   border-radius: 5px;
   background: #edf5fa;
   color: #3e627e;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
 .access-form-actions {
@@ -265,7 +265,7 @@
   min-height: 32px;
   height: 32px;
   padding: 5px 12px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 @media (max-width: 1000px) {
   .access-content {
@@ -290,11 +290,11 @@
 }
 .access-unlinked h2 {
   margin: 0 0 7px;
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 .access-unlinked p {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   line-height: 1.5;
 }
 
@@ -309,7 +309,7 @@
 }
 .access-directory-search .button {
   white-space: nowrap;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   padding: 6px 8px;
 }
 .access-field > input[readonly] {
@@ -331,11 +331,11 @@
 .access-leader-actions .button,
 .access-revoke-button {
   height: 27px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   white-space: nowrap;
 }
 .access-leader-actions span {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--muted-foreground);
 }
 .access-revoke-button {
@@ -372,11 +372,11 @@
 }
 .resource-account-heading h3 {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-md);
   color: #3f5533;
 }
 .resource-account-heading span {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: #67765f;
 }
 .resource-account-section > p,
@@ -450,7 +450,7 @@
   display: block;
   margin-top: 5px;
   color: #69765f;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .employee-access-panel .employee-access-table-wrap {
   margin: 0 16px 12px;
@@ -479,7 +479,7 @@
   vertical-align: middle;
 }
 .employee-access-table .account-scope {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   overflow-wrap: anywhere;
 }
 .employee-access-table .subline {
@@ -512,7 +512,7 @@
 }
 .protected-account-label {
   color: #5b6b50;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 650;
 }
 .account-state.is-active {
@@ -523,7 +523,7 @@
 }
 .account-missing {
   color: #7b8575;
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 .employee-access-message {
   margin: 8px 16px 12px;
@@ -560,12 +560,12 @@
 }
 .access-permission-dialog [data-slot="dialog-title"] {
   color: #344a2d;
-  font-size: 18px;
+  font-size: var(--fs-xl);
   overflow-wrap: anywhere;
 }
 .access-permission-dialog [data-slot="dialog-description"] {
   color: #718066;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   overflow-wrap: anywhere;
 }
 .app.tab-resources .employee-access-table :is(th, td) {
@@ -621,13 +621,13 @@
 }
 .access-directory-identity strong {
   color: #344a2d;
-  font-size: 12px;
+  font-size: var(--fs-xs);
 }
 .access-directory-identity span,
 .access-directory-identity small,
 .access-directory-hint {
   color: #68765e;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 .access-directory-select {
   flex: 0 0 32px;
@@ -649,7 +649,7 @@
 .app.tab-resources .employee-access-table .account-email {
   white-space: normal;
   overflow-wrap: anywhere;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
 }
 
@@ -717,7 +717,7 @@
 }
 .access-leader-name small {
   display: block;
-  font-size: 9px;
+  font-size: var(--fs-xs);
   font-weight: 400;
   color: var(--brand-muted, #697b66);
 }

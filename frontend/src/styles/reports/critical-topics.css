@@ -283,7 +283,8 @@
 }
 :is(.app.tab-critical, .project-info-topic-dialog) .project-info-week {
   padding: 1px 5px;
-  border: 1px solid #c9d8e3;
+  /* No outline by default: only this week is framed. */
+  border: 1px solid transparent;
   border-radius: 4px;
   background: #f1f6fa;
   color: #2f5f7f;
@@ -294,7 +295,7 @@
 }
 :is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-current] {
   border-color: #2f6f8f;
-  box-shadow: inset 0 0 0 1px #2f6f8f;
+  box-shadow: 0 0 0 1px #2f6f8f;
 }
 :is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-selected] {
   border-color: #2f6f8f;
@@ -302,12 +303,12 @@
   color: #fff;
 }
 :is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-state="cancelled"] {
-  border-color: #e5a59d;
   background: #fdecea;
   color: #b42318;
 }
 :is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-state="cancelled"][data-current] {
-  box-shadow: inset 0 0 0 1px #b42318;
+  border-color: #b42318;
+  box-shadow: 0 0 0 1px #b42318;
 }
 :is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-state="cancelled"][data-selected] {
   border-color: #b42318;

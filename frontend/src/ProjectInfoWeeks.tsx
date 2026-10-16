@@ -6,14 +6,17 @@ import type { TopicWeek, WeekState } from "./project-info-status";
 const COLLAPSE_CURRENT_WEEKS = 9;
 
 /** Consecutive weeks in the same state; only very long runs of current
- * weeks collapse. Cancelled weeks stay one red box each. */
-function weekRuns(weeks: TopicWeek[]) {
+ * weeks collapse. Cancelled weeks stay one red box each, and this week is
+ * always its own box so its frame marks that week alone. */
+function weekRuns(weeks: TopicWeek[], thisWeek: string) {
   const runs: TopicWeek[][] = [];
   for (const item of weeks) {
     const last = runs.at(-1)?.at(-1);
     if (
       last &&
       last.state === item.state &&
+      last.week.key !== thisWeek &&
+      item.week.key !== thisWeek &&
       shiftWeek(last.week, 1).key === item.week.key
     )
       runs.at(-1)!.push(item);
@@ -52,9 +55,7 @@ export default function TopicWeeks({
         key={state + first.key}
         className="project-info-week"
         data-state={state}
-        data-current={
-          run.some(({ week }) => week.key === thisWeek.key) || undefined
-        }
+        data-current={first.key === thisWeek.key || undefined}
         data-selected={
           run.some(({ week }) => selected.has(week.key)) || undefined
         }
@@ -89,7 +90,7 @@ export default function TopicWeeks({
         .join(" · ")}
     >
       {cancelled.map((week) => chip([week]))}
-      {weekRuns(current).map(chip)}
+      {weekRuns(current, thisWeek.key).map(chip)}
     </span>
   );
 }

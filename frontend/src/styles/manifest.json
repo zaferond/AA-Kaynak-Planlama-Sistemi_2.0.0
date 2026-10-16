@@ -37,5 +37,6 @@
   "workspace/military-theme.css",
   "shared/phase-chips.css",
   "workspace/viewport-tables.css",
-  "workspace/compact-chrome.css"
+  "workspace/compact-chrome.css",
+  "allocation/empty-cells.css"
 ]

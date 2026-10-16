@@ -1,0 +1,25 @@
+/* Quiet empty cells: values stand out instead of a wall of "0" and "%".
+   The hint returns on hover and while typing; locked empty cells go flat so
+   they no longer look like entry boxes. Cells holding a value are unchanged. */
+.app .planning-grid .cell input:disabled::placeholder,
+.person-allocation .person-amount input::placeholder {
+  color: transparent;
+}
+/* Planned cells have no box: a faint 0 keeps the grid readable. */
+.app .planning-grid .cell input:not(:disabled)::placeholder {
+  color: #d3dbcd;
+}
+.app .planning-grid td:hover .cell input:not(:disabled)::placeholder,
+.app .planning-grid .cell input:focus::placeholder,
+.person-allocation td:hover .person-amount input:not(:disabled)::placeholder,
+.person-allocation .person-amount input:focus::placeholder {
+  color: var(--brand-muted, #60715e);
+}
+/* Not enterable (future month, outside the project, no permission). */
+.person-allocation .person-amount input:disabled:placeholder-shown {
+  border-color: transparent;
+  background: transparent;
+}
+.app .planning-grid .cell input:disabled:placeholder-shown {
+  background: transparent;
+}

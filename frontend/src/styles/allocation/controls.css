@@ -328,3 +328,13 @@
     text-align: right;
   }
 }
+/* No cell selected: one prompt across the four context fields. */
+.person-allocation .actual-control-fields > .actual-context-hint {
+  grid-column: 1 / span 4;
+  align-self: center;
+  margin: 0;
+  padding-left: 0;
+  color: var(--brand-muted, #60715e);
+  font-weight: 500;
+  white-space: normal;
+}

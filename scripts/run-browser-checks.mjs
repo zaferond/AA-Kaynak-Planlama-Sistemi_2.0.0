@@ -17,6 +17,7 @@ import { checkPlannedTeamFreeze } from "./browser-checks/planned-team-freeze.mjs
 import { checkPlanningPermissions } from "./browser-checks/planning-permissions.mjs";
 import { checkActualTeamView } from "./browser-checks/actual-team-view.mjs";
 import { checkReportOwnerSource } from "./browser-checks/report-owner-source.mjs";
+import { checkScheduleScenario } from "./browser-checks/schedule-scenario.mjs";
 import assert from "node:assert/strict";
 import { fixture } from "./browser-checks/fixture.mjs";
 import { checkRisks } from "./browser-checks/risk.mjs";
@@ -78,6 +79,7 @@ for (const check of [
   checkPlanningPermissions,
   checkActualTeamView,
   checkReportOwnerSource,
+  checkScheduleScenario,
 ]) {
   const isolated = await fixture();
   try {

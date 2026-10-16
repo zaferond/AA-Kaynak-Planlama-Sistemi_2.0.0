@@ -1,0 +1,471 @@
+import { useMemo, useState } from "react";
+import { ArrowDownToLine, Copy, Plus, Trash2, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import type { Data } from "../../model";
+import { fmt, monthLabel } from "../../format";
+import type { ShiftScenario } from "../../../../shared/schedule-shift";
+import {
+  compareScenarios,
+  newScenario,
+  nextScenarioName,
+  type ScenarioComparison,
+} from "./scenario-comparison";
+import { downloadScenarioWorkbook } from "./scenario-export";
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  data: Data;
+  currentMonth: string;
+};
+
+const MAX_SCENARIOS = 3;
+
+export default function ScheduleScenarioDialog({
+  open,
+  onClose,
+  data,
+  currentMonth,
+}: Props) {
+  const [scenarios, setScenarios] = useState<ShiftScenario[]>(() => [
+    newScenario("Senaryo A", currentMonth, 3),
+  ]);
+  const [focus, setFocus] = useState(0);
+  const comparison = useMemo(
+    () => compareScenarios(data, scenarios, currentMonth),
+    [data, scenarios, currentMonth],
+  );
+  const update = (index: number, next: ShiftScenario) =>
+    setScenarios((all) => all.map((s, i) => (i === index ? next : s)));
+  const shown = Math.min(focus, scenarios.length - 1);
+
+  return (
+    <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
+      <DialogContent className="editor schedule-scenario-dialog">
+        <DialogHeader>
+          <DialogTitle>Erteleme Senaryosu</DialogTitle>
+          <DialogDescription>
+            Projeleri ileri veya geri kaydırıp etkisini görün. Bu ekran
+            kayıtları değiştirmez; geçmiş aylar ve gerçekleşen girişler yerinde
+            kalır.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="schedule-scenario-body">
+          <section className="schedule-scenario-cards" aria-label="Senaryolar">
+            {scenarios.map((scenario, index) => (
+              <ScenarioCard
+                key={scenario.id}
+                data={data}
+                scenario={scenario}
+                problems={comparison.results[index]?.problems || []}
+                canRemove={scenarios.length > 1}
+                canCopy={scenarios.length < MAX_SCENARIOS}
+                onChange={(next) => update(index, next)}
+                onRemove={() =>
+                  setScenarios((all) => all.filter((_, i) => i !== index))
+                }
+                onCopy={() =>
+                  setScenarios((all) => [
+                    ...all,
+                    {
+                      ...structuredClone(scenario),
+                      id: crypto.randomUUID(),
+                      name: nextScenarioName(all),
+                      shifts: scenario.shifts.map((s) => ({
+                        ...s,
+                        months: s.months + 2,
+                      })),
+                    },
+                  ])
+                }
+              />
+            ))}
+            {scenarios.length < MAX_SCENARIOS && (
+              <button
+                type="button"
+                className="schedule-scenario-add"
+                onClick={() =>
+                  setScenarios((all) => [
+                    ...all,
+                    newScenario(nextScenarioName(all), currentMonth, 3),
+                  ])
+                }
+              >
+                <Plus size={16} aria-hidden="true" />
+                Senaryo Ekle
+              </button>
+            )}
+          </section>
+          <ComparisonView
+            comparison={comparison}
+            data={data}
+            shown={shown}
+            onShow={setFocus}
+          />
+        </div>
+        <div className="schedule-scenario-actions">
+          <small>
+            Onaylama ve yeni takvime aktarma bir sonraki aşamada eklenecek.
+          </small>
+          <button
+            type="button"
+            className="button"
+            disabled={!comparison.ready}
+            onClick={() => downloadScenarioWorkbook(data, comparison)}
+          >
+            <ArrowDownToLine size={16} aria-hidden="true" />
+            Excel'e Aktar
+          </button>
+          <button type="button" className="button primary" onClick={onClose}>
+            Kapat
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ScenarioCard({
+  data,
+  scenario,
+  problems,
+  canRemove,
+  canCopy,
+  onChange,
+  onRemove,
+  onCopy,
+}: {
+  data: Data;
+  scenario: ShiftScenario;
+  problems: string[];
+  canRemove: boolean;
+  canCopy: boolean;
+  onChange: (next: ShiftScenario) => void;
+  onRemove: () => void;
+  onCopy: () => void;
+}) {
+  const setShift = (
+    index: number,
+    patch: Partial<ShiftScenario["shifts"][0]>,
+  ) =>
+    onChange({
+      ...scenario,
+      shifts: scenario.shifts.map((s, i) =>
+        i === index ? { ...s, ...patch } : s,
+      ),
+    });
+  return (
+    <article className="schedule-scenario-card" aria-label={scenario.name}>
+      <header>
+        <input
+          aria-label="Senaryo adı"
+          value={scenario.name}
+          maxLength={40}
+          onChange={(e) => onChange({ ...scenario, name: e.target.value })}
+        />
+        {canCopy && (
+          <button
+            type="button"
+            className="icon-button"
+            title="Senaryoyu çoğalt (+2 ay)"
+            aria-label={scenario.name + " senaryosunu çoğalt"}
+            onClick={onCopy}
+          >
+            <Copy size={14} aria-hidden="true" />
+          </button>
+        )}
+        {canRemove && (
+          <button
+            type="button"
+            className="icon-button"
+            title="Senaryoyu kaldır"
+            aria-label={scenario.name + " senaryosunu kaldır"}
+            onClick={onRemove}
+          >
+            <Trash2 size={14} aria-hidden="true" />
+          </button>
+        )}
+      </header>
+      <div className="schedule-shift-head" aria-hidden="true">
+        <span>Proje</span>
+        <span>Ay</span>
+        <span>Başlangıç ayı</span>
+      </div>
+      {scenario.shifts.map((shift, index) => (
+        <div className="schedule-shift-row" key={index}>
+          <select
+            aria-label="Proje"
+            value={shift.projectId}
+            onChange={(e) => setShift(index, { projectId: e.target.value })}
+          >
+            <option value="">Proje seçin</option>
+            {data.projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+          <input
+            type="number"
+            aria-label="Kaydırılacak ay"
+            title="Artı: erteleme, eksi: öne çekme"
+            min={-24}
+            max={24}
+            step={1}
+            value={shift.months}
+            onChange={(e) =>
+              setShift(index, {
+                months: Math.max(
+                  -24,
+                  Math.min(24, Math.trunc(Number(e.target.value)) || 0),
+                ),
+              })
+            }
+          />
+          <input
+            type="month"
+            aria-label="Kaydırmanın başladığı ay"
+            value={shift.fromMonth}
+            onChange={(e) =>
+              e.target.value && setShift(index, { fromMonth: e.target.value })
+            }
+          />
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Projeyi senaryodan çıkar"
+            title="Projeyi senaryodan çıkar"
+            disabled={scenario.shifts.length === 1}
+            onClick={() =>
+              onChange({
+                ...scenario,
+                shifts: scenario.shifts.filter((_, i) => i !== index),
+              })
+            }
+          >
+            <X size={14} aria-hidden="true" />
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        className="textbutton"
+        onClick={() =>
+          onChange({
+            ...scenario,
+            shifts: [
+              ...scenario.shifts,
+              {
+                projectId: "",
+                months: scenario.shifts[0]?.months || 3,
+                fromMonth: scenario.shifts[0]?.fromMonth || "",
+              },
+            ],
+          })
+        }
+      >
+        + Proje Ekle
+      </button>
+      <label className="schedule-timeline-option">
+        <input
+          type="checkbox"
+          checked={scenario.includeTimeline}
+          onChange={(e) =>
+            onChange({ ...scenario, includeTimeline: e.target.checked })
+          }
+        />
+        Aşamalar, başlıklar ve kilometre taşları da kaysın
+      </label>
+      {problems.map((problem) => (
+        <p key={problem} className="negative" role="alert">
+          {problem}
+        </p>
+      ))}
+    </article>
+  );
+}
+
+function ComparisonView({
+  comparison,
+  data,
+  shown,
+  onShow,
+}: {
+  comparison: ScenarioComparison;
+  data: Data;
+  shown: number;
+  onShow: (index: number) => void;
+}) {
+  if (!comparison.ready)
+    return (
+      <p className="schedule-scenario-empty">
+        Karşılaştırma için en az bir senaryoda proje ve sıfırdan farklı bir ay
+        sayısı seçin.
+      </p>
+    );
+  const { columns, months, teams } = comparison;
+  const scenario = columns[shown + 1] || columns[1];
+  const base = columns[0];
+  const teamName = (id: string) =>
+    data.teams.find((t) => t.id === id)?.name || id;
+  const better = (value: number, reference: number) =>
+    value < reference - 1e-9
+      ? "is-better"
+      : value > reference + 1e-9
+        ? "is-worse"
+        : undefined;
+  return (
+    <section className="schedule-comparison" aria-label="Karşılaştırma">
+      <p className="schedule-comparison-scope">
+        {teams.length} takım etkileniyor · {monthLabel(months[0])} –{" "}
+        {monthLabel(months.at(-1)!)}
+      </p>
+      <table className="schedule-summary-table">
+        <thead>
+          <tr>
+            <th />
+            {columns.map((column) => (
+              <th key={column.key}>{column.name}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {comparison.projects.map((project) => (
+            <tr key={project.id}>
+              <th>{project.name} bitişi</th>
+              {columns.map((column) => (
+                <td key={column.key}>
+                  {monthLabel(column.projectEnds[project.id] || project.end)}
+                </td>
+              ))}
+            </tr>
+          ))}
+          <tr>
+            <th>Toplam kaynak açığı (kişi-ay)</th>
+            {columns.map((column, i) => (
+              <td
+                key={column.key}
+                className={
+                  i
+                    ? better(column.summary.shortage, base.summary.shortage)
+                    : undefined
+                }
+              >
+                {fmt(column.summary.shortage)}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th>Açık olan ay sayısı</th>
+            {columns.map((column, i) => (
+              <td
+                key={column.key}
+                className={
+                  i
+                    ? better(
+                        column.summary.shortageMonths,
+                        base.summary.shortageMonths,
+                      )
+                    : undefined
+                }
+              >
+                {column.summary.shortageMonths}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th>En yüksek aylık açık</th>
+            {columns.map((column) => (
+              <td key={column.key}>
+                {column.summary.peak
+                  ? `${fmt(column.summary.peak.value)} · ${monthLabel(column.summary.peak.month)}`
+                  : "Açık yok"}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th>Kaydırılan planlanan kayıt</th>
+            {columns.map((column) => (
+              <td key={column.key}>
+                {column.key === "base" ? "—" : column.moved}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+      <div className="schedule-impact-head">
+        <h3>Takım bazında kalan kaynak</h3>
+        {columns.length > 2 && (
+          <div role="group" aria-label="Gösterilen senaryo">
+            {columns.slice(1).map((column, i) => (
+              <button
+                key={column.key}
+                type="button"
+                className={"button" + (i === shown ? " primary" : "")}
+                aria-pressed={i === shown}
+                onClick={() => onShow(i)}
+              >
+                {column.name}
+              </button>
+            ))}
+          </div>
+        )}
+        <span className="schedule-impact-legend">
+          <i className="is-worse" /> kötüleşen <i className="is-better" />{" "}
+          iyileşen · değer: senaryodaki kalan (eksi = açık)
+        </span>
+      </div>
+      <div className="schedule-impact-wrap">
+        <table className="schedule-impact-table">
+          <thead>
+            <tr>
+              <th>Takım</th>
+              {months.map((month) => (
+                <th key={month}>{monthLabel(month)}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {teams.map((team) => (
+              <tr key={team}>
+                <th>{teamName(team)}</th>
+                {months.map((month) => {
+                  const k = team + "|" + month;
+                  const now = base.summary.remaining[k] ?? 0;
+                  const next = scenario.summary.remaining[k] ?? 0;
+                  const changed = Math.abs(next - now) > 1e-9;
+                  return (
+                    <td
+                      key={month}
+                      className={
+                        [
+                          next < -1e-9 ? "is-short" : "",
+                          changed
+                            ? next > now
+                              ? "is-better"
+                              : "is-worse"
+                            : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ") || undefined
+                      }
+                      title={`Mevcut: ${fmt(now)} · ${scenario.name}: ${fmt(next)}`}
+                    >
+                      {fmt(next)}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}

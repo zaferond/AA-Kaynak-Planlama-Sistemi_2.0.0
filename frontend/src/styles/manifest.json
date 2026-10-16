@@ -25,6 +25,7 @@
   "projects/table-layout.css",
   "projects/editors.css",
   "planning/view-controls.css",
+  "planning/schedule-scenario.css",
   "workspace/navigation-theme.css",
   "workspace/filters.css",
   "workspace/action-theme.css",

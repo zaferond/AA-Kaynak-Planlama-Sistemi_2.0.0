@@ -1,0 +1,266 @@
+/* Erteleme Senaryosu: fixed-size dialog; the body scrolls, actions stay. */
+.editor.schedule-scenario-dialog[data-slot="dialog-content"] {
+  width: min(1240px, calc(100vw - 32px)) !important;
+  max-width: min(1240px, calc(100vw - 32px)) !important;
+  height: min(880px, calc(100dvh - 48px));
+  max-height: calc(100dvh - 48px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+.schedule-scenario-body {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: -3px -6px 0 -3px;
+  padding: 3px 6px 4px 3px;
+}
+.schedule-scenario-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.schedule-scenario-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 8px;
+  background: #f4f7f0;
+  font-size: var(--fs-xs);
+}
+.schedule-scenario-card header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.schedule-scenario-card header input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 4px 8px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--brand-text, #293a2d);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.schedule-shift-head,
+.schedule-shift-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 58px 128px 28px;
+  align-items: center;
+  gap: 6px;
+}
+.schedule-shift-head {
+  color: var(--brand-muted, #60715e);
+  font-weight: 700;
+}
+.schedule-shift-row select,
+.schedule-shift-row input {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  min-height: 32px;
+  padding: 4px 6px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--brand-text, #293a2d);
+  font-size: var(--fs-xs);
+}
+.schedule-shift-row input[type="number"] {
+  text-align: center;
+  font-weight: 700;
+}
+.schedule-scenario-card .icon-button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--brand-muted, #60715e);
+  cursor: pointer;
+}
+.schedule-scenario-card .icon-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.schedule-scenario-card .textbutton {
+  justify-self: start;
+  font-size: var(--fs-xs);
+}
+.schedule-timeline-option {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--brand-text, #293a2d);
+}
+.schedule-timeline-option input {
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+}
+.schedule-scenario-card .negative {
+  margin: 0;
+}
+.schedule-scenario-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 120px;
+  border: 1px dashed var(--brand-border-strong, #96a889);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--brand-primary, #405341);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+.schedule-scenario-empty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed var(--brand-border, #ccd6c5);
+  border-radius: 8px;
+  color: var(--brand-muted, #60715e);
+  text-align: center;
+}
+.schedule-comparison {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.schedule-comparison-scope {
+  margin: 0;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+.schedule-summary-table,
+.schedule-impact-table {
+  border-collapse: collapse;
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+.schedule-summary-table {
+  width: 100%;
+}
+.schedule-summary-table th,
+.schedule-summary-table td,
+.schedule-impact-table th,
+.schedule-impact-table td {
+  padding: 6px 9px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  text-align: center;
+  white-space: nowrap;
+}
+/* assets/base.css sets th { color: … !important }; override it here. */
+.schedule-scenario-dialog .schedule-summary-table thead th,
+.schedule-scenario-dialog .schedule-impact-table thead th {
+  background: var(--brand-primary, #405341);
+  color: #fff !important;
+  font-weight: 700;
+}
+.schedule-summary-table tbody th,
+.schedule-impact-table tbody th {
+  background: var(--brand-surface-soft, #f6f8f2);
+  color: var(--brand-text, #293a2d) !important;
+  font-weight: 600;
+  text-align: left;
+  white-space: normal;
+}
+.schedule-summary-table td {
+  background: #fff;
+  font-weight: 600;
+}
+/* Better / worse than the current plan. */
+:is(.schedule-summary-table, .schedule-impact-table) td.is-better,
+.schedule-impact-legend i.is-better {
+  background: #e6f2e8;
+  color: #1f6b3a;
+}
+:is(.schedule-summary-table, .schedule-impact-table) td.is-worse,
+.schedule-impact-legend i.is-worse {
+  background: #fbe9e6;
+  color: #9f2a1c;
+}
+.schedule-impact-table td {
+  background: #fff;
+}
+.schedule-impact-table td.is-short {
+  font-weight: 700;
+  color: #b42318;
+}
+.schedule-impact-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.schedule-impact-head h3 {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--brand-text, #293a2d);
+}
+.schedule-impact-head [role="group"] {
+  display: flex;
+  gap: 4px;
+}
+.schedule-impact-head .button {
+  height: 28px;
+  min-height: 28px;
+  padding: 3px 10px;
+  font-size: var(--fs-xs);
+}
+.schedule-impact-legend {
+  margin-left: auto;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.schedule-impact-legend i {
+  display: inline-block;
+  width: 14px;
+  height: 12px;
+  margin: 0 3px -2px 6px;
+  border: 1px solid var(--brand-border-strong, #96a889);
+  border-radius: 3px;
+}
+.schedule-impact-wrap {
+  overflow: auto;
+  max-width: 100%;
+  border-radius: 6px;
+}
+/* The team column stays while scrolling through months. */
+.schedule-impact-table tbody th,
+.schedule-impact-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 220px;
+}
+.schedule-scenario-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border, #ccd6c5);
+}
+.schedule-scenario-actions small {
+  margin-right: auto;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.schedule-scenario-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

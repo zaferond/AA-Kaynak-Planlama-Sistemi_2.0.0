@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 import {
   ArrowDownToLine,
+  CalendarClock,
   CalendarDays,
   FolderKanban,
   Layers3,
@@ -25,6 +26,7 @@ type Props = {
   setView: (view: string) => void;
   openProject: () => void;
   onOpenSharedCalendar: () => void;
+  onOpenScenario: () => void;
   onExport: () => void;
   dataLoaded: boolean;
   hasTeams: boolean;
@@ -45,6 +47,7 @@ export default function WorkspaceNavigation({
   setView,
   openProject,
   onOpenSharedCalendar,
+  onOpenScenario,
   onExport,
   dataLoaded,
   hasTeams,
@@ -181,6 +184,17 @@ export default function WorkspaceNavigation({
                 <TabsTrigger value="project">Proje → Takımlar</TabsTrigger>
               </TabsList>
             </Tabs>
+          )}
+          {["plan", "projects"].includes(tab) && (isAdmin || isManager) && (
+            <button
+              type="button"
+              className="button"
+              onClick={onOpenScenario}
+              disabled={!dataLoaded || !hasProjects}
+            >
+              <CalendarClock size={17} />
+              Erteleme Senaryosu
+            </button>
           )}
           {tab === "projects" && (isAdmin || projectEditor) && (
             <button

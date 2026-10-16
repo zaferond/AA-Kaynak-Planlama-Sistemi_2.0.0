@@ -43,6 +43,7 @@ import HeadcountReports from "./features/resource-reports/HeadcountReports";
 import ActivePostingPlanningToggle from "./features/workspace/ActivePostingPlanningToggle";
 import AccessPanel from "./AccessPanel";
 import PortalEditorDialog from "./features/PortalEditorDialog";
+import ScheduleScenarioDialog from "./features/schedule-scenario/ScheduleScenarioDialog";
 import { usePlannedGrid } from "./features/usePlannedGrid";
 import { fmt, monthLabel, fullDateLabel } from "./format";
 import { Project } from "./model";
@@ -69,6 +70,7 @@ export default function Portal() {
   const [organizationView, setOrganizationView] = useState("employees");
   const [reportView, setReportView] = useState<ReportView>("resources");
   const [sharedCalendarOpen, setSharedCalendarOpen] = useState(false);
+  const [scenarioOpen, setScenarioOpen] = useState(false);
   const mainTabsRef = useRef<HTMLDivElement>(null),
     capacityTableRef = useRef<HTMLTableElement>(null),
     planTableRef = useRef<HTMLTableElement>(null);
@@ -545,6 +547,7 @@ export default function Portal() {
             onOpenSharedCalendar={() => {
               if (isAdmin && data) setSharedCalendarOpen(true);
             }}
+            onOpenScenario={() => data && setScenarioOpen(true)}
             onExport={exportCurrentTab}
             dataLoaded={
               !!data && (tab !== "actual" || !!isAdmin || !!actualView.value)
@@ -1049,6 +1052,14 @@ export default function Portal() {
           )}
         </DialogContent>
       </Dialog>
+      {data && (isAdmin || user?.role === "manager") && (
+        <ScheduleScenarioDialog
+          open={scenarioOpen}
+          onClose={() => setScenarioOpen(false)}
+          data={data}
+          currentMonth={currentMonth}
+        />
+      )}
       <PortalEditorDialog
         editor={editor}
         setEditor={setEditor}

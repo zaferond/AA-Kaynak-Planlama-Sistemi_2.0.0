@@ -134,7 +134,11 @@ function TopicForm({
               min={min}
               max={max}
               value={start}
-              onChange={(event) => setStart(event.target.value)}
+              onChange={(event) => {
+                // The end follows the start; it can be moved afterwards.
+                setStart(event.target.value);
+                setEnd(event.target.value);
+              }}
             />
           </label>
           <label>

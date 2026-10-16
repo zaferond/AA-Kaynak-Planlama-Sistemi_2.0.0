@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "efc171dce6ef8366df7ca087a62a1ba192aef83e",
+  "commit": "e76fa220bdfff0699d6ef036a26ec70acd929de0",
   "sources": {
     "backend/active-directory.mjs": "378b9aa0d31346261a26dbda3584588dd8041604a3f2aec0a0771a1c05c02394",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -279,8 +279,8 @@
     "frontend/src/headcount-trend.ts": "ca3e6436a1631d1bc5056489387333d98c1ea6cb9ca3f5adc417e2732186f91f",
     "frontend/src/HeadcountTrend.tsx": "fe5a7a95268f119b865a42c21a5a17cb292af1b01fe04c0eefe4b01f9288fecd",
     "frontend/src/http-transport.ts": "2e98494942ef028ce001796e2d996c9a4635786a86625848478d31f56d31b561",
-    "frontend/src/login.css": "7bb5be628cec5f88c788fb0be9a097766cab78c0fd93e9e93418ade25892ce9a",
-    "frontend/src/main.tsx": "a27cd1165770be996ba9f53e33684248eaaa69de74c49f49e097d555b514b22c",
+    "frontend/src/login.css": "609e22eaac3ce1ef872cbf72d27c1dfb49ffea66f0b48a31ee51d288d71e254b",
+    "frontend/src/main.tsx": "1fa7a6adb4749a21aeed054f5774f23ab81180878073304d2211a595deeea03b",
     "frontend/src/metrics.ts": "bbae98ffac9ded9a92549ac6616c684e47c0c914dd32ff22df8b9a85a13356cb",
     "frontend/src/milestone-bars.ts": "3650fc73f93ca2737ac4a3b4d7844ec8fb054fff8cd5761edbbf4dc1e5f51da8",
     "frontend/src/milestone-ranges.ts": "0e0f97e7ca65d0f3a01efb8c50a0e3ead60fda9688213ddb37831873e6668bfa",
@@ -1016,6 +1016,8 @@
     "site/assets/app.91dcb8a58af9.js.gz": "546edce25f93d01e8fba5f9ba8d5f8b13f4f7338ee0a2f2a5ec70f697a754312",
     "site/assets/app.91e3b87b2c68.js": "91e3b87b2c6889a34857b0ece13b2c2338ecff299eeb086f734d262495936271",
     "site/assets/app.91e3b87b2c68.js.gz": "e7f9dbce5957763de47ac93504718698ac88e39612eb69bb5f3eaaa96f6de2f5",
+    "site/assets/app.94323e778b8d.css": "94323e778b8d6b03c9ad388df67b6da2cd53f2571540bb74984840ad6d5622c0",
+    "site/assets/app.94323e778b8d.css.gz": "5a38dbf6debb358b475d51b5ef9c28e7d8b4e69fe66c480fd786747e91f708bf",
     "site/assets/app.9438f4f42382.js": "9438f4f4238210ce6465c5a557603f054eb98c27a0aa1dde1adbae9ae1f4e892",
     "site/assets/app.9438f4f42382.js.gz": "51eca78cbe49453da350ecce5ed950ec71e38b340683374346453f7c207d7d8f",
     "site/assets/app.944cdf573dad.js": "944cdf573dad70ddfc9b61e59e1bf5efe92726b37f5e1da60e1ed484b8c5d0bd",
@@ -1148,6 +1150,8 @@
     "site/assets/app.bb3461d76b4f.js.gz": "27b2a659d2e761ce8c0a77676bc566ff674fd0db7fd2bc92956ffa2b23ef1ca7",
     "site/assets/app.bb616e30f916.css": "bb616e30f916af04a75bd7e618fd289f7779cd2c8d31c6ad809973eae581110f",
     "site/assets/app.bb616e30f916.css.gz": "83dc47a9bb1ae543ef7239889048af424d15328ff47ef049323292708bbf6005",
+    "site/assets/app.bc061a9c7e9a.js": "bc061a9c7e9ada65f483031836c529e2e4e213696a7b681fa9acc314437d8534",
+    "site/assets/app.bc061a9c7e9a.js.gz": "67a24d6acfac0ab6288ca4b7fa07468ddb4b1e20866ebd67254a310c9760d1d6",
     "site/assets/app.bc0a54030dab.css": "bc0a54030daba139c3b447d200fe10e8dbb55d87f2da57487bd856475e8f4888",
     "site/assets/app.bc0a54030dab.css.gz": "1043f39041e2ee6bc292c48de71252ffd02e4aa8678c4b2369e049949c493fe7",
     "site/assets/app.bc4a8017ff79.css": "bc4a8017ff79ff839d88db876a5bbbf58c9a738f5ddeaba2a55dadcf063b7494",
@@ -1246,6 +1250,8 @@
     "site/assets/app.d550fb57df08.js.gz": "202334b9f90d119bc80c72d5342e4678e10b264b3438c4c60d67ac156b66eddc",
     "site/assets/app.d55ad4ba07f0.css": "d55ad4ba07f0b7ee3a68d8b3f087e516f1a3bc639578b5b2c56b583abf3a5392",
     "site/assets/app.d55ad4ba07f0.css.gz": "0c1047e2cfc4a9d20b579b9a39682d7658abc0a961c60d87f3689c3137c3d040",
+    "site/assets/app.d631305ecfbb.js": "d631305ecfbb29b39820f3532f52e6593921e667048d759458017bb6290483d5",
+    "site/assets/app.d631305ecfbb.js.gz": "c4e59744889cd293046ad142eddb28e8469502bd3f05aa7c094717b73019d47d",
     "site/assets/app.d7903a25f98a.css": "d7903a25f98af8686642576c6b0ae9c1ed8689e6355c516b029d0bb64b6c4df3",
     "site/assets/app.d7903a25f98a.css.gz": "d0d5844b783583f7227b53afe54f97465a261751d674db5b32e1066593d7b075",
     "site/assets/app.d7e9f3724763.css": "d7e9f3724763ce4046c7eca55eb96763a2668aa0941eb3ad2ae1d2090b8479db",
@@ -1379,17 +1385,17 @@
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/login-background.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "317de9829c728feeec3f3a660eb03b827671909bc4cc36e838a31c89039d593f",
-    "site/index.html.gz": "8a872730c54ea9cdf2ad06c738ec2a717c0f69c1a6421be284d7f5fc88de38c2"
+    "site/index.html": "900b7d34a2687d02d576fa89ad2d14b29a96bfa8b9e4ae89ed949537b029441b",
+    "site/index.html.gz": "ac49beac82ec87c2a5a0292161f4a3f92f8917576ff686da5610d15ae11aac89"
   },
   "releaseArtifacts": {
-    "site/assets/app.53e226bb751a.css": "53e226bb751a485d91a4a08d38e6cf8e0d4177aa7054a2d0f4309c1fa92b4971",
-    "site/assets/app.53e226bb751a.css.gz": "cc6daa7685bdc79bfc8ec2163cdc106a08147e08261b5e5b7d3f1f90c0139c49",
-    "site/assets/app.9d0ed59bf116.js": "9d0ed59bf11680259eaa15827c24cfe92c29aa5836f7562538cfa3e6688cf592",
-    "site/assets/app.9d0ed59bf116.js.gz": "6640118a2d8d1e898a92d5657ea5eca459d8d1fabd670aeed2a74e65b02a9a09",
+    "site/assets/app.94323e778b8d.css": "94323e778b8d6b03c9ad388df67b6da2cd53f2571540bb74984840ad6d5622c0",
+    "site/assets/app.94323e778b8d.css.gz": "5a38dbf6debb358b475d51b5ef9c28e7d8b4e69fe66c480fd786747e91f708bf",
+    "site/assets/app.bc061a9c7e9a.js": "bc061a9c7e9ada65f483031836c529e2e4e213696a7b681fa9acc314437d8534",
+    "site/assets/app.bc061a9c7e9a.js.gz": "67a24d6acfac0ab6288ca4b7fa07468ddb4b1e20866ebd67254a310c9760d1d6",
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "317de9829c728feeec3f3a660eb03b827671909bc4cc36e838a31c89039d593f",
-    "site/index.html.gz": "8a872730c54ea9cdf2ad06c738ec2a717c0f69c1a6421be284d7f5fc88de38c2"
+    "site/index.html": "900b7d34a2687d02d576fa89ad2d14b29a96bfa8b9e4ae89ed949537b029441b",
+    "site/index.html.gz": "ac49beac82ec87c2a5a0292161f4a3f92f8917576ff686da5610d15ae11aac89"
   }
 }

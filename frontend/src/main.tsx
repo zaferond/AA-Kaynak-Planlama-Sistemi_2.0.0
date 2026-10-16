@@ -17,6 +17,8 @@ function App() {
   const authRequest = useRef(0);
   const busyRef = useRef(false);
   const [sessionKey, setSessionKey] = useState(0);
+  const [capsLock, setCapsLock] = useState(false);
+  const usernameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -78,6 +80,11 @@ function App() {
   useEffect(() => {
     document.title = SYSTEM_NAME;
   }, []);
+  // Once the session check ends on the form, start typing the user name.
+  useEffect(() => {
+    if (!checking && !ready && !usernameRef.current?.value)
+      usernameRef.current?.focus();
+  }, [checking, ready]);
 
   if (ready) return <Portal key={sessionKey} />;
 
@@ -126,6 +133,10 @@ function App() {
 
         <section className="auth-panel" aria-label="Hesap Girişi">
           <div className="auth-panel-inner">
+            <div className="auth-heading">
+              <h2>Oturum Aç</h2>
+              <p>Kurum kullanıcı adınız ve şifrenizle giriş yapın.</p>
+            </div>
             <form
               className="auth-form"
               aria-label="Giriş Formu"
@@ -135,6 +146,7 @@ function App() {
               <div className="auth-field">
                 <UserRound size={19} aria-hidden="true" />
                 <input
+                  ref={usernameRef}
                   id="login-username"
                   type="text"
                   autoComplete="username"
@@ -157,6 +169,14 @@ function App() {
                   placeholder="Şifreniz"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
+                  onKeyDown={(event) =>
+                    setCapsLock(event.getModifierState("CapsLock"))
+                  }
+                  onKeyUp={(event) =>
+                    setCapsLock(event.getModifierState("CapsLock"))
+                  }
+                  onBlur={() => setCapsLock(false)}
+                  aria-describedby={capsLock ? "login-caps" : undefined}
                   required
                   disabled={checking || busy}
                 />
@@ -170,6 +190,11 @@ function App() {
                   {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
                 </button>
               </div>
+              {capsLock && (
+                <p className="auth-caps" id="login-caps" role="status">
+                  Caps Lock açık.
+                </p>
+              )}
               <label className="auth-remember">
                 <input
                   type="checkbox"

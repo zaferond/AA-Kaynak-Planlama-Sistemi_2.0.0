@@ -35,7 +35,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 28px;
   overflow: hidden;
   padding: 24px;
   background: linear-gradient(
@@ -107,6 +107,7 @@
   text-shadow: 0 1px 8px #0009;
 }
 .auth-brand-footer {
+  margin-top: auto;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -132,13 +133,28 @@
     linear-gradient(135deg, transparent 63%, #ffffff08 63.2%, transparent 63.5%);
   pointer-events: none;
 }
+/* Opaque, so the photo collage never shows through the fields. */
 .auth-panel {
   display: grid;
   place-items: center;
-  padding: 26px 30px;
-  background: #ffffffc9;
-  -webkit-backdrop-filter: blur(1px);
-  backdrop-filter: blur(1px);
+  padding: 30px;
+  background: #fff;
+}
+.auth-heading {
+  margin-bottom: 22px;
+}
+.auth-heading h2 {
+  margin: 0;
+  color: var(--brand-text, #293a2d);
+  font-size: var(--fs-xl, 20px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.auth-heading p {
+  margin: 6px 0 0;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
 }
 .auth-panel-inner {
   width: min(100%, 360px);
@@ -162,7 +178,7 @@
   padding: 0 10px 0 14px;
   border: 1px solid #ccd9e4;
   border-radius: 8px;
-  background: #ffffffd9;
+  background: #fff;
   transition:
     border-color 0.15s,
     box-shadow 0.15s;
@@ -228,6 +244,13 @@
   min-width: 16px;
   margin: 0;
   accent-color: #176c9d;
+}
+/* Sits under the password field, inside its bottom margin. */
+.auth-caps {
+  margin: -14px 0 14px;
+  color: #8a5a00;
+  font-size: var(--fs-xs);
+  font-weight: 600;
 }
 .auth-error {
   margin: 0 0 15px;

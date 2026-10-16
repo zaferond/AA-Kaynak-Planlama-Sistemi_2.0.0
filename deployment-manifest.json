@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "62acfb1b517defccbb5344e18ac5f9cfb3a87342",
+  "commit": "3b72844b36497e3c9414e9506e3710c2284c1593",
   "sources": {
     "backend/active-directory.mjs": "378b9aa0d31346261a26dbda3584588dd8041604a3f2aec0a0771a1c05c02394",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -10,7 +10,6 @@
     "backend/actual-view.mjs": "13b7e9f0a5936434841490ae8010ca06f51b9b002c31ffa45474c9215ada4919",
     "backend/adapters/mssql.mjs": "a59c170a37913ecd96e9b682f9e3437c5b9724585468c4c51faedbdea242b158",
     "backend/adapters/sqljs.mjs": "26d1e23372ba2224e598153e9e84a02a86d4be277ce04fa399e708a29ddc5f1e",
-    "backend/admin-credentials 2.mjs": "10e301ae2afb9426996f1eb50c0fa75cefd9c18142eba43934b2e6e188afd91c",
     "backend/admin-credentials.mjs": "10e301ae2afb9426996f1eb50c0fa75cefd9c18142eba43934b2e6e188afd91c",
     "backend/admin-password.mjs": "410e5380ce853a6f7342f6d16ae09900d13babaea62467598eb575266f3ac862",
     "backend/app.mjs": "9b608e4422fda1a2f89a6ceee4645f3629354ffc3b68295bc05aec5582039bc6",
@@ -401,7 +400,7 @@
     "scripts/benchmark-workspace.mjs": "60930e4aaa3f713672d99841497e3db29dec803b1d45c5b99124724565360384",
     "scripts/browser-checks/access.mjs": "fb8738e1725f849b063b1d547fe5c9a61ad14e4c5c4714908444171dfadf07e8",
     "scripts/browser-checks/active-posting-planning.mjs": "973e6720e8b06c2dd270f588c8a8f831cfdbee544fce1fc7a32a75364ec5f744",
-    "scripts/browser-checks/activity-report.mjs": "12b8c7cf7462fed05467b8aaa07660f95e417c1d30269607c6d93342c691a09b",
+    "scripts/browser-checks/activity-report.mjs": "5233ad52aadc6a069405876a1fc219f92d375b0eba45faea8c042e59de0ae04e",
     "scripts/browser-checks/actual-allocation.mjs": "b4e29c4e5ad12b7f32cd5aa43e09de663854fa189de86c4af44befa34668adbe",
     "scripts/browser-checks/actual-manager-hierarchy.mjs": "813e779321572a7b8782147d45a5e04c481cec44e78f0e0d1f28adc7b1e7a01b",
     "scripts/browser-checks/actual-remaining-hours.mjs": "42397f1850fe0ba3cf3a03440403b9d7a6a6e7b9376bbd05faaa0a068acbb06a",

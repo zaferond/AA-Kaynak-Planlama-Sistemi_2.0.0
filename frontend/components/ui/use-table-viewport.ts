@@ -192,7 +192,10 @@ export function useTodayDateMarker(
           (column ? 0 : headerRect.width * progress)) /
           zoom +
         container.scrollLeft;
-      if (column) marker.style.width = `${headerRect.width / zoom}px`;
+      if (column) {
+        marker.style.width = `${headerRect.width / zoom}px`;
+        marker.style.setProperty("--today-progress", String(progress));
+      }
       const height = table.offsetHeight;
       markerLeft = left;
       frozenWidth = aboveRows

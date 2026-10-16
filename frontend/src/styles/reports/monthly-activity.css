@@ -211,6 +211,10 @@
 .app .monthly-activity-report .today-date-line {
   z-index: 2;
 }
+/* The month band stays beneath the figures (see today-line-and-entries). */
+.app .monthly-activity-report .today-date-line.today-date-column {
+  z-index: 0;
+}
 
 /* The header is one stacking context above the three frozen body columns. */
 .app .activity-matrix thead {

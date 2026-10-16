@@ -180,7 +180,7 @@ export default function RemainingResourceTable({
                         (diff.note || "")
                       }
                     >
-                      {fmt(remaining)}
+                      <span className="table-value">{fmt(remaining)}</span>
                     </TableCell>
                   );
                 })}

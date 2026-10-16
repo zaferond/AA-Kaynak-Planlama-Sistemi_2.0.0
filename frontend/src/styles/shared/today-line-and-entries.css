@@ -29,8 +29,9 @@
   z-index: 5;
 }
 
-/* Value grids mark the current month as a soft column band so no line crosses
-   the figures; the month's header carries the accent. */
+/* Value grids mark the current month as a soft column band with the day line
+   inside it. Cell content stacks above the marker, so the line runs behind
+   the figures and shows between them; the month's header carries the accent. */
 [data-slot="table-container"] > .today-date-line.today-date-column {
   background: color-mix(
     in srgb,
@@ -45,6 +46,38 @@
 }
 [data-slot="table-container"] > .today-date-line.today-date-column::before {
   display: none;
+}
+[data-slot="table-container"] > .today-date-line.today-date-column::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--today-progress, 0.5) * 100%);
+  width: var(--table-today-width, 2px);
+  transform: translateX(-50%);
+  background: var(--table-today-color, #397ba8);
+}
+[data-slot="table-container"]:has(> .today-date-column)
+  tbody
+  td
+  > :is(.cell, .person-amount, .phase-chip, .table-value, strong) {
+  position: relative;
+  z-index: 1;
+}
+/* Actual entry cells isolate their own layers at z-index 0; lift them above
+   the marker (frozen columns and sticky rows sit higher still). */
+.app
+  [data-slot="table-container"]:has(> .today-date-column)
+  tbody
+  td:has(> .person-amount) {
+  z-index: 1;
+}
+/* Plain figures get the cell's own shade so the line stops at the digits. */
+[data-slot="table-container"]:has(> .today-date-column)
+  tbody
+  td
+  > :is(.table-value, strong) {
+  background: inherit;
 }
 [data-slot="table-container"] thead th[data-today] {
   color: var(--table-today-color, #397ba8) !important;

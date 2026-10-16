@@ -57,7 +57,7 @@ export default function PlannedSummaryRows({
                 : "")
             }
           >
-            {fmt(value)}
+            <span className="table-value">{fmt(value)}</span>
           </TableCell>
         );
       })}

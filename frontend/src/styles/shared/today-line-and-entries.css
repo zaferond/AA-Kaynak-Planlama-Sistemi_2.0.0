@@ -36,6 +36,50 @@
   color: var(--table-planned-entry-color);
   font-weight: 700;
 }
+/* Density scale: the shade follows the share of the unit's capacity. */
+.app.tab-plan
+  .allocation-grid
+  td.has-entry[data-plan-density]
+  .cell
+  input:not(:focus) {
+  color: var(--plan-density-ink);
+}
+.app.tab-plan
+  .allocation-grid
+  td.has-entry[data-plan-density="1"]
+  .cell
+  input:not(:focus),
+.app.tab-plan .plan-density-swatch[data-plan-density="1"] {
+  background: var(--plan-density-1-background);
+  border-color: var(--plan-density-1-border);
+}
+.app.tab-plan
+  .allocation-grid
+  td.has-entry[data-plan-density="2"]
+  .cell
+  input:not(:focus),
+.app.tab-plan .plan-density-swatch[data-plan-density="2"] {
+  background: var(--plan-density-2-background);
+  border-color: var(--plan-density-2-border);
+}
+.app.tab-plan
+  .allocation-grid
+  td.has-entry[data-plan-density="3"]
+  .cell
+  input:not(:focus),
+.app.tab-plan .plan-density-swatch[data-plan-density="3"] {
+  background: var(--plan-density-3-background);
+  border-color: var(--plan-density-3-border);
+}
+.app.tab-plan
+  .allocation-grid
+  td.has-entry[data-plan-density="4"]
+  .cell
+  input:not(:focus),
+.app.tab-plan .plan-density-swatch[data-plan-density="4"] {
+  background: var(--plan-density-4-background);
+  border-color: var(--plan-density-4-border);
+}
 .app.tab-plan .allocation-grid td:has(> .cell) {
   vertical-align: middle !important;
 }

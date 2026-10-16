@@ -201,6 +201,31 @@
   color: #b32c32;
 }
 
+/* Planlanan hücre renklerinin açıklaması (takım kaynağına oranı). */
+.app.tab-plan .plan-density-legend {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-left: auto;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.app.tab-plan .plan-density-legend > span:first-child {
+  margin-right: 2px;
+}
+.app.tab-plan .plan-density-swatch {
+  padding: 1px 7px;
+  border: 1px solid;
+  border-radius: 4px;
+  color: var(--plan-density-ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.app.tab-plan .plan-density-legend + .capacity-legend {
+  margin-left: 14px;
+}
+
 /* Takım → Projeler: takım satırındaki A / D / K kutularının açıklaması. */
 .app.tab-plan .capacity-legend {
   display: inline-flex;

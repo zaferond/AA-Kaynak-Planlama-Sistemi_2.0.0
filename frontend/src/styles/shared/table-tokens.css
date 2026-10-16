@@ -15,6 +15,16 @@
   --table-planned-entry-background: #dcecf9;
   --table-planned-entry-border: #afcee8;
   --table-planned-entry-color: #184e78;
+  /* Planned entry shades, light to dark: share of the unit's capacity. */
+  --plan-density-1-background: #eef5fc;
+  --plan-density-1-border: #c9ddef;
+  --plan-density-2-background: #dcecf9;
+  --plan-density-2-border: #afcee8;
+  --plan-density-3-background: #bcd8f0;
+  --plan-density-3-border: #8db7dc;
+  --plan-density-4-background: #93bfe4;
+  --plan-density-4-border: #5f97c7;
+  --plan-density-ink: #123d5f;
   --table-actual-cell-background: #e4f4f0;
   --table-actual-entry-background: #d8eee8;
   --table-actual-entry-border: #9bcbbf;

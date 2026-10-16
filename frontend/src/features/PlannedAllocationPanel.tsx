@@ -3,6 +3,7 @@ import PlannedCapacitySummary from "./planned-allocation/PlannedCapacitySummary"
 import PlannedAllocationTable from "./planned-allocation/PlannedAllocationTable";
 import type { PlannedAllocationProps } from "./planned-allocation/types";
 import { useViewportWorkspace } from "./workspace/useViewportWorkspace";
+import { PLAN_DENSITY_LEVELS } from "./planned-allocation/plan-density";
 export default function PlannedAllocationPanel(props: PlannedAllocationProps) {
   const { teams, projects, groups, onlyDataRows } = props;
   const viewportRef = useViewportWorkspace();
@@ -30,6 +31,21 @@ export default function PlannedAllocationPanel(props: PlannedAllocationProps) {
           />
           Sadece veri olanlar
         </label>
+        <span
+          className="plan-density-legend"
+          title="Hücre rengi, girilen değerin takımın o ayki aktif kaynağına oranını gösterir."
+        >
+          <span>Takım kaynağına oranı:</span>
+          {PLAN_DENSITY_LEVELS.map(({ level, label }) => (
+            <span
+              key={level}
+              className="plan-density-swatch"
+              data-plan-density={level}
+            >
+              {label}
+            </span>
+          ))}
+        </span>
         {props.view === "team" && (
           <span className="capacity-legend">
             <span>Takım satırı:</span>

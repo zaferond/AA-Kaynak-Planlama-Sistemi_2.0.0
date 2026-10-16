@@ -61,6 +61,15 @@ html[data-theme="military"] .app {
   --table-planned-entry-background: #e1ead8;
   --table-planned-entry-border: #b4c6a6;
   --table-planned-entry-color: #344e30;
+  --plan-density-1-background: #eef3e8;
+  --plan-density-1-border: #cdd9c2;
+  --plan-density-2-background: #dde8d2;
+  --plan-density-2-border: #b4c6a6;
+  --plan-density-3-background: #c4d6b2;
+  --plan-density-3-border: #98b085;
+  --plan-density-4-background: #a3bf8c;
+  --plan-density-4-border: #7a9a64;
+  --plan-density-ink: #1f3420;
 }
 html[data-theme="military"] .app .year-band-0 {
   --table-year-background: #e9efdf;

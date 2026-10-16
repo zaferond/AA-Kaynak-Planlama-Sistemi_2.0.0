@@ -6,6 +6,7 @@ import { fmt, monthLabel } from "../../format";
 import Cell from "../../components/AllocationCell";
 import ProjectResponsible from "../../ProjectResponsible";
 import PlannedPhaseButton from "./PlannedPhaseButton";
+import { planDensity, planDensityTitle } from "./plan-density";
 import {
   actualRowsVisible,
   PlannedActualToggle,
@@ -30,6 +31,7 @@ export type PlannedRowProps = Pick<
   | "onSaveAllocation"
   | "onPhaseClick"
   | "onPhaseContextMenu"
+  | "metric"
 >;
 function PlannedActualRow({
   team: t,
@@ -86,7 +88,7 @@ export default function PlannedAllocationRow({
   cellSet: ReadonlySet<string>;
   managerName: string;
 }) {
-  const { view, months, data, cells, grid, onSaveAllocation } = props;
+  const { view, months, data, cells, grid, onSaveAllocation, metric } = props;
   const {
     planCellWritable,
     startPlanDrag,
@@ -127,16 +129,23 @@ export default function PlannedAllocationRow({
         {months.map((m) => {
           const k = t.id + "|" + p.id + "|" + m,
             disabled = m < p.start || m > p.end,
-            editable = planCellWritable(k);
+            editable = planCellWritable(k),
+            value = data?.allocations[k] || 0,
+            // Shade an entry by how much of the unit's capacity it uses.
+            capacity = value > 0 ? metric([t.id], m).current : 0;
           return (
             <TableCell
               key={m}
               data-plan-cell={k}
+              data-plan-density={
+                planDensity(value, capacity).level || undefined
+              }
+              title={planDensityTitle(value, capacity)}
               onPointerDown={(e) => startPlanDrag(e, k)}
               onContextMenu={(e) => openPlanMenu(e, k)}
               className={
                 (view === "team" ? "allocation-with-work " : "") +
-                ((data?.allocations[k] || 0) > 0 ? "has-entry " : "") +
+                (value > 0 ? "has-entry " : "") +
                 (cellSet.has(k) ? "selectedcell" : "")
               }
             >
@@ -144,7 +153,7 @@ export default function PlannedAllocationRow({
                 <PlannedPhaseButton project={p} month={m} {...props} />
               )}
               <Cell
-                value={data?.allocations[k] || 0}
+                value={value}
                 label={t.name + " / " + p.name + " / " + monthLabel(m)}
                 disabled={disabled || !editable}
                 save={(v) => onSaveAllocation(k, v)}

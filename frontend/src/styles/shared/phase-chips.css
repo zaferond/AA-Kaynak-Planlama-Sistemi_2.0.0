@@ -55,10 +55,12 @@
   overflow-wrap: anywhere;
   text-overflow: clip;
 }
+/* Same inner spacing as the other screens: the text keeps clear of the
+   3px accent stripe on the left. */
 .app .person-allocation .actual-phase-cell .phase-chip {
   justify-content: flex-start;
   text-align: left;
-  padding-inline: 2px;
+  padding-inline: 9px 7px;
   font-size: var(--fs-xs);
 }
 .app:is(.dense-detail, .dense-compact) .planning-grid .phase-chip {

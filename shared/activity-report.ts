@@ -25,6 +25,8 @@ export type ActivityRow = {
   teamId: string;
   team: string;
   lead: string;
+  /** The leadership's own unit (people directly under the leader). */
+  leadershipUnit?: boolean;
   cells: ActivityMonth[];
 };
 
@@ -75,6 +77,7 @@ export function buildActivityRows(
         teamId,
         team: team.name,
         lead: team.lead || "Liderlik eşleştirilmemiş",
+        ...(team.kind === "leadership" ? { leadershipUnit: true } : {}),
         cells: months.map((month, index) => {
           const version = assignments[index];
           const assigned = version?.team === teamId;
@@ -117,6 +120,8 @@ export function buildActivityRows(
     (a, b) =>
       names.compare(a.lead, b.lead) ||
       names.compare(a.team, b.team) ||
+      // Same-named units (a leadership and its team) must not interleave.
+      a.teamId.localeCompare(b.teamId) ||
       names.compare(a.name, b.name) ||
       a.key.localeCompare(b.key),
   );

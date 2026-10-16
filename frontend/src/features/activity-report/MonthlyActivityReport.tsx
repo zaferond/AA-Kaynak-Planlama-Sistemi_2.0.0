@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -17,8 +17,9 @@ import {
 } from "./activity-report-data";
 
 const PAGE_SIZE = 100;
-const PERSON_COLUMN_WIDTH = 112;
-const LABEL_COLUMNS_WIDTH = 124 + 124 + PERSON_COLUMN_WIDTH;
+/* One label column: leadership and team move to a group row per team. */
+const PERSON_COLUMN_WIDTH = 190;
+const LABEL_COLUMNS_WIDTH = PERSON_COLUMN_WIDTH;
 const states = {
   working: "",
   "before-start": "İşbaşı öncesi",
@@ -66,6 +67,12 @@ export default function MonthlyActivityReport({
   const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const activePage = Math.min(page, pages - 1);
   const people = new Set(rows.map((row) => row.resourceId)).size;
+  const teamSizes = useMemo(() => {
+    const sizes = new Map<string, number>();
+    for (const row of rows)
+      sizes.set(row.teamId, (sizes.get(row.teamId) || 0) + 1);
+    return sizes;
+  }, [rows]);
   const visibleRows = rows.slice(
     activePage * PAGE_SIZE,
     (activePage + 1) * PAGE_SIZE,
@@ -125,8 +132,6 @@ export default function MonthlyActivityReport({
         style={{ width: LABEL_COLUMNS_WIDTH + months.length * monthWidth }}
       >
         <colgroup>
-          <col style={{ width: 124 }} />
-          <col style={{ width: 124 }} />
           <col style={{ width: PERSON_COLUMN_WIDTH }} />
           {months.map((month) => (
             <col key={month} style={{ width: monthWidth }} />
@@ -134,7 +139,7 @@ export default function MonthlyActivityReport({
         </colgroup>
         <TableHeader>
           <TableRow className="activity-year-row">
-            <TableHead colSpan={3} className="activity-year-label">
+            <TableHead className="activity-year-label">
               Çalışan / Dönem
             </TableHead>
             {years.map((year, index) => (
@@ -148,8 +153,6 @@ export default function MonthlyActivityReport({
             ))}
           </TableRow>
           <TableRow className="activity-month-row">
-            <TableHead className="activity-lead">Liderlik</TableHead>
-            <TableHead className="activity-team">Takım</TableHead>
             <TableHead className="activity-person">Çalışan</TableHead>
             {months.map((month) => (
               <TableHead
@@ -167,63 +170,77 @@ export default function MonthlyActivityReport({
         </TableHeader>
         <TableBody>
           {visibleRows.map((row, index) => {
-            const previous = rows[activePage * PAGE_SIZE + index - 1];
+            const previous = visibleRows[index - 1];
+            const groupStart = !previous || previous.teamId !== row.teamId;
+            const continued =
+              !previous &&
+              rows[activePage * PAGE_SIZE - 1]?.teamId === row.teamId;
             return (
-              <TableRow
-                key={row.key}
-                data-activity-resource={row.resourceId}
-                className={
-                  !previous || previous.lead !== row.lead
-                    ? "activity-lead-start"
-                    : previous.teamId !== row.teamId
-                      ? "activity-team-start"
-                      : ""
-                }
-              >
-                <TableCell className="activity-lead" title={row.lead}>
-                  {row.lead}
-                </TableCell>
-                <TableCell className="activity-team" title={row.team}>
-                  {row.team}
-                </TableCell>
-                <TableCell className="activity-person" title={row.name}>
-                  {row.name}
-                </TableCell>
-                {row.cells.map((cell) => {
-                  const value = activityValue(cell, unit);
-                  return (
-                    <TableCell
-                      key={cell.month}
-                      data-activity-month={cell.month}
-                      data-employment-state={cell.state}
-                      className={
-                        "activity-value " +
-                        (cell.totalFte > 0 ? "has-activity " : "") +
-                        "activity-" +
-                        cell.state
-                      }
-                      title={cellTitle(cell)}
-                    >
-                      <strong>
-                        {value === null
-                          ? "—"
-                          : (unit === "percent" ? "%" : "") + fmt(value)}
-                      </strong>
-                      {(cell.state === "before-start" ||
-                        cell.state === "departed") && (
-                        <span className="activity-employment-label">
-                          {states[cell.state]}
-                        </span>
-                      )}
+              <Fragment key={row.key}>
+                {groupStart && (
+                  <TableRow
+                    className="activity-group"
+                    data-activity-team={row.teamId}
+                  >
+                    <TableCell colSpan={1 + months.length}>
+                      <span className="activity-group-label">
+                        <strong>{row.team}</strong>
+                        {row.leadershipUnit && (
+                          <em className="activity-group-kind">
+                            Liderlik birimi
+                          </em>
+                        )}
+                        {row.lead && row.lead !== row.team && (
+                          <span>{row.lead}</span>
+                        )}
+                        <small>
+                          {teamSizes.get(row.teamId)} çalışan
+                          {continued ? " · önceki sayfadan devam" : ""}
+                        </small>
+                      </span>
                     </TableCell>
-                  );
-                })}
-              </TableRow>
+                  </TableRow>
+                )}
+                <TableRow data-activity-resource={row.resourceId}>
+                  <TableCell className="activity-person" title={row.name}>
+                    {row.name}
+                  </TableCell>
+                  {row.cells.map((cell) => {
+                    const value = activityValue(cell, unit);
+                    return (
+                      <TableCell
+                        key={cell.month}
+                        data-activity-month={cell.month}
+                        data-employment-state={cell.state}
+                        className={
+                          "activity-value " +
+                          (cell.totalFte > 0 ? "has-activity " : "") +
+                          "activity-" +
+                          cell.state
+                        }
+                        title={cellTitle(cell)}
+                      >
+                        <strong>
+                          {value === null
+                            ? "—"
+                            : (unit === "percent" ? "%" : "") + fmt(value)}
+                        </strong>
+                        {(cell.state === "before-start" ||
+                          cell.state === "departed") && (
+                          <span className="activity-employment-label">
+                            {states[cell.state]}
+                          </span>
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              </Fragment>
             );
           })}
           {!rows.length && (
             <TableRow>
-              <TableCell colSpan={3 + months.length} className="activity-empty">
+              <TableCell colSpan={1 + months.length} className="activity-empty">
                 Seçilen filtrelerde görüntülenebilen çalışan kaydı bulunmuyor.
               </TableCell>
             </TableRow>

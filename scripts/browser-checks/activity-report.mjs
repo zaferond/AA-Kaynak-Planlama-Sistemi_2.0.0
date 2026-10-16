@@ -174,7 +174,7 @@ export async function checkActivityReport(f) {
       },
     );
     await f.check(
-      "activity report: narrow employee column wraps long names without clipping",
+      "activity report: the single employee column wraps long names without clipping",
       async () => {
         const label = page.locator(
           `[data-activity-resource="${ids[0]}"] .activity-person`,
@@ -193,7 +193,8 @@ export async function checkActivityReport(f) {
               el.scrollHeight <= el.clientHeight + 1,
           };
         });
-        assert(layout.width <= 113);
+        // Leadership and team are group rows now; one 190px label column.
+        assert(layout.width <= 191);
         assert.equal(layout.whiteSpace, "normal");
         assert(layout.lines >= 2);
         assert(layout.fits);
@@ -259,26 +260,58 @@ export async function checkActivityReport(f) {
     await f.check(
       "activity report: leadership/team/employee ordering and team filters",
       async () => {
-        const values = await page
-          .locator(".activity-matrix tbody tr[data-activity-resource]")
-          .evaluateAll((rows) =>
-            rows.map((row) =>
-              Array.from(row.querySelectorAll("td"))
-                .slice(0, 3)
-                .map((td) => td.textContent),
-            ),
-          );
+        // One heading row per unit: units in leadership/team order, each
+        // appearing once, employees in name order inside it.
+        const groups = await page
+          .locator(".activity-matrix tbody tr")
+          .evaluateAll((rows) => {
+            const out = [];
+            for (const row of rows) {
+              if (row.classList.contains("activity-group")) {
+                const team = row.querySelector(
+                  ".activity-group-label strong",
+                ).textContent;
+                out.push({
+                  id: row.dataset.activityTeam,
+                  team,
+                  lead:
+                    row.querySelector(".activity-group-label > span")
+                      ?.textContent || team,
+                  names: [],
+                });
+              } else if (row.dataset.activityResource)
+                out
+                  .at(-1)
+                  .names.push(
+                    row.querySelector(".activity-person").textContent,
+                  );
+            }
+            return out;
+          });
         const collator = new Intl.Collator("tr-TR", {
           sensitivity: "base",
           numeric: true,
         });
-        const sorted = [...values].sort(
-          (a, b) =>
-            collator.compare(a[0], b[0]) ||
-            collator.compare(a[1], b[1]) ||
-            collator.compare(a[2], b[2]),
+        assert(groups.length > 1);
+        assert.equal(
+          new Set(groups.map((g) => g.id)).size,
+          groups.length,
+          "each unit is one contiguous group",
         );
-        assert.deepEqual(values, sorted);
+        assert.deepEqual(
+          groups.map((g) => [g.lead, g.team]),
+          groups
+            .map((g) => [g.lead, g.team])
+            .sort(
+              (a, b) =>
+                collator.compare(a[0], b[0]) || collator.compare(a[1], b[1]),
+            ),
+        );
+        for (const group of groups)
+          assert.deepEqual(
+            group.names,
+            [...group.names].sort(collator.compare),
+          );
         await choose("Takım", [f.teamB.name]);
         assert.equal(
           await page.locator(`[data-activity-resource="${ids[0]}"]`).count(),

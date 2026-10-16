@@ -7,7 +7,11 @@ const transitions = {
   approved: ["approved", "draft", "applied"],
   applied: ["applied", "reverted"],
   reverted: ["reverted"],
+  // Closed and reopened only by the server, as a consequence of a transfer.
+  closed: [],
 };
+const overlaps = (a, b) =>
+  a.shifts.some((s) => b.shifts.some((t) => t.projectId === s.projectId));
 const content = (s) =>
   JSON.stringify({
     name: s.name,
@@ -30,7 +34,10 @@ export function stageScenarioChange(
   const own = existing && existing.createdBy === u._id;
   if (operation) {
     if (!existing) fail(404, "Senaryo bulunamadı.");
-    if (!admin && !(own && existing.status === "draft"))
+    if (
+      !admin &&
+      !(own && (existing.status === "draft" || existing.status === "closed"))
+    )
       fail(403, "Yalnız kendi taslak senaryonuzu silebilirsiniz.");
     if (existing.status === "applied")
       fail(409, "Takvime aktarılmış senaryo silinemez; önce geri alın.");
@@ -79,6 +86,10 @@ export function stageScenarioChange(
     "appliedAt",
     "revertedByName",
     "revertedAt",
+    // Server-owned: only a transfer closes a scenario.
+    "closedByScenarioId",
+    "closedByName",
+    "closedAt",
   ])
     if (existing?.[field] !== undefined) stamped[field] = existing[field];
     else delete stamped[field];
@@ -99,8 +110,47 @@ export function stageScenarioChange(
     stamped.revertedByName = name;
     stamped.revertedAt = now;
   }
-  d.scheduleScenarios = [
-    ...d.scheduleScenarios.filter((s) => s.id !== id),
-    stamped,
-  ];
+  // A transfer closes the other open scenarios on the same projects, so none
+  // of them can shift those projects a second time; undoing it reopens them.
+  const bump = (other) =>
+    (d.revisions["scenario:" + other.id] =
+      (d.revisions["scenario:" + other.id] || 0) + 1);
+  const others = d.scheduleScenarios
+    .filter((s) => s.id !== id)
+    .map((other) => {
+      if (
+        next.status === "applied" &&
+        from !== "applied" &&
+        (other.status === "draft" || other.status === "approved") &&
+        overlaps(other, next)
+      ) {
+        bump(other);
+        return {
+          ...other,
+          status: "closed",
+          closedByScenarioId: id,
+          closedByName: next.name,
+          closedAt: now,
+        };
+      }
+      if (
+        next.status === "reverted" &&
+        from === "applied" &&
+        other.status === "closed" &&
+        other.closedByScenarioId === id
+      ) {
+        bump(other);
+        const {
+          closedByScenarioId,
+          closedByName,
+          closedAt,
+          approvedByName,
+          approvedAt,
+          ...reopened
+        } = other;
+        return { ...reopened, status: "draft" };
+      }
+      return other;
+    });
+  d.scheduleScenarios = [...others, stamped];
 }

@@ -15,6 +15,7 @@ type Props = {
   userId: string;
   busy: boolean;
   onAction: (action: SavedScenarioAction, scenario: SavedScenario) => void;
+  onDeleteClosed: () => void;
 };
 
 const day = (iso?: string) => (iso ? fullDateLabel(iso.slice(0, 10)) : "");
@@ -27,6 +28,7 @@ export default function SavedScenarioList({
   userId,
   busy,
   onAction,
+  onDeleteClosed,
 }: Props) {
   if (!scenarios.length) return null;
   const projectName = (id: string) =>
@@ -51,12 +53,26 @@ export default function SavedScenarioList({
   );
   return (
     <section className="saved-scenarios" aria-label="Kayıtlı senaryolar">
-      <h3>Kayıtlı Senaryolar</h3>
+      <div className="saved-scenarios-head">
+        <h3>Kayıtlı Senaryolar</h3>
+        {isAdmin && scenarios.some((s) => s.status === "closed") && (
+          <button
+            type="button"
+            className="textbutton"
+            disabled={busy}
+            onClick={onDeleteClosed}
+          >
+            Kapatılanları Sil
+          </button>
+        )}
+      </div>
       <ul>
         {sorted.map((s) => {
           const canDelete =
             s.status !== "applied" &&
-            (isAdmin || (s.createdBy === userId && s.status === "draft"));
+            (isAdmin ||
+              (s.createdBy === userId &&
+                (s.status === "draft" || s.status === "closed")));
           return (
             <li key={s.id} data-scenario-status={s.status}>
               <div className="saved-scenario-main">
@@ -80,6 +96,8 @@ export default function SavedScenarioList({
                     ` · Aktaran: ${s.appliedByName} · ${day(s.appliedAt)}`}
                   {s.revertedByName &&
                     ` · Geri alan: ${s.revertedByName} · ${day(s.revertedAt)}`}
+                  {s.status === "closed" &&
+                    ` · Yerine “${s.closedByName}” aktarıldı · ${day(s.closedAt)}`}
                 </small>
               </div>
               <div className="saved-scenario-actions">

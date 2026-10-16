@@ -223,7 +223,7 @@ export const scheduleScenarioSchema = z
       )
       .min(1)
       .max(50),
-    status: z.enum(["draft", "approved", "applied", "reverted"]),
+    status: z.enum(["draft", "approved", "applied", "reverted", "closed"]),
     createdBy: z.string().min(1).max(120),
     createdByName: z.string().max(200),
     createdAt: z.string().max(40),
@@ -233,6 +233,9 @@ export const scheduleScenarioSchema = z
     appliedAt: z.string().max(40).optional(),
     revertedByName: z.string().max(200).optional(),
     revertedAt: z.string().max(40).optional(),
+    closedByScenarioId: scenarioId.optional(),
+    closedByName: z.string().max(80).optional(),
+    closedAt: z.string().max(40).optional(),
     undo: z
       .object({
         projects: z.record(proj),

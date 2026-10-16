@@ -228,3 +228,146 @@ test("undo is refused once the shifted plan was edited after the transfer", () =
   };
   assert.throws(() => scenarioRevertPlan(renamed, plan.undo), /güvenli değil/);
 });
+
+test("transferring a scenario closes the others on its projects; undo reopens them", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "aa-scenario-close-"));
+  const env = {
+    NODE_ENV: "test",
+    DB_PROVIDER: "sqljs",
+    SQLJS_FILE: path.join(dir, "synthetic.sqlite"),
+  };
+  const store = new Store({ env });
+  try {
+    await store.connect();
+    await store.bootstrapUser({
+      _id: "root-admin",
+      username: "qa.admin",
+      name: "Admin",
+      role: "admin",
+      resourceId: "",
+      leaders: [],
+      active: true,
+      password: await hashPassword("Scenario-close-test-1!"),
+      version: 1,
+      revision: 1,
+    });
+    const admin = await store.findUser({ id: "root-admin" });
+    const team = (await store.read()).data.teams.find((t) => t.lead);
+    const project = (id) => ({
+      id,
+      name: "Proje " + id,
+      start: "2026-01",
+      end: "2026-12",
+      phases: {},
+      milestones: [],
+    });
+    await store.mutate(admin, (d, u) =>
+      applyChanges(d, u, [
+        { kind: "project", id: "p1", value: project("p1"), revision: 0 },
+        { kind: "project", id: "p2", value: project("p2"), revision: 0 },
+        {
+          kind: "allocation",
+          id: `${team.id}|p1|2026-10`,
+          value: 1,
+          revision: 0,
+        },
+      ]),
+    );
+    const draft = (id, projectId, months) => ({
+      ...scenario(projectId),
+      id,
+      name: "Senaryo " + id,
+      shifts: [{ projectId, months, fromMonth: "2026-10" }],
+    });
+    const write = (value, extra = []) =>
+      store.mutate(admin, (d, u) =>
+        applyChanges(d, u, [
+          ...extra,
+          {
+            kind: "scenario",
+            id: value.id,
+            value,
+            revision: d.revisions["scenario:" + value.id] || 0,
+          },
+        ]),
+      );
+    await write(draft("A", "p1", 3));
+    await write(draft("B", "p1", 5));
+    await write(draft("C", "p2", 2));
+    await write(draft("E", "p1", 1));
+    const byId = async (id) =>
+      (await store.read()).data.scheduleScenarios.find((s) => s.id === id);
+    await write({ ...(await byId("B")), status: "approved" });
+    await write({ ...(await byId("A")), status: "approved" });
+
+    // Transfer A: B (same project, even though approved) closes; C stays.
+    const a = await byId("A");
+    const plan = scenarioApplyPlan((await store.read()).data, a);
+    await write({ ...a, status: "applied", undo: plan.undo }, plan.changes);
+    const closed = await byId("B");
+    assert.equal(closed.status, "closed");
+    assert.equal(closed.closedByScenarioId, "A");
+    assert.equal(closed.closedByName, "Senaryo A");
+    assert.equal((await byId("C")).status, "draft");
+    // A closed scenario can neither be approved nor transferred.
+    await assert.rejects(
+      write({ ...closed, status: "approved" }),
+      /bu duruma geçirilemez/,
+    );
+    await assert.rejects(
+      write({ ...closed, status: "applied", undo: plan.undo }),
+      /bu duruma geçirilemez/,
+    );
+    // Clients cannot close scenarios themselves.
+    await assert.rejects(
+      write({ ...(await byId("C")), status: "closed" }),
+      /bu duruma geçirilemez/,
+    );
+
+    // A closed scenario can be deleted while it is closed.
+    assert.equal((await byId("E")).status, "closed");
+    await store.mutate(admin, (d, u) =>
+      applyChanges(d, u, [
+        {
+          kind: "scenario",
+          id: "E",
+          value: null,
+          operation: "delete",
+          revision: d.revisions["scenario:E"],
+        },
+      ]),
+    );
+    assert.equal(await byId("E"), undefined);
+
+    // Undo A: B returns to draft, without the old approval.
+    const applied = await byId("A");
+    await store.mutate(admin, (d, u) =>
+      applyChanges(d, u, [
+        ...scenarioRevertPlan(d, applied.undo),
+        {
+          kind: "scenario",
+          id: "A",
+          value: { ...applied, status: "reverted" },
+          revision: d.revisions["scenario:A"],
+        },
+      ]),
+    );
+    const reopened = await byId("B");
+    assert.equal(reopened.status, "draft");
+    assert.equal(reopened.closedByScenarioId, undefined);
+    assert.equal(reopened.approvedByName, undefined);
+
+    // A transfer on another project leaves B (on p1) open; scenarios
+    // created after a transfer are not affected by it.
+    await write({ ...(await byId("C")), status: "approved" });
+    const c = await byId("C");
+    const planC = scenarioApplyPlan((await store.read()).data, c);
+    await write({ ...c, status: "applied", undo: planC.undo }, planC.changes);
+    assert.equal((await byId("B")).status, "draft");
+    await write(draft("D", "p2", 4));
+    assert.equal((await byId("D")).status, "draft");
+  } finally {
+    await store.close();
+    await fs.rm(dir, { recursive: true, force: true });
+  }
+});

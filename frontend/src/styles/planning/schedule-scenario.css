@@ -458,3 +458,18 @@
   font-weight: 700;
   line-height: 1;
 }
+
+/* Closed scenarios: kept as a record, visibly out of play. */
+.saved-scenarios-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.saved-scenarios li[data-scenario-status="closed"] {
+  background: var(--brand-surface-soft, #f6f8f2);
+}
+.saved-scenarios li[data-scenario-status="closed"] .saved-scenario-main strong,
+.saved-scenarios li[data-scenario-status="closed"] .saved-scenario-shifts {
+  color: var(--brand-muted, #60715e);
+}

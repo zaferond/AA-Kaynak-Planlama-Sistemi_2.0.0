@@ -285,7 +285,23 @@ export async function checkScheduleScenarioApproval(f) {
           await dialog.getByLabel("Senaryo adı").first().inputValue(),
           "Senaryo B",
         );
-        const item = dialog.locator(".saved-scenarios li").first();
+        // A competing +5 scenario on the same project.
+        const card = dialog.locator(".schedule-scenario-card").first();
+        await card
+          .getByLabel("Proje", { exact: true })
+          .selectOption(project.id);
+        await card.getByLabel("Kaydırılacak ay", { exact: true }).fill("5");
+        await card.getByLabel("Senaryo B senaryosunu kaydet").click();
+        await dialog
+          .locator(".scenario-message")
+          .filter({ hasText: "Senaryo B" })
+          .waitFor();
+        // By the name in the row heading: a closed row names its successor.
+        const saved = (name) =>
+          dialog
+            .locator(".saved-scenarios li")
+            .filter({ has: page.getByText(name, { exact: true }) });
+        const item = saved("Senaryo A");
         await item.getByRole("button", { name: "Onayla" }).click();
         await item.getByRole("button", { name: "Takvime Aktar" }).click();
         await item.getByRole("button", { name: "Geri Al" }).waitFor();
@@ -301,6 +317,14 @@ export async function checkScheduleScenarioApproval(f) {
         assert.equal(moved.end, "2027-03");
         assert.equal(moved.phases["2027-01"], "Prototip");
         assert.match(await item.innerText(), /Aktaran: /);
+        // B is closed, cannot be approved or transferred, and says why.
+        const other = saved("Senaryo B");
+        assert.match(await other.innerText(), /Kapatıldı/);
+        assert.match(await other.innerText(), /Yerine “Senaryo A” aktarıldı/);
+        assert.equal(
+          await other.getByRole("button", { name: "Onayla" }).count(),
+          0,
+        );
         await item.getByRole("button", { name: "Geri Al" }).click();
         await dialog
           .locator(".scenario-message")
@@ -311,13 +335,21 @@ export async function checkScheduleScenarioApproval(f) {
           (p) => p.id === project.id,
         );
         assert.equal(restored.end, "2026-12");
-        assert.equal((await f.state()).scheduleScenarios[0].status, "reverted");
-        // A finished scenario can be deleted (the revision of the stored record).
-        await item.getByRole("button", { name: "Sil" }).click();
-        await dialog
-          .locator(".scenario-message")
-          .filter({ hasText: "silindi" })
-          .waitFor();
+        const statuses = Object.fromEntries(
+          (await f.state()).scheduleScenarios.map((s) => [s.name, s.status]),
+        );
+        assert.deepEqual(statuses, {
+          "Senaryo A": "reverted",
+          "Senaryo B": "draft",
+        });
+        // Finished and draft scenarios can be deleted.
+        for (const name of ["Senaryo A", "Senaryo B"]) {
+          await saved(name).getByRole("button", { name: "Sil" }).click();
+          await dialog
+            .locator(".scenario-message")
+            .filter({ hasText: "silindi" })
+            .waitFor();
+        }
         assert.equal((await f.state()).scheduleScenarios, undefined);
       },
     );

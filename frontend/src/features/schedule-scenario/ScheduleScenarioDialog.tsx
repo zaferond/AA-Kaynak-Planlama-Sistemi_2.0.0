@@ -89,10 +89,17 @@ export default function ScheduleScenarioDialog({
       setMessage({ text: (error as Error).message, error: true });
     }
   }
-  const dropCard = (id: string) =>
-    setScenarios((all) =>
-      all.length > 1 ? all.filter((s) => s.id !== id) : all,
-    );
+  // Cards of transferred or closed scenarios would compare against a plan
+  // that already holds the shift; take them off the comparison.
+  const dropCards = (ids: string[]) =>
+    setScenarios((all) => {
+      const rest = all.filter((s) => !ids.includes(s.id));
+      return rest.length
+        ? rest
+        : [newScenario(nextScenarioName(saved), currentMonth, 3)];
+    });
+  const overlaps = (a: ShiftScenario, b: ShiftScenario) =>
+    a.shifts.some((s) => b.shifts.some((t) => t.projectId === s.projectId));
   function saveCard(scenario: ShiftScenario) {
     const shifts = scenario.shifts.filter((s) => s.projectId && s.months);
     if (!shifts.length || !scenario.name.trim()) {
@@ -169,9 +176,19 @@ export default function ScheduleScenarioDialog({
       } catch (error) {
         return setMessage({ text: (error as Error).message, error: true });
       }
+      // The server closes these too; say so before the transfer.
+      const closing = saved.filter(
+        (s) =>
+          s.id !== item.id &&
+          (s.status === "draft" || s.status === "approved") &&
+          overlaps(s, item),
+      );
+      const closingNote = closing.length
+        ? `\n\nAynı projeleri içeren ${closing.map((s) => "“" + s.name + "”").join(", ")} kapatılacak; geri alınırsa yeniden taslak olur.`
+        : "";
       if (
         !confirm(
-          `“${item.name}” takvime aktarılsın mı?\n\n${plan.moved} planlanan kayıt taşınacak; proje dönemleri${item.includeTimeline ? ", aşamalar ve kilometre taşları" : ""} güncellenecek. Bu işlem kayıtları değiştirir. Gerekirse “Geri Al” ile önceki takvime dönülebilir.`,
+          `“${item.name}” takvime aktarılsın mı?\n\n${plan.moved} planlanan kayıt taşınacak; proje dönemleri${item.includeTimeline ? ", aşamalar ve kilometre taşları" : ""} güncellenecek. Bu işlem kayıtları değiştirir. Gerekirse “Geri Al” ile önceki takvime dönülebilir.${closingNote}`,
         )
       )
         return;
@@ -180,8 +197,9 @@ export default function ScheduleScenarioDialog({
           ...(plan.changes as Change[]),
           scenarioChange({ ...item, status: "applied", undo: plan.undo }),
         ],
-        `“${item.name}” takvime aktarıldı.`,
-        () => dropCard(item.id),
+        `“${item.name}” takvime aktarıldı.` +
+          (closing.length ? ` ${closing.length} senaryo kapatıldı.` : ""),
+        () => dropCards([item.id, ...closing.map((s) => s.id)]),
       );
     }
     if (action === "revert") {
@@ -203,8 +221,13 @@ export default function ScheduleScenarioDialog({
           ...(changes as Change[]),
           scenarioChange({ ...item, status: "reverted" }),
         ],
-        `“${item.name}” geri alındı; önceki takvim yüklendi.`,
-        () => dropCard(item.id),
+        `“${item.name}” geri alındı; önceki takvim yüklendi.` +
+          (saved.some(
+            (s) => s.status === "closed" && s.closedByScenarioId === item.id,
+          )
+            ? " Bu aktarma yüzünden kapatılan senaryolar yeniden taslak oldu."
+            : ""),
+        () => dropCards([item.id]),
       );
     }
   }
@@ -295,6 +318,24 @@ export default function ScheduleScenarioDialog({
             userId={userId}
             busy={saving}
             onAction={act}
+            onDeleteClosed={() => {
+              const closed = saved.filter((s) => s.status === "closed");
+              if (
+                !closed.length ||
+                !confirm(`${closed.length} kapatılmış senaryo silinsin mi?`)
+              )
+                return;
+              void run(
+                closed.map((s) => ({
+                  kind: "scenario",
+                  id: s.id,
+                  value: null,
+                  operation: "delete" as const,
+                  revision: data.revisions["scenario:" + s.id] || 0,
+                })),
+                `${closed.length} kapatılmış senaryo silindi.`,
+              );
+            }}
           />
         </div>
         <div className="schedule-scenario-actions">

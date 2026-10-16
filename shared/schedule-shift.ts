@@ -205,8 +205,11 @@ export function summarizeScenario(
   return { teamIds, shortage, shortageMonths, peak, remaining, index };
 }
 
-/** A saved scenario: draft → approved (admin) → applied (admin) → reverted. */
-export type ScenarioStatus = "draft" | "approved" | "applied" | "reverted";
+/** A saved scenario: draft → approved (admin) → applied (admin) → reverted.
+ * "closed": another scenario on the same projects was transferred; it returns
+ * to draft if that transfer is undone. */
+export type ScenarioStatus =
+  "draft" | "approved" | "applied" | "reverted" | "closed";
 export type ScenarioUndo = {
   /** The shifted projects and their planned entries before the transfer. */
   projects: Record<string, Project>;
@@ -227,6 +230,10 @@ export type SavedScenario = ShiftScenario & {
   appliedAt?: string;
   revertedByName?: string;
   revertedAt?: string;
+  /** Set by the server when another scenario on the same projects was transferred. */
+  closedByScenarioId?: string;
+  closedByName?: string;
+  closedAt?: string;
   undo?: ScenarioUndo;
 };
 export const SCENARIO_STATUS_LABELS: Record<ScenarioStatus, string> = {
@@ -234,6 +241,7 @@ export const SCENARIO_STATUS_LABELS: Record<ScenarioStatus, string> = {
   approved: "Onaylandı",
   applied: "Takvime aktarıldı",
   reverted: "Geri alındı",
+  closed: "Kapatıldı",
 };
 
 type PlanChange =

@@ -15,6 +15,10 @@ import {
   type ReportTopic,
 } from "./project-info-report";
 import { downloadProjectInfoReport } from "./project-info-report-export";
+import ProjectInfoTopicDialog, {
+  type TopicEdit,
+} from "./ProjectInfoTopicDialog";
+import TopicWeeks from "./ProjectInfoWeeks";
 import {
   TOPIC_FILTERS,
   filterReportGroups,
@@ -47,19 +51,7 @@ const dateLabel = (value: string) =>
   /^\d{4}-\d{2}-\d{2}$/.test(value)
     ? dateFormat.format(new Date(value + "T12:00:00"))
     : value;
-const monthEnd = (month: string) =>
-  new Date(Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0))
-    .toISOString()
-    .slice(0, 10);
-
-type Editing = {
-  projectId: string;
-  infoId: string;
-  topic: ReportTopic;
-  text: string;
-  start: string;
-  end: string;
-};
+type Editing = TopicEdit & { infoId: string };
 type Props = {
   projects: Project[];
   canEdit: boolean;
@@ -142,7 +134,7 @@ export default function ProjectInfoReport({
     setError("");
     try {
       await onSave(updateReportedTopic(project, infoId, topic, change));
-      setEditing(null);
+      if ("text" in change) setEditing(null);
     } catch (cause) {
       setError((cause as Error).message);
     } finally {
@@ -389,11 +381,6 @@ export default function ProjectInfoReport({
                       <ul>
                         {info.topics.map((topic) => {
                           const status = topicStatus(topic, today);
-                          const selected =
-                            editing?.projectId === project.id &&
-                            editing.infoId === info.id &&
-                            editing.topic.rangeIndex === topic.rangeIndex &&
-                            editing.topic.noteIndex === topic.noteIndex;
                           return (
                             <li
                               key={`${topic.rangeIndex}-${topic.noteIndex}`}
@@ -404,222 +391,106 @@ export default function ProjectInfoReport({
                             >
                               <div className="project-info-topic">
                                 <div className="project-info-topic-content">
-                                  {selected ? (
-                                    <div className="project-info-editor-fields">
-                                      <label>
-                                        Açıklama
-                                        <textarea
-                                          autoFocus
-                                          rows={3}
-                                          aria-label="Kritik detay konu açıklaması"
-                                          value={editing.text}
-                                          onChange={(event) => {
-                                            setEditing({
-                                              ...editing,
-                                              text: event.target.value,
-                                            });
-                                            setError("");
-                                          }}
-                                          onKeyDown={(event) => {
-                                            if (event.key === "Escape") {
-                                              setEditing(null);
-                                              setError("");
-                                            }
-                                          }}
-                                        />
-                                      </label>
-                                      <div className="project-info-editor-dates">
-                                        <label>
-                                          Başlangıç Tarihi
-                                          <input
-                                            type="date"
-                                            aria-label="Kritik detay konu başlangıç tarihi"
-                                            min={
-                                              source
-                                                ? source.start + "-01"
-                                                : undefined
-                                            }
-                                            max={source && monthEnd(source.end)}
-                                            value={editing.start}
-                                            onChange={(event) => {
-                                              setEditing({
-                                                ...editing,
-                                                start: event.target.value,
-                                              });
-                                              setError("");
-                                            }}
-                                          />
-                                        </label>
-                                        <label>
-                                          Bitiş Tarihi
-                                          <input
-                                            type="date"
-                                            aria-label="Kritik detay konu bitiş tarihi"
-                                            min={
-                                              source
-                                                ? source.start + "-01"
-                                                : undefined
-                                            }
-                                            max={source && monthEnd(source.end)}
-                                            value={editing.end}
-                                            onChange={(event) => {
-                                              setEditing({
-                                                ...editing,
-                                                end: event.target.value,
-                                              });
-                                              setError("");
-                                            }}
-                                          />
-                                        </label>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <>
-                                      <span>{topic.text}</span>
-                                      {/* Dates and their weeks sit under the text. */}
-                                      <div className="project-info-topic-meta">
-                                        <small>
-                                          {dateLabel(topic.start)} –{" "}
-                                          {dateLabel(topic.end)}
-                                        </small>
-                                        <TopicWeeks
-                                          weeks={topicWeeks(topic)}
-                                          thisWeek={thisWeek}
-                                          selected={weekKeys}
-                                        />
-                                      </div>
-                                    </>
-                                  )}
+                                  <span>{topic.text}</span>
+                                  {/* Dates and their weeks sit under the text. */}
+                                  <div className="project-info-topic-meta">
+                                    <small>
+                                      {dateLabel(topic.start)} –{" "}
+                                      {dateLabel(topic.end)}
+                                    </small>
+                                    <TopicWeeks
+                                      weeks={topicWeeks(topic)}
+                                      thisWeek={thisWeek}
+                                      selected={weekKeys}
+                                    />
+                                  </div>
                                 </div>
-                                {!selected &&
-                                  (topic.completed ||
-                                    status === "late" ||
-                                    status === "active") && (
-                                    <div className="project-info-topic-state">
-                                      {topic.completed ? (
-                                        <em className="project-info-complete-label">
-                                          Tamamlandı
-                                        </em>
-                                      ) : (
-                                        <em
-                                          className="project-info-status"
-                                          data-status={status}
-                                        >
-                                          {
-                                            STATUS_LABELS[
-                                              status as "late" | "active"
-                                            ]
-                                          }
-                                        </em>
-                                      )}
-                                    </div>
-                                  )}
-                                {canEdit && (
-                                  <div className="project-info-topic-actions">
-                                    {selected ? (
-                                      <>
-                                        <button
-                                          type="button"
-                                          disabled={busy}
-                                          onClick={() =>
-                                            void apply(
-                                              project.id,
-                                              info.id,
-                                              topic,
-                                              {
-                                                text: editing.text,
-                                                start: editing.start,
-                                                end: editing.end,
-                                              },
-                                            )
-                                          }
-                                        >
-                                          Kaydet
-                                        </button>
-                                        <button
-                                          type="button"
-                                          disabled={busy}
-                                          onClick={() => {
-                                            setEditing(null);
-                                            setError("");
-                                          }}
-                                        >
-                                          Vazgeç
-                                        </button>
-                                      </>
+                                {(topic.completed ||
+                                  status === "late" ||
+                                  status === "active") && (
+                                  <div className="project-info-topic-state">
+                                    {topic.completed ? (
+                                      <em className="project-info-complete-label">
+                                        Tamamlandı
+                                      </em>
                                     ) : (
-                                      <>
-                                        <button
-                                          type="button"
-                                          className="complete"
-                                          aria-pressed={!!topic.completed}
-                                          title={
-                                            topic.completed
-                                              ? "Tamamlandı işaretini kaldır"
-                                              : "Konuyu tamamlandı olarak işaretle"
-                                          }
-                                          disabled={busy}
-                                          onClick={() =>
-                                            void apply(
-                                              project.id,
-                                              info.id,
-                                              topic,
-                                              { completed: !topic.completed },
-                                            )
-                                          }
-                                        >
-                                          {!topic.completed && (
-                                            <Check size={12} />
-                                          )}{" "}
-                                          {topic.completed
-                                            ? "Geri Al"
-                                            : "Tamamlandı"}
-                                        </button>
-                                        <button
-                                          type="button"
-                                          disabled={busy}
-                                          onClick={() => {
-                                            setEditing({
-                                              projectId: project.id,
-                                              infoId: info.id,
-                                              topic,
-                                              text: topic.text,
-                                              start: topic.start,
-                                              end: topic.end,
-                                            });
-                                            setError("");
-                                          }}
-                                        >
-                                          Düzenle
-                                        </button>
-                                        <button
-                                          type="button"
-                                          className="remove"
-                                          disabled={busy}
-                                          onClick={() =>
-                                            void apply(
-                                              project.id,
-                                              info.id,
-                                              topic,
-                                              { includeInReport: false },
-                                            )
-                                          }
-                                        >
-                                          Rapordan Çıkar
-                                        </button>
-                                      </>
+                                      <em
+                                        className="project-info-status"
+                                        data-status={status}
+                                      >
+                                        {
+                                          STATUS_LABELS[
+                                            status as "late" | "active"
+                                          ]
+                                        }
+                                      </em>
                                     )}
                                   </div>
                                 )}
+                                {canEdit && (
+                                  <div className="project-info-topic-actions">
+                                    <>
+                                      <button
+                                        type="button"
+                                        className="complete"
+                                        aria-pressed={!!topic.completed}
+                                        title={
+                                          topic.completed
+                                            ? "Tamamlandı işaretini kaldır"
+                                            : "Konuyu tamamlandı olarak işaretle"
+                                        }
+                                        disabled={busy}
+                                        onClick={() =>
+                                          void apply(
+                                            project.id,
+                                            info.id,
+                                            topic,
+                                            { completed: !topic.completed },
+                                          )
+                                        }
+                                      >
+                                        {!topic.completed && (
+                                          <Check size={12} />
+                                        )}{" "}
+                                        {topic.completed
+                                          ? "Geri Al"
+                                          : "Tamamlandı"}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        disabled={busy || !source}
+                                        onClick={() => {
+                                          if (!source) return;
+                                          setEditing({
+                                            project: source,
+                                            infoId: info.id,
+                                            infoName: info.name,
+                                            topic,
+                                          });
+                                          setError("");
+                                        }}
+                                      >
+                                        Düzenle
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="remove"
+                                        disabled={busy}
+                                        onClick={() =>
+                                          void apply(
+                                            project.id,
+                                            info.id,
+                                            topic,
+                                            { includeInReport: false },
+                                          )
+                                        }
+                                      >
+                                        Rapordan Çıkar
+                                      </button>
+                                    </>
+                                  </div>
+                                )}
                               </div>
-                              {selected && error && (
-                                <p
-                                  role="alert"
-                                  className="project-info-inline-error"
-                                >
-                                  {error}
-                                </p>
-                              )}
                             </li>
                           );
                         })}
@@ -649,107 +520,20 @@ export default function ProjectInfoReport({
           )}
         </div>
       )}
+      <ProjectInfoTopicDialog
+        edit={editing}
+        today={today}
+        busy={busy}
+        error={error}
+        onClose={() => {
+          setEditing(null);
+          setError("");
+        }}
+        onSave={(change) =>
+          editing &&
+          void apply(editing.project.id, editing.infoId, editing.topic, change)
+        }
+      />
     </section>
-  );
-}
-
-/** Current ranges longer than this collapse to one "W01–W20" chip. */
-const COLLAPSE_CURRENT_WEEKS = 9;
-
-/** Consecutive weeks in the same state; only very long runs of current
- * weeks collapse. Cancelled weeks stay one red box each. */
-function weekRuns(weeks: TopicWeek[]) {
-  const runs: TopicWeek[][] = [];
-  for (const item of weeks) {
-    const last = runs.at(-1)?.at(-1);
-    if (
-      last &&
-      last.state === item.state &&
-      shiftWeek(last.week, 1).key === item.week.key
-    )
-      runs.at(-1)!.push(item);
-    else runs.push([item]);
-  }
-  return runs.flatMap((run) =>
-    run.length >= COLLAPSE_CURRENT_WEEKS && run[0].state === "current"
-      ? [run]
-      : run.map((w) => [w]),
-  );
-}
-
-function TopicWeeks({
-  weeks,
-  thisWeek,
-  selected,
-}: {
-  weeks: TopicWeek[];
-  thisWeek: IsoWeek;
-  selected: ReadonlySet<string>;
-}) {
-  if (!weeks.length) return null;
-  const year = thisWeek.year;
-  const current = weeks.filter((w) => w.state !== "cancelled");
-  const cancelled = weeks.filter((w) => w.state === "cancelled");
-  const notes: Record<WeekState, string> = {
-    current: "",
-    cancelled: " · tarih değişikliğiyle iptal edildi",
-  };
-  const chip = (run: TopicWeek[]) => {
-    const first = run[0].week,
-      last = run.at(-1)!.week,
-      state = run[0].state;
-    return (
-      <span
-        key={state + first.key}
-        className="project-info-week"
-        data-state={state}
-        data-current={
-          run.some(({ week }) => week.key === thisWeek.key) || undefined
-        }
-        data-selected={
-          run.some(({ week }) => selected.has(week.key)) || undefined
-        }
-        title={
-          (run.length > 1
-            ? `${weekDates(first)} … ${weekDates(last)}`
-            : weekDates(first)) + notes[state]
-        }
-      >
-        {run.length > 1
-          ? `${weekLabel(first, year)}–${weekLabel(last, year)} · ${run.length} hafta`
-          : weekLabel(first, year)}
-      </span>
-    );
-  };
-  return (
-    <>
-      {current.length > 0 && (
-        <span
-          className="project-info-weeks"
-          aria-label={
-            "Haftalar: " +
-            current
-              .map((w) => weekLabel(w.week, year) + notes[w.state])
-              .join(", ")
-          }
-        >
-          {weekRuns(current).map(chip)}
-        </span>
-      )}
-      {cancelled.length > 0 && (
-        <span
-          className="project-info-weeks project-info-weeks-cancelled"
-          aria-label={
-            "İptal edilen haftalar: " +
-            cancelled.map((w) => weekLabel(w.week, year)).join(", ")
-          }
-        >
-          <span className="project-info-weeks-caption" aria-hidden="true">
-            İptal edilen:
-          </span>
-          {cancelled.map((week) => chip([week]))}
-        </span>
-      )}
-    </>
   );
 }

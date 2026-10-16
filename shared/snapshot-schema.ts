@@ -48,6 +48,10 @@ const milestoneNote = z.object({
   completed: z.boolean().optional(),
   start: day.optional(),
   end: day.optional(),
+  weekHistory: z
+    .array(z.string().regex(/^\d{4}-W\d{2}$/))
+    .max(520)
+    .optional(),
 });
 const milestone = z.object({
   id: z.string().regex(/^[a-zA-Z0-9_-]{1,120}$/),

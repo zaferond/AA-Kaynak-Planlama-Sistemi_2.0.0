@@ -16,6 +16,8 @@ export type ReportTopic = {
   rangeIndex: number;
   noteIndex: number;
   completed?: boolean;
+  /** Weeks covered under earlier dates (see note-week-history). */
+  weekHistory?: string[];
 };
 export type ReportInfo = { id: string; name: string; topics: ReportTopic[] };
 export type ReportProject = {
@@ -48,6 +50,9 @@ export function buildProjectInfoReport(projects: Project[]): ReportProject[] {
                         rangeIndex,
                         noteIndex,
                         ...(note.completed ? { completed: true } : {}),
+                        ...(note.weekHistory?.length
+                          ? { weekHistory: note.weekHistory }
+                          : {}),
                       },
                     ]
                   : [],

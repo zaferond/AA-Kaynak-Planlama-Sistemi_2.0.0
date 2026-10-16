@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Pencil,
   Plus,
+  X,
 } from "lucide-react";
 import type { Project } from "./model";
 import {
@@ -20,20 +21,20 @@ import {
   reportWeeks,
   topicFilterCounts,
   topicStatus,
+  topicWeeks,
   type TopicFilter,
+  type TopicWeek,
+  type WeekState,
 } from "./project-info-status";
 import { currentPlanningDate } from "./resource-dates";
 import {
   isoWeek,
   shiftWeek,
   weekDates,
+  weekFromKey,
   weekLabel,
-  weeksInRange,
   type IsoWeek,
 } from "./iso-week";
-
-/** Long ranges collapse to "W33–W52" instead of a row of chips. */
-const MAX_WEEK_CHIPS = 5;
 
 const STATUS_LABELS = { late: "Gecikti", active: "Sürüyor" } as const;
 
@@ -82,7 +83,9 @@ export default function ProjectInfoReport({
   const [filter, setFilter] = useState<TopicFilter>("all");
   const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
   const groups = useMemo(() => buildProjectInfoReport(projects), [projects]);
-  const [weekKey, setWeekKey] = useState<string | null>(null);
+  const [weekKeys, setWeekKeys] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
   const today = currentPlanningDate();
   const thisWeek = isoWeek(today);
   const weeks = useMemo(() => reportWeeks(groups), [groups]);
@@ -93,33 +96,20 @@ export default function ProjectInfoReport({
   ];
   const weekCount = (week: IsoWeek) =>
     weeks.find((entry) => entry.week.key === week.key)?.count || 0;
-  const selectedWeek =
-    weekKey === null
-      ? null
-      : (quickWeeks.find(([, week]) => week.key === weekKey)?.[1] ??
-        weeks.find((entry) => entry.week.key === weekKey)?.week ??
-        null);
-  const counts = topicFilterCounts(groups, today, selectedWeek);
-  const visibleGroups = filterReportGroups(groups, filter, today, selectedWeek);
-  const weekChip = (
-    week: IsoWeek,
-    text = weekLabel(week, thisWeek.year),
-    span: IsoWeek[] = [week],
-  ) => (
-    <span
-      key={week.key}
-      className="project-info-week"
-      data-current={span.some((w) => w.key === thisWeek.key) || undefined}
-      data-selected={span.some((w) => w.key === selectedWeek?.key) || undefined}
-      title={
-        span.length > 1
-          ? `${weekDates(span[0])} … ${weekDates(span.at(-1)!)}`
-          : weekDates(week)
-      }
-    >
-      {text}
-    </span>
-  );
+  const toggleWeek = (key: string) =>
+    setWeekKeys((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  // Weeks picked from the list (not the quick buttons) show as removable chips.
+  const otherSelected = [...weekKeys]
+    .filter((key) => !quickWeeks.some(([, week]) => week.key === key))
+    .sort()
+    .flatMap((key) => weekFromKey(key) || []);
+  const counts = topicFilterCounts(groups, today, weekKeys);
+  const visibleGroups = filterReportGroups(groups, filter, today, weekKeys);
   const toggleProject = (id: string, open?: boolean) =>
     setCollapsed((current) => {
       const next = new Set(current);
@@ -257,8 +247,8 @@ export default function ProjectInfoReport({
             <span className="project-info-weekbar-label">Hafta</span>
             <button
               type="button"
-              aria-pressed={weekKey === null}
-              onClick={() => setWeekKey(null)}
+              aria-pressed={weekKeys.size === 0}
+              onClick={() => setWeekKeys(new Set())}
             >
               Tümü
             </button>
@@ -266,35 +256,44 @@ export default function ProjectInfoReport({
               <button
                 key={week.key}
                 type="button"
-                aria-pressed={weekKey === week.key}
+                aria-pressed={weekKeys.has(week.key)}
                 title={weekDates(week)}
-                onClick={() => setWeekKey(week.key)}
+                onClick={() => toggleWeek(week.key)}
               >
                 {label} · {weekLabel(week, thisWeek.year)}{" "}
                 <span>{weekCount(week)}</span>
               </button>
             ))}
+            {otherSelected.map((week) => (
+              <button
+                key={week.key}
+                type="button"
+                aria-pressed="true"
+                className="project-info-week-remove"
+                title={weekDates(week) + " · süzgeçten çıkar"}
+                onClick={() => toggleWeek(week.key)}
+              >
+                {weekLabel(week, thisWeek.year)} <span>{weekCount(week)}</span>
+                <X size={12} aria-hidden="true" />
+              </button>
+            ))}
             <select
-              aria-label="Diğer hafta"
-              value={
-                weekKey && !quickWeeks.some(([, week]) => week.key === weekKey)
-                  ? weekKey
-                  : ""
-              }
-              onChange={(event) => setWeekKey(event.target.value || null)}
+              aria-label="Hafta ekle"
+              value=""
+              onChange={(event) => {
+                if (event.target.value) toggleWeek(event.target.value);
+              }}
             >
-              <option value="">Diğer hafta…</option>
-              {weeks.map(({ week, count }) => (
-                <option key={week.key} value={week.key}>
-                  {weekLabel(week, thisWeek.year)} · {weekDates(week)} ({count})
-                </option>
-              ))}
+              <option value="">Hafta ekle…</option>
+              {weeks
+                .filter(({ week }) => !weekKeys.has(week.key))
+                .map(({ week, count }) => (
+                  <option key={week.key} value={week.key}>
+                    {weekLabel(week, thisWeek.year)} · {weekDates(week)} (
+                    {count})
+                  </option>
+                ))}
             </select>
-            {selectedWeek && (
-              <span className="project-info-weekbar-range">
-                {weekDates(selectedWeek)}
-              </span>
-            )}
           </div>
         </div>
       )}
@@ -482,12 +481,9 @@ export default function ProjectInfoReport({
                                         {dateLabel(topic.end)}
                                       </small>
                                       <TopicWeeks
-                                        weeks={weeksInRange(
-                                          topic.start,
-                                          topic.end,
-                                        )}
-                                        chip={weekChip}
-                                        year={thisWeek.year}
+                                        weeks={topicWeeks(topic, today)}
+                                        thisWeek={thisWeek}
+                                        selected={weekKeys}
                                       />
                                       {topic.completed && (
                                         <em className="project-info-complete-label">
@@ -645,30 +641,81 @@ export default function ProjectInfoReport({
   );
 }
 
+const WEEK_STATE_NOTES: Record<WeekState, string> = {
+  current: "",
+  history: " · önceki tarih planı",
+  missed: " · kapatılmadan geçti",
+};
+
+/** Consecutive weeks in the same state; runs of three or more become one
+ * "W33–W40" chip so long ranges stay on one line. */
+function weekRuns(weeks: TopicWeek[]) {
+  const runs: TopicWeek[][] = [];
+  for (const item of weeks) {
+    const run = runs.at(-1);
+    const last = run?.at(-1);
+    if (
+      run &&
+      last &&
+      last.state === item.state &&
+      shiftWeek(last.week, 1).key === item.week.key
+    )
+      run.push(item);
+    else runs.push([item]);
+  }
+  return runs.flatMap((run) => (run.length >= 3 ? [run] : run.map((w) => [w])));
+}
+
 function TopicWeeks({
   weeks,
-  chip,
-  year,
+  thisWeek,
+  selected,
 }: {
-  weeks: IsoWeek[];
-  chip: (week: IsoWeek, text?: string, span?: IsoWeek[]) => React.ReactNode;
-  year: number;
+  weeks: TopicWeek[];
+  thisWeek: IsoWeek;
+  selected: ReadonlySet<string>;
 }) {
   if (!weeks.length) return null;
+  const year = thisWeek.year;
   return (
     <span
       className="project-info-weeks"
       aria-label={
-        "Haftalar: " + weeks.map((w) => weekLabel(w, year)).join(", ")
+        "Haftalar: " +
+        weeks
+          .map(
+            ({ week, state }) =>
+              weekLabel(week, year) + WEEK_STATE_NOTES[state],
+          )
+          .join(", ")
       }
     >
-      {weeks.length <= MAX_WEEK_CHIPS
-        ? weeks.map((week) => chip(week))
-        : chip(
-            weeks[0],
-            `${weekLabel(weeks[0], year)}–${weekLabel(weeks.at(-1)!, year)} · ${weeks.length} hafta`,
-            weeks,
-          )}
+      {weekRuns(weeks).map((run) => {
+        const first = run[0].week,
+          last = run.at(-1)!.week;
+        return (
+          <span
+            key={first.key}
+            className="project-info-week"
+            data-state={run[0].state}
+            data-current={
+              run.some(({ week }) => week.key === thisWeek.key) || undefined
+            }
+            data-selected={
+              run.some(({ week }) => selected.has(week.key)) || undefined
+            }
+            title={
+              (run.length > 1
+                ? `${weekDates(first)} … ${weekDates(last)}`
+                : weekDates(first)) + WEEK_STATE_NOTES[run[0].state]
+            }
+          >
+            {run.length > 1
+              ? `${weekLabel(first, year)}–${weekLabel(last, year)} · ${run.length} hafta`
+              : weekLabel(first, year)}
+          </span>
+        );
+      })}
     </span>
   );
 }

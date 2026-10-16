@@ -274,10 +274,15 @@
 
 /* Week chips on each topic: the current week is outlined, the filtered
    week is filled. */
-.app.tab-critical .project-info-weeks {
+/* The week group is a direct span of the topic row: keep it out of the
+   text's flex sizing and the completed strike-through. */
+.app.tab-critical .project-info-topic-content > .project-info-weeks {
   display: inline-flex;
+  flex: none;
   gap: 3px;
   flex-wrap: wrap;
+  width: auto;
+  text-decoration: none;
 }
 .app.tab-critical .project-info-week {
   padding: 1px 5px;
@@ -298,6 +303,27 @@
   border-color: #2f6f8f;
   background: #2f6f8f;
   color: #fff;
+}
+/* A week that ended while the topic was open, including weeks it slipped
+   from: red. A week from earlier dates that has not ended yet: dashed. */
+.app.tab-critical .project-info-week[data-state="missed"] {
+  border-color: #e5a59d;
+  background: #fdecea;
+  color: #b42318;
+}
+.app.tab-critical .project-info-week[data-state="missed"][data-selected] {
+  border-color: #b42318;
+  background: #b42318;
+  color: #fff;
+}
+.app.tab-critical .project-info-week[data-state="history"] {
+  border-style: dashed;
+  border-color: #9aa9b5;
+  background: #fff;
+  color: #5d6d79;
+}
+.app.tab-critical .project-info-weekbar .project-info-week-remove svg {
+  margin-left: 1px;
 }
 @media (max-width: 700px) {
   .app.tab-critical .project-info-collapse-all {

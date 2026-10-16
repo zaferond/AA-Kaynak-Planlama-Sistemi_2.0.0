@@ -23,6 +23,9 @@ export type MilestoneNote = {
   completed?: boolean;
   start?: string;
   end?: string;
+  /** ISO weeks ("2026-W45") the note covered under earlier dates; kept by
+   * the server when dates change so slipped weeks stay visible. */
+  weekHistory?: string[];
 };
 export type MilestoneRange = {
   displayKind?: "range" | "milestone";

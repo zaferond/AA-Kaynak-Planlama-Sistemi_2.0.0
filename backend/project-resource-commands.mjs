@@ -1,4 +1,5 @@
 import { entityCollections } from "../shared/entity-kinds.ts";
+import { withWeekHistory } from "../shared/note-week-history.ts";
 import { fail } from "./auth.mjs";
 
 // Preconditions: the batch parser accepted project/resource kind and the
@@ -70,6 +71,11 @@ export function stageProjectResourceChange(d, { kind, id, value, operation }) {
             ) + 1,
         };
     }
+    if (kind === "project")
+      nextValue = withWeekHistory(
+        d.projects.find((p) => p.id === id),
+        nextValue,
+      );
     d[c] = [...d[c].filter((x) => x.id !== id), nextValue];
   }
 }

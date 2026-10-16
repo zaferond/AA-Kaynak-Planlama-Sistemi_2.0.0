@@ -75,11 +75,14 @@ test("critical topics filter by the weeks their dates touch", () => {
       groups,
       "all",
       "2026-10-16",
-      week,
+      new Set([week.key]),
     )[0].infos[0].topics.map((t) => t.text);
   assert.deepEqual(names(w33), ["a"]);
   assert.deepEqual(names(w34), ["a", "b"]);
-  assert.equal(topicFilterCounts(groups, "2026-10-16", w34).all, 2);
+  assert.equal(
+    topicFilterCounts(groups, "2026-10-16", new Set([w34.key])).all,
+    2,
+  );
   assert.deepEqual(
     reportWeeks(groups).map(({ week, count }) => [week.week, count]),
     [

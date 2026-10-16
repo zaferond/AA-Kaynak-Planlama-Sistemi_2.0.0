@@ -11,7 +11,18 @@ import {
   employeeSearchField,
 } from "./access/employee-account-rows";
 import { useFilterAppliedToast } from "./workspace/useFilterAppliedToast";
-import type { Dispatch, SetStateAction } from "react";
+import EmployeeColumnChooser from "./access/EmployeeColumnChooser";
+import {
+  useEmployeeColumns,
+  visibleEmployeeColumns,
+  type EmployeeColumnId,
+} from "./access/employee-columns";
+import {
+  Fragment,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from "react";
 import { Info, Pencil, Plus, Trash2 } from "lucide-react";
 import {
   Table,
@@ -28,6 +39,7 @@ import Pager from "../Pager";
 import ResourceImportPanel from "../ResourceImportPanel";
 
 type Props = {
+  userId: string | undefined;
   access: AccessControls;
   data: Data;
   start: string;
@@ -47,6 +59,7 @@ type Props = {
   onImported: (data: Data, message: string) => void;
 };
 export default function ResourcesPanel({
+  userId,
   access,
   data,
   start,
@@ -66,6 +79,8 @@ export default function ResourcesPanel({
   onImported,
 }: Props) {
   const { notify, toast } = useFilterAppliedToast();
+  const columnPrefs = useEmployeeColumns(userId);
+  const columns = visibleEmployeeColumns(columnPrefs.hidden);
   const rows = employeeAccountRows(data, {
     start,
     ids: data.teams.map((team) => team.id),
@@ -182,6 +197,11 @@ export default function ResourcesPanel({
         <button className="textbutton" onClick={() => setResourceIds([])}>
           Seçimi Temizle
         </button>
+        <EmployeeColumnChooser
+          hidden={columnPrefs.hidden}
+          onToggle={columnPrefs.toggle}
+          onReset={columnPrefs.reset}
+        />
       </div>
       {(access.notice || notice) && (
         <p className="access-notice employee-access-message" role="status">
@@ -196,31 +216,16 @@ export default function ResourcesPanel({
       <div className="employee-access-table-wrap accesstable">
         <Table className="resource-table employee-access-table">
           <colgroup>
-            {[3, 10, 10, 10, 7, 5, 6, 6, 8, 7, 6, 8, 9, 5].map(
-              (width, index) => (
-                <col key={index} style={{ width: width + "%" }} />
-              ),
-            )}
+            {columns.map((column) => (
+              <col key={column.id} style={{ width: column.percent + "%" }} />
+            ))}
           </colgroup>
           <TableHeader>
             <TableRow>
-              {[
-                "Seç",
-                "Ad Soyad",
-                "Liderlik",
-                "Takım",
-                "Statü",
-                "Kaynak Planına Dahil",
-                "İşbaşı Tarihi",
-                "İşten Ayrılış Tarihi",
-                "Hesap",
-                "E-posta Adresi",
-                "Rol / Yetki",
-                "Yetki Kapsamı",
-                "Açıklama",
-                "İşlemler",
-              ].map((h) => (
-                <TableHead key={h}>{h}</TableHead>
+              {columns.map((column) => (
+                <TableHead key={column.id} data-column={column.id}>
+                  {column.label}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -233,22 +238,8 @@ export default function ResourcesPanel({
               .map(({ key, resource: r, account }) => {
                 const v = r && (versionAt(r, start) || r.versions[0]);
                 const root = account?.id === ROOT_ADMIN_ID;
-                return (
-                  <TableRow
-                    key={key}
-                    data-resource-id={r?.id}
-                    data-account-id={account?.id}
-                    className={
-                      (root
-                        ? "system-account-row "
-                        : !r
-                          ? "account-only-row "
-                          : "") +
-                      (account && account.id === access.selectedId
-                        ? "access-selected-row"
-                        : "")
-                    }
-                  >
+                const cells: Record<EmployeeColumnId, ReactNode> = {
+                  select: (
                     <TableCell>
                       {r ? (
                         <input
@@ -267,6 +258,8 @@ export default function ResourcesPanel({
                         <span aria-label="Kaynak kaydı olmayan hesap">—</span>
                       )}
                     </TableCell>
+                  ),
+                  name: (
                     <TableCell>
                       <strong>{r?.name || account?.name}</strong>
                       {root ? (
@@ -288,6 +281,8 @@ export default function ResourcesPanel({
                         </small>
                       )}
                     </TableCell>
+                  ),
+                  leadership: (
                     <TableCell className="resourceteam">
                       {v
                         ? v.lead ||
@@ -295,12 +290,16 @@ export default function ResourcesPanel({
                           "Eşleştirilmemiş"
                         : "—"}
                     </TableCell>
+                  ),
+                  team: (
                     <TableCell className="resourceteam">
                       {v
                         ? data.teams.find((t) => t.id === v.team)?.name ||
                           "Takım ataması bekliyor"
                         : "—"}
                     </TableCell>
+                  ),
+                  status: (
                     <TableCell>
                       {v ? (
                         <span
@@ -313,11 +312,17 @@ export default function ResourcesPanel({
                         "—"
                       )}
                     </TableCell>
+                  ),
+                  included: (
                     <TableCell>
                       {v ? (v.included ? "Evet" : "Hayır") : "—"}
                     </TableCell>
+                  ),
+                  start: (
                     <TableCell>{v ? fullDateLabel(v.start) : "—"}</TableCell>
-                    <TableCell>{v ? fullDateLabel(v.end) : "—"}</TableCell>
+                  ),
+                  end: <TableCell>{v ? fullDateLabel(v.end) : "—"}</TableCell>,
+                  account: (
                     <TableCell>
                       {account ? (
                         <>
@@ -332,9 +337,13 @@ export default function ResourcesPanel({
                         <span className="account-missing">Hesap yok</span>
                       )}
                     </TableCell>
+                  ),
+                  email: (
                     <TableCell className="account-email">
                       {account?.email || "—"}
                     </TableCell>
+                  ),
+                  role: (
                     <TableCell>
                       {account ? (
                         <>
@@ -356,12 +365,18 @@ export default function ResourcesPanel({
                         "—"
                       )}
                     </TableCell>
+                  ),
+                  scope: (
                     <TableCell className="account-scope">
                       {account ? planningGrantSummary(data, account) : "—"}
                     </TableCell>
+                  ),
+                  note: (
                     <TableCell className="resource-description">
                       {r?.note || "—"}
                     </TableCell>
+                  ),
+                  actions: (
                     <TableCell>
                       <div className="employee-row-actions">
                         {r && (
@@ -407,6 +422,27 @@ export default function ResourcesPanel({
                         )}
                       </div>
                     </TableCell>
+                  ),
+                };
+                return (
+                  <TableRow
+                    key={key}
+                    data-resource-id={r?.id}
+                    data-account-id={account?.id}
+                    className={
+                      (root
+                        ? "system-account-row "
+                        : !r
+                          ? "account-only-row "
+                          : "") +
+                      (account && account.id === access.selectedId
+                        ? "access-selected-row"
+                        : "")
+                    }
+                  >
+                    {columns.map((column) => (
+                      <Fragment key={column.id}>{cells[column.id]}</Fragment>
+                    ))}
                   </TableRow>
                 );
               })}

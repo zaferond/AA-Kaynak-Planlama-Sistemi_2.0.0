@@ -877,6 +877,7 @@ export default function Portal() {
                       >
                         {(access) => (
                           <ResourcesPanel
+                            userId={user?.id}
                             access={access}
                             data={data}
                             start={start}

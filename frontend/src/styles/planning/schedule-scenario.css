@@ -1,9 +1,11 @@
 /* Erteleme Senaryosu: fixed-size dialog; the body scrolls, actions stay. */
 .editor.schedule-scenario-dialog[data-slot="dialog-content"] {
-  width: min(1240px, calc(100vw - 32px)) !important;
-  max-width: min(1240px, calc(100vw - 32px)) !important;
-  height: min(880px, calc(100dvh - 48px));
-  max-height: calc(100dvh - 48px);
+  /* Nearly the whole window: the comparison tables need the room. The page
+     is drawn at --app-page-scale, so divide to fill the real window. */
+  width: calc((100vw - 32px) / var(--app-page-scale, 1)) !important;
+  max-width: calc((100vw - 32px) / var(--app-page-scale, 1)) !important;
+  height: calc((100dvh - 32px) / var(--app-page-scale, 1));
+  max-height: calc((100dvh - 32px) / var(--app-page-scale, 1));
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
@@ -413,4 +415,30 @@
 }
 .schedule-scenario-actions .negative {
   margin: 0;
+}
+
+/* Leadership and team impact tables, one under the other. */
+.schedule-impact-block {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.schedule-impact-block h4 {
+  margin: 4px 0 0;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.schedule-impact-table tr[data-depth] th {
+  font-weight: 500;
+}
+.schedule-impact-branch {
+  display: inline-block;
+}
+.schedule-scenario-dialog .schedule-impact-table .schedule-impact-total th,
+.schedule-scenario-dialog .schedule-impact-table .schedule-impact-total td {
+  border-top: 2px solid var(--brand-primary, #405341);
+  font-weight: 700;
 }

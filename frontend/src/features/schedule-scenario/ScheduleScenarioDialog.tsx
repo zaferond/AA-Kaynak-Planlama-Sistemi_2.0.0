@@ -30,8 +30,10 @@ import SavedScenarioList, {
 } from "./SavedScenarioList";
 import {
   compareScenarios,
+  groupRemaining,
   newScenario,
   nextScenarioName,
+  type ComparisonColumn,
   type ScenarioComparison,
 } from "./scenario-comparison";
 import { downloadScenarioWorkbook } from "./scenario-export";
@@ -71,11 +73,11 @@ export default function ScheduleScenarioDialog({
   const [message, setMessage] = useState<{ text: string; error?: boolean }>();
   const saved = data.scheduleScenarios || [];
   const savedOf = (id: string) => saved.find((item) => item.id === id);
-  const scenarioChange = (value: SavedScenario | null): Change => ({
+  const scenarioChange = (value: SavedScenario): Change => ({
     kind: "scenario",
-    id: value?.id || "",
+    id: value.id,
     value,
-    revision: data.revisions["scenario:" + (value?.id || "")] || 0,
+    revision: data.revisions["scenario:" + value.id] || 0,
   });
   async function run(changes: Change[], done: string, after?: () => void) {
     setMessage(undefined);
@@ -113,11 +115,7 @@ export default function ScheduleScenarioDialog({
       includeTimeline: scenario.includeTimeline,
       shifts,
     };
-    const { id: changeId } = value;
-    void run(
-      [{ ...scenarioChange(value), id: changeId }],
-      `“${value.name}” kaydedildi.`,
-    );
+    void run([scenarioChange(value)], `“${value.name}” kaydedildi.`);
   }
   function act(action: SavedScenarioAction, item: SavedScenario) {
     if (action === "compare") {
@@ -151,7 +149,16 @@ export default function ScheduleScenarioDialog({
     if (action === "delete") {
       if (!confirm(`“${item.name}” senaryosu silinsin mi?`)) return;
       return void run(
-        [{ ...scenarioChange(null), id: item.id, operation: "delete" }],
+        [
+          {
+            kind: "scenario",
+            id: item.id,
+            value: null,
+            operation: "delete",
+            // The stored record's revision, as for any other change.
+            revision: data.revisions["scenario:" + item.id] || 0,
+          },
+        ],
         `“${item.name}” silindi.`,
       );
     }
@@ -632,7 +639,7 @@ function ComparisonView({
         </tbody>
       </table>
       <div className="schedule-impact-head">
-        <h3>Takım bazında kalan kaynak</h3>
+        <h3>Senaryo etkisi · kalan kaynak</h3>
         {columns.length > 2 && (
           <div role="group" aria-label="Gösterilen senaryo">
             {columns.slice(1).map((column, i) => (
@@ -653,24 +660,103 @@ function ComparisonView({
           iyileşen · değer: senaryodaki kalan (eksi = açık)
         </span>
       </div>
+      <ImpactTable
+        title="Liderlik bazında"
+        firstHeader="Liderlik / Birim"
+        rows={comparison.leaderRows.map((row) => ({
+          key: "leader:" + (row.leader || row.unitId || row.name),
+          label: row.name,
+          depth: row.depth || 0,
+          ids: row.ids,
+        }))}
+        months={months}
+        base={base}
+        scenario={scenario}
+        total
+      />
+      <ImpactTable
+        title="Takım bazında"
+        firstHeader="Takım"
+        rows={teams.map((team) => ({
+          key: team,
+          label: teamName(team),
+          depth: 0,
+          ids: [team],
+        }))}
+        months={months}
+        base={base}
+        scenario={scenario}
+      />
+    </section>
+  );
+}
+
+type ImpactRow = { key: string; label: string; depth: number; ids: string[] };
+
+/** Remaining capacity per row and month in the shown scenario; cells that
+ * differ from the current plan are tinted, the tooltip gives both values. */
+function ImpactTable({
+  title,
+  firstHeader,
+  rows,
+  months,
+  base,
+  scenario,
+  total = false,
+}: {
+  title: string;
+  firstHeader: string;
+  rows: ImpactRow[];
+  months: string[];
+  base: ComparisonColumn;
+  scenario: ComparisonColumn;
+  /** Add a total row over the top-level rows (sub-rows are breakdowns). */
+  total?: boolean;
+}) {
+  const totalIds = [
+    ...new Set(rows.filter((row) => !row.depth).flatMap((row) => row.ids)),
+  ];
+  const all = total
+    ? [
+        ...rows,
+        { key: "total", label: "Toplam", depth: 0, ids: totalIds, sum: true },
+      ]
+    : rows;
+  return (
+    <div className="schedule-impact-block">
+      <h4>{title}</h4>
       <div className="schedule-impact-wrap">
         <table className="schedule-impact-table">
           <thead>
             <tr>
-              <th>Takım</th>
+              <th>{firstHeader}</th>
               {months.map((month) => (
                 <th key={month}>{monthLabel(month)}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {teams.map((team) => (
-              <tr key={team}>
-                <th>{teamName(team)}</th>
+            {all.map((row) => (
+              <tr
+                key={row.key}
+                className={"sum" in row ? "schedule-impact-total" : undefined}
+                data-depth={row.depth || undefined}
+              >
+                <th>
+                  {row.depth ? (
+                    <span
+                      className="schedule-impact-branch"
+                      style={{ paddingLeft: row.depth * 14 }}
+                    >
+                      ↳ {row.label}
+                    </span>
+                  ) : (
+                    row.label
+                  )}
+                </th>
                 {months.map((month) => {
-                  const k = team + "|" + month;
-                  const now = base.summary.remaining[k] ?? 0;
-                  const next = scenario.summary.remaining[k] ?? 0;
+                  const now = groupRemaining(base, row.ids, month);
+                  const next = groupRemaining(scenario, row.ids, month);
                   const changed = Math.abs(next - now) > 1e-9;
                   return (
                     <td
@@ -698,6 +784,6 @@ function ComparisonView({
           </tbody>
         </table>
       </div>
-    </section>
+    </div>
   );
 }

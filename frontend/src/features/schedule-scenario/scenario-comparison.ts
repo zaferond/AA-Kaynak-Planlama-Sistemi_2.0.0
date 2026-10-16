@@ -1,5 +1,14 @@
 import { monthsFrom, type Data, type Project } from "../../model";
 import {
+  orderedPlanningUnits,
+  leadershipScopedUnits,
+} from "../../../../shared/leadership-planning.ts";
+import {
+  expandLeadershipReportGroups,
+  topLevelReportGroups,
+  type ReportGroup,
+} from "../resource-report-groups";
+import {
   affectedTeams,
   applyScenario,
   summarizeScenario,
@@ -45,8 +54,26 @@ export type ScenarioComparison = {
   columns: ComparisonColumn[];
   months: string[];
   teams: string[];
+  /** Leadership rows (as in Liderlik Bazında Eksik Raporu) holding an affected team. */
+  leaderRows: ReportGroup[];
   projects: Project[];
 };
+
+/** Leadership rows built like the resource report, over all units (not the
+ * workspace filters), limited to those that contain an affected team. */
+function leadershipRows(data: Data, affected: string[]) {
+  const scoped = leadershipScopedUnits(data, data.teams, []);
+  const units = data.leadershipUnits
+    ? orderedPlanningUnits(data, scoped)
+    : scoped;
+  const rows = expandLeadershipReportGroups(
+    data,
+    units,
+    topLevelReportGroups(data, units),
+  );
+  const touched = new Set(affected);
+  return rows.filter((row) => row.ids.some((id) => touched.has(id)));
+}
 
 const usable = (scenario: ShiftScenario) =>
   scenario.shifts.some((s) => s.projectId && s.months);
@@ -85,6 +112,7 @@ export function compareScenarios(
       columns: [],
       months: [],
       teams: [],
+      leaderRows: [],
       projects: [],
     };
 
@@ -130,6 +158,21 @@ export function compareScenarios(
     columns,
     months,
     teams,
+    leaderRows: leadershipRows(data, teams),
     projects: data.projects.filter((p) => projectIds.includes(p.id)),
   };
+}
+
+/** Active − planned for a group of units in one month of a column. */
+export function groupRemaining(
+  column: ComparisonColumn,
+  ids: string[],
+  month: string,
+) {
+  let left = 0;
+  for (const id of ids) {
+    const cell = column.summary.index[id + "|" + month];
+    if (cell) left += cell.current - cell.total;
+  }
+  return left;
 }

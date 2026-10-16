@@ -160,6 +160,8 @@ export type ScenarioSummary = {
   peak: { month: string; value: number } | null;
   /** Active − planned per `team|month`, for affected units. */
   remaining: Record<string, number>;
+  /** Capacity of every unit, so callers can total any group of units. */
+  index: Record<string, { current: number; total: number }>;
 };
 
 /** Teams touched by the shifted projects, in the current or shifted plan. */
@@ -200,7 +202,7 @@ export function summarizeScenario(
         peak = { month, value: monthShortage };
     }
   }
-  return { teamIds, shortage, shortageMonths, peak, remaining };
+  return { teamIds, shortage, shortageMonths, peak, remaining, index };
 }
 
 /** A saved scenario: draft → approved (admin) → applied (admin) → reverted. */

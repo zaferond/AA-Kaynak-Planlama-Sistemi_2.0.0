@@ -87,6 +87,17 @@ export async function checkScheduleScenario(f) {
           "6",
           "6",
         ]);
+        // Leadership rows (as in Liderlik Bazında Eksik Raporu) sit above teams.
+        const blocks = dialog.locator(".schedule-impact-block");
+        assert.equal(
+          await blocks.first().locator("h4").textContent(),
+          "Liderlik bazında",
+        );
+        assert((await blocks.first().locator("tbody tr").count()) >= 2);
+        assert.match(
+          await blocks.first().locator("tbody tr").last().innerText(),
+          /^Toplam/,
+        );
         await dialog
           .getByRole("button", { name: "Senaryo B", exact: true })
           .click();
@@ -281,6 +292,13 @@ export async function checkScheduleScenarioApproval(f) {
         );
         assert.equal(restored.end, "2026-12");
         assert.equal((await f.state()).scheduleScenarios[0].status, "reverted");
+        // A finished scenario can be deleted (the revision of the stored record).
+        await item.getByRole("button", { name: "Sil" }).click();
+        await dialog
+          .locator(".scenario-message")
+          .filter({ hasText: "silindi" })
+          .waitFor();
+        assert.equal((await f.state()).scheduleScenarios, undefined);
       },
     );
   } finally {

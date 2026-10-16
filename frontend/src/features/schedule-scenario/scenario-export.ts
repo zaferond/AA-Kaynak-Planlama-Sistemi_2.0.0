@@ -12,7 +12,10 @@ import {
 import { SYSTEM_NAME } from "../../settings.ts";
 import { monthLabel } from "../../format.ts";
 import type { Data } from "../../model";
-import type { ScenarioComparison } from "./scenario-comparison.ts";
+import {
+  groupRemaining,
+  type ScenarioComparison,
+} from "./scenario-comparison.ts";
 
 // 0 plain · 1 title · 2 header · 3 row label · 4 number · 5 shortage number
 const styles = `<styleSheet xmlns="${spreadsheetNamespace}">
@@ -24,7 +27,13 @@ const styles = `<styleSheet xmlns="${spreadsheetNamespace}">
 <cellXfs count="6"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="center"/></xf><xf numFmtId="164" fontId="3" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="center"/></xf></cellXfs>
 <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
 
-type Cell = string | number | { value: number; style: number } | null;
+/** `{ text, header }` marks a section heading inside a sheet. */
+type Cell =
+  | string
+  | number
+  | { value: number; style: number }
+  | { text: string; header: true }
+  | null;
 
 function sheet(name: string, title: string, rows: Cell[][], widths: number[]) {
   const xmlRows = [[title], [], ...rows].map((cells, r) => {
@@ -34,6 +43,8 @@ function sheet(name: string, title: string, rows: Cell[][], widths: number[]) {
       .map((cell, c) => {
         const ref = columnName(c) + (r + 1);
         if (cell === null || cell === "") return "";
+        if (typeof cell === "object" && "text" in cell)
+          return `<c r="${ref}" s="2" t="inlineStr"><is><t xml:space="preserve">${excelCellText(cell.text)}</t></is></c>`;
         if (typeof cell === "string")
           return `<c r="${ref}" s="${r === 0 ? 1 : header ? 2 : c === 0 ? 3 : 0}" t="inlineStr"><is><t xml:space="preserve">${excelCellText(cell)}</t></is></c>`;
         const { value, style } =
@@ -116,19 +127,46 @@ export function buildScenarioWorkbook(
     [40, ...columns.map(() => 22)],
   );
   const names = sheetNames(columns.map((c) => c.name));
+  const valueRow = (
+    column: (typeof columns)[number],
+    label: string,
+    ids: string[],
+  ): Cell[] => [
+    label,
+    ...months.map((month) => {
+      const value = groupRemaining(column, ids, month);
+      return { value, style: value < -1e-9 ? 5 : 4 };
+    }),
+  ];
   const detail = columns.map((column, i) =>
     sheet(
       names[i] === "Özet" ? "Özet 2" : names[i],
-      `${column.name} · takım bazında kalan kaynak (kişi eşdeğeri, eksi = açık) · ${period}`,
+      `${column.name} · liderlik ve takım bazında kalan kaynak (kişi eşdeğeri, eksi = açık) · ${period}`,
       [
-        ["Takım", ...months.map(monthLabel)],
-        ...teams.map((team) => [
-          teamName(team),
-          ...months.map((month) => {
-            const value = column.summary.remaining[team + "|" + month] ?? 0;
-            return { value, style: value < -1e-9 ? 5 : 4 };
-          }),
+        ["Liderlik / Birim", ...months.map(monthLabel)],
+        ...comparison.leaderRows.map((row) =>
+          valueRow(
+            column,
+            (row.depth ? "  ".repeat(row.depth) + "↳ " : "") + row.name,
+            row.ids,
+          ),
+        ),
+        valueRow(column, "Toplam", [
+          ...new Set(
+            comparison.leaderRows
+              .filter((row) => !row.depth)
+              .flatMap((row) => row.ids),
+          ),
         ]),
+        [],
+        [
+          { text: "Takım", header: true },
+          ...months.map((m) => ({
+            text: monthLabel(m),
+            header: true as const,
+          })),
+        ],
+        ...teams.map((team) => valueRow(column, teamName(team), [team])),
       ],
       [40, ...months.map(() => 11)],
     ),

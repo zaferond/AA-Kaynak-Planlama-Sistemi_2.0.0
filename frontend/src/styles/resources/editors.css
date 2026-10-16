@@ -51,7 +51,7 @@
   min-width: 0;
   font-size: var(--fs-xs);
   font-weight: 600;
-  color: #405b76;
+  color: var(--brand-muted, #60715e);
 }
 .editor .resource-editor-form .pick {
   flex: none;
@@ -61,19 +61,26 @@
   font-size: var(--fs-xs);
   font-weight: 600;
 }
+/* Inputs, selects and pickers share one height, font and border. */
 .editor .resource-editor-form input:not([type="checkbox"]),
+.editor .resource-editor-form select,
 .editor .resource-editor-form textarea,
 .editor .resource-editor-form .pickerbutton {
   width: 100%;
   height: 36px;
   min-height: 36px;
   padding: 7px 10px;
-  border: 1px solid #cbd9e8;
-  border-radius: 5px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
   background: #fff;
-  color: #233c55;
+  color: var(--brand-text, #293a2d);
   font-size: var(--fs-xs);
   font-weight: 400;
+}
+.editor .resource-editor-form input[readonly] {
+  background: var(--brand-surface-soft, #f6f8f2);
+  color: var(--brand-muted, #60715e);
+  cursor: default;
 }
 .editor .resource-editor-form textarea {
   height: auto;
@@ -101,17 +108,44 @@
 .editor .resource-editor-form small {
   font-size: var(--fs-xs);
   line-height: 1.45;
-  color: #6d8196;
+  color: var(--brand-muted, #60715e);
 }
 .editor .resource-editor-form .switchrow {
   gap: 9px;
   padding: 8px 10px;
-  border: 1px solid #dce6f0;
-  border-radius: 5px;
-  background: #f7fafd;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: #fff;
 }
 .editor .resource-editor-form .switchrow button {
   flex: none;
+}
+/* Employee card: same frame as "Hesap ve Yetkiler" beside it. */
+.resource-form-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.resource-form-heading h3 {
+  margin: 0;
+  font-size: var(--fs-md);
+  color: #3f5533;
+}
+.resource-form-heading span {
+  font-size: var(--fs-xs);
+  color: var(--brand-muted, #60715e);
+}
+.editor .resource-editor-form h3.resource-form-section {
+  margin: 6px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border, #ccd6c5);
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 @media (max-width: 600px) {
   .editor .resource-form-grid,

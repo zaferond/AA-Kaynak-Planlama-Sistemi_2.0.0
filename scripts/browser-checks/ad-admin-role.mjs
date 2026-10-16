@@ -31,19 +31,19 @@ export async function checkAdAdminRole(f) {
         await dialog()
           .getByLabel("Ad Soyad", { exact: true })
           .fill("QA AD Administrator");
-        for (const [label, value] of [
-          ["Liderlik", f.teamA.lead],
-          ["Takım", f.teamA.name],
-        ]) {
-          await dialog()
-            .getByRole("button", { name: label, exact: true })
-            .click();
-          const picker = page.locator('.pickerpanel[data-state="open"]');
-          await picker.getByRole("textbox").fill(value);
-          await picker
-            .getByRole("button", { name: value, exact: true })
-            .click();
-        }
+        // A Team Member's leadership follows the chosen team.
+        await dialog()
+          .getByRole("button", { name: "Takım", exact: true })
+          .click();
+        const picker = page.locator('.pickerpanel[data-state="open"]');
+        await picker.getByRole("textbox").fill(f.teamA.name);
+        await picker
+          .getByRole("button", { name: f.teamA.name, exact: true })
+          .click();
+        assert.equal(
+          await dialog().getByLabel("Liderlik", { exact: true }).inputValue(),
+          f.teamA.lead,
+        );
         await dialog()
           .getByLabel("Hesap Eşleştirmesi", { exact: true })
           .selectOption("new-ad");

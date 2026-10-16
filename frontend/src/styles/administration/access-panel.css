@@ -422,6 +422,10 @@
   flex-direction: column;
   gap: 12px;
   min-width: 0;
+  padding: 16px;
+  border: 1px solid #cbd6c3;
+  border-radius: 8px;
+  background: #f4f7f0;
 }
 .employee-access-editor .resource-account-section {
   grid-column: auto;

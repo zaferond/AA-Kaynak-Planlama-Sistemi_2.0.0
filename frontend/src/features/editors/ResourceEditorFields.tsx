@@ -56,41 +56,28 @@ export default function ResourceEditorFields({
         currentPlanningDate(),
       )
     : { leaders: [], teams: [] };
+  const setVersion = (version: Partial<Version>) =>
+    setEditor({ ...editor, version: { ...editor.version, ...version } });
   return (
     <>
-      <Single
-        label="Statü"
-        value={editor.version.status}
-        onChange={chooseResourceStatus}
-        items={statuses.map((s) => ({ id: s, name: s }))}
-      />
-      {!posting && (
-        <>
-          <label>
-            Ad Soyad
-            <input
-              maxLength={200}
-              autoFocus
-              value={directoryName ?? editor.value.name}
-              readOnly={directoryManaged}
-              aria-readonly={directoryManaged || undefined}
-              placeholder={
-                directoryManaged ? "AD kullanıcısı seçin" : undefined
-              }
-              title={
-                directoryManaged
-                  ? "Ad Soyad Active Directory tarafından yönetilir."
-                  : undefined
-              }
-              onChange={(e) =>
-                !directoryManaged &&
-                setEditor({
-                  ...editor,
-                  value: { ...editor.value, name: e.target.value },
-                })
-              }
-            />
-          </label>
+      <div className="resource-form-heading">
+        <h3>Kaynak Bilgileri</h3>
+        {!editor.isNew && (
+          <span>
+            Dönem kayıtları:{" "}
+            {editor.value.versions.map((v: Version) => v.effective).join(", ")}
+          </span>
+        )}
+      </div>
+      <div className="resource-form-grid">
+        <Single
+          label="Statü"
+          compact
+          value={editor.version.status}
+          onChange={chooseResourceStatus}
+          items={statuses.map((s) => ({ id: s, name: s }))}
+        />
+        {!posting && (
           <label>
             Kaynak Rolü
             <select
@@ -128,8 +115,35 @@ export default function ResourceEditorFields({
               ))}
             </select>
           </label>
-        </>
+        )}
+      </div>
+      {!posting && (
+        <label>
+          Ad Soyad
+          <input
+            maxLength={200}
+            autoFocus
+            value={directoryName ?? editor.value.name}
+            readOnly={directoryManaged}
+            aria-readonly={directoryManaged || undefined}
+            placeholder={directoryManaged ? "AD kullanıcısı seçin" : undefined}
+            title={
+              directoryManaged
+                ? "Ad Soyad Active Directory tarafından yönetilir."
+                : undefined
+            }
+            onChange={(e) =>
+              !directoryManaged &&
+              setEditor({
+                ...editor,
+                value: { ...editor.value, name: e.target.value },
+              })
+            }
+          />
+        </label>
       )}
+
+      <h3 className="resource-form-section">Organizasyon</h3>
       <div className="resource-form-grid">
         {assignmentKind === "leader" ? (
           <Single
@@ -137,45 +151,41 @@ export default function ResourceEditorFields({
             compact
             value={editor.version.lead || ""}
             onChange={(lead) =>
-              setEditor({
-                ...editor,
-                version: {
-                  ...editor.version,
-                  lead,
-                  team: ownValue(data?.leadershipUnits, lead) || "",
-                },
+              setVersion({
+                lead,
+                team: ownValue(data?.leadershipUnits, lead) || "",
               })
             }
             items={organizationItems.leaders}
           />
         ) : (
-          <label className="resource-derived-leadership">
-            Liderlik
-            <input
-              type="text"
-              value={selectedTeam?.lead || ""}
-              readOnly
-              placeholder={selectedTeam ? "Liderlik atanmamış" : "Takım seçin"}
-            />
-          </label>
-        )}
-        {assignmentKind !== "leader" && (
-          <Single
-            label="Takım"
-            compact
-            value={editor.version.team}
-            onChange={(t) =>
-              setEditor({
-                ...editor,
-                version: {
-                  ...editor.version,
+          <>
+            {/* The team decides the leadership, so it is chosen first. */}
+            <Single
+              label="Takım"
+              compact
+              value={editor.version.team}
+              onChange={(t) =>
+                setVersion({
                   team: t,
                   lead: data?.teams.find((x) => x.id === t)?.lead || "",
-                },
-              })
-            }
-            items={organizationItems.teams}
-          />
+                })
+              }
+              items={organizationItems.teams}
+            />
+            <label className="resource-derived-leadership">
+              Liderlik
+              <input
+                type="text"
+                value={selectedTeam?.lead || ""}
+                readOnly
+                placeholder={
+                  selectedTeam ? "Liderlik atanmamış" : "Takım seçin"
+                }
+                title="Liderlik seçilen takımdan gelir."
+              />
+            </label>
+          </>
         )}
       </div>
       {assignmentKind === "leader" && (
@@ -184,23 +194,17 @@ export default function ResourceEditorFields({
           hesaplanır. Kullanıcı yetkisi ayrıca tanımlanır.
         </small>
       )}
+
       {!passivePosting && (
         <>
+          <h3 className="resource-form-section">Dönem ve Planlama</h3>
           <div className="resource-date-grid">
             <label>
               {startDateLabel}
               <input
                 type="date"
                 value={editor.version.start}
-                onChange={(e) =>
-                  setEditor({
-                    ...editor,
-                    version: {
-                      ...editor.version,
-                      start: e.target.value,
-                    },
-                  })
-                }
+                onChange={(e) => setVersion({ start: e.target.value })}
               />
             </label>
             {editor.version.status === "İşten Ayrıldı" && (
@@ -209,15 +213,7 @@ export default function ResourceEditorFields({
                 <input
                   type="date"
                   value={editor.version.end}
-                  onChange={(e) =>
-                    setEditor({
-                      ...editor,
-                      version: {
-                        ...editor.version,
-                        end: e.target.value,
-                      },
-                    })
-                  }
+                  onChange={(e) => setVersion({ end: e.target.value })}
                 />
               </label>
             )}
@@ -225,18 +221,14 @@ export default function ResourceEditorFields({
           <label className="switchrow">
             <Switch
               checked={editor.version.included}
-              onCheckedChange={(v) =>
-                setEditor({
-                  ...editor,
-                  version: { ...editor.version, included: v },
-                })
-              }
+              onCheckedChange={(v) => setVersion({ included: v })}
             />
             Kaynak Planlamasına Dahil
           </label>
         </>
       )}
-      <label>
+
+      <label className="resource-note-field">
         Açıklama
         <textarea
           rows={3}
@@ -249,11 +241,6 @@ export default function ResourceEditorFields({
           }
         />
       </label>
-      <small>
-        Değişiklik geçmişi (ay):{" "}
-        {editor.value.versions.map((v: Version) => v.effective).join(", ") ||
-          "Yeni Kayıt"}
-      </small>
     </>
   );
 }

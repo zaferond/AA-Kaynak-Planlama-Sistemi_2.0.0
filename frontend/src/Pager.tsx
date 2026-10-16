@@ -14,7 +14,10 @@ export default function Pager({
   const pages = Math.max(1, Math.ceil(total / size));
   if (total <= size) return null;
   return (
-    <div className="pager">
+    <div
+      className="pager"
+      title="Toplamlar ve dışa aktarım tüm filtre sonuçlarını kapsar."
+    >
       <span>
         {label}: {page * size + 1}–{Math.min(total, (page + 1) * size)} /{" "}
         {total}

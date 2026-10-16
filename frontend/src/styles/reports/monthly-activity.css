@@ -87,7 +87,8 @@
 }
 .app .activity-month-row th {
   top: 24px;
-  height: 34px;
+  height: 28px;
+  padding-block: 3px;
 }
 .app .activity-matrix :is(.activity-lead, .activity-team, .activity-person) {
   position: sticky;

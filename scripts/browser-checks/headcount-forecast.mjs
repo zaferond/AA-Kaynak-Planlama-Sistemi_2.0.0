@@ -98,16 +98,23 @@ export async function checkHeadcountForecast(f) {
             exact: true,
           })
           .click();
-        for (const status of ["Aktif İlan", "Pasif İlan"]) {
-          await chooseStatus(status);
-          assert.equal(
-            await dialog()
-              .getByLabel("Tahmini İşbaşı Tarihi", { exact: true })
-              .inputValue(),
-            "",
-          );
-          assert(!(await dialog().getByRole("switch").isChecked()));
-        }
+        await chooseStatus("Aktif İlan");
+        assert.equal(
+          await dialog()
+            .getByLabel("Tahmini İşbaşı Tarihi", { exact: true })
+            .inputValue(),
+          "",
+        );
+        assert(!(await dialog().getByRole("switch").isChecked()));
+        // A passive posting is never planned: no start date, no inclusion.
+        await chooseStatus("Pasif İlan");
+        assert.equal(
+          await dialog()
+            .getByLabel("Tahmini İşbaşı Tarihi", { exact: true })
+            .count(),
+          0,
+        );
+        assert.equal(await dialog().getByRole("switch").count(), 0);
         for (const status of [
           "Aktif Çalışan",
           "Gear Up",

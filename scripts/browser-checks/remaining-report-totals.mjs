@@ -153,7 +153,9 @@ export async function checkRemainingReportTotals(f) {
               ...c.querySelectorAll("tfoot [data-total-month]"),
             ].find((cell) => {
               const r = cell.getBoundingClientRect();
-              return r.left > label.right && r.right < cr.right;
+              // Cell edges can coincide with the label/viewport edges to
+              // within subpixel zoom rounding; a pixel of tolerance is enough.
+              return r.left >= label.right - 1 && r.right <= cr.right + 1;
             });
             const mr = month.getBoundingClientRect();
             const range = document.createRange();

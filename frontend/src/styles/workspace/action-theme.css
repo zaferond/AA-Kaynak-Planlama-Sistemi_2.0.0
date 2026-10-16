@@ -104,3 +104,60 @@
     padding: 7px 8px;
   }
 }
+
+/* Actual header on one line: each label sits beside its value, so the band
+   stays short and the height goes to the grid. Narrow screens keep the
+   stacked two-column layout above. */
+@media (min-width: 601px) {
+  .app .person-allocation .panelhead {
+    padding-block: 6px;
+  }
+  .app .person-allocation .panelhead > div:first-child {
+    flex: 0 0 auto;
+  }
+  .app .person-allocation .actual-unit-control {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+  .app .person-allocation .actual-control-fields {
+    grid-template-columns: minmax(140px, 1fr) repeat(4, auto);
+    align-items: center;
+  }
+  .app .person-allocation .actual-control-item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .app .person-allocation .actual-person-value {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+  }
+  .app .person-allocation .actual-context-item strong,
+  .app .person-allocation .actual-hours-placeholder {
+    min-height: 0;
+    padding: 0;
+  }
+  .app
+    .person-allocation
+    .actual-control-fields
+    .actual-remaining-item
+    strong[data-remaining-state] {
+    margin-top: 0;
+    padding: 2px 8px;
+  }
+  .app .person-allocation .actual-hours-item .worked-hours-input {
+    width: 88px;
+  }
+  .app .person-allocation .actual-control-item select,
+  .app .person-allocation .actual-hours-item input {
+    height: 28px;
+    min-height: 28px;
+  }
+  .app .person-allocation .actual-control-fields > .actual-unit-item:last-child {
+    width: auto;
+    margin: 0;
+    padding: 3px 4px 3px 12px;
+  }
+}

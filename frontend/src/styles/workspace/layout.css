@@ -447,10 +447,18 @@
 }
 /* Month names read horizontally wherever the column fits them (every density
    but the 5-year overview; actual columns keep a fixed readable width). */
+/* The whole month row, including its label cells (base .matrix th is 48px). */
 .app:is(:not(.dense-overview), .tab-actual)
   :is(.planning-grid, .remaining-report)
-  .monthhead {
-  height: 30px;
+  thead
+  tr:not(.yearrow)
+  > th {
+  height: 28px;
+  padding-block: 3px;
+}
+.app.tab-overview .remaining-report .yearrow th {
+  height: 22px;
+  padding-block: 2px;
 }
 .app:is(:not(.dense-overview), .tab-actual) .monthhead > span {
   writing-mode: horizontal-tb;
@@ -651,6 +659,13 @@
   font-size: var(--fs-xs);
   color: #72869a;
   margin-left: auto;
+}
+/* On narrower screens the note would wrap the pager onto a second line; it
+   stays available as the pager's tooltip. */
+@media (max-width: 1439px) {
+  .pager small {
+    display: none;
+  }
 }
 
 /* Match the application workspace to an initial 90% page scale. */

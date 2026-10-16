@@ -42,16 +42,19 @@ export function useScheduleScenarios(
       return changed ? next : all;
     });
   }, [saved]);
-  // Only scenarios that can be applied without problems are offered.
-  const available = useMemo(
-    () =>
-      data
-        ? scenarios.filter(
-            (s) => usable(s) && !applyScenario(data, s).problems.length,
-          )
-        : [],
-    [data, scenarios],
-  );
+  // Working cards plus saved drafts/approved scenarios not open as a card
+  // (a transferred one is already in the data). Only problem-free ones.
+  const available = useMemo(() => {
+    if (!data) return [];
+    const open = new Set(scenarios.map((s) => s.id));
+    const savedOpen = (saved || []).filter(
+      (s) =>
+        !open.has(s.id) && (s.status === "draft" || s.status === "approved"),
+    );
+    return [...scenarios, ...savedOpen].filter(
+      (s) => usable(s) && !applyScenario(data, s).problems.length,
+    );
+  }, [data, scenarios, saved]);
   const active = available.find((s) => s.id === reportScenarioId) || null;
   const report = useMemo(() => {
     if (!data || !active) return null;

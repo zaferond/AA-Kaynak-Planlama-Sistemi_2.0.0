@@ -559,6 +559,10 @@ export default function Portal() {
               if (isAdmin && data) setSharedCalendarOpen(true);
             }}
             onOpenScenario={() => data && setScenarioOpen(true)}
+            pendingScenarios={
+              data?.scheduleScenarios?.filter((s) => s.status === "draft")
+                .length || 0
+            }
             onExport={exportCurrentTab}
             dataLoaded={
               !!data && (tab !== "actual" || !!isAdmin || !!actualView.value)

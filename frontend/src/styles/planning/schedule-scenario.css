@@ -442,3 +442,19 @@
   border-top: 2px solid var(--brand-primary, #405341);
   font-weight: 700;
 }
+
+/* Admin: number of saved drafts waiting for approval. */
+.scenario-pending-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 2px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #c08a1e;
+  color: #fff;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  line-height: 1;
+}

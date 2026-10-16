@@ -255,6 +255,26 @@ export async function checkScheduleScenarioApproval(f) {
     await f.check(
       "scenario: admin approves, transfers to the calendar and undoes the transfer",
       async () => {
+        // A saved draft is offered in the reports without opening the
+        // dialog, and the admin sees how many wait for a decision.
+        await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
+        await page
+          .locator(".scenario-report-bar")
+          .getByRole("button", { name: "Senaryo A · Taslak" })
+          .click();
+        assert.match(
+          (await page.locator(".scenario-report-bar").getAttribute("class")) ||
+            "",
+          /is-active/,
+        );
+        assert.equal(
+          await page.locator(".scenario-pending-badge").innerText(),
+          "1",
+        );
+        await page
+          .locator(".scenario-report-bar")
+          .getByRole("button", { name: "Mevcut", exact: true })
+          .click();
         await selectWorkspaceTab(page, "Planlanan Kaynak Dağılımı");
         await page
           .getByRole("button", { name: "Erteleme Senaryosu", exact: true })

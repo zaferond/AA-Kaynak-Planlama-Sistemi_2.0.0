@@ -27,6 +27,8 @@ type Props = {
   openProject: () => void;
   onOpenSharedCalendar: () => void;
   onOpenScenario: () => void;
+  /** Saved drafts waiting for an admin decision. */
+  pendingScenarios?: number;
   onExport: () => void;
   dataLoaded: boolean;
   hasTeams: boolean;
@@ -48,6 +50,7 @@ export default function WorkspaceNavigation({
   openProject,
   onOpenSharedCalendar,
   onOpenScenario,
+  pendingScenarios = 0,
   onExport,
   dataLoaded,
   hasTeams,
@@ -191,11 +194,22 @@ export default function WorkspaceNavigation({
               <button
                 type="button"
                 className="button"
+                title={
+                  isAdmin && pendingScenarios > 0
+                    ? pendingScenarios + " senaryo onay bekliyor"
+                    : undefined
+                }
                 onClick={onOpenScenario}
                 disabled={!dataLoaded || !hasProjects}
               >
                 <CalendarClock size={17} />
                 Erteleme Senaryosu
+                {isAdmin && pendingScenarios > 0 && (
+                  // The button title carries the meaning; its name stays fixed.
+                  <span className="scenario-pending-badge" aria-hidden="true">
+                    {pendingScenarios}
+                  </span>
+                )}
               </button>
             )}
           {tab === "projects" && (isAdmin || projectEditor) && (

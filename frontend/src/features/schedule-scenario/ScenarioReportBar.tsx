@@ -1,5 +1,8 @@
 import { CalendarClock } from "lucide-react";
-import type { ShiftScenario } from "../../../../shared/schedule-shift.ts";
+import {
+  SCENARIO_STATUS_LABELS,
+  type ShiftScenario,
+} from "../../../../shared/schedule-shift.ts";
 import type { Data } from "../../model";
 
 type Props = {
@@ -21,6 +24,11 @@ export default function ScenarioReportBar({
 }: Props) {
   if (!scenarios.length) return null;
   const active = scenarios.find((s) => s.id === activeId);
+  // Saved scenarios show their decision status next to the name.
+  const status = (scenario: ShiftScenario) => {
+    const saved = data.scheduleScenarios?.find((s) => s.id === scenario.id);
+    return saved ? " · " + SCENARIO_STATUS_LABELS[saved.status] : "";
+  };
   const describe = (scenario: ShiftScenario) =>
     scenario.shifts
       .filter((s) => s.projectId && s.months)
@@ -56,6 +64,7 @@ export default function ScenarioReportBar({
             onClick={() => onChange(scenario.id)}
           >
             {scenario.name}
+            {status(scenario)}
           </button>
         ))}
       </div>

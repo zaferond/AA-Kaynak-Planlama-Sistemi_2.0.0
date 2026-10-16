@@ -407,15 +407,29 @@
   }
 }
 
+/* Fixed size that always fits the window: the form scrolls inside and
+   Vazgeç / Kaydet stay visible at the bottom. */
 .editor.employee-access-editor[data-slot="dialog-content"] {
   width: min(1060px, calc(100vw - 32px)) !important;
   max-width: min(1060px, calc(100vw - 32px)) !important;
+  height: min(820px, calc(100dvh - 48px));
+  max-height: calc(100dvh - 48px);
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
 }
 .employee-access-editor .resource-editor-form {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  /* The cards take the spare height, so the actions sit at the bottom. */
+  grid-template-rows: minmax(min-content, 1fr);
   align-items: start;
   gap: 20px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Room for focus rings next to the scroll edge. */
+  margin: -3px -6px 0 -3px;
+  padding: 3px 6px 0 3px;
 }
 .employee-resource-fields {
   display: flex;
@@ -645,9 +659,16 @@
 
 .employee-access-editor .resource-editor-actions {
   grid-column: 1 / -1;
+  position: sticky;
+  /* Slightly past the edge: the 90% page scale leaves a sub-pixel seam. */
+  bottom: -2px;
+  z-index: 2;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  padding: 12px 0 5px;
+  border-top: 1px solid var(--brand-border, #ccd6c5);
+  background: var(--background, #f3f4ef);
 }
 
 .app.tab-resources .employee-access-table .account-email {

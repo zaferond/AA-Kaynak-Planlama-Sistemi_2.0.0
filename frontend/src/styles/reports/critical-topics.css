@@ -293,24 +293,24 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-:is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-current] {
+:is(.app.tab-critical, .project-info-topic-dialog)
+  .project-info-week[data-current] {
   border-color: #2f6f8f;
   box-shadow: 0 0 0 1px #2f6f8f;
 }
-:is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-selected] {
+:is(.app.tab-critical, .project-info-topic-dialog)
+  .project-info-week[data-selected] {
   border-color: #2f6f8f;
   background: #2f6f8f;
   color: #fff;
 }
-:is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-state="cancelled"] {
+:is(.app.tab-critical, .project-info-topic-dialog)
+  .project-info-week[data-state="cancelled"] {
   background: #fdecea;
   color: #b42318;
 }
-:is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-state="cancelled"][data-current] {
-  border-color: #b42318;
-  box-shadow: 0 0 0 1px #b42318;
-}
-:is(.app.tab-critical, .project-info-topic-dialog) .project-info-week[data-state="cancelled"][data-selected] {
+:is(.app.tab-critical, .project-info-topic-dialog)
+  .project-info-week[data-state="cancelled"][data-selected] {
   border-color: #b42318;
   background: #b42318;
   color: #fff;

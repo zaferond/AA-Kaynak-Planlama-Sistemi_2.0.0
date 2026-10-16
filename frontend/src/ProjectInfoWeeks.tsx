@@ -55,7 +55,11 @@ export default function TopicWeeks({
         key={state + first.key}
         className="project-info-week"
         data-state={state}
-        data-current={first.key === thisWeek.key || undefined}
+        // Only the topic's current dates frame this week; an old week that
+        // happens to be this week stays a plain red box.
+        data-current={
+          (state === "current" && first.key === thisWeek.key) || undefined
+        }
         data-selected={
           run.some(({ week }) => selected.has(week.key)) || undefined
         }

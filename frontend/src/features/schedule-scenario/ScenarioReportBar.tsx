@@ -27,7 +27,9 @@ export default function ScenarioReportBar({
   // Saved scenarios show their decision status next to the name.
   const status = (scenario: ShiftScenario) => {
     const saved = data.scheduleScenarios?.find((s) => s.id === scenario.id);
-    return saved ? " · " + SCENARIO_STATUS_LABELS[saved.status] : "";
+    return saved
+      ? " · " + SCENARIO_STATUS_LABELS[saved.status]
+      : " · kaydedilmedi";
   };
   const describe = (scenario: ShiftScenario) =>
     scenario.shifts
@@ -70,8 +72,8 @@ export default function ScenarioReportBar({
       </div>
       <span className="scenario-report-note">
         {active
-          ? `Senaryo görünümü: ${describe(active)}. Kayıtlar değişmedi; çerçeveli hücreler mevcut duruma göre değişenlerdir.`
-          : "Erteleme senaryosu seçerek raporları yeni durumla görebilirsiniz."}
+          ? `Senaryo görünümü: ${describe(active)}. Aşağıdaki raporlar bu senaryoya göredir (üstteki özet kartları mevcut durum); kayıtlar değişmedi, çerçeveli hücreler mevcut duruma göre değişenlerdir.`
+          : "Erteleme senaryosu seçerek aşağıdaki raporları yeni durumla görebilirsiniz."}
       </span>
       <button type="button" className="textbutton" onClick={onEdit}>
         Senaryoları Düzenle

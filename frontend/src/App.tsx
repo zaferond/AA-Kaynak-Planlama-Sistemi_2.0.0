@@ -964,14 +964,18 @@ export default function Portal() {
                     />
                   ) : (
                     <>
-                      <ScenarioReportBar
-                        data={data}
-                        scenarios={scenarioState.available}
-                        activeId={scenarioState.reportScenarioId}
-                        onChange={scenarioState.setReportScenarioId}
-                        onEdit={() => setScenarioOpen(true)}
-                      />
                       <WorkspaceReports
+                        scenarioBar={
+                          <ScenarioReportBar
+                            data={data}
+                            scenarios={scenarioState.available}
+                            activeId={scenarioState.reportScenarioId}
+                            onChange={scenarioState.setReportScenarioId}
+                            onEdit={() => setScenarioOpen(true)}
+                          />
+                        }
+                        summaryData={data}
+                        summaryCapacity={cache}
                         data={reportScenario?.data || data}
                         teams={teams}
                         months={months}

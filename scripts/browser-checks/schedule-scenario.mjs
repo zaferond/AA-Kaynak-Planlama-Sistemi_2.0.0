@@ -128,6 +128,11 @@ export async function checkScheduleScenario(f) {
           .click();
         const bar = page.locator(".scenario-report-bar");
         await bar.waitFor();
+        // Right above Liderlik Bazında Eksik Raporu.
+        assert.equal(
+          await bar.evaluate((el) => el.nextElementSibling?.id),
+          "rapor-liderlik-eksik",
+        );
         assert.match((await bar.getAttribute("class")) || "", /is-active/);
         // The delay frees Team A in Oct – Dec 2026 (the visible year).
         const better = page.locator(
@@ -354,6 +359,11 @@ export async function checkScheduleScenarioApproval(f) {
             .waitFor();
         }
         assert.equal((await f.state()).scheduleScenarios, undefined);
+        // Deleted scenarios leave nothing behind in the reports.
+        await page.keyboard.press("Escape");
+        await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
+        await page.locator("#rapor-liderlik-eksik").waitFor();
+        assert.equal(await page.locator(".scenario-report-bar").count(), 0);
       },
     );
   } finally {

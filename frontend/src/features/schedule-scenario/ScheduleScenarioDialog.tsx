@@ -167,6 +167,8 @@ export default function ScheduleScenarioDialog({
           },
         ],
         `“${item.name}” silindi.`,
+        // The card would linger as an unsaved copy in the reports.
+        () => dropCards([item.id]),
       );
     }
     if (action === "apply") {
@@ -329,6 +331,7 @@ export default function ScheduleScenarioDialog({
                   revision: data.revisions["scenario:" + s.id] || 0,
                 })),
                 `${closed.length} kapatılmış senaryo silindi.`,
+                () => dropCards(closed.map((s) => s.id)),
               );
             }}
           />

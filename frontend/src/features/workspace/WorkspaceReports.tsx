@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import type { Data, Team } from "../../model";
 import type { Metric } from "../../metrics";
 import HeadcountTrend from "../../HeadcountTrend";
@@ -20,6 +20,12 @@ type Props = {
   currentTeamMembers: Record<string, string[]>;
   metric: (ids: string[], month: string) => Metric;
   compareMetric?: (ids: string[], month: string) => Metric;
+  /** Scenario selector, shown right above Liderlik Bazında Eksik Raporu. */
+  scenarioBar?: ReactNode;
+  /** The current plan for the summary cards above the scenario selector;
+   * everything below the selector follows the chosen scenario. */
+  summaryData?: Data;
+  summaryCapacity?: Record<string, Metric>;
   leaderReportGroups: ReportGroup[];
   teamReportGroups: ReportGroup[];
   capacity: Record<string, Metric>;
@@ -41,6 +47,9 @@ export default function WorkspaceReports({
   currentTeamMembers,
   metric,
   compareMetric,
+  scenarioBar,
+  summaryData,
+  summaryCapacity,
   leaderReportGroups,
   teamReportGroups,
   capacity,
@@ -71,13 +80,14 @@ export default function WorkspaceReports({
   return (
     <>
       <ReportSummary
-        data={data}
+        data={summaryData || data}
         teams={teams.filter((team) => teamIds.includes(team.id))}
-        capacity={capacity}
+        capacity={summaryCapacity || capacity}
         actualTotals={actualTotals}
         teamIds={teamIds}
         months={months}
       />
+      {scenarioBar}
       <section id="rapor-liderlik-eksik" className="panel">
         <div className="panelhead">
           <div>

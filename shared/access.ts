@@ -192,6 +192,8 @@ export function scopeData(
       return false;
     }
     if (key.startsWith("project:")) return isProjectEditor(u);
+    // Managers save and update their own delay scenarios.
+    if (key.startsWith("scenario:")) return u.role === "manager";
     return key.startsWith("allocation:")
       ? canSeePlanningRevision(u, key.slice(11).split("|")[0], ids) &&
           !hiddenProjects.has(key.slice(11).split("|")[1])
@@ -289,5 +291,15 @@ export function scopeData(
     risks: (d.risks || []).filter(
       (risk) => !hiddenProjects.has(risk.projectId),
     ),
+    // Delay scenarios are planning tools: managers see those whose projects
+    // they can all view, without the undo snapshot; other roles none.
+    scheduleScenarios:
+      u.role === "manager"
+        ? (d.scheduleScenarios || [])
+            .filter((s) =>
+              s.shifts.every((shift) => !hiddenProjects.has(shift.projectId)),
+            )
+            .map(({ undo, ...scenario }) => scenario)
+        : [],
   };
 }

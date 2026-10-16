@@ -64,6 +64,9 @@ export async function readSnapshotMetadata(c, { batch = false, report } = {}) {
   d.risks = (await metadata("risks")).rows.map((row) =>
     JSON.parse(row.payload),
   );
+  const scenarioRows = (await metadata("scenarios")).rows;
+  if (scenarioRows.length)
+    d.scheduleScenarios = scenarioRows.map((row) => JSON.parse(row.payload));
   for (const r of (await metadata("phases")).rows) {
     const p = pm.get(r.project_id);
     if (r.label !== null) p.phases[r.month] = r.label;

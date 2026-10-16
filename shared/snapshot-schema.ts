@@ -205,11 +205,53 @@ const leaderManagersSchema = z
   .pipe(z.array(z.tuple([z.string(), z.string().trim().max(200)])))
   .transform((entries) => Object.fromEntries(entries));
 
+const scenarioId = z.string().regex(/^[a-zA-Z0-9_-]{1,120}$/);
+export const scheduleScenarioSchema = z
+  .object({
+    id: scenarioId,
+    name: z.string().trim().min(1).max(80),
+    includeTimeline: z.boolean(),
+    shifts: z
+      .array(
+        z
+          .object({
+            projectId: z.string().min(1).max(120),
+            months: z.number().int().min(-60).max(60),
+            fromMonth: mo,
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(50),
+    status: z.enum(["draft", "approved", "applied", "reverted"]),
+    createdBy: z.string().min(1).max(120),
+    createdByName: z.string().max(200),
+    createdAt: z.string().max(40),
+    approvedByName: z.string().max(200).optional(),
+    approvedAt: z.string().max(40).optional(),
+    appliedByName: z.string().max(200).optional(),
+    appliedAt: z.string().max(40).optional(),
+    revertedByName: z.string().max(200).optional(),
+    revertedAt: z.string().max(40).optional(),
+    undo: z
+      .object({
+        projects: z.record(proj),
+        allocations: numericRecordSchema({ max: 10000 }),
+        afterProjectRevisions: numericRecordSchema({ integer: true }),
+        afterAllocations: numericRecordSchema({ max: 10000 }),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
 export const snapshotSchema = z.object({
   teams: z.array(teamSchema).min(1),
   resources: z.array(res),
   projects: z.array(proj),
   risks: z.array(risk).max(100000).default([]),
+  // Optional: snapshots without scenarios keep their previous shape.
+  scheduleScenarios: z.array(scheduleScenarioSchema).max(1000).optional(),
   riskSystems: z
     .array(riskSystemSchema)
     .max(5000)

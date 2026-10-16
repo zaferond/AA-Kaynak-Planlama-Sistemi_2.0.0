@@ -69,6 +69,10 @@ export const tables = {
       payload: "nvarchar(max)",
     },
   },
+  schedule_scenarios: {
+    key: ["id"],
+    columns: { id: "nvarchar(120)", payload: "nvarchar(max)" },
+  },
   risk_systems: {
     key: ["id"],
     columns: { id: "nvarchar(120)", name: "nvarchar(200)" },

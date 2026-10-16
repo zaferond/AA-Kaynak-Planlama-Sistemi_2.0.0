@@ -40,6 +40,9 @@ export function validateSnapshotRisks(
     (d.risks || []).length
   )
     throw bad("Tekrarlanan risk kimliği.");
+  const scenarios = d.scheduleScenarios || [];
+  if (new Set(scenarios.map((item) => item.id)).size !== scenarios.length)
+    throw bad("Tekrarlanan senaryo kimliği.");
   const systemsById = new Map(
     (d.riskSystems || []).map((item) => [item.id, item]),
   );

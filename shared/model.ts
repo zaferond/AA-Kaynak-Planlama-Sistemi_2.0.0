@@ -119,6 +119,8 @@ export type Data = {
   projects: Project[];
   risks?: Risk[];
   riskSystems?: RiskSystem[];
+  /** Saved delay scenarios (Erteleme Senaryosu). */
+  scheduleScenarios?: import("./schedule-shift.ts").SavedScenario[];
   resources: Resource[];
   allocations: Record<string, number>;
   actualAllocations?: Record<string, number>;

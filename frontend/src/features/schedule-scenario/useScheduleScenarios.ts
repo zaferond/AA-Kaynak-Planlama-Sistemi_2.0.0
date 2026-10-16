@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Data } from "../../model";
 import { buildCapacityIndex, type Metric } from "../../metrics";
 import {
@@ -6,7 +6,7 @@ import {
   type ShiftScenario,
 } from "../../../../shared/schedule-shift.ts";
 import { workspaceMetric } from "../workspace/workspace-selectors";
-import { newScenario } from "./scenario-comparison";
+import { newScenario, nextScenarioName } from "./scenario-comparison";
 
 const usable = (scenario: ShiftScenario) =>
   scenario.shifts.some((s) => s.projectId && s.months);
@@ -22,6 +22,26 @@ export function useScheduleScenarios(
     newScenario("Senaryo A", currentMonth, 3),
   ]);
   const [reportScenarioId, setReportScenarioId] = useState<string | null>(null);
+  // An untouched working card must not share its name with a saved scenario.
+  const saved = data?.scheduleScenarios;
+  useEffect(() => {
+    if (!saved?.length) return;
+    setScenarios((all) => {
+      let changed = false;
+      const next = all.map((card) => {
+        const pristine = card.shifts.every((s) => !s.projectId);
+        const owned = saved.some((s) => s.id === card.id);
+        if (!pristine || owned || !saved.some((s) => s.name === card.name))
+          return card;
+        changed = true;
+        return {
+          ...card,
+          name: nextScenarioName([...all.filter((c) => c !== card), ...saved]),
+        };
+      });
+      return changed ? next : all;
+    });
+  }, [saved]);
   // Only scenarios that can be applied without problems are offered.
   const available = useMemo(
     () =>

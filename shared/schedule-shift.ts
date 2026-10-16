@@ -202,3 +202,147 @@ export function summarizeScenario(
   }
   return { teamIds, shortage, shortageMonths, peak, remaining };
 }
+
+/** A saved scenario: draft → approved (admin) → applied (admin) → reverted. */
+export type ScenarioStatus = "draft" | "approved" | "applied" | "reverted";
+export type ScenarioUndo = {
+  /** The shifted projects and their planned entries before the transfer. */
+  projects: Record<string, Project>;
+  allocations: Record<string, number>;
+  /** State right after the transfer; undo only while it is unchanged.
+   * Projects are compared by revision (the server normalises their content). */
+  afterProjectRevisions: Record<string, number>;
+  afterAllocations: Record<string, number>;
+};
+export type SavedScenario = ShiftScenario & {
+  status: ScenarioStatus;
+  createdBy: string;
+  createdByName: string;
+  createdAt: string;
+  approvedByName?: string;
+  approvedAt?: string;
+  appliedByName?: string;
+  appliedAt?: string;
+  revertedByName?: string;
+  revertedAt?: string;
+  undo?: ScenarioUndo;
+};
+export const SCENARIO_STATUS_LABELS: Record<ScenarioStatus, string> = {
+  draft: "Taslak",
+  approved: "Onaylandı",
+  applied: "Takvime aktarıldı",
+  reverted: "Geri alındı",
+};
+
+type PlanChange =
+  | { kind: "project"; id: string; value: Project; revision: number }
+  | {
+      kind: "allocation";
+      id: string;
+      value: number | null;
+      revision: number;
+      operation?: "delete";
+    };
+
+const scenarioProjectIds = (scenario: ShiftScenario) => [
+  ...new Set(
+    scenario.shifts
+      .filter((s) => s.projectId && s.months)
+      .map((s) => s.projectId),
+  ),
+];
+function projectAllocations(data: Data, projectIds: string[]) {
+  const ids = new Set(projectIds);
+  return Object.fromEntries(
+    Object.entries(data.allocations).filter(
+      ([key, value]) => value && ids.has(key.split("|")[1]),
+    ),
+  );
+}
+const revision = (data: Data, key: string) => data.revisions[key] || 0;
+
+/** Planned-entry and project changes that turn `from` into `to`. */
+function planChanges(
+  data: Data,
+  projects: Record<string, Project>,
+  from: Record<string, number>,
+  to: Record<string, number>,
+): PlanChange[] {
+  const changes: PlanChange[] = Object.entries(projects).map(([id, value]) => ({
+    kind: "project",
+    id,
+    value,
+    revision: revision(data, "project:" + id),
+  }));
+  for (const id of Object.keys(from))
+    if (!(id in to))
+      changes.push({
+        kind: "allocation",
+        id,
+        value: null,
+        operation: "delete",
+        revision: revision(data, "allocation:" + id),
+      });
+  for (const [id, value] of Object.entries(to))
+    if (from[id] !== value)
+      changes.push({
+        kind: "allocation",
+        id,
+        value,
+        revision: revision(data, "allocation:" + id),
+      });
+  return changes;
+}
+
+/** Changes that write an approved scenario into the real calendar, plus what
+ * is needed to undo it. Built from the complete (admin) snapshot. */
+export function scenarioApplyPlan(data: Data, scenario: ShiftScenario) {
+  const projectIds = scenarioProjectIds(scenario);
+  const result = applyScenario(data, scenario);
+  if (result.problems.length) throw Error(result.problems[0]);
+  const pick = (d: Data) =>
+    Object.fromEntries(
+      d.projects.filter((p) => projectIds.includes(p.id)).map((p) => [p.id, p]),
+    );
+  const before = projectAllocations(data, projectIds);
+  const after = projectAllocations(result.data, projectIds);
+  const undo: ScenarioUndo = {
+    projects: structuredClone(pick(data)),
+    allocations: before,
+    // Each project change in the transfer raises its revision by exactly one.
+    afterProjectRevisions: Object.fromEntries(
+      projectIds.map((id) => [id, revision(data, "project:" + id) + 1]),
+    ),
+    afterAllocations: after,
+  };
+  return {
+    changes: planChanges(data, pick(result.data), before, after),
+    undo,
+    moved: result.moved,
+  };
+}
+
+/** Changes that restore the calendar from before the transfer. Refused when the
+ * shifted projects or their planned entries changed after the transfer. */
+export function scenarioRevertPlan(data: Data, undo: ScenarioUndo) {
+  const projectIds = Object.keys(undo.projects);
+  const nowAllocations = projectAllocations(data, projectIds);
+  const changedProject = projectIds.some(
+    (id) =>
+      !data.projects.some((p) => p.id === id) ||
+      revision(data, "project:" + id) !== undo.afterProjectRevisions[id],
+  );
+  if (
+    changedProject ||
+    JSON.stringify(sortKeys(nowAllocations)) !==
+      JSON.stringify(sortKeys(undo.afterAllocations))
+  )
+    throw Error(
+      "Aktarmadan sonra bu projelerde değişiklik yapılmış; otomatik geri alma güvenli değil. Değişiklikleri elle düzeltin.",
+    );
+  return planChanges(data, undo.projects, nowAllocations, undo.allocations);
+}
+const sortKeys = (record: Record<string, number>) =>
+  Object.fromEntries(
+    Object.entries(record).sort(([a], [b]) => a.localeCompare(b)),
+  );

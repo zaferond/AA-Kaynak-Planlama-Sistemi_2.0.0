@@ -112,7 +112,7 @@ export function restore(d, u, backup) {
         .map((k) => k.slice(kind.length + 1)),
       ...(kind === "allocation" || kind === "actual"
         ? Object.keys(next[c] || {})
-        : next[c].map((x) => x.id)),
+        : (next[c] || []).map((x) => x.id)),
     ]);
     for (const id of ids)
       next.revisions[kind + ":" + id] = (d.revisions[kind + ":" + id] || 0) + 1;
@@ -137,5 +137,7 @@ export function restore(d, u, backup) {
   next.revisions[DIRECTORY_REVISION_KEY] = directoryRevision(d) + 1;
   // An absent optional archive in the backup must clear the current archive.
   if (!Object.hasOwn(next, "legacyArchive")) delete d.legacyArchive;
+  // Restore replaces the plan: a backup without scenarios clears them.
+  if (!Object.hasOwn(next, "scheduleScenarios")) delete d.scheduleScenarios;
   Object.assign(d, next);
 }

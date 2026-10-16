@@ -1081,6 +1081,10 @@ export default function Portal() {
           currentMonth={currentMonth}
           scenarios={scenarioState.scenarios}
           setScenarios={scenarioState.setScenarios}
+          isAdmin={!!isAdmin}
+          userId={user?.id || ""}
+          saving={saving}
+          onSaveChanges={batch}
           onShowInReports={(id) => {
             scenarioState.setReportScenarioId(id);
             setReportView("resources");

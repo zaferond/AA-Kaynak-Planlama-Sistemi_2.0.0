@@ -16,6 +16,7 @@ import "./audit-log.css";
 const kinds: Record<string, string> = {
   project: "Proje",
   risk: "Risk",
+  scenario: "Erteleme senaryosu",
   resource: "Çalışan kaynak",
   team: "Takım",
   allocation: "Planlanan dağılım",

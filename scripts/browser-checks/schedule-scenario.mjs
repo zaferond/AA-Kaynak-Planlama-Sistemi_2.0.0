@@ -178,3 +178,112 @@ export async function checkScheduleScenario(f) {
     await employee.page.close();
   }
 }
+
+export async function checkScheduleScenarioApproval(f) {
+  const state = await f.state();
+  const [project] = state.projects;
+  const team = f.teamA.id;
+  await f.store.mutate(f.actor, (d, u) =>
+    applyChanges(d, u, [
+      {
+        kind: "project",
+        id: project.id,
+        revision: state.revisions["project:" + project.id] || 0,
+        value: {
+          ...project,
+          start: "2026-01",
+          end: "2026-12",
+          phases: { "2026-10": "Prototip" },
+        },
+      },
+      ...["2026-09", "2026-10", "2026-11", "2026-12"].map((m) => ({
+        kind: "allocation",
+        id: `${team}|${project.id}|${m}`,
+        value: 1,
+        revision: 0,
+      })),
+    ]),
+  );
+  const months = async () =>
+    Object.keys((await f.state()).allocations)
+      .filter((k) => k.includes("|" + project.id + "|"))
+      .map((k) => k.slice(-7))
+      .sort();
+  const before = await months();
+
+  const manager = await f.client("manager");
+  try {
+    await f.check(
+      "scenario: a manager saves a draft but cannot approve",
+      async () => {
+        await selectWorkspaceTab(manager.page, "Planlanan Kaynak Dağılımı");
+        await manager.page
+          .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
+          .click();
+        const dialog = manager.page.locator(".schedule-scenario-dialog");
+        await dialog
+          .getByLabel("Proje", { exact: true })
+          .first()
+          .selectOption(project.id);
+        await dialog.getByLabel("Senaryo A senaryosunu kaydet").click();
+        await dialog.locator(".scenario-message").waitFor();
+        assert.equal((await f.state()).scheduleScenarios[0].status, "draft");
+        assert.equal(
+          await dialog.getByRole("button", { name: "Onayla" }).count(),
+          0,
+        );
+      },
+    );
+  } finally {
+    await manager.page.close();
+  }
+
+  const { page } = await f.client("root-admin");
+  page.on("dialog", (d) => d.accept());
+  try {
+    await f.check(
+      "scenario: admin approves, transfers to the calendar and undoes the transfer",
+      async () => {
+        await selectWorkspaceTab(page, "Planlanan Kaynak Dağılımı");
+        await page
+          .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
+          .click();
+        const dialog = page.locator(".schedule-scenario-dialog");
+        // The empty working card does not reuse the saved scenario's name.
+        assert.equal(
+          await dialog.getByLabel("Senaryo adı").first().inputValue(),
+          "Senaryo B",
+        );
+        const item = dialog.locator(".saved-scenarios li").first();
+        await item.getByRole("button", { name: "Onayla" }).click();
+        await item.getByRole("button", { name: "Takvime Aktar" }).click();
+        await item.getByRole("button", { name: "Geri Al" }).waitFor();
+        assert.deepEqual(await months(), [
+          "2026-09",
+          "2027-01",
+          "2027-02",
+          "2027-03",
+        ]);
+        const moved = (await f.state()).projects.find(
+          (p) => p.id === project.id,
+        );
+        assert.equal(moved.end, "2027-03");
+        assert.equal(moved.phases["2027-01"], "Prototip");
+        assert.match(await item.innerText(), /Aktaran: /);
+        await item.getByRole("button", { name: "Geri Al" }).click();
+        await dialog
+          .locator(".scenario-message")
+          .filter({ hasText: "geri alındı" })
+          .waitFor();
+        assert.deepEqual(await months(), before);
+        const restored = (await f.state()).projects.find(
+          (p) => p.id === project.id,
+        );
+        assert.equal(restored.end, "2026-12");
+        assert.equal((await f.state()).scheduleScenarios[0].status, "reverted");
+      },
+    );
+  } finally {
+    await page.close();
+  }
+}

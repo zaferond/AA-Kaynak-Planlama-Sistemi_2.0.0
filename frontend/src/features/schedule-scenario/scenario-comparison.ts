@@ -24,9 +24,10 @@ export function newScenario(
   };
 }
 
-export function nextScenarioName(existing: ShiftScenario[]) {
+/** First free "Senaryo X" among working and saved scenarios. */
+export function nextScenarioName(existing: { name: string }[]) {
   const used = new Set(existing.map((s) => s.name));
-  for (const letter of "ABCDEFGH")
+  for (const letter of "ABCDEFGHIJKLMNOPRSTUVYZ")
     if (!used.has("Senaryo " + letter)) return "Senaryo " + letter;
   return "Senaryo " + (existing.length + 1);
 }

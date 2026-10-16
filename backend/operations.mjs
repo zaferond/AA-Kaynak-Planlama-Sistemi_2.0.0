@@ -14,6 +14,7 @@ import {
   projectVisibility,
 } from "../shared/project-access.ts";
 import { stageRiskChange, stageRiskSystemChange } from "./risk-commands.mjs";
+import { stageScenarioChange } from "./scenario-commands.mjs";
 import { stageTeamChange } from "./directory-commands.mjs";
 import { stageProjectResourceChange } from "./project-resource-commands.mjs";
 import {
@@ -35,6 +36,7 @@ const changesSchema = z
         "project",
         "risk",
         "riskSystem",
+        "scenario",
         "resource",
         "allocation",
         "actual",
@@ -151,6 +153,9 @@ function stageParsedChanges(d, u, changes) {
         u.role === "admin" ||
         !existingRisk ||
         existingRisk.createdBy === u._id);
+    // Delay scenarios: managers keep drafts; status moves are checked in the handler.
+    const canScenario =
+      kind === "scenario" && (u.role === "admin" || u.role === "manager");
     if (
       u.role !== "admin" &&
       !managerPlan &&
@@ -158,7 +163,8 @@ function stageParsedChanges(d, u, changes) {
       !ownActual &&
       !ownDay &&
       !projectEditor &&
-      !canRisk
+      !canRisk &&
+      !canScenario
     )
       fail(403, "Bu işlem için yetkiniz yok.");
     if (
@@ -194,7 +200,15 @@ function stageParsedChanges(d, u, changes) {
       )
         continue;
     }
-    if (kind === "riskSystem") {
+    if (kind === "scenario") {
+      stageScenarioChange(
+        d,
+        u,
+        ch,
+        d.scheduleScenarios?.find((item) => item.id === id),
+        canSeeProject,
+      );
+    } else if (kind === "riskSystem") {
       stageRiskSystemChange(d, ch);
     } else if (kind === "risk") {
       stageRiskChange(d, u, ch, existingRisk);

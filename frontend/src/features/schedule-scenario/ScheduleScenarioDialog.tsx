@@ -4,6 +4,7 @@ import {
   ChartColumn,
   Copy,
   Plus,
+  Save,
   Trash2,
   X,
 } from "lucide-react";
@@ -16,7 +17,17 @@ import {
 } from "@/components/ui/dialog";
 import type { Data } from "../../model";
 import { fmt, monthLabel } from "../../format";
-import type { ShiftScenario } from "../../../../shared/schedule-shift";
+import {
+  SCENARIO_STATUS_LABELS,
+  scenarioApplyPlan,
+  scenarioRevertPlan,
+  type SavedScenario,
+  type ShiftScenario,
+} from "../../../../shared/schedule-shift";
+import type { Change } from "../../../../shared/commands";
+import SavedScenarioList, {
+  type SavedScenarioAction,
+} from "./SavedScenarioList";
 import {
   compareScenarios,
   newScenario,
@@ -34,6 +45,11 @@ type Props = {
   setScenarios: Dispatch<SetStateAction<ShiftScenario[]>>;
   /** Draw the resource reports for this scenario. */
   onShowInReports: (scenarioId: string) => void;
+  isAdmin: boolean;
+  userId: string;
+  saving: boolean;
+  /** Writes one atomic batch; rejects with the server message. */
+  onSaveChanges: (changes: Change[]) => Promise<void>;
 };
 
 const MAX_SCENARIOS = 3;
@@ -46,8 +62,145 @@ export default function ScheduleScenarioDialog({
   scenarios,
   setScenarios,
   onShowInReports,
+  isAdmin,
+  userId,
+  saving,
+  onSaveChanges,
 }: Props) {
   const [focus, setFocus] = useState(0);
+  const [message, setMessage] = useState<{ text: string; error?: boolean }>();
+  const saved = data.scheduleScenarios || [];
+  const savedOf = (id: string) => saved.find((item) => item.id === id);
+  const scenarioChange = (value: SavedScenario | null): Change => ({
+    kind: "scenario",
+    id: value?.id || "",
+    value,
+    revision: data.revisions["scenario:" + (value?.id || "")] || 0,
+  });
+  async function run(changes: Change[], done: string, after?: () => void) {
+    setMessage(undefined);
+    try {
+      await onSaveChanges(changes);
+      setMessage({ text: done });
+      after?.();
+    } catch (error) {
+      setMessage({ text: (error as Error).message, error: true });
+    }
+  }
+  const dropCard = (id: string) =>
+    setScenarios((all) =>
+      all.length > 1 ? all.filter((s) => s.id !== id) : all,
+    );
+  function saveCard(scenario: ShiftScenario) {
+    const shifts = scenario.shifts.filter((s) => s.projectId && s.months);
+    if (!shifts.length || !scenario.name.trim()) {
+      setMessage({
+        text: "Kaydetmek için senaryo adı ve en az bir proje ile ay sayısı girin.",
+        error: true,
+      });
+      return;
+    }
+    const existing = savedOf(scenario.id);
+    const value: SavedScenario = {
+      ...(existing || {
+        status: "draft",
+        createdBy: userId,
+        createdByName: "",
+        createdAt: new Date().toISOString(),
+      }),
+      id: scenario.id,
+      name: scenario.name.trim(),
+      includeTimeline: scenario.includeTimeline,
+      shifts,
+    };
+    const { id: changeId } = value;
+    void run(
+      [{ ...scenarioChange(value), id: changeId }],
+      `“${value.name}” kaydedildi.`,
+    );
+  }
+  function act(action: SavedScenarioAction, item: SavedScenario) {
+    if (action === "compare") {
+      const index = scenarios.findIndex((s) => s.id === item.id);
+      if (index >= 0) return setFocus(index);
+      const card: ShiftScenario = {
+        id: item.id,
+        name: item.name,
+        includeTimeline: item.includeTimeline,
+        shifts: item.shifts,
+      };
+      setScenarios((all) =>
+        all.length < MAX_SCENARIOS
+          ? [...all, card]
+          : [...all.slice(0, -1), card],
+      );
+      return;
+    }
+    if (action === "approve" || action === "withdraw")
+      return void run(
+        [
+          scenarioChange({
+            ...item,
+            status: action === "approve" ? "approved" : "draft",
+          }),
+        ],
+        action === "approve"
+          ? `“${item.name}” onaylandı.`
+          : `“${item.name}” onayı geri çekildi.`,
+      );
+    if (action === "delete") {
+      if (!confirm(`“${item.name}” senaryosu silinsin mi?`)) return;
+      return void run(
+        [{ ...scenarioChange(null), id: item.id, operation: "delete" }],
+        `“${item.name}” silindi.`,
+      );
+    }
+    if (action === "apply") {
+      let plan;
+      try {
+        plan = scenarioApplyPlan(data, item);
+      } catch (error) {
+        return setMessage({ text: (error as Error).message, error: true });
+      }
+      if (
+        !confirm(
+          `“${item.name}” takvime aktarılsın mı?\n\n${plan.moved} planlanan kayıt taşınacak; proje dönemleri${item.includeTimeline ? ", aşamalar ve kilometre taşları" : ""} güncellenecek. Bu işlem kayıtları değiştirir. Gerekirse “Geri Al” ile önceki takvime dönülebilir.`,
+        )
+      )
+        return;
+      return void run(
+        [
+          ...(plan.changes as Change[]),
+          scenarioChange({ ...item, status: "applied", undo: plan.undo }),
+        ],
+        `“${item.name}” takvime aktarıldı.`,
+        () => dropCard(item.id),
+      );
+    }
+    if (action === "revert") {
+      let changes;
+      try {
+        if (!item.undo) throw Error("Geri alma bilgisi bulunamadı.");
+        changes = scenarioRevertPlan(data, item.undo);
+      } catch (error) {
+        return setMessage({ text: (error as Error).message, error: true });
+      }
+      if (
+        !confirm(
+          `“${item.name}” geri alınsın mı? Projeler ve planlanan kayıtlar aktarmadan önceki haline döner.`,
+        )
+      )
+        return;
+      return void run(
+        [
+          ...(changes as Change[]),
+          scenarioChange({ ...item, status: "reverted" }),
+        ],
+        `“${item.name}” geri alındı; önceki takvim yüklendi.`,
+        () => dropCard(item.id),
+      );
+    }
+  }
   const comparison = useMemo(
     () => compareScenarios(data, scenarios, currentMonth),
     [data, scenarios, currentMonth],
@@ -77,6 +230,9 @@ export default function ScheduleScenarioDialog({
                 data={data}
                 scenario={scenario}
                 problems={comparison.results[index]?.problems || []}
+                saved={savedOf(scenario.id)}
+                saving={saving}
+                onSave={() => saveCard(scenario)}
                 canRemove={scenarios.length > 1}
                 canCopy={scenarios.length < MAX_SCENARIOS}
                 onChange={(next) => update(index, next)}
@@ -89,7 +245,7 @@ export default function ScheduleScenarioDialog({
                     {
                       ...structuredClone(scenario),
                       id: crypto.randomUUID(),
-                      name: nextScenarioName(all),
+                      name: nextScenarioName([...all, ...saved]),
                       shifts: scenario.shifts.map((s) => ({
                         ...s,
                         months: s.months + 2,
@@ -106,7 +262,11 @@ export default function ScheduleScenarioDialog({
                 onClick={() =>
                   setScenarios((all) => [
                     ...all,
-                    newScenario(nextScenarioName(all), currentMonth, 3),
+                    newScenario(
+                      nextScenarioName([...all, ...saved]),
+                      currentMonth,
+                      3,
+                    ),
                   ])
                 }
               >
@@ -121,11 +281,29 @@ export default function ScheduleScenarioDialog({
             shown={shown}
             onShow={setFocus}
           />
+          <SavedScenarioList
+            data={data}
+            scenarios={saved}
+            isAdmin={isAdmin}
+            userId={userId}
+            busy={saving}
+            onAction={act}
+          />
         </div>
         <div className="schedule-scenario-actions">
-          <small>
-            Onaylama ve yeni takvime aktarma bir sonraki aşamada eklenecek.
-          </small>
+          {message ? (
+            <small
+              className={message.error ? "negative" : "scenario-message"}
+              role={message.error ? "alert" : "status"}
+            >
+              {message.text}
+            </small>
+          ) : (
+            <small>
+              Kaydedilen senaryoyu admin onaylar ve takvime aktarır; geri
+              alınabilir.
+            </small>
+          )}
           <button
             type="button"
             className="button"
@@ -163,6 +341,9 @@ function ScenarioCard({
   onChange,
   onRemove,
   onCopy,
+  saved,
+  saving,
+  onSave,
 }: {
   data: Data;
   scenario: ShiftScenario;
@@ -172,7 +353,12 @@ function ScenarioCard({
   onChange: (next: ShiftScenario) => void;
   onRemove: () => void;
   onCopy: () => void;
+  saved?: SavedScenario;
+  saving: boolean;
+  onSave: () => void;
 }) {
+  // Approved or transferred scenarios are a record of the decision.
+  const locked = !!saved && saved.status !== "draft";
   const setShift = (
     index: number,
     patch: Partial<ShiftScenario["shifts"][0]>,
@@ -190,8 +376,21 @@ function ScenarioCard({
           aria-label="Senaryo adı"
           value={scenario.name}
           maxLength={40}
+          disabled={locked}
           onChange={(e) => onChange({ ...scenario, name: e.target.value })}
         />
+        <button
+          type="button"
+          className="icon-button"
+          title={
+            locked ? "Onaylanmış senaryo değiştirilemez" : "Senaryoyu kaydet"
+          }
+          aria-label={scenario.name + " senaryosunu kaydet"}
+          disabled={locked || saving}
+          onClick={onSave}
+        >
+          <Save size={14} aria-hidden="true" />
+        </button>
         {canCopy && (
           <button
             type="button"
@@ -215,96 +414,106 @@ function ScenarioCard({
           </button>
         )}
       </header>
-      <div className="schedule-shift-head" aria-hidden="true">
-        <span>Proje</span>
-        <span>Ay</span>
-        <span>Başlangıç ayı</span>
-      </div>
-      {scenario.shifts.map((shift, index) => (
-        <div className="schedule-shift-row" key={index}>
-          <select
-            aria-label="Proje"
-            value={shift.projectId}
-            onChange={(e) => setShift(index, { projectId: e.target.value })}
-          >
-            <option value="">Proje seçin</option>
-            {data.projects.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="number"
-            aria-label="Kaydırılacak ay"
-            title="Artı: erteleme, eksi: öne çekme"
-            min={-24}
-            max={24}
-            step={1}
-            value={shift.months}
-            onChange={(e) =>
-              setShift(index, {
-                months: Math.max(
-                  -24,
-                  Math.min(24, Math.trunc(Number(e.target.value)) || 0),
-                ),
-              })
-            }
-          />
-          <input
-            type="month"
-            aria-label="Kaydırmanın başladığı ay"
-            value={shift.fromMonth}
-            onChange={(e) =>
-              e.target.value && setShift(index, { fromMonth: e.target.value })
-            }
-          />
-          <button
-            type="button"
-            className="icon-button"
-            aria-label="Projeyi senaryodan çıkar"
-            title="Projeyi senaryodan çıkar"
-            disabled={scenario.shifts.length === 1}
-            onClick={() =>
-              onChange({
-                ...scenario,
-                shifts: scenario.shifts.filter((_, i) => i !== index),
-              })
-            }
-          >
-            <X size={14} aria-hidden="true" />
-          </button>
+      {saved && (
+        <p className="schedule-card-status" data-scenario-status={saved.status}>
+          {SCENARIO_STATUS_LABELS[saved.status]}
+          {locked
+            ? " · değiştirilemez; çoğaltarak yeni taslak açabilirsiniz"
+            : " · kayıtlı"}
+        </p>
+      )}
+      <fieldset className="schedule-card-fields" disabled={locked}>
+        <div className="schedule-shift-head" aria-hidden="true">
+          <span>Proje</span>
+          <span>Ay</span>
+          <span>Başlangıç ayı</span>
         </div>
-      ))}
-      <button
-        type="button"
-        className="textbutton"
-        onClick={() =>
-          onChange({
-            ...scenario,
-            shifts: [
-              ...scenario.shifts,
-              {
-                projectId: "",
-                months: scenario.shifts[0]?.months || 3,
-                fromMonth: scenario.shifts[0]?.fromMonth || "",
-              },
-            ],
-          })
-        }
-      >
-        + Proje Ekle
-      </button>
-      <label className="schedule-timeline-option">
-        <input
-          type="checkbox"
-          checked={scenario.includeTimeline}
-          onChange={(e) =>
-            onChange({ ...scenario, includeTimeline: e.target.checked })
+        {scenario.shifts.map((shift, index) => (
+          <div className="schedule-shift-row" key={index}>
+            <select
+              aria-label="Proje"
+              value={shift.projectId}
+              onChange={(e) => setShift(index, { projectId: e.target.value })}
+            >
+              <option value="">Proje seçin</option>
+              {data.projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              aria-label="Kaydırılacak ay"
+              title="Artı: erteleme, eksi: öne çekme"
+              min={-24}
+              max={24}
+              step={1}
+              value={shift.months}
+              onChange={(e) =>
+                setShift(index, {
+                  months: Math.max(
+                    -24,
+                    Math.min(24, Math.trunc(Number(e.target.value)) || 0),
+                  ),
+                })
+              }
+            />
+            <input
+              type="month"
+              aria-label="Kaydırmanın başladığı ay"
+              value={shift.fromMonth}
+              onChange={(e) =>
+                e.target.value && setShift(index, { fromMonth: e.target.value })
+              }
+            />
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Projeyi senaryodan çıkar"
+              title="Projeyi senaryodan çıkar"
+              disabled={scenario.shifts.length === 1}
+              onClick={() =>
+                onChange({
+                  ...scenario,
+                  shifts: scenario.shifts.filter((_, i) => i !== index),
+                })
+              }
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="textbutton"
+          onClick={() =>
+            onChange({
+              ...scenario,
+              shifts: [
+                ...scenario.shifts,
+                {
+                  projectId: "",
+                  months: scenario.shifts[0]?.months || 3,
+                  fromMonth: scenario.shifts[0]?.fromMonth || "",
+                },
+              ],
+            })
           }
-        />
-        Aşamalar, başlıklar ve kilometre taşları da kaysın
-      </label>
+        >
+          + Proje Ekle
+        </button>
+        <label className="schedule-timeline-option">
+          <input
+            type="checkbox"
+            checked={scenario.includeTimeline}
+            onChange={(e) =>
+              onChange({ ...scenario, includeTimeline: e.target.checked })
+            }
+          />
+          Aşamalar, başlıklar ve kilometre taşları da kaysın
+        </label>
+      </fieldset>
       {problems.map((problem) => (
         <p key={problem} className="negative" role="alert">
           {problem}

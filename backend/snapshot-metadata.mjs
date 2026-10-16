@@ -8,6 +8,7 @@ const metadataQueries = Object.freeze({
   projects:
     "SELECT * FROM kp_projects ORDER BY CASE WHEN sort_order IS NULL THEN 0 ELSE 1 END,sort_order,id",
   risks: "SELECT * FROM kp_project_risks ORDER BY id",
+  scenarios: "SELECT id,payload FROM kp_schedule_scenarios ORDER BY id",
   phases: "SELECT * FROM kp_project_phases",
   milestones:
     "SELECT * FROM kp_project_milestones ORDER BY project_id,sort_order,id",
@@ -31,7 +32,8 @@ export async function snapshotMetadataReader(
     return (name) => {
       if (!Object.hasOwn(metadataQueries, name))
         throw Error("Unknown snapshot metadata query.");
-      if (report && name === "risks") return Promise.resolve({ rows: [] });
+      if (report && (name === "risks" || name === "scenarios"))
+        return Promise.resolve({ rows: [] });
       if (
         report === "activity" &&
         ["riskSystems", "phases", "milestones"].includes(name)

@@ -1,4 +1,5 @@
 import type { Project, Risk, RiskSystem, Resource, Team } from "./model.ts";
+import type { SavedScenario } from "./schedule-shift.ts";
 import type { ActualUnit, WorkCalendar, PersonDay } from "./actual-units.ts";
 export type ChangeValues = {
   allocation: number;
@@ -11,6 +12,7 @@ export type ChangeValues = {
   riskSystem: RiskSystem;
   resource: Resource;
   team: Team;
+  scenario: SavedScenario;
 };
 export type ChangeKind = keyof ChangeValues;
 export type Change<K extends ChangeKind = ChangeKind> = {

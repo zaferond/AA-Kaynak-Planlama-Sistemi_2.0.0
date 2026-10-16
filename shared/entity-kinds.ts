@@ -6,4 +6,5 @@ export const entityCollections = {
   resource: "resources",
   allocation: "allocations",
   actual: "actualAllocations",
+  scenario: "scheduleScenarios",
 };

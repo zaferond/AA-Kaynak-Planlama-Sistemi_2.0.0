@@ -315,3 +315,102 @@
 .app .panel td[data-scenario-change="worse"] {
   box-shadow: inset 0 0 0 2px #b42318;
 }
+
+/* Saved scenarios: the decision trail and the admin actions. */
+.schedule-card-fields {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.schedule-card-fields:disabled {
+  opacity: 0.7;
+}
+.schedule-card-status {
+  margin: 0;
+  color: var(--brand-muted, #60715e);
+  font-weight: 600;
+}
+[data-scenario-status="approved"].schedule-card-status,
+.saved-scenarios li[data-scenario-status="approved"] .saved-scenario-status {
+  color: #1f5c3a;
+}
+[data-scenario-status="applied"].schedule-card-status,
+.saved-scenarios li[data-scenario-status="applied"] .saved-scenario-status {
+  color: #7a5408;
+}
+.saved-scenarios {
+  display: grid;
+  gap: 8px;
+}
+.saved-scenarios h3 {
+  margin: 4px 0 0;
+  color: var(--brand-text, #293a2d);
+  font-size: var(--fs-sm);
+}
+.saved-scenarios ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.saved-scenarios li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 8px;
+  background: #fff;
+  font-size: var(--fs-xs);
+}
+.saved-scenario-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  min-width: 0;
+  flex: 1 1 420px;
+}
+.saved-scenario-main strong {
+  color: var(--brand-text, #293a2d);
+  font-size: var(--fs-sm);
+}
+.saved-scenario-status {
+  padding: 1px 8px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 999px;
+  background: var(--brand-surface-soft, #f6f8f2);
+  color: var(--brand-muted, #60715e);
+  font-weight: 700;
+}
+.saved-scenario-shifts {
+  color: var(--brand-text, #293a2d);
+}
+.saved-scenario-main small {
+  flex-basis: 100%;
+  color: var(--brand-muted, #60715e);
+}
+.saved-scenario-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.saved-scenario-actions .button {
+  height: 28px;
+  min-height: 28px;
+  padding: 3px 10px;
+  font-size: var(--fs-xs);
+}
+.schedule-scenario-actions .scenario-message {
+  color: #1f6b3a;
+  font-weight: 600;
+}
+.schedule-scenario-actions .negative {
+  margin: 0;
+}

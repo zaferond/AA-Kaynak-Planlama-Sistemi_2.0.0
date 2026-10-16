@@ -38,5 +38,6 @@
   "shared/phase-chips.css",
   "workspace/viewport-tables.css",
   "workspace/compact-chrome.css",
-  "allocation/empty-cells.css"
+  "allocation/empty-cells.css",
+  "reports/critical-topics.css"
 ]

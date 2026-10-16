@@ -1,4 +1,5 @@
 import type { Project } from "./model";
+import { isoWeek } from "./iso-week.ts";
 
 const DAY = 86_400_000;
 const isoDate = (value: number) => new Date(value).toISOString().slice(0, 10);
@@ -78,12 +79,8 @@ export function projectTimelinePeriods(
   for (let cursor = first; cursor <= last;) {
     const monday = cursor - ((new Date(cursor).getUTCDay() + 6) % 7) * DAY;
     const end = Math.min(monday + 6 * DAY, last);
-    const thursday = new Date(monday + 3 * DAY);
-    const year = String(thursday.getUTCFullYear());
-    const firstThursday = Date.UTC(thursday.getUTCFullYear(), 0, 4);
-    const firstMonday =
-      firstThursday - ((new Date(firstThursday).getUTCDay() + 6) % 7) * DAY;
-    const weekNumber = Math.floor((monday - firstMonday) / (7 * DAY)) + 1;
+    const { year: weekYear, week: weekNumber } = isoWeek(isoDate(monday));
+    const year = String(weekYear);
     const startDate = isoDate(cursor),
       endDate = isoDate(end);
     periods.push({

@@ -215,6 +215,90 @@
   min-height: 24px;
   padding: 2px 6px;
 }
+/* Week quick filter: a full-width second toolbar row. */
+.app.tab-critical .project-info-weekbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+}
+.app.tab-critical .project-info-weekbar-label {
+  margin-right: 2px;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+}
+.app.tab-critical .project-info-weekbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--brand-primary, #405341);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+  cursor: pointer;
+}
+.app.tab-critical .project-info-weekbar button:hover {
+  background: var(--brand-selected, #e6eddf);
+}
+.app.tab-critical .project-info-weekbar button span {
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--brand-surface, #eef2e9);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.app.tab-critical .project-info-weekbar button[aria-pressed="true"] {
+  border-color: #2f6f8f;
+  background: #2f6f8f;
+  color: #fff;
+}
+.app.tab-critical .project-info-weekbar button[aria-pressed="true"] span {
+  background: #ffffff2e;
+}
+.app.tab-critical .project-info-weekbar select {
+  width: auto;
+  min-width: 200px;
+  height: 28px;
+  font-size: var(--fs-xs);
+}
+.app.tab-critical .project-info-weekbar-range {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+
+/* Week chips on each topic: the current week is outlined, the filtered
+   week is filled. */
+.app.tab-critical .project-info-weeks {
+  display: inline-flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.app.tab-critical .project-info-week {
+  padding: 1px 5px;
+  border: 1px solid #c9d8e3;
+  border-radius: 4px;
+  background: #f1f6fa;
+  color: #2f5f7f;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.app.tab-critical .project-info-week[data-current] {
+  border-color: #2f6f8f;
+  box-shadow: inset 0 0 0 1px #2f6f8f;
+}
+.app.tab-critical .project-info-week[data-selected] {
+  border-color: #2f6f8f;
+  background: #2f6f8f;
+  color: #fff;
+}
 @media (max-width: 700px) {
   .app.tab-critical .project-info-collapse-all {
     margin-left: 0;

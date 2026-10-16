@@ -1,4 +1,5 @@
-import type { ReportProject, ReportTopic } from "./project-info-report";
+import type { ReportProject, ReportTopic } from "./project-info-report.ts";
+import { weeksInRange, type IsoWeek } from "./iso-week.ts";
 
 /** done: marked complete · late: end passed while open · active: today is
  * inside the range · planned: not started yet. */
@@ -26,7 +27,32 @@ export function matchesTopicFilter(status: TopicStatus, filter: TopicFilter) {
   return status !== "done";
 }
 
-export function topicFilterCounts(groups: ReportProject[], today: string) {
+/** A topic belongs to every week its date range touches. */
+export const topicInWeek = (topic: ReportTopic, week: IsoWeek | null) =>
+  !week ||
+  (topic.start <= week.end && (topic.end || topic.start) >= week.start);
+
+/** Weeks that hold at least one topic, with their topic counts. */
+export function reportWeeks(groups: ReportProject[]) {
+  const weeks = new Map<string, { week: IsoWeek; count: number }>();
+  for (const project of groups)
+    for (const info of project.infos)
+      for (const topic of info.topics)
+        for (const week of weeksInRange(topic.start, topic.end)) {
+          const entry = weeks.get(week.key) || { week, count: 0 };
+          entry.count++;
+          weeks.set(week.key, entry);
+        }
+  return [...weeks.values()].sort((a, b) =>
+    a.week.key.localeCompare(b.week.key),
+  );
+}
+
+export function topicFilterCounts(
+  groups: ReportProject[],
+  today: string,
+  week: IsoWeek | null = null,
+) {
   const counts: Record<TopicFilter, number> = {
     all: 0,
     open: 0,
@@ -36,6 +62,7 @@ export function topicFilterCounts(groups: ReportProject[], today: string) {
   for (const project of groups)
     for (const info of project.infos)
       for (const topic of info.topics) {
+        if (!topicInWeek(topic, week)) continue;
         const status = topicStatus(topic, today);
         for (const { value } of TOPIC_FILTERS)
           if (matchesTopicFilter(status, value)) counts[value]++;
@@ -48,7 +75,9 @@ export function filterReportGroups(
   groups: ReportProject[],
   filter: TopicFilter,
   today: string,
+  week: IsoWeek | null = null,
 ) {
+  const narrowed = filter !== "all" || !!week;
   return groups
     .map((project) => ({
       ...project,
@@ -56,11 +85,13 @@ export function filterReportGroups(
         .map((info, index) => ({
           ...info,
           index,
-          topics: info.topics.filter((topic) =>
-            matchesTopicFilter(topicStatus(topic, today), filter),
+          topics: info.topics.filter(
+            (topic) =>
+              topicInWeek(topic, week) &&
+              matchesTopicFilter(topicStatus(topic, today), filter),
           ),
         }))
-        .filter((info) => filter === "all" || info.topics.length),
+        .filter((info) => !narrowed || info.topics.length),
     }))
-    .filter((project) => filter === "all" || project.infos.length);
+    .filter((project) => !narrowed || project.infos.length);
 }

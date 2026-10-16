@@ -138,12 +138,14 @@ export default function ReportSummary({
             className={"report-summary-card tone-" + card.tone}
           >
             <span className="report-summary-label">{card.label}</span>
-            <strong className="report-summary-value">
-              {card.value}
-              {card.unit && <small> {card.unit}</small>}
-            </strong>
-            <span className="report-summary-detail" title={card.detail}>
-              {card.detail}
+            <span className="report-summary-line">
+              <strong className="report-summary-value">
+                {card.value}
+                {card.unit && <small> {card.unit}</small>}
+              </strong>
+              <span className="report-summary-detail" title={card.detail}>
+                {card.detail}
+              </span>
             </span>
           </div>
         ))}

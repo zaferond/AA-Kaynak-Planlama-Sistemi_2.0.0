@@ -1,4 +1,27 @@
-# Kısa kullanıcı manueli
+# Kullanıcı manueli
+
+## Güncel belge: sürüm 2.0 (16.10.2026)
+
+`AA-Kaynak-Planlama-Sistemi-Kullanici-Manueli-ve-Yetki-Matrisi.pdf` (18 sayfa) güncel arayüzü anlatır ve rol bazlı yetki matrisini içerir: Admin, Yönetici, Normal Kullanıcı ve Normal-Proje rolleri, proje görüntüleme yetkisi, yeni aşama renkleri, köşe bildirimleri ve varsayılan olarak kapalı başlayan anahtarlar. Uygulama durumu: main, commit `76934c5`. Ekran görüntüleri kurgusal test verisiyle (`scripts/demo-data.mjs`) alınmıştır.
+
+`v2/` klasörü kaynakları içerir:
+
+- `manual.html`: belge metni ve sayfa düzeni.
+- `shots/`: PDF'de kullanılan ekran görüntüleri (JPEG).
+- `add-accounts.mjs`: demo veritabanının **kopyasına** ekran görüntüsü için geçici `sistem.admin` (Admin) ve `proje.ofisi` (Normal-Proje) hesapları ekler.
+- `shots.mjs`: 3100 portunda çalışan kopya sunucudan ekran görüntülerini alır (PNG; PDF için JPEG'e çevrilir).
+- `pdf.mjs`: `manual.html` dosyasını Chrome ile A4 PDF'e dönüştürür.
+
+Yeniden üretme (proje kökünde, `APP_ROOT` proje kökü olacak şekilde):
+
+1. Demo veritabanının bir kopyasını geçici klasöre alın; `node add-accounts.mjs <kopya.sqlite>` çalıştırın.
+2. Kopyayı `PORT=3100 APP_ORIGIN=http://localhost:3100 SQLJS_FILE=<kopya> node backend/server.mjs` ile açın.
+3. `node shots.mjs <çıktı-klasörü>`; görüntüleri `v2/shots/` altına JPEG olarak koyun.
+4. `node pdf.mjs v2/manual.html <çıktı.pdf>`.
+
+Gerçek veritabanına (`data/planlama.sqlite`) bu adımlarda dokunulmaz.
+
+## Önceki belge: sürüm 1.1
 
 **Sürüm 1.1 / 15.10.2026.** PDF, kapak ve içindekiler dahil 9 sayfadır. Günlük kullanım 1-6. bölümlerde; sorun giderme ve IT bilgileri 7. bölümdedir. Bu sürüm kısa işlem adımları ve tablolar kullanır; eski ekran görüntülerini içermez.
 

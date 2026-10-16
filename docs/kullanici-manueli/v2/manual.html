@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>AA Kaynak Planlama Sistemi – Kullanıcı Manueli ve Yetki Matrisi</title>
+<style>
+  @page { size: A4; margin: 18mm 15mm 18mm 15mm; }
+  :root {
+    --ink: #1f2b22; --muted: #5d6b5f; --brand: #2f4a35; --brand-soft: #e8eee4;
+    --line: #cfd8ca; --yes: #1f5c3a; --yes-bg: #e2efe6; --part: #7a5a12; --part-bg: #f6edd6;
+    --see: #23384f; --see-bg: #e6ecf3; --no: #8a948b; --warn-bg: #fbf3e4; --warn-line: #d9b56b;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; color: var(--ink); background: #fff;
+    font: 10pt/1.45 "Helvetica Neue", Arial, sans-serif; }
+  h1, h2, h3 { color: var(--brand); line-height: 1.2; }
+  h1 { font-size: 19pt; margin: 0 0 4mm; padding-bottom: 2.5mm; border-bottom: 2px solid var(--brand); }
+  h2 { font-size: 12.5pt; margin: 5mm 0 2mm; }
+  h3 { font-size: 10.5pt; margin: 4mm 0 1.5mm; }
+  p { margin: 0 0 2.2mm; }
+  ul, ol { margin: 0 0 2.5mm; padding-left: 5.5mm; }
+  li { margin-bottom: 1mm; }
+  .page { break-before: page; }
+  .ui { font-weight: 700; color: #26402c; }
+
+  .cover { height: 255mm; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover-band { background: linear-gradient(135deg, #2c4532, #4d6a4f); color: #fff;
+    border-radius: 4mm; padding: 16mm 12mm; margin-top: 24mm; }
+  .cover-band .kicker { font-size: 10pt; letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
+  .cover-band h1 { color: #fff; border: 0; font-size: 26pt; margin: 4mm 0 3mm; padding: 0; }
+  .cover-band .sub { font-size: 14pt; opacity: .95; }
+  .meta { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+  .meta td { padding: 2mm 3mm; border-bottom: 1px solid var(--line); }
+  .meta td:first-child { color: var(--muted); width: 45mm; }
+  .toc { margin-top: 9mm; }
+  .toc ol { padding-left: 6mm; font-size: 10.5pt; }
+  .toc li { margin-bottom: 1.5mm; }
+
+  .note { background: var(--brand-soft); border-left: 3px solid var(--brand); padding: 2.5mm 3.5mm;
+    margin: 2.5mm 0 3mm; border-radius: 1.5mm; break-inside: avoid; }
+  .warn { background: var(--warn-bg); border-left: 3px solid var(--warn-line); padding: 2.5mm 3.5mm;
+    margin: 2.5mm 0 3mm; border-radius: 1.5mm; break-inside: avoid; }
+
+  figure { margin: 2.5mm 0 3.5mm; break-inside: avoid; }
+  .shot { border: 1px solid var(--line); border-radius: 2mm; overflow: hidden; }
+  .shot img { display: block; width: 100%; }
+  figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 1.2mm; }
+
+  table.grid { width: 100%; border-collapse: collapse; font-size: 8.8pt; margin: 2mm 0 4mm; }
+  table.grid th, table.grid td { border: 1px solid var(--line); padding: 1.3mm 2mm; vertical-align: top; text-align: left; }
+  table.grid thead th { background: var(--brand); color: #fff; font-weight: 700; }
+  table.grid tbody th { background: #f4f7f1; font-weight: 700; width: 58mm; }
+  table.grid tr { break-inside: avoid; }
+  table.grid tr.group td { background: #dfe7da; font-weight: 700; color: var(--brand); padding: 1.1mm 2mm; }
+  .m td { text-align: center; }
+  .m td.l { text-align: left; }
+  .y, .p, .s { display: inline-block; border-radius: 1mm; padding: .4mm 1.6mm; font-weight: 700; font-size: 8.3pt; }
+  .y { background: var(--yes-bg); color: var(--yes); }
+  .p { background: var(--part-bg); color: var(--part); }
+  .s { background: var(--see-bg); color: var(--see); }
+  .n { color: var(--no); }
+  .m small { display: block; color: var(--muted); font-size: 7.6pt; line-height: 1.3; margin-top: .6mm; }
+  .legend { font-size: 8.5pt; color: var(--muted); margin-bottom: 2mm; }
+  .legend > span { margin-right: 4mm; white-space: nowrap; display: inline-block; margin-bottom: 1mm; }
+
+  .roles { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin: 2mm 0 3mm; }
+  .role { border: 1px solid var(--line); border-radius: 2mm; padding: 3mm 3.5mm; break-inside: avoid; }
+  .role h3 { margin: 0 0 1.5mm; }
+  .role p { margin: 0; font-size: 9.2pt; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div>
+    <div class="cover-band">
+      <div class="kicker">AA Kaynak Planlama Sistemi</div>
+      <h1>Askeri Araçlar Kaynak Yönetimi Sistemi</h1>
+      <div class="sub">Kullanıcı Manueli ve Yetki Matrisi</div>
+    </div>
+    <div class="toc">
+      <h2>İçindekiler</h2>
+      <ol>
+        <li>Giriş ve ekran düzeni</li>
+        <li>Roller</li>
+        <li>Gerçekleşen Kaynak Dağılımı ve kişisel takvim</li>
+        <li>Aylık Aktivite Raporu</li>
+        <li>Planlanan Kaynak Dağılımı</li>
+        <li>Projeler ve Kritik Proje Konuları</li>
+        <li>Proje görüntüleme yetkisi</li>
+        <li>Kaynak Planlama Raporları ve Head Count</li>
+        <li>Organizasyon, çalışan ve hesap yönetimi</li>
+        <li>Yetki matrisi</li>
+        <li>Sık karşılaşılan durumlar ve sözlük</li>
+      </ol>
+    </div>
+  </div>
+  <table class="meta">
+    <tr><td>Belge sürümü</td><td>2.0</td></tr>
+    <tr><td>Tarih</td><td>16.10.2026</td></tr>
+    <tr><td>Uygulama durumu</td><td>main dalı, commit 76934c5</td></tr>
+    <tr><td>Ekran görüntüleri</td><td>Kurgusal test verisiyle alınmıştır; gerçek kişi veya proje bilgisi içermez.</td></tr>
+  </table>
+</section>
+
+<!-- 1 -->
+<section class="page">
+  <h1>1. Giriş ve ekran düzeni</h1>
+  <h2>Sisteme giriş</h2>
+  <ol>
+    <li>Uygulama adresini tarayıcıda açın. <span class="ui">Kullanıcı Adı</span> ve <span class="ui">Şifre</span> alanlarını doldurup <span class="ui">Giriş Yap</span> düğmesine basın.</li>
+    <li>Active Directory hesabı kullanıyorsanız kurum şifrenizle girersiniz; hesabınıza ayrıca uygulama yetkisi tanımlanmış olmalıdır.</li>
+    <li>Sağ üstte kullanıcı adınızı ve rolünüzü kontrol edin. İşiniz bitince <span class="ui">Çıkış</span> düğmesini kullanın.</li>
+  </ol>
+  <figure>
+    <div class="shot" style="height:50mm"><img src="shots/giris.jpg" alt="Giriş ekranı"></div>
+    <figcaption>Giriş ekranı</figcaption>
+  </figure>
+  <h2>Ekranın bölümleri</h2>
+  <ul>
+    <li><b>Üst bar:</b> Sistem adı, kullanıcı menüsü ve <span class="ui">Çıkış</span>. Kullanıcı menüsünden <span class="ui">Varsayılan sekme</span> seçilir (bu tarayıcıda sonraki girişte açılacak ekran). Admin bu menüde ayrıca <span class="ui">Veri Yedeği İndir</span> ve <span class="ui">Yedek Yükle</span> işlemlerini görür.</li>
+    <li><b>Sekmeler:</b> Gruplar halinde dizilir ve ince çizgilerle ayrılır: gerçekleşen ve aktivite · planlama ve projeler · raporlar · yönetim. Her kullanıcı yalnız rolünün izin verdiği sekmeleri görür.</li>
+    <li><b>Araç satırı:</b> <span class="ui">Görünüm</span> (Ayrıntılı, Kompakt, 5 Yıllık Genel Bakış), ekrana özel düğmeler ve <span class="ui">Excel'e Aktar</span> / <span class="ui">Proje Raporunu İndir</span> / <span class="ui">Kaynak Raporu İndir</span>.</li>
+    <li><b>Filtreler:</b> Liderlik, Takım, Proje, Kişi, Başlangıç Ayı ve Görünür Dönem. <span class="ui">Filtreleri Sıfırla</span> varsayılana döndürür. Filtre yalnız görünümü daraltır, yetki vermez.</li>
+    <li><b>Sadece veri olanlar:</b> Planlanan ve gerçekleşen tablolarda boş/0 satırları gizler. Her açılışta <b>kapalı</b> başlar.</li>
+    <li><b>Bildirimler:</b> "Veritabanına kaydedildi", "N kayıt birlikte kaydedildi", "Filtre uygulandı" gibi mesajlar sağ altta birkaç saniye görünüp kaybolur; tabloyu kaydırmaz. Hata mesajları ise ekranda kalır.</li>
+  </ul>
+  <figure>
+    <div class="shot" style="width:46%"><img src="shots/kullanici-menusu.jpg" alt="Kullanıcı menüsü"></div>
+    <figcaption>Kullanıcı menüsü: rol bilgisi ve varsayılan sekme seçimi</figcaption>
+  </figure>
+</section>
+
+<!-- 2 -->
+<section class="page">
+  <h1>2. Roller</h1>
+  <p>Her hesabın tek bir uygulama rolü vardır. Rol, hangi ekranların görüneceğini ve hangi kayıtların değiştirilebileceğini belirler. Ayrıntılı karşılaştırma 10. bölümdeki yetki matrisindedir.</p>
+  <div class="roles">
+    <div class="role"><h3>Admin</h3>
+      <p>Tüm ekranları ve tüm verileri görür, tümünü düzenler. Çalışan, hesap, rol, organizasyon, ortak çalışma takvimi, veri yükleme, değişiklik geçmişi ve yedekleme işlemleri yalnız Admin'e aittir.</p></div>
+    <div class="role"><h3>Yönetici</h3>
+      <p>Planlanan dağılımda tüm takımları görür, yalnız kendisine verilen liderlik veya takım kapsamında giriş yapar. Yetkili liderliklerindeki çalışanların gerçekleşen dağılımını düzenler. Projeleri, kritik konuları ve raporları görüntüler.</p></div>
+    <div class="role"><h3>Normal Kullanıcı</h3>
+      <p>Kendi gerçekleşen dağılımını ve kişisel izin/eğitim takvimini girer. Kendi takımının aylık aktivitesini ve kendisine görünür projeleri görüntüler.</p></div>
+    <div class="role"><h3>Normal-Proje</h3>
+      <p>Yalnız <span class="ui">Mühendislik Liderliği Projeler</span> ve <span class="ui">Kritik Proje Konuları</span> ekranlarını görür. Bu iki ekranda Admin ile aynı yetkilere sahiptir: proje ekler, düzenler, siler, sıralar; aşama, başlık, not, milestone ve kritik konuları yönetir; proje görüntüleme yetkisini belirler. Tüm projeleri görür.</p></div>
+  </div>
+  <figure>
+    <div class="shot" style="height:56mm"><img src="shots/normal-proje.jpg" alt="Normal-Proje görünümü"></div>
+    <figcaption>Normal-Proje rolündeki kullanıcı yalnız iki sekme görür; <span class="ui">Yeni Proje Ekle</span> düğmesi açıktır.</figcaption>
+  </figure>
+  <div class="note"><b>Kaynak rolü ile uygulama rolü farklıdır.</b> Çalışan kaydındaki Lider, Product Owner, Team Member veya CoE bilgisi organizasyondaki görevi gösterir; kendiliğinden uygulama yetkisi vermez. Uygulama rolü, çalışan formundaki <span class="ui">Hesap ve Yetkiler</span> bölümünden ayrıca atanır.</div>
+  <h2>Yönetici yetki kapsamı</h2>
+  <ul>
+    <li><b>Liderlik yetkisi:</b> Seçilen liderlik ve altındaki tüm liderlik/takımlar için planlanan dağılım girişi ve bu birimlerdeki çalışanların gerçekleşen dağılımı.</li>
+    <li><b>Takım yetkisi:</b> Yalnız seçilen takım için planlanan dağılım girişi. Takım yetkisi, o takımdaki çalışanların gerçekleşen dağılımını düzenleme hakkı vermez.</li>
+    <li>Yönetici, başka bir çalışanın kişisel izin/eğitim takvimini görüntüleyemez ve değiştiremez.</li>
+  </ul>
+</section>
+
+<!-- 3 -->
+<section class="page">
+  <h1>3. Gerçekleşen Kaynak Dağılımı ve kişisel takvim</h1>
+  <p>Çalışanların projelere fiilen ayırdığı süre aylık olarak bu ekranda girilir. Satırlar proje altında kişi bazındadır; proje satırında o dönemin aşamaları görünür.</p>
+  <figure>
+    <div class="shot" style="height:80mm"><img src="shots/gerceklesen.jpg" alt="Gerçekleşen Kaynak Dağılımı"></div>
+    <figcaption>Gerçekleşen Kaynak Dağılımı (Yönetici görünümü). Hücre altındaki çubuk, kişinin o ay tüm projelerdeki toplamını gösterir.</figcaption>
+  </figure>
+  <h2>Aylık süre girme</h2>
+  <ol>
+    <li>Filtrelerden kişi, proje ve dönemi seçin. <span class="ui">Kaynak Dağıtım Birimi</span> alanından <b>Yüzde (%)</b> veya <b>Saat</b> seçin.</li>
+    <li>İlgili ay hücresine değeri yazın; Enter'a basın veya hücreden çıkın. Kayıt sonucu sağ altta kısa bir bildirimle görünür.</li>
+    <li>Hücre değerini ve hücre altındaki aylık toplam çubuğunu kontrol edin. Hücre seçildiğinde sağ üstte çalışan, ay ve aylık çalışılan saat bilgisi görünür.</li>
+  </ol>
+  <div class="warn">Giriş yalnız içinde bulunulan ay ve geçmiş aylar için, proje dönemi içinde yapılabilir. Proje süreleri ile eğitim toplamı kişinin net aylık kapasitesini aşamaz. Normal Kullanıcı tabloda yalnız kendi satırlarını görür.</div>
+  <h2>Ortak çalışma takvimi (yalnız Admin)</h2>
+  <p>Araç satırındaki <span class="ui">Çalışma Takvimi</span> düğmesiyle resmî tatil ve çalışma dışı günler tanımlanır; değişiklikler <span class="ui">Takvimi Kaydet</span> ile kalıcı olur. Ortak takvimde başlangıç ve bitiş günleri dahildir.</p>
+</section>
+
+<section class="page">
+  <h2>Kişisel izin ve eğitim takvimi</h2>
+  <figure>
+    <div class="shot" style="height:92mm"><img src="shots/kisisel-takvim.jpg" alt="İzin ve Eğitim Takvimi"></div>
+    <figcaption>Çalışan adının solundaki takvim simgesiyle açılan İzin ve Eğitim Takvimi.</figcaption>
+  </figure>
+  <ol>
+    <li>Gerçekleşen tablosunda çalışan adının solundaki takvim simgesine tıklayın. Üstteki oklarla yıl değiştirilebilir.</li>
+    <li><b>Yeni İzin / Eğitim</b> bölümünde <span class="ui">İzin Ayrılış Tarihi</span>, <span class="ui">İzin Dönüş Tarihi</span>, <span class="ui">Tür</span> (İzin veya Eğitim) ve <span class="ui">Günlük Saat</span> girin; isterseniz <span class="ui">Açıklama</span> ekleyin. <span class="ui">Kaydet</span>.</li>
+    <li>Kayıt <b>Kayıtlı İzin ve Eğitimler</b> listesinde görünür. <span class="ui">Düzenle</span> ile değiştirin, <span class="ui">Sil</span> ile kaldırın. <span class="ui">Kapat</span> ile pencereden çıkın.</li>
+  </ol>
+  <div class="note"><b>Dönüş günü hesaba katılmaz.</b> 12 Ekim ayrılış, 15 Ekim dönüş için 12, 13 ve 14 Ekim değerlendirilir. Hafta sonları ve tatiller atlanır. İzin çalışma saatinden düşer; eğitim dağıtılan süreye eklenir. Günlük saat 0,5–9 aralığındadır; aynı gündeki izin ve eğitim toplamı 9 saati aşamaz.</div>
+  <p>Kişisel takvimi yalnız çalışanın kendisi ve Admin görür ve düzenler. Yönetici, ekibindeki çalışanların takvimini açamaz.</p>
+</section>
+
+<!-- 4 -->
+<section class="page">
+  <h1>4. Aylık Aktivite Raporu</h1>
+  <p>Çalışanların seçili dönemdeki aylık faaliyet toplamlarını gösterir; yalnız görüntüleme içindir. Düzeltmeler gerçekleşen dağılım ekranında veya kişisel takvimde yapılır.</p>
+  <figure>
+    <div class="shot" style="height:98mm"><img src="shots/aktivite.jpg" alt="Aylık Aktivite Raporu"></div>
+    <figcaption>Aylık Aktivite Raporu: liderlik, takım ve çalışan bazında aylık toplamlar.</figcaption>
+  </figure>
+  <ul>
+    <li>Filtrelerden liderlik, takım, proje ve dönemi seçin; <span class="ui">Gösterim</span> alanından birimi (Yüzde veya Saat) belirleyin.</li>
+    <li>Değerler seçili projelerde girilen aktiviteler ile eğitimin toplamıdır. Yüzde hesabında izin ve çalışma takvimi sonrası kalan çalışma saati kullanılır.</li>
+    <li>İşbaşı öncesi ve işten ayrılış sonrası aylar ayrı renkle işaretlenir. İlanlar bu raporda gösterilmez.</li>
+    <li><b>Kapsam:</b> Admin tümünü, Yönetici kendi liderliğini ve alt liderliklerini, Normal Kullanıcı kendi takımını görür. Başka bir çalışanın satırını görmek, düzenleme yetkisi vermez.</li>
+  </ul>
+</section>
+
+<!-- 5 -->
+<section class="page">
+  <h1>5. Planlanan Kaynak Dağılımı</h1>
+  <p>Admin ve Yönetici içindir. Değerler kişi bazında değil, takım veya liderlik kaynağı için <b>kişi eşdeğeri</b> olarak girilir (0,5 = yarım kaynak).</p>
+  <figure>
+    <div class="shot" style="height:98mm"><img src="shots/planlanan.jpg" alt="Planlanan Kaynak Dağılımı"></div>
+    <figcaption>Üstte filtrelenen takımların Aktif / Dağıtılan / Kalan Kaynak özeti; altta proje bazlı takım dağılımı.</figcaption>
+  </figure>
+  <h2>Kaynak planlama</h2>
+  <ol>
+    <li>Görünüm olarak <span class="ui">Takım → Projeler</span> veya <span class="ui">Proje → Takımlar</span> seçin; filtreleri belirleyin.</li>
+    <li>Yetkili olduğunuz ay hücresine değeri yazıp Enter'a basın. Yetkisiz veya proje dönemi dışındaki hücreler kilitlidir.</li>
+    <li>Özetteki <b>Kalan Kaynak</b> değerini kontrol edin; negatif değer kaynak açığıdır ve renkli gösterilir. Özet, <span class="ui">Detayı Gizle</span> ile kapatılabilir.</li>
+  </ol>
+  <h2>Hızlı giriş</h2>
+  <table class="grid">
+    <thead><tr><th>İşlem</th><th>Yöntem</th></tr></thead>
+    <tbody>
+      <tr><th>Birden fazla hücre seçmek</th><td>Fareyi basılı tutup sürükleyin; Ctrl ile seçime ekleyin.</td></tr>
+      <tr><th>Seçime aynı değeri yazmak</th><td>Değeri yazıp Ctrl+Enter.</td></tr>
+      <tr><th>Kopyala / yapıştır</th><td>Ctrl+C / Ctrl+V veya sağ tık menüsü.</td></tr>
+      <tr><th>Seçimi kaldırmak</th><td>Esc veya tablo dışına tıklama.</td></tr>
+    </tbody>
+  </table>
+  <p><span class="ui">Gerçekleşen Dağılım Göster</span> açıldığında plan değerlerinin yanında gerçekleşen değerler de görünür.</p>
+  <div class="warn"><span class="ui">Tüm Dağılımları Sıfırla</span> yalnız Admin'de görünür; ekran filtresinden bağımsız olarak tüm aylardaki planı temizler ve uygulama içinden geri alınamaz.</div>
+</section>
+
+<!-- 6 -->
+<section class="page">
+  <h1>6. Projeler ve Kritik Proje Konuları</h1>
+  <p>Projeleri tüm roller görüntüler (proje görüntüleme yetkisine tabi). Aşağıdaki düzenleme işlemleri <b>Admin</b> ve <b>Normal-Proje</b> içindir.</p>
+  <figure>
+    <div class="shot" style="height:96mm"><img src="shots/proje-detay.jpg" alt="Proje detayları"></div>
+    <figcaption><span class="ui">Detayları Göster</span> açıkken aşamalar altında başlıklar, tarih aralıklı notlar ve milestone'lar (baklava) görünür. Üstü çizili notlar tamamlanmıştır.</figcaption>
+  </figure>
+  <h2>Proje ekleme ve düzenleme</h2>
+  <ol>
+    <li><span class="ui">Yeni Proje Ekle</span> ile proje adı, kodu, sorumlusu, başlangıç ve bitiş ayını girin. Gerekirse <span class="ui">Görüntüleme yetkisi</span> bölümünü doldurun (7. bölüm). <span class="ui">Kaydet</span>.</li>
+    <li>Var olan projeyi düzenlemek için proje adına tıklayın; <span class="ui">Proje Bilgilerini Düzenle</span> penceresi açılır. Projeler soldaki tutamaçla sürüklenerek veya Alt+ok tuşlarıyla sıralanır.</li>
+    <li>Aşama için ay kutusuna çift tıklayın; metin ve renk seçin. Renkler: Çelik Mavi, Petrol Yeşili, Kahverengi, Kırmızı, Petrol Mavisi, Sarı. Görünür dönemden önce başlamış aşamanın adı da dönemin başında gösterilir. Komşu aylar seçilip sağ tık menüsüyle aşama kopyalanabilir.</li>
+    <li><span class="ui">Detayları Göster</span> açıkken <span class="ui">Başlık Ekle</span> ile başlık, tarih aralıklı not veya tek tarihli milestone ekleyin. Gerekli notlarda <span class="ui">Rapora Ekle</span> veya <span class="ui">Tamamlandı</span> seçin. Barı veya baklavayı sürükleyerek tarihi değiştirebilirsiniz.</li>
+  </ol>
+  <p><span class="ui">Haftalık Görünüm</span> aylık aşamayı haftalara yansıtır. <span class="ui">Proje Kodlarını Göster</span> açıksa proje Excel çıktısına kod sütunu eklenir.</p>
+  <div class="warn"><span class="ui">Projeyi Sil</span>, projenin planlanan ve gerçekleşen dağılımlarını, aşamalarını ve bağlı konularını da kaldırır.</div>
+</section>
+
+<section class="page">
+  <h2>Kritik Proje Konuları</h2>
+  <figure>
+    <div class="shot" style="height:80mm"><img src="shots/kritik.jpg" alt="Kritik Proje Konuları"></div>
+    <figcaption>Rapora eklenen notlar proje ve başlık bazında gruplanır.</figcaption>
+  </figure>
+  <ul>
+    <li>Projelerde <span class="ui">Rapora Ekle</span> ile işaretlenen notlar burada proje ve başlık bazında listelenir.</li>
+    <li>Admin ve Normal-Proje içerikleri düzenleyebilir; değişiklik proje ekranına da yansır.</li>
+    <li><span class="ui">Tamamlandı</span> notu yeşil ve üstü çizili gösterir; <span class="ui">Geri Al</span> işareti kaldırır. <span class="ui">Rapordan Çıkar</span> notu yalnız listeden çıkarır, silmez.</li>
+    <li>Yönetici bu ekranı yalnız görüntüler; Normal Kullanıcı bu sekmeyi görmez.</li>
+    <li><span class="ui">Excel'e Aktar</span> gruplu listeyi tarihleriyle birlikte indirir.</li>
+  </ul>
+</section>
+
+<!-- 7 -->
+<section class="page">
+  <h1>7. Proje görüntüleme yetkisi</h1>
+  <p>Her proje için kimlerin projeyi görebileceği, <span class="ui">Yeni Proje Ekle</span> ve <span class="ui">Proje Bilgilerini Düzenle</span> pencerelerindeki <span class="ui">Görüntüleme yetkisi</span> bölümünden belirlenir.</p>
+  <figure>
+    <div class="shot" style="height:98mm"><img src="shots/proje-yetki.jpg" alt="Proje görüntüleme yetkisi"></div>
+    <figcaption>"Yalnızca seçilenler" seçildiğinde rol, liderlik, takım ve kişi kuralları tanımlanabilir.</figcaption>
+  </figure>
+  <div class="two">
+    <div>
+      <h2>Kurallar</h2>
+      <ul>
+        <li><b>Herkes görebilir</b> varsayılandır; hiçbir kural yoksa proje tüm kullanıcılara görünür.</li>
+        <li><b>Yalnızca seçilenler</b> seçilip hiçbir seçim yapılmazsa proje yine herkese açık kalır.</li>
+        <li>Kurallar <b>"veya"</b> ile birleşir: kullanıcı seçilen rol, liderlik, takım veya kişi kurallarından herhangi birine uyuyorsa projeyi görür.</li>
+        <li>Liderlik kuralı, o liderliğe bağlı alt liderlik ve takımları da kapsar.</li>
+        <li>Kısıtlı projelerin adının yanında kilit simgesi görünür.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Otomatik görünürlük</h2>
+      <ul>
+        <li>Admin ve Normal-Proje her projeyi görür.</li>
+        <li>Kullanıcının takımına (Yönetici için yetkili takımlarına) projede planlanan kaynak varsa, proje kurala bakılmaksızın görünür.</li>
+        <li>Kullanıcının kendisinin veya yönettiği çalışanların projede gerçekleşen kaydı varsa proje görünür.</li>
+        <li>Gizli projelerin kaynakları toplamlarda korunur: takım kapasitesi ve Kalan Kaynak doğru hesaplanır, yalnız proje adı ve satırları gösterilmez.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="page">
+  <h1>8. Kaynak Planlama Raporları ve Head Count</h1>
+  <p>Admin ve Yönetici içindir. Araç satırından <span class="ui">Kaynak Raporları</span> veya <span class="ui">Head Count</span> görünümü seçilir.</p>
+  <figure>
+    <div class="shot" style="height:98mm"><img src="shots/raporlar.jpg" alt="Kaynak Planlama Raporları"></div>
+    <figcaption>Özet kartları, bölüm kısayolları ve Liderlik Bazında Eksik Raporu.</figcaption>
+  </figure>
+  <h2>Kaynak Raporları</h2>
+  <ul>
+    <li><b>Özet kartları:</b> Ortalama aylık eksik, en yüksek eksik, en çok ihtiyaç duyan takım ve dönem planlama etkinliği.</li>
+    <li><b>Bölümler:</b> Kısayollar ilgili rapora kaydırarak götürür.</li>
+  </ul>
+  <table class="grid">
+    <thead><tr><th>Rapor / grafik</th><th>Nasıl okunur?</th></tr></thead>
+    <tbody>
+      <tr><th>Liderlik / Takım Bazında Eksik</th><td>Birimlerin aylık kalan kaynağı; negatif değer açıktır. Alt liderlikler üst toplamın kırılımıdır, tekrar toplanmaz.</td></tr>
+      <tr><th>Aylık Eksik Kaynak Grafiği</th><td>Her ay için Dağıtılan − Aktif Kaynak (en az sıfır).</td></tr>
+      <tr><th>Planlanan / Gerçekleşen Karşılaştırma</th><td>Aylık ve proje bazlı (en fazla 10 proje) plan ile gerçekleşen karşılaştırması.</td></tr>
+      <tr><th>Süreç Etkinlik Grafiği</th><td>Gerçekleşen / Planlanan × 100. Plan sıfırsa oran hesaplanmaz.</td></tr>
+      <tr><th>Takım Bazlı İhtiyaç</th><td>Takımın aylık pozitif açıklarının seçilen ay sayısına bölünmüş ortalaması.</td></tr>
+      <tr><th>Çalışan Sayısı ve Öngörü</th><td>Birikimli aylık ortalama; tarihli aktif ilanlar öngörüye eklenir.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="page">
+  <h2>Head Count</h2>
+  <figure>
+    <div class="shot" style="height:80mm"><img src="shots/headcount.jpg" alt="Head Count"></div>
+    <figcaption>AA Mühendislik Liderliği Head Count Raporu.</figcaption>
+  </figure>
+  <ul>
+    <li><b>AA Mühendislik Liderliği Head Count Raporu:</b> Aktif Çalışan + Gear Up + Saat Ücretli Çalışan.</li>
+    <li><b>İnsan Kültür Dönüşüm Verilerine Göre Head Count:</b> Aktif Çalışan, Aktif İlan ve Pasif İlan ayrı gösterilir; <b>Aktif İlan Dahil Head Count</b> = Aktif Çalışan + Aktif İlan.</li>
+    <li>Bugünkü durumu kişi/adet olarak sayar; plana dahil seçimine bağlı değildir. <span class="ui">Head Count Excel'e Aktar</span> ile indirilir.</li>
+  </ul>
+  <div class="note"><span class="ui">Aktif İlanları Dahil Et</span> (Kaynak Raporları üstünde) varsayılan olarak <b>kapalıdır</b> ve yalnız Admin değiştirebilir. Açıldığında tüm aktif ilanlar bugünkü tarihle kaynak planlamasına dahil edilir; kapatıldığında plandan çıkarılır. Bu işlem kayıtları değiştirir, yalnız görünümü değil; rapor filtresi işlemi sınırlamaz.</div>
+</section>
+
+<!-- 9 -->
+<section class="page">
+  <h1>9. Organizasyon, çalışan ve hesap yönetimi</h1>
+  <p>Yalnız Admin içindir. <span class="ui">Organizasyon &amp; Çalışan &amp; Yetki</span> sekmesinde <span class="ui">Çalışan &amp; Yetki Tanımlama</span> ve <span class="ui">Organizasyon Yapısı</span> görünümleri bulunur.</p>
+  <figure>
+    <div class="shot" style="height:92mm"><img src="shots/organizasyon.jpg" alt="Çalışan ve Yetki Tanımlama"></div>
+    <figcaption>Çalışan listesi: statü, plana dahil bilgisi, hesap, rol ve yetki kapsamı. Satır sonundaki simgeler düzenler veya siler.</figcaption>
+  </figure>
+  <ul>
+    <li>Arama kutusu ad, liderlik, takım, kullanıcı adı veya e-postaya göre süzer.</li>
+    <li>Satırlar seçilip <span class="ui">Seçilenleri Toplu Düzenle</span> veya <span class="ui">Seçilenleri Sil</span> uygulanabilir; <span class="ui">Filtredeki Tüm Kayıtları Seç</span> tüm sonucu seçer.</li>
+    <li>Geçmişi korumak için çalışan silmek yerine statüsünü <b>İşten Ayrıldı</b> yapın; silme, gerçekleşen kayıtları da kaldırır.</li>
+  </ul>
+</section>
+
+<section class="page">
+  <h2>Çalışan veya ilan ekleme ve hesap tanımlama</h2>
+  <figure>
+    <div class="shot" style="height:92mm"><img src="shots/kaynak-ekle.jpg" alt="Kaynak Ekle"></div>
+    <figcaption>Kaynak Ekle penceresi: solda kaynak bilgileri, sağda Hesap ve Yetkiler.</figcaption>
+  </figure>
+  <ol>
+    <li><span class="ui">Kaynak Ekle / Yetki Tanımla</span> ile önce <b>Statü</b> seçin.</li>
+    <li>Ad Soyad, Kaynak Rolü, Liderlik/Takım, tarihler ve <span class="ui">Kaynak Planlamasına Dahil</span> seçimini girin. İsteğe bağlı <span class="ui">Açıklama</span> ekleyin.</li>
+    <li><span class="ui">Hesap ve Yetkiler</span> bölümünde <span class="ui">Hesap Eşleştirmesi</span> alanından <b>Active Directory</b> seçin, kullanıcıyı arayıp seçin ve <b>Rol</b> belirleyin: Admin, Yönetici, Normal Kullanıcı veya Normal-Proje.</li>
+    <li>Yönetici için <span class="ui">Planlanan Kaynak Dağılımı Yetkisi</span> ağacından liderlik veya takım seçin. Üst liderlik seçimi alt birimleri de kapsar. <span class="ui">Kaydet</span>.</li>
+    <li><span class="ui">Uygulama Yetkisini Kaldır</span>, çalışanı ve AD hesabını silmeden uygulama erişimini kapatır.</li>
+  </ol>
+  <table class="grid">
+    <thead><tr><th>Statü</th><th>Form davranışı</th></tr></thead>
+    <tbody>
+      <tr><th>Aktif Çalışan / Gear Up / SAAT Ücretli Ofis Ç.</th><td>İşbaşı tarihi zorunludur; bu yılın 1 Ocak günü önerilir.</td></tr>
+      <tr><th>Aktif İlan</th><td>Ad ve kaynak rolü istenmez. Dahil seçimi kapalı başlar; dahil etmek için tahmini işbaşı tarihi gerekir. İlana hesap tanımlanamaz.</td></tr>
+      <tr><th>Pasif İlan</th><td>Aktif kapasiteye eklenmez.</td></tr>
+      <tr><th>İşten Ayrıldı</th><td>İşbaşı ve ayrılış tarihleri gerekir. Eski gerçekleşen kayıtları korunur.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="page">
+  <h2>Organizasyon Yapısı</h2>
+  <figure>
+    <div class="shot" style="height:66mm"><img src="shots/organizasyon-yapisi.jpg" alt="Organizasyon Yapısı"></div>
+    <figcaption>Liderlikler, bağlı takımlar ve yöneticileri.</figcaption>
+  </figure>
+  <p><span class="ui">Liderlikleri Yönet</span> ve <span class="ui">Takımları Yönet</span> ile birimler ve aralarındaki bağlantılar düzenlenir; satırdaki <span class="ui">Düzenle</span> tek birimi açar. Yönetici adı, Lider veya Product Owner atamasından gelir. Bağlı kayıtlar silmeyi engelleyebilir.</p>
+  <h2>Değişiklik Geçmişi ve Excel İçe Aktar</h2>
+  <figure>
+    <div class="shot" style="height:72mm"><img src="shots/degisiklik-gecmisi.jpg" alt="Değişiklik Geçmişi"></div>
+    <figcaption>Değişiklik Geçmişi: kayıt türü ve metin filtresi, işlem türü, kullanıcı ve alan değişiklikleri.</figcaption>
+  </figure>
+  <ul>
+    <li><span class="ui">Değişiklik Geçmişi</span> kim, ne zaman, hangi kaydı ekledi, düzenledi veya sildi gösterir. <span class="ui">Kayıt türü</span> ve <span class="ui">Ara</span> ile süzülür; satırdaki değişiklik özeti açılınca eski ve yeni değerler görünür. Kayıtlar 5 yıl saklanır ve JSON veri yedeğine dahil değildir.</li>
+    <li><span class="ui">Excel İçe Aktar</span> şablondan kaynak ekler; önce önizleme gösterir. Hesap veya yetki oluşturmaz.</li>
+    <li><span class="ui">Veri Yedeği İndir</span> (kullanıcı menüsü) şifrelenmemiş JSON planlama yedeğidir; hesap ve oturum bilgisi içermez. <span class="ui">Yedek Yükle</span> mevcut planlama verisinin yerine geçer, birleştirmez.</li>
+  </ul>
+</section>
+
+<!-- 10 -->
+<section class="page">
+  <h1>10. Yetki matrisi</h1>
+  <div class="legend"><span><span class="y">Düzenler</span> görüntüler ve değiştirir</span><span><span class="p">Kapsamlı</span> yalnız belirtilen kapsamda</span><span><span class="s">Görür</span> yalnız görüntüler</span><span><span class="n">—</span> erişim yok</span></div>
+  <h2>10.1 Ekran erişimi</h2>
+  <table class="grid m">
+    <thead><tr><th>Ekran</th><th>Admin</th><th>Yönetici</th><th>Normal Kullanıcı</th><th>Normal-Proje</th></tr></thead>
+    <tbody>
+      <tr><th>Gerçekleşen Kaynak Dağılımı</th>
+        <td><span class="y">Düzenler</span><small>Tüm çalışanlar</small></td>
+        <td><span class="p">Kapsamlı</span><small>Kendisi + yetkili liderliklerdeki çalışanlar</small></td>
+        <td><span class="p">Kapsamlı</span><small>Yalnız kendisi</small></td>
+        <td><span class="n">—</span></td></tr>
+      <tr><th>Aylık Aktivite Raporu</th>
+        <td><span class="s">Görür</span><small>Tümü</small></td>
+        <td><span class="s">Görür</span><small>Kendi liderliği ve altı</small></td>
+        <td><span class="s">Görür</span><small>Kendi takımı</small></td>
+        <td><span class="n">—</span></td></tr>
+      <tr><th>Planlanan Kaynak Dağılımı</th>
+        <td><span class="y">Düzenler</span><small>Tüm takımlar</small></td>
+        <td><span class="p">Kapsamlı</span><small>Tüm takımları görür; verilen liderlik/takımı düzenler</small></td>
+        <td><span class="n">—</span></td>
+        <td><span class="n">—</span></td></tr>
+      <tr><th>Mühendislik Liderliği Projeler</th>
+        <td><span class="y">Düzenler</span><small>Tüm projeler</small></td>
+        <td><span class="s">Görür</span><small>Görünür projeler</small></td>
+        <td><span class="s">Görür</span><small>Görünür projeler</small></td>
+        <td><span class="y">Düzenler</span><small>Tüm projeler</small></td></tr>
+      <tr><th>Kritik Proje Konuları</th>
+        <td><span class="y">Düzenler</span></td>
+        <td><span class="s">Görür</span></td>
+        <td><span class="n">—</span></td>
+        <td><span class="y">Düzenler</span></td></tr>
+      <tr><th>Kaynak Planlama Raporları ve Head Count</th>
+        <td><span class="s">Görür</span><small>+ Aktif İlanları Dahil Et</small></td>
+        <td><span class="s">Görür</span></td>
+        <td><span class="n">—</span></td>
+        <td><span class="n">—</span></td></tr>
+      <tr><th>Organizasyon &amp; Çalışan &amp; Yetki</th>
+        <td><span class="y">Düzenler</span></td>
+        <td><span class="n">—</span></td>
+        <td><span class="n">—</span></td>
+        <td><span class="n">—</span></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:8.6pt;color:var(--muted)">"Görünür projeler": proje görüntüleme yetkisine göre kullanıcının görebildiği projeler (7. bölüm).</p>
+  <div class="note">Yetkiler sunucu tarafında da denetlenir. Ekranda kilitli görünen bir işlem başka bir yoldan gönderilse bile reddedilir.</div>
+</section>
+
+<section class="page">
+  <h2>10.2 İşlem yetkileri</h2>
+  <table class="grid m">
+    <thead><tr><th>İşlem</th><th>Admin</th><th>Yönetici</th><th>Normal Kullanıcı</th><th>Normal-Proje</th></tr></thead>
+    <tbody>
+      <tr class="group"><td colspan="5" class="l">Gerçekleşen dağılım ve takvim</td></tr>
+      <tr><th>Kendi gerçekleşen girişini yapmak</th><td><span class="y">✓</span></td><td><span class="y">✓</span><small>Çalışan kaydı eşleşmişse</small></td><td><span class="y">✓</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Başka çalışanın gerçekleşen girişi</th><td><span class="y">✓</span></td><td><span class="p">Kapsamlı</span><small>Yetkili liderlik ve alt birimleri</small></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Kişisel izin / eğitim takvimi</th><td><span class="y">✓</span><small>Herkesin</small></td><td><span class="p">Kapsamlı</span><small>Yalnız kendi</small></td><td><span class="p">Kapsamlı</span><small>Yalnız kendi</small></td><td><span class="n">—</span></td></tr>
+      <tr><th>Ortak çalışma takvimi</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr class="group"><td colspan="5" class="l">Planlama</td></tr>
+      <tr><th>Planlanan dağılım girişi</th><td><span class="y">✓</span></td><td><span class="p">Kapsamlı</span><small>Verilen liderlik veya takım</small></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Tüm Dağılımları Sıfırla</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Aktif İlanları Dahil Et</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr class="group"><td colspan="5" class="l">Projeler ve kritik konular</td></tr>
+      <tr><th>Proje ekleme, düzenleme, silme, sıralama</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="y">✓</span></td></tr>
+      <tr><th>Aşama, başlık, not ve milestone</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="y">✓</span></td></tr>
+      <tr><th>Proje görüntüleme yetkisini belirleme</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="y">✓</span></td></tr>
+      <tr><th>Kritik konu düzenleme, Tamamlandı, Rapordan Çıkar</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="y">✓</span></td></tr>
+      <tr class="group"><td colspan="5" class="l">Yönetim</td></tr>
+      <tr><th>Çalışan / ilan ekleme, düzenleme, silme, toplu düzenleme</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Hesap, rol ve yetki kapsamı tanımlama</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Liderlik ve takım yönetimi</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Excel İçe Aktar</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Değişiklik Geçmişi</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr><th>Veri Yedeği İndir / Yedek Yükle</th><td><span class="y">✓</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td></tr>
+      <tr class="group"><td colspan="5" class="l">Ortak</td></tr>
+      <tr><th>Excel'e aktarma / rapor indirme</th><td colspan="4"><span class="y">✓</span><small>Herkes, görebildiği ekranlarda ve görebildiği verilerle</small></td></tr>
+      <tr><th>Varsayılan sekme seçimi</th><td colspan="4"><span class="y">✓</span><small>Herkes, kendi sekmeleri arasından</small></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 11 -->
+<section class="page">
+  <h1>11. Sık karşılaşılan durumlar ve sözlük</h1>
+  <table class="grid">
+    <thead><tr><th style="width:62mm">Durum</th><th>Yapılacak işlem</th></tr></thead>
+    <tbody>
+      <tr><th>Sekme, çalışan veya proje görünmüyor</th><td>Rolünüzü (sağ üst), filtreleri ve proje görüntüleme yetkisini kontrol edin. Gerekirse Admin'den rol veya kapsam isteyin.</td></tr>
+      <tr><th>Hücreye giriş yapılamıyor</th><td>Yetki kapsamını, proje dönemini ve gerçekleşende gelecek ay kısıtını kontrol edin.</td></tr>
+      <tr><th>Tabloda boş satır çok</th><td><span class="ui">Sadece veri olanlar</span> anahtarını açın. Anahtar her açılışta kapalı başlar.</td></tr>
+      <tr><th>Dağılım sınırı uyarısı</th><td>Kişinin o aydaki tüm proje saatlerini, eğitim ve izinlerini birlikte kontrol edin.</td></tr>
+      <tr><th>"Kayıt başka kullanıcı tarafından değiştirildi"</th><td>Sayfayı yenileyin, güncel değeri kontrol edip yeniden girin.</td></tr>
+      <tr><th>Bağlantı kesildi / sonuç belirsiz</th><td>Aynı işlemi hemen tekrarlamayın; sayfayı yenileyip son durumu kontrol edin.</td></tr>
+      <tr><th>Giriş yapılamıyor</th><td>Tekrarlayan denemeleri durdurun; ekran adı, saat ve hata mesajını IT'ye iletin.</td></tr>
+    </tbody>
+  </table>
+  <h2>Kısa sözlük</h2>
+  <table class="grid">
+    <tbody>
+      <tr><th>Kişi eşdeğeri</th><td>Planlama birimi; 1 = bir tam zamanlı kaynak.</td></tr>
+      <tr><th>Aktif / Dağıtılan / Kalan Kaynak</th><td>Kullanılabilir kaynak / projelere planlanan / aradaki fark (negatifse açık).</td></tr>
+      <tr><th>Aşama</th><td>Projenin ay bazındaki evresi (örneğin Detay Tasarım, Prototip Üretimi); renkli kutuyla gösterilir.</td></tr>
+      <tr><th>Milestone</th><td>Tek tarihli kilometre taşı; baklava simgesiyle gösterilir.</td></tr>
+      <tr><th>Head Count</th><td>Kişi/adet sayısı.</td></tr>
+      <tr><th>AD</th><td>Kurum kullanıcı dizini (Active Directory).</td></tr>
+    </tbody>
+  </table>
+</section>
+</body>
+</html>

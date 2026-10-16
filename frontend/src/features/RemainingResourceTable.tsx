@@ -37,6 +37,8 @@ type Props = {
   currentMonth: string;
   currentTeamMembers: Record<string, string[]>;
   metric: (ids: string[], month: string) => Metric;
+  /** Current plan while a scenario is shown: changed cells are marked. */
+  compareMetric?: (ids: string[], month: string) => Metric;
   tableRef: RefObject<HTMLTableElement | null>;
 };
 export default function RemainingResourceTable({
@@ -50,8 +52,20 @@ export default function RemainingResourceTable({
   currentMonth,
   currentTeamMembers,
   metric,
+  compareMetric,
   tableRef,
 }: Props) {
+  // Scenario view: how a cell differs from the current plan.
+  const change = (ids: string[], month: string, remaining: number) => {
+    if (!compareMetric) return {};
+    const base = compareMetric(ids, month);
+    const before = base.current - base.total;
+    if (Math.abs(remaining - before) < 1e-9) return {};
+    return {
+      kind: remaining > before ? "better" : "worse",
+      note: " · Mevcut: " + fmt(before),
+    };
+  };
   const responsibility = useMemo(
     () =>
       data
@@ -149,17 +163,20 @@ export default function RemainingResourceTable({
                 </TableCell>
                 {months.map((m) => {
                   const c = metric(g.ids, m),
-                    remaining = c.current - c.total;
+                    remaining = c.current - c.total,
+                    diff = change(g.ids, m, remaining);
                   return (
                     <TableCell
                       key={m}
                       className={capacityStatus(c.current, c.total).className}
+                      data-scenario-change={diff.kind}
                       title={
                         monthLabel(m) +
                         ": " +
                         fmt(remaining) +
                         " · " +
-                        capacityStatus(c.current, c.total).label
+                        capacityStatus(c.current, c.total).label +
+                        (diff.note || "")
                       }
                     >
                       {fmt(remaining)}
@@ -183,12 +200,14 @@ export default function RemainingResourceTable({
                 const value = metric(totalIds, month);
                 const remaining = value.current - value.total;
                 const status = capacityStatus(value.current, value.total);
+                const diff = change(totalIds, month, remaining);
                 return (
                   <TableCell
                     key={month}
                     data-total-month={month}
+                    data-scenario-change={diff.kind}
                     className={status.className}
-                    title={`${monthLabel(month)}: mevcut ${fmt(value.current)} − dağıtılan ${fmt(value.total)} = ${fmt(remaining)} · ${status.label}`}
+                    title={`${monthLabel(month)}: mevcut ${fmt(value.current)} − dağıtılan ${fmt(value.total)} = ${fmt(remaining)} · ${status.label}${diff.note || ""}`}
                   >
                     <strong className="remaining-total-value">
                       {fmt(remaining)}

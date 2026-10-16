@@ -19,6 +19,7 @@ type Props = {
   currentMonth: string;
   currentTeamMembers: Record<string, string[]>;
   metric: (ids: string[], month: string) => Metric;
+  compareMetric?: (ids: string[], month: string) => Metric;
   leaderReportGroups: ReportGroup[];
   teamReportGroups: ReportGroup[];
   capacity: Record<string, Metric>;
@@ -39,6 +40,7 @@ export default function WorkspaceReports({
   currentMonth,
   currentTeamMembers,
   metric,
+  compareMetric,
   leaderReportGroups,
   teamReportGroups,
   capacity,
@@ -64,6 +66,7 @@ export default function WorkspaceReports({
     currentMonth,
     currentTeamMembers,
     metric,
+    compareMetric,
   };
   return (
     <>

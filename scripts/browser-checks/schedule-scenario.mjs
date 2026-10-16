@@ -109,6 +109,37 @@ export async function checkScheduleScenario(f) {
       },
     );
     await f.check(
+      "scenario: resource reports are drawn for a scenario with changed cells marked",
+      async () => {
+        await page
+          .locator(".schedule-scenario-dialog")
+          .getByRole("button", { name: "Raporlarda Göster" })
+          .click();
+        const bar = page.locator(".scenario-report-bar");
+        await bar.waitFor();
+        assert.match((await bar.getAttribute("class")) || "", /is-active/);
+        // The delay frees Team A in Oct – Dec 2026 (the visible year).
+        const better = page.locator(
+          '#rapor-takim-eksik td[data-scenario-change="better"]',
+        );
+        assert((await better.count()) >= 3);
+        assert.match(
+          (await better.first().getAttribute("title")) || "",
+          /Mevcut: /,
+        );
+        assert(
+          (await page
+            .locator("#rapor-liderlik-eksik td[data-scenario-change]")
+            .count()) > 0,
+        );
+        await bar.getByRole("button", { name: "Mevcut", exact: true }).click();
+        assert.equal(await page.locator("td[data-scenario-change]").count(), 0);
+        assert.deepEqual((await f.state()).allocations, before.allocations);
+        await bar.getByRole("button", { name: "Senaryoları Düzenle" }).click();
+        await page.locator(".schedule-scenario-dialog").waitFor();
+      },
+    );
+    await f.check(
       "scenario: pulling a project into months before the start month is refused",
       async () => {
         const dialog = page.locator(".schedule-scenario-dialog");

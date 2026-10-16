@@ -1,5 +1,12 @@
-import { useMemo, useState } from "react";
-import { ArrowDownToLine, Copy, Plus, Trash2, X } from "lucide-react";
+import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import {
+  ArrowDownToLine,
+  ChartColumn,
+  Copy,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +30,10 @@ type Props = {
   onClose: () => void;
   data: Data;
   currentMonth: string;
+  scenarios: ShiftScenario[];
+  setScenarios: Dispatch<SetStateAction<ShiftScenario[]>>;
+  /** Draw the resource reports for this scenario. */
+  onShowInReports: (scenarioId: string) => void;
 };
 
 const MAX_SCENARIOS = 3;
@@ -32,10 +43,10 @@ export default function ScheduleScenarioDialog({
   onClose,
   data,
   currentMonth,
+  scenarios,
+  setScenarios,
+  onShowInReports,
 }: Props) {
-  const [scenarios, setScenarios] = useState<ShiftScenario[]>(() => [
-    newScenario("Senaryo A", currentMonth, 3),
-  ]);
   const [focus, setFocus] = useState(0);
   const comparison = useMemo(
     () => compareScenarios(data, scenarios, currentMonth),
@@ -44,6 +55,8 @@ export default function ScheduleScenarioDialog({
   const update = (index: number, next: ShiftScenario) =>
     setScenarios((all) => all.map((s, i) => (i === index ? next : s)));
   const shown = Math.min(focus, scenarios.length - 1);
+  const reportTarget =
+    comparison.columns[shown + 1]?.key || comparison.columns[1]?.key;
 
   return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
@@ -121,6 +134,16 @@ export default function ScheduleScenarioDialog({
           >
             <ArrowDownToLine size={16} aria-hidden="true" />
             Excel'e Aktar
+          </button>
+          <button
+            type="button"
+            className="button"
+            disabled={!reportTarget}
+            title="Liderlik ve Takım Bazında Eksik raporlarını bu senaryoyla açar"
+            onClick={() => reportTarget && onShowInReports(reportTarget)}
+          >
+            <ChartColumn size={16} aria-hidden="true" />
+            Raporlarda Göster
           </button>
           <button type="button" className="button primary" onClick={onClose}>
             Kapat

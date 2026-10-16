@@ -44,6 +44,8 @@ import ActivePostingPlanningToggle from "./features/workspace/ActivePostingPlann
 import AccessPanel from "./AccessPanel";
 import PortalEditorDialog from "./features/PortalEditorDialog";
 import ScheduleScenarioDialog from "./features/schedule-scenario/ScheduleScenarioDialog";
+import ScenarioReportBar from "./features/schedule-scenario/ScenarioReportBar";
+import { useScheduleScenarios } from "./features/schedule-scenario/useScheduleScenarios";
 import { usePlannedGrid } from "./features/usePlannedGrid";
 import { fmt, monthLabel, fullDateLabel } from "./format";
 import { Project } from "./model";
@@ -330,6 +332,12 @@ export default function Portal() {
     projectPage,
     onlyDataRows,
   });
+  const scenarioState = useScheduleScenarios(viewData, months, currentMonth);
+  // Resource reports drawn for a delay scenario (nothing is saved).
+  const reportScenario =
+    tab === "overview" && reportView === "resources"
+      ? scenarioState.report
+      : null;
   const plannedGrid = usePlannedGrid({
     visiblePlanRows,
     months,
@@ -425,7 +433,10 @@ export default function Portal() {
     teamIds,
     leaderReportGroups,
     teamReportGroups,
-    metric,
+    metric: reportScenario?.metric || metric,
+    scenarioLabel: reportScenario
+      ? reportScenario.scenario.name + " (senaryo, kayıtlar değişmedi)"
+      : undefined,
     setError,
   });
   function phaseText(p: Project, m: string) {
@@ -948,23 +959,33 @@ export default function Portal() {
                       date={todayDate}
                     />
                   ) : (
-                    <WorkspaceReports
-                      data={data}
-                      teams={teams}
-                      months={months}
-                      monthWidth={monthWidth}
-                      todayDate={todayDate}
-                      currentMonth={currentMonth}
-                      currentTeamMembers={currentTeamMembers}
-                      metric={metric}
-                      leaderReportGroups={leaderReportGroups}
-                      teamReportGroups={teamReportGroups}
-                      capacity={cache}
-                      actualTotals={actualTotals}
-                      teamIds={ids}
-                      selectedTeamIds={teamIds}
-                      leads={leads}
-                    />
+                    <>
+                      <ScenarioReportBar
+                        data={data}
+                        scenarios={scenarioState.available}
+                        activeId={scenarioState.reportScenarioId}
+                        onChange={scenarioState.setReportScenarioId}
+                        onEdit={() => setScenarioOpen(true)}
+                      />
+                      <WorkspaceReports
+                        data={reportScenario?.data || data}
+                        teams={teams}
+                        months={months}
+                        monthWidth={monthWidth}
+                        todayDate={todayDate}
+                        currentMonth={currentMonth}
+                        currentTeamMembers={currentTeamMembers}
+                        metric={reportScenario?.metric || metric}
+                        compareMetric={reportScenario ? metric : undefined}
+                        leaderReportGroups={leaderReportGroups}
+                        teamReportGroups={teamReportGroups}
+                        capacity={reportScenario?.cache || cache}
+                        actualTotals={actualTotals}
+                        teamIds={ids}
+                        selectedTeamIds={teamIds}
+                        leads={leads}
+                      />
+                    </>
                   )}
                 </TabsContent>
               )}
@@ -1058,6 +1079,14 @@ export default function Portal() {
           onClose={() => setScenarioOpen(false)}
           data={data}
           currentMonth={currentMonth}
+          scenarios={scenarioState.scenarios}
+          setScenarios={scenarioState.setScenarios}
+          onShowInReports={(id) => {
+            scenarioState.setReportScenarioId(id);
+            setReportView("resources");
+            changeTab("overview");
+            setScenarioOpen(false);
+          }}
         />
       )}
       <PortalEditorDialog

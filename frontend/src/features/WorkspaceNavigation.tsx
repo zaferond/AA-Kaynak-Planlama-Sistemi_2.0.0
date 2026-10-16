@@ -185,17 +185,19 @@ export default function WorkspaceNavigation({
               </TabsList>
             </Tabs>
           )}
-          {["plan", "projects"].includes(tab) && (isAdmin || isManager) && (
-            <button
-              type="button"
-              className="button"
-              onClick={onOpenScenario}
-              disabled={!dataLoaded || !hasProjects}
-            >
-              <CalendarClock size={17} />
-              Erteleme Senaryosu
-            </button>
-          )}
+          {(["plan", "projects"].includes(tab) ||
+            (tab === "overview" && reportView === "resources")) &&
+            (isAdmin || isManager) && (
+              <button
+                type="button"
+                className="button"
+                onClick={onOpenScenario}
+                disabled={!dataLoaded || !hasProjects}
+              >
+                <CalendarClock size={17} />
+                Erteleme Senaryosu
+              </button>
+            )}
           {tab === "projects" && (isAdmin || projectEditor) && (
             <button
               className="button project-create"

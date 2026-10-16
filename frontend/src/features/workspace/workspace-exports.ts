@@ -40,6 +40,8 @@ type Props = {
   leaderReportGroups: ReportGroup[];
   teamReportGroups: ReportGroup[];
   metric: (ids: string[], month: string) => Metric;
+  /** Shown in the report heading when a delay scenario is drawn. */
+  scenarioLabel?: string;
   setError: (message: string) => void;
 };
 /** Dispatch only the current authorized view to the existing workbook writers. */
@@ -64,6 +66,7 @@ export function createWorkspaceExports({
   leaderReportGroups,
   teamReportGroups,
   metric,
+  scenarioLabel,
   setError,
 }: Props) {
   function exportResourceReport() {
@@ -88,7 +91,8 @@ export function createWorkspaceExports({
         metric,
         true,
       ),
-      resourceReportFilterSummary(leads, teamIds),
+      resourceReportFilterSummary(leads, teamIds) +
+        (scenarioLabel ? " · Senaryo: " + scenarioLabel : ""),
     );
   }
   function exportCurrentTab() {

@@ -134,14 +134,14 @@ export async function checkPlannedTeamFreeze(f) {
           c.scrollTop += (row.getBoundingClientRect().top - bottom) / zoom + 5;
         });
         await assertPinned(next);
-        if (await heading.count()) {
+        // Sticky offsets follow the scroll on the next frame; under load
+        // that frame can land after the first measurement.
+        await f.wait(async () => {
+          if (!(await heading.count())) return true;
           const oldBox = await heading.boundingBox(),
             newBox = await next.boundingBox();
-          assert(
-            oldBox.y + oldBox.height <= newBox.y + 2,
-            "Previous heading leaves its group",
-          );
-        }
+          return !oldBox || oldBox.y + oldBox.height <= newBox.y + 2;
+        }, "Previous heading leaves its group");
         await container.evaluate((c) => {
           c.scrollTop = 0;
         });

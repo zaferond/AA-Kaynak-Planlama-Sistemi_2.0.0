@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "ed81c48e47fdd3e4e86789be9eafd14e4c21e05c",
+  "commit": "8689788fda659bee0bea0257c92af0c2e960de40",
   "sources": {
     "backend/active-directory.mjs": "378b9aa0d31346261a26dbda3584588dd8041604a3f2aec0a0771a1c05c02394",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -424,7 +424,7 @@
     "scripts/browser-checks/permission-popup.mjs": "e12e8ecd846f07c99d9ce27b28a78c38f8a8ad0599ce7eb940914349902a619a",
     "scripts/browser-checks/planned-allocation.mjs": "f4f2aa9adee2fc389c41283239f65673818a7162fe142e50dc532284d2a7e65b",
     "scripts/browser-checks/planned-hierarchy.mjs": "fd95cfa1a724d5c7bd9dd8ae1b645f0c5bef5289ad76769747557fe8643eeab3",
-    "scripts/browser-checks/planned-team-freeze.mjs": "03bdb1bca74d132455a7b6a254bc8e6cf5698bfe64929c6b7b1e1bca580a7035",
+    "scripts/browser-checks/planned-team-freeze.mjs": "679026a04d944f6993d3c4c109b5686337a68b64eaeb210fcc31fe3fb92e03fb",
     "scripts/browser-checks/planning-permissions.mjs": "b71c47794584dc41453cd6cd4e25e17519438322e03bef2010ac0b441ce68df9",
     "scripts/browser-checks/portal-refresh.mjs": "d7bab59b6a03854e47a57bf4981bd6b652b8cb4e1ecf955c4298cce8a503d007",
     "scripts/browser-checks/project-codes.mjs": "64ee9172252cae9f3bd6b67de16f85cdce1db7b7b25533575fcab621906c0e14",

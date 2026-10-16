@@ -3,7 +3,8 @@ import type { ActualUnit } from "../../actual-units";
 import { WorkedHours } from "../ActualAllocationInputs";
 import type { ActualAllocationView } from "./useActualAllocationView";
 import type { WorkedHoursSave } from "./types";
-import { fullMonthFormat } from "./format";
+import { fullMonthFormat, numberFormat } from "./format";
+import { personMonthBalance } from "./person-month-balance";
 
 export default function ActualAllocationControls({
   data,
@@ -28,6 +29,23 @@ export default function ActualAllocationControls({
     actualMonths.get(resourceId, month).effectiveHours;
   const autoHours = (resourceId: string, month: string) =>
     actualMonths.get(resourceId, month).autoHours;
+  // What is still to be entered for the selected person-month.
+  const selectedSummary =
+    selectedHoursPerson && selectedHoursMonth
+      ? actualMonths.get(selectedHoursPerson.id, selectedHoursMonth)
+      : undefined;
+  const balance = selectedSummary && personMonthBalance(selectedSummary);
+  const hoursUnit = unit === "hours";
+  const remainingText = !balance
+    ? "Hücre Seçiniz"
+    : balance.state === "none"
+      ? "Çalışma saati yok"
+      : balance.state === "done"
+        ? "Tamamlandı"
+        : (balance.state === "over" ? "Aşıldı: " : "") +
+          (hoursUnit
+            ? numberFormat.format(Math.abs(balance.remainingHours)) + " saat"
+            : "%" + numberFormat.format(Math.abs(balance.remainingPercent)));
   return (
     <div className="panelhead">
       <div>
@@ -114,6 +132,27 @@ export default function ActualAllocationControls({
                 Hücre Seçiniz
               </span>
             )}
+          </div>
+          <div className="actual-control-item actual-context-item actual-remaining-item">
+            <span>Kalan</span>
+            <strong
+              className={balance ? "" : "actual-context-placeholder"}
+              data-remaining-state={balance?.state}
+              title={
+                balance && selectedSummary
+                  ? "Girilen (projeler + eğitim): " +
+                    (hoursUnit
+                      ? numberFormat.format(
+                          selectedSummary.effectiveHours -
+                            balance.remainingHours,
+                        ) + " saat"
+                      : "%" + numberFormat.format(balance.percent))
+                  : "Kişinin o ay için kalan girişini görmek için bir hücre seçin"
+              }
+              aria-live="polite"
+            >
+              {remainingText}
+            </strong>
           </div>
           <label
             className="actual-control-item actual-unit-item"

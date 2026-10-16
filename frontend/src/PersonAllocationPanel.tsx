@@ -149,7 +149,8 @@ export default function PersonAllocationPanel(
         </label>
         <span className="actual-load-legend">
           <i aria-hidden="true" />
-          Hücre altındaki çubuk: kişinin o ay tüm projelerdeki toplamı
+          Hücre altındaki çubuk: kişinin o ay tüm projelerdeki toplamı · kalan,
+          hücre seçilince üstteki Kalan alanında
         </span>
         <Pager
           total={totalRows}

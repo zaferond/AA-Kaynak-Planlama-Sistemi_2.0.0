@@ -364,7 +364,7 @@
   width: 100%;
 }
 .person-allocation .actual-control-fields:has(.actual-shared-calendar-button) {
-  grid-template-columns: minmax(250px, 1fr) 105px 140px 158px;
+  grid-template-columns: minmax(250px, 1fr) 105px 140px 120px 158px;
 }
 .person-allocation .actual-person-value > strong {
   min-width: 0;

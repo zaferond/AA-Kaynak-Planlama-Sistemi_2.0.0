@@ -132,19 +132,19 @@
 }
 .person-allocation .actual-unit-control {
   display: flex;
-  flex: 0 1 700px;
+  flex: 0 1 830px;
   flex-direction: column;
   align-items: flex-end;
   gap: 5px;
   width: auto;
   min-width: 0;
-  max-width: 700px;
+  max-width: 830px;
   margin-left: auto;
   text-align: right;
 }
 .person-allocation .actual-control-fields {
   display: grid;
-  grid-template-columns: minmax(150px, 1fr) 125px 145px 162px;
+  grid-template-columns: minmax(150px, 1fr) 125px 145px 120px 162px;
   align-items: stretch;
   gap: 0;
   width: 100%;
@@ -194,6 +194,47 @@
   font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 18px;
+}
+/* Kalan: still to enter (amber), complete (green), over capacity (red).
+   Field-scoped so the theme's context text colour does not override it. */
+.person-allocation
+  .actual-control-fields
+  .actual-remaining-item
+  strong[data-remaining-state] {
+  min-height: 0;
+  margin-top: 4px;
+  padding: 3px 8px;
+  border: 1px solid;
+  border-radius: 5px;
+  line-height: 18px;
+}
+.person-allocation
+  .actual-control-fields
+  .actual-remaining-item
+  strong[data-remaining-state="open"] {
+  border-color: #ecd29a;
+  background: #fdf6e7;
+  color: #8a5a00;
+}
+.person-allocation
+  .actual-control-fields
+  .actual-remaining-item
+  strong[data-remaining-state="done"] {
+  border-color: #b9d8c2;
+  background: #ebf6ee;
+  color: #1f6b3a;
+}
+.person-allocation
+  .actual-control-fields
+  .actual-remaining-item
+  strong[data-remaining-state="over"],
+.person-allocation
+  .actual-control-fields
+  .actual-remaining-item
+  strong[data-remaining-state="none"] {
+  border-color: #f0c4bf;
+  background: #fdf0ee;
+  color: #b42318;
 }
 .person-allocation .actual-context-placeholder {
   color: #8a9aab !important;
@@ -262,7 +303,7 @@
     max-width: none;
   }
   .person-allocation .actual-control-fields {
-    max-width: 700px;
+    max-width: 830px;
     margin-left: auto;
   }
 }

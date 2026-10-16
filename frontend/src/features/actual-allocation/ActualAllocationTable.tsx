@@ -28,6 +28,7 @@ import {
   type ActualUnit,
 } from "../../actual-units";
 import { fullMonthFormat, numberFormat } from "./format";
+import { personMonthBalance } from "./person-month-balance";
 import type { ActualAllocationView } from "./useActualAllocationView";
 import type { ActualCapacityDialog } from "./useActualCapacityDialog";
 import type {
@@ -87,16 +88,11 @@ export default function ActualAllocationTable({
   /** Person-month total across all projects; drawn as a load bar under each
    * entry cell instead of a separate row per person. */
   function personMonthLoad(resource: Resource, month: string) {
-    const allocated = personMonthTotals[resource.id + "|" + month] || 0;
     const summary = actualMonths.get(resource.id, month);
-    const unallocatedHours =
-      summary.effectiveHours - allocated * DEFAULT_MONTHLY_HOURS;
-    const remainingHours =
-      Math.abs(unallocatedHours) < ACTUAL_FTE_TOLERANCE * DEFAULT_MONTHLY_HOURS
-        ? 0
-        : unallocatedHours;
-    const percent =
-      summary.capacityFte > 0 ? (allocated / summary.capacityFte) * 100 : 0;
+    const { percent, remainingHours, remainingPercent } = personMonthBalance({
+      ...summary,
+      totalFte: personMonthTotals[resource.id + "|" + month] || 0,
+    });
     const hours = unit === "hours";
     return {
       percent,
@@ -115,6 +111,10 @@ export default function ActualAllocationTable({
             calendarTotals(resource.id, month).trainingHours,
           ) +
           " saat eğitim",
+      // Shown only in the tooltip; data-detail stays the stable description.
+      remaining: hours
+        ? ""
+        : " · Kalan %" + numberFormat.format(remainingPercent),
     };
   }
   const tableRef = useRef<HTMLTableElement>(null);
@@ -330,7 +330,8 @@ export default function ActualAllocationTable({
                                       ": " +
                                       load.value +
                                       "\n" +
-                                      load.title
+                                      load.title +
+                                      load.remaining
                                     }
                                     data-actual-total={
                                       resource.id + "|" + month

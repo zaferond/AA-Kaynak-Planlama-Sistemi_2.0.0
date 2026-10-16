@@ -52,7 +52,7 @@
   outline-color: #315f80;
 }
 .person-allocation .actual-control-fields {
-  grid-template-columns: minmax(150px, 1fr) 125px 145px 158px;
+  grid-template-columns: minmax(150px, 1fr) 125px 145px 120px 158px;
 }
 .person-allocation .actual-control-fields > .actual-unit-item:last-child {
   gap: 5px;

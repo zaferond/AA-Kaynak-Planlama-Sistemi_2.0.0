@@ -30,12 +30,10 @@ export default function TopicWeeks({
   weeks,
   thisWeek,
   selected,
-  cancelledCaption = "İptal edilen:",
 }: {
   weeks: TopicWeek[];
   thisWeek: IsoWeek;
   selected: ReadonlySet<string>;
-  cancelledCaption?: string;
 }) {
   if (!weeks.length) return null;
   const year = thisWeek.year;
@@ -43,7 +41,7 @@ export default function TopicWeeks({
   const cancelled = weeks.filter((w) => w.state === "cancelled");
   const notes: Record<WeekState, string> = {
     current: "",
-    cancelled: " · tarih değişikliğiyle iptal edildi",
+    cancelled: " · eski tarih",
   };
   const chip = (run: TopicWeek[]) => {
     const first = run[0].week,
@@ -72,35 +70,26 @@ export default function TopicWeeks({
       </span>
     );
   };
+  // Old weeks first, red; the current range follows. The colour says it,
+  // the screen-reader label spells it out.
   return (
-    <>
-      {current.length > 0 && (
-        <span
-          className="project-info-weeks"
-          aria-label={
-            "Haftalar: " +
-            current
-              .map((w) => weekLabel(w.week, year) + notes[w.state])
-              .join(", ")
-          }
-        >
-          {weekRuns(current).map(chip)}
-        </span>
-      )}
-      {cancelled.length > 0 && (
-        <span
-          className="project-info-weeks project-info-weeks-cancelled"
-          aria-label={
-            "İptal edilen haftalar: " +
+    <span
+      className="project-info-weeks"
+      aria-label={[
+        cancelled.length
+          ? "Eski haftalar: " +
             cancelled.map((w) => weekLabel(w.week, year)).join(", ")
-          }
-        >
-          <span className="project-info-weeks-caption" aria-hidden="true">
-            {cancelledCaption}
-          </span>
-          {cancelled.map((week) => chip([week]))}
-        </span>
-      )}
-    </>
+          : "",
+        current.length
+          ? "Haftalar: " +
+            current.map((w) => weekLabel(w.week, year)).join(", ")
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" · ")}
+    >
+      {cancelled.map((week) => chip([week]))}
+      {weekRuns(current).map(chip)}
+    </span>
   );
 }

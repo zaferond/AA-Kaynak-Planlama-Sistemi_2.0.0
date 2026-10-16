@@ -281,12 +281,6 @@
   gap: 3px;
   flex-wrap: wrap;
 }
-:is(.app.tab-critical, .project-info-topic-dialog) .project-info-weeks-caption {
-  margin-right: 2px;
-  color: #b42318;
-  font-size: var(--fs-xs);
-  font-weight: 650;
-}
 :is(.app.tab-critical, .project-info-topic-dialog) .project-info-week {
   padding: 1px 5px;
   border: 1px solid #c9d8e3;

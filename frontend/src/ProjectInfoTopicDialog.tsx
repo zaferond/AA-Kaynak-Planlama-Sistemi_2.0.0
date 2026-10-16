@@ -164,7 +164,7 @@ function TopicForm({
         {newlyCancelled > 0 && (
           <p className="project-info-topic-note">
             Kaydettiğinizde eski tarihlerin {newlyCancelled} haftası raporda
-            “İptal edilen” olarak kırmızı görünür.
+            kırmızı olarak kalır.
           </p>
         )}
         {(problem || error) && (

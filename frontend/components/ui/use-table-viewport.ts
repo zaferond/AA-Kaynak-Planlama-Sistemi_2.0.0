@@ -123,6 +123,7 @@ export function useTodayDateMarker(
   todayDate: string | undefined,
   todayMonthsKey: string | undefined,
   aboveRows = false,
+  column = false,
 ) {
   useLayoutEffect(() => {
     const container = containerRef.current;
@@ -144,6 +145,7 @@ export function useTodayDateMarker(
       marker.style.display = "none";
       return;
     }
+    if (column) header.dataset.today = "true";
     const start = header.dataset.dateStart,
       end = header.dataset.dateEnd;
     const progress =
@@ -181,10 +183,14 @@ export function useTodayDateMarker(
       const headerRect = header.getBoundingClientRect();
       const zoom =
         Number.parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
+      // Value grids mark the whole month: a line would cross the figures.
       const left =
-        (headerRect.left - containerRect.left + headerRect.width * progress) /
+        (headerRect.left -
+          containerRect.left +
+          (column ? 0 : headerRect.width * progress)) /
           zoom +
         container.scrollLeft;
+      if (column) marker.style.width = `${headerRect.width / zoom}px`;
       const height = table.offsetHeight;
       markerLeft = left;
       frozenWidth = aboveRows
@@ -222,6 +228,7 @@ export function useTodayDateMarker(
       observer.disconnect();
       window.removeEventListener("resize", schedule);
       container.removeEventListener("scroll", onScroll);
+      delete header.dataset.today;
     };
-  }, [containerRef, markerRef, todayDate, todayMonthsKey, aboveRows]);
+  }, [containerRef, markerRef, todayDate, todayMonthsKey, aboveRows, column]);
 }

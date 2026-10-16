@@ -99,6 +99,7 @@ export default function RemainingResourceTable({
         <Table
           ref={tableRef}
           todayDate={todayDate}
+          todayColumn
           todayMonthsKey={months.join("|")}
           className={
             "remaining-report " + (teamReport ? "team-report" : "leader-report")

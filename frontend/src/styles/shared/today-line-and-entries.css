@@ -29,6 +29,29 @@
   z-index: 5;
 }
 
+/* Value grids mark the current month as a soft column band so no line crosses
+   the figures; the month's header carries the accent. */
+[data-slot="table-container"] > .today-date-line.today-date-column {
+  background: color-mix(
+    in srgb,
+    var(--table-today-color, #397ba8) 8%,
+    transparent
+  );
+  box-shadow:
+    inset 1px 0 0
+      color-mix(in srgb, var(--table-today-color, #397ba8) 45%, transparent),
+    inset -1px 0 0
+      color-mix(in srgb, var(--table-today-color, #397ba8) 45%, transparent);
+}
+[data-slot="table-container"] > .today-date-line.today-date-column::before {
+  display: none;
+}
+[data-slot="table-container"] thead th[data-today] {
+  color: var(--table-today-color, #397ba8) !important;
+  font-weight: 800;
+  box-shadow: inset 0 -3px 0 var(--table-today-color, #397ba8);
+}
+
 /* Saved positive entries remain easy to scan in each distribution grid. */
 .app.tab-plan .allocation-grid td.has-entry .cell input:not(:focus) {
   background: var(--table-planned-entry-background);

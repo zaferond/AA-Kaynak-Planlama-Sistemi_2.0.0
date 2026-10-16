@@ -9,6 +9,8 @@ type TableProps = React.ComponentProps<"table"> & {
   todayDate?: string;
   todayMonthsKey?: string;
   todayOverlay?: boolean;
+  /** Mark the current month as a column band instead of a day line. */
+  todayColumn?: boolean;
   stickyProjectRows?: boolean;
 };
 
@@ -17,6 +19,7 @@ function Table({
   todayDate,
   todayMonthsKey,
   todayOverlay,
+  todayColumn,
   stickyProjectRows,
   ...props
 }: TableProps) {
@@ -29,6 +32,7 @@ function Table({
     todayDate,
     todayMonthsKey,
     todayOverlay,
+    todayColumn,
   );
 
   return (
@@ -49,6 +53,7 @@ function Table({
           className={cn(
             "today-date-line",
             todayOverlay && "today-date-overlay",
+            todayColumn && "today-date-column",
           )}
           title={`Bugün: ${todayDate}`}
           aria-hidden="true"

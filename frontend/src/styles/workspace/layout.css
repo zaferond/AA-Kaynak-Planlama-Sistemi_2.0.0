@@ -445,6 +445,18 @@
   white-space: nowrap;
   letter-spacing: 0.4px;
 }
+/* Month names read horizontally wherever the column fits them (every density
+   but the 5-year overview; actual columns keep a fixed readable width). */
+.app:is(:not(.dense-overview), .tab-actual)
+  :is(.planning-grid, .remaining-report)
+  .monthhead {
+  height: 30px;
+}
+.app:is(:not(.dense-overview), .tab-actual) .monthhead > span {
+  writing-mode: horizontal-tb;
+  transform: none;
+  letter-spacing: 0;
+}
 .app .planning-grid thead tr:not(.yearrow) > th:first-child {
   font-size: var(--fs-xs);
   background: var(--table-header-background);

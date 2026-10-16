@@ -57,6 +57,7 @@ export default function PlannedCapacitySummary(
         <Table
           ref={capacityTableRef}
           todayDate={todayDate}
+          todayColumn
           todayMonthsKey={months.join("|")}
           className="matrix planning-grid allocation-grid"
           style={{

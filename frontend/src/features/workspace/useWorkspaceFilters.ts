@@ -4,6 +4,19 @@ import { currentPlanningDate } from "../../resource-dates";
 import { monthsFrom } from "../../model";
 import type { WorkspaceDensity } from "../WorkspaceNavigation";
 import { filterResetNotice, type WorkspaceOptions } from "./workspace-options";
+
+const CAPACITY_KEY = "aa.planCapacitySummary";
+/** The planned summary starts closed on short screens, where it would hide the
+ * grid; an explicit open/close is remembered in this browser. */
+function initialShowCapacity() {
+  try {
+    const saved = localStorage.getItem(CAPACITY_KEY);
+    if (saved === "open" || saved === "closed") return saved === "open";
+  } catch {
+    // Storage can be unavailable; fall back to the screen height.
+  }
+  return window.innerHeight >= 860;
+}
 export function useWorkspaceFilters(
   options: WorkspaceOptions,
   tab: string,
@@ -29,11 +42,21 @@ export function useWorkspaceFilters(
     [resourcePage, setResourcePage] = useState(0),
     [showAllActual, setShowAllActual] = useState(false),
     [expandedActualTeams, setExpandedActualTeams] = useState<string[]>([]),
-    [showCapacity, setShowCapacity] = useState(true),
+    [showCapacity, setCapacityState] = useState(initialShowCapacity),
     [showProjectDetails, setShowProjectDetails] = useState(false),
     [projectWeekly, setProjectWeekly] = useState(false),
     [showProjectCodes, setShowProjectCodes] = useState(false),
     [filterResetKey, setFilterResetKey] = useState(0);
+  const setShowCapacity = (open: boolean) => {
+    // <details> also reports its initial open state; only a change is a choice.
+    if (open === showCapacity) return;
+    setCapacityState(open);
+    try {
+      localStorage.setItem(CAPACITY_KEY, open ? "open" : "closed");
+    } catch {
+      // The choice still applies for this session.
+    }
+  };
   const count = tab === "actual" ? actualCount : workspaceCount;
   const setCount = tab === "actual" ? setActualCount : setWorkspaceCount;
   const density = tab === "actual" ? actualDensity : workspaceDensity;

@@ -204,6 +204,7 @@ export default function PlannedAllocationTable(
       ref={planTableRef}
       stickyProjectRows
       todayDate={todayDate}
+      todayColumn
       todayMonthsKey={months.join("|")}
       className={
         "matrix planning-grid allocation-grid" +

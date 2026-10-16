@@ -373,6 +373,7 @@ export default function ActualAllocationTable({
       ref={tableRef}
       stickyProjectRows
       todayDate={todayDate}
+      todayColumn
       todayMonthsKey={months.join("|")}
       className="matrix planning-grid allocation-grid"
       style={{ width: 200 + months.length * monthWidth }}

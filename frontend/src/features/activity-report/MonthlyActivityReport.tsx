@@ -120,6 +120,7 @@ export default function MonthlyActivityReport({
         className="activity-matrix"
         aria-label="Çalışanların aylık aktiviteleri"
         todayDate={todayDate}
+        todayColumn
         todayMonthsKey={months.join("|")}
         style={{ width: LABEL_COLUMNS_WIDTH + months.length * monthWidth }}
       >

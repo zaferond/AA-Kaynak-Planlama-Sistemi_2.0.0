@@ -377,6 +377,12 @@ export async function checkViewportScroll(f) {
             '.person-allocation > [data-slot="table-container"]',
           );
           await table.waitFor();
+          // An employee sees only their own rows, which fit the viewport.
+          // Force both scroll axes, as in the small-window case.
+          await table.evaluate((el) => {
+            el.style.maxHeight = "200px";
+            document.body.style.paddingBottom = "100vh";
+          });
           await actual.page.evaluate(() => window.scrollTo(0, 1e8));
           await table.hover();
           const before = await actual.page.evaluate(() => scrollY);

@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "38e51126569e7ab8cda6f5611792317e541337c0",
+  "commit": "eb5750fea0957dddd9cb0f6db63446b657f8d792",
   "sources": {
     "backend/active-directory.mjs": "378b9aa0d31346261a26dbda3584588dd8041604a3f2aec0a0771a1c05c02394",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -142,7 +142,7 @@
     "frontend/components/ui/switch.tsx": "386d4d4deb39f34126f9700fe9bf5393d238485dd94018bba9d154dda84c62ae",
     "frontend/components/ui/table.tsx": "94d1cdda98f964998cbcc5a9b673488a212f8281469762b16817f65e3d5a3edc",
     "frontend/components/ui/tabs.tsx": "865d0194331b9b2be36723fa79d3575dc83078b4cb941cafee87cb72fc2cff46",
-    "frontend/components/ui/use-table-viewport.ts": "3f054ae4e2e145cab69829b9b56948f4a85d0cb64bf8e29e0d0e2b6d1ddb4858",
+    "frontend/components/ui/use-table-viewport.ts": "38ba060f09517593861bb30f8f83e4b6604207e87bdbe44b2a2a20934bbfcb0d",
     "frontend/lib/utils.ts": "53f3d3d070f0a9082934da25b875f9499855c2b0693868dd28be8c23d8730f68",
     "frontend/package-lock.json": "d5dd13cbb056a02d3438d8b76867a52993a7fdfebac3417a0b025b8a1421be66",
     "frontend/package.json": "61aa7d27e80a027609aae7bcf6062fa9f6285c0206dea0dfbb4e703d0fbacca1",
@@ -439,7 +439,7 @@
     "scripts/browser-checks/risk.mjs": "7b6f1d73f99f23b55f59311119cc5fa05cdb3a6ec68c30bce33b6b4d87a821fa",
     "scripts/browser-checks/schedule-scenario.mjs": "2009fc0527a342878490246e42a9ba6512832ce8e28d985474296439f0ad7b9c",
     "scripts/browser-checks/session-consistency.mjs": "8ec2ed5893e5bdd0a0e2239b6c03b41d9d9606ee638d58b27fcb67769398ae8e",
-    "scripts/browser-checks/tab-transitions.mjs": "2c64ec5cb5d89d12491199c568a26283f21c11f257625e4532024a8c7a37e027",
+    "scripts/browser-checks/tab-transitions.mjs": "a214c6d8b15069d739778d1b7544928749a4e1da7afe81359d66e16b1312297e",
     "scripts/browser-checks/table-styles.mjs": "1d594e1a3338c73e46f21514fddad0a3af51bf23286f6b859450bf855f7088d7",
     "scripts/browser-checks/team-capacity-header.mjs": "7606415ca96b22dbf222af44a6ea8b65a2d5d53f93a5bcf443997325902e915e",
     "scripts/browser-checks/team-only-resource.mjs": "9095bd1dfe15d19cb4d86d4a3c5ab2735af1958fd8f2ef1e6a0df8ccea88039b",
@@ -448,9 +448,9 @@
     "scripts/browser-checks/timeline-layers.mjs": "a10ed6598465ccd75057e863180a8d544ff2632431a5868a59e1a002170b20f3",
     "scripts/browser-checks/today-line-visibility.mjs": "bae94d240717ebf8154861d334b3f44e1c4a668bafa8cdcfc50d128bc910c2e6",
     "scripts/browser-checks/transport-recovery.mjs": "be94262701ecc86b9a93eaeffa914f37e8d7399b2709020b6d86d62a92e8eb40",
-    "scripts/browser-checks/viewport-scroll.mjs": "6ce7323dbfda03b4c8a81ac61ed5b8b51d7efb91a655cb012b09404198fef9ff",
+    "scripts/browser-checks/viewport-scroll.mjs": "c0f9735b304e320cc9648a34589b81f8cff5e0028e126d03e4213cdcb2f3aeeb",
     "scripts/browser-checks/workspace-actions.mjs": "32420ad595dca4ae0f20805c84a9e16f3c2de2418de07a54b5be3b03fab3dd79",
-    "scripts/browser-checks/workspace-filters.mjs": "a32da04905f9bcb20b7131d9e87c1173a32291cf8bdc443a29b575b284069bf8",
+    "scripts/browser-checks/workspace-filters.mjs": "093480cf11fe2bbd6fdeec7170988bff646ebc4a93284814690173b1540bb96e",
     "scripts/browser-checks/workspace-navigation.mjs": "c25f9fad49304929884a12b72b12a32e5b7cb35a58633250ffa8524529c29dd5",
     "scripts/check-deployment-package.mjs": "0b67591fa941bd06a69161c7a11b90856f5062e86b388db7d6a94aa4f6e2e99f",
     "scripts/check-domain.mjs": "00c1a900a61a714c533f76fdd4c62cffabd4fdfeb9b83d489ae772ab967809f6",
@@ -1041,6 +1041,8 @@
     "site/assets/app.83963959de5d.js.gz": "e89a6b64dfa636dbc93a4faf3952aa593a982dbcc64c5ef8b68cad43b4654d36",
     "site/assets/app.86dae45fde73.css": "86dae45fde73407ddbdff5b82fdf0c5084b6a6fec5c1e47ccd162d2985c34a6c",
     "site/assets/app.86dae45fde73.css.gz": "9ae7223c1f7f52c09569658396a9fa1585e516743fa919809df137e5e0e390a7",
+    "site/assets/app.86e183c19bf5.js": "86e183c19bf5b82539e81e16ad2d134466fc66ebf9585a11ba8342d867e05615",
+    "site/assets/app.86e183c19bf5.js.gz": "06711f8ff0ede55003c079d8ffec8456e0fb975be6eb38e2e954bbd8355cfe98",
     "site/assets/app.875b45bb9ac9.js": "875b45bb9ac96e0d2dd8ee177faabe8e0f1ac448a6040945e147ca045e6bce96",
     "site/assets/app.875b45bb9ac9.js.gz": "f1e4604775eed0db4c2edba31ba0ab10d129cbe22527a6efc223e2ccf95f797f",
     "site/assets/app.87b1204d3b80.css": "87b1204d3b809d45f379ff594da8a78c69a24eba925cf437d52c4957df298265",
@@ -1494,17 +1496,17 @@
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/login-background.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "afefbdf629bfe5a75d7b83207d3af02bbffaeca824659a42b5a23104af2e403c",
-    "site/index.html.gz": "ad2c2c41741ac386487273ec687ebe922e4ca4030ed17eaa9a3fa7754d28204a"
+    "site/index.html": "db9249130833a159ec64694c5b9b2c969243882899de5c7d60055f15fa5ada79",
+    "site/index.html.gz": "dd0599aca03ab850839b0504d8c98b00b96bcca36dfee4076d9398a5bea5c0a6"
   },
   "releaseArtifacts": {
     "site/assets/app.568c70bebb78.css": "568c70bebb78c3d3f0886bb04d514df8678956a10a9b2ab63f3a4a9788e2dc71",
     "site/assets/app.568c70bebb78.css.gz": "21dc7113d734299ef68e3e3205be6883ef9c88c2f64ebe2056dc4bc1e896ff57",
-    "site/assets/app.68d793278704.js": "68d793278704c648d21229a9d2ef1561dd2f58758050de0c5377f9068380f7d5",
-    "site/assets/app.68d793278704.js.gz": "22f02a956ec62f51224b7d8da92b6954f792f6224679f4391f491cfb788085fc",
+    "site/assets/app.86e183c19bf5.js": "86e183c19bf5b82539e81e16ad2d134466fc66ebf9585a11ba8342d867e05615",
+    "site/assets/app.86e183c19bf5.js.gz": "06711f8ff0ede55003c079d8ffec8456e0fb975be6eb38e2e954bbd8355cfe98",
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "afefbdf629bfe5a75d7b83207d3af02bbffaeca824659a42b5a23104af2e403c",
-    "site/index.html.gz": "ad2c2c41741ac386487273ec687ebe922e4ca4030ed17eaa9a3fa7754d28204a"
+    "site/index.html": "db9249130833a159ec64694c5b9b2c969243882899de5c7d60055f15fa5ada79",
+    "site/index.html.gz": "dd0599aca03ab850839b0504d8c98b00b96bcca36dfee4076d9398a5bea5c0a6"
   }
 }

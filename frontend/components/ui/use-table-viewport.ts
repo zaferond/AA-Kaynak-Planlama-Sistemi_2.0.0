@@ -165,6 +165,9 @@ export function useTodayDateMarker(
       lastLeft = container.scrollLeft;
     const updateVisibility = () => {
       visibilityFrame = 0;
+      // Remember the position this result belongs to; a layout update can
+      // evaluate before a pending scroll event, which must not then be skipped.
+      lastLeft = container.scrollLeft;
       const value =
         aboveRows && markerLeft - container.scrollLeft < frozenWidth
           ? "hidden"
@@ -173,7 +176,6 @@ export function useTodayDateMarker(
     };
     const onScroll = () => {
       if (container.scrollLeft === lastLeft) return;
-      lastLeft = container.scrollLeft;
       if (!visibilityFrame)
         visibilityFrame = requestAnimationFrame(updateVisibility);
     };

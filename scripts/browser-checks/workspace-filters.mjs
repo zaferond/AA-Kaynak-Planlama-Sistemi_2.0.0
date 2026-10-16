@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { openUserMenu } from "./fixture.mjs";
+import { openUserMenu, revealTableItem } from "./fixture.mjs";
 import { applyChanges } from "../../backend/operations.mjs";
 import { buildCapacityIndex } from "../../shared/metrics.ts";
 import { fmt } from "../../frontend/src/format.ts";
@@ -108,6 +108,8 @@ export async function checkWorkspaceFilters(f) {
         const cell = page.locator(
           '[data-plan-cell="' + f.teamA.id + '|p-a|2026-03"]',
         );
+        // Team view centres the phase chip in the cell; select via the entry.
+        const entry = cell.locator(".cell");
         await cell.waitFor();
         assert.equal(await startInput(page).inputValue(), "2026-03");
         assert.equal(await periodInput(page).inputValue(), "24");
@@ -121,14 +123,14 @@ export async function checkWorkspaceFilters(f) {
           await page.locator('[data-plan-cell^="' + f.teamB.id + '|"]').count(),
           0,
         );
-        await cell.click();
+        await entry.click();
         assert.equal(await selectedCells(page).count(), 1);
         await periodInput(page).selectOption("12");
         await f.wait(
           async () => (await selectedCells(page).count()) === 0,
           "period clears selection",
         );
-        await cell.click();
+        await entry.click();
         await page
           .getByRole("tab", { name: "Proje → Takımlar", exact: true })
           .click();
@@ -161,10 +163,13 @@ export async function checkWorkspaceFilters(f) {
         await page.reload();
         await page.locator(".project-team-view").waitFor();
         assert.equal(await startInput(page).inputValue(), "2026-01");
-        assert.equal(
-          await page.locator("[data-project-heading]").count(),
-          initial.projects.length,
-        );
+        // Rows are windowed: every project must be reachable, not all mounted.
+        const grid = page.locator("table.planning-grid").last().locator("..");
+        for (const project of initial.projects)
+          await revealTableItem(
+            grid,
+            page.locator(`[data-project-heading="${project.id}"]`),
+          );
       },
     );
     await f.check(

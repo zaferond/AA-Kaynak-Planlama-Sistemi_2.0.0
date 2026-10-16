@@ -255,9 +255,15 @@ export async function checkTabTransitions(f) {
           await table.locator(`tbody[data-window-key="${oldKey}"]`).count(),
           1,
         );
+        // Page size follows the visible months (1200 / months); the pager
+        // states the current page's last row.
+        const lastRow = Number(
+          (await page.locator(".person-allocation .pager > span").innerText())
+            .match(/–(\d+)/)[1],
+        );
         const person = before.resources
           .slice()
-          .sort((a, b) => a.name.localeCompare(b.name, "tr"))[99];
+          .sort((a, b) => a.name.localeCompare(b.name, "tr"))[lastRow - 1];
         const final = table.getByRole("textbox", {
           name: person.name + " / Browser Project A / 2026-01 / %",
           exact: true,

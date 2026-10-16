@@ -305,14 +305,9 @@ export default function ScheduleScenarioDialog({
               </button>
             )}
           </section>
-          <ComparisonView
-            comparison={comparison}
-            data={data}
-            shown={shown}
-            onShow={setFocus}
-          />
           <SavedScenarioList
             data={data}
+            openIds={scenarios.map((s) => s.id)}
             scenarios={saved}
             isAdmin={isAdmin}
             userId={userId}
@@ -336,6 +331,12 @@ export default function ScheduleScenarioDialog({
                 `${closed.length} kapatılmış senaryo silindi.`,
               );
             }}
+          />
+          <ComparisonView
+            comparison={comparison}
+            data={data}
+            shown={shown}
+            onShow={setFocus}
           />
         </div>
         <div className="schedule-scenario-actions">

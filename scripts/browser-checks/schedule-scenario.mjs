@@ -317,7 +317,10 @@ export async function checkScheduleScenarioApproval(f) {
         assert.equal(moved.end, "2027-03");
         assert.equal(moved.phases["2027-01"], "Prototip");
         assert.match(await item.innerText(), /Aktaran: /);
-        // B is closed, cannot be approved or transferred, and says why.
+        // B is closed: hidden as history until asked for, then it says why
+        // and offers neither approval nor transfer.
+        assert.equal(await saved("Senaryo B").count(), 0);
+        await dialog.getByLabel(/Geçmişi göster/).check();
         const other = saved("Senaryo B");
         assert.match(await other.innerText(), /Kapatıldı/);
         assert.match(await other.innerText(), /Yerine “Senaryo A” aktarıldı/);

@@ -175,7 +175,7 @@
 }
 .audit-log-entry th,
 .audit-log-entry td {
-  border: 1px solid #dce5ed;
+  border: 1px solid var(--brand-border, #ccd6c5);
   padding: 7px 9px;
   text-align: left;
   vertical-align: top;
@@ -194,12 +194,12 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  border-top: 1px solid #dce5ed;
+  border-top: 1px solid var(--brand-border, #ccd6c5);
   padding-top: 12px;
 }
 .audit-log-footer > span {
   margin-right: auto;
-  color: #657b8e;
+  color: var(--brand-muted, #60715e);
   font-size: var(--fs-xs);
 }
 @media (max-width: 760px) {

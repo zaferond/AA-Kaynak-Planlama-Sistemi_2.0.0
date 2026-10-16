@@ -561,7 +561,7 @@
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0;
-  color: #60758b;
+  color: var(--brand-muted, #60715e);
 }
 .editor [data-slot="dialog-title"] .project-responsible {
   font-size: var(--fs-xs);

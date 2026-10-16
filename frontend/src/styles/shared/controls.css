@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  border: 1px solid #d5dfe9;
+  border: 1px solid var(--brand-border, #d5dfe9);
   border-radius: 6px;
   background: white;
   padding: 8px 10px;
@@ -59,7 +59,7 @@
   gap: 10px;
   padding: 10px 0;
   font-size: var(--fs-sm);
-  color: #1766bd;
+  color: var(--brand-primary, #1766bd);
 }
 .pickeroptions {
   min-height: 0;
@@ -113,12 +113,12 @@ input[type="radio"] {
   min-width: 17px;
   flex-shrink: 0;
   padding: 0;
-  accent-color: #1766bd;
+  accent-color: var(--brand-primary, #1766bd);
   cursor: pointer;
 }
 select {
   font-size: var(--fs-md);
-  border: 1px solid #d5dfe9;
+  border: 1px solid var(--brand-border, #d5dfe9);
   border-radius: 6px;
   padding: 9px 10px;
   background: white;
@@ -141,7 +141,7 @@ select {
   margin: -8px 0 18px;
 }
 .filterline button {
-  color: #1766bd;
+  color: var(--brand-primary, #1766bd);
 }
 .filterline span:last-child {
   margin-left: auto;
@@ -216,7 +216,7 @@ select {
 }
 .average {
   text-align: right;
-  color: #1766bd;
+  color: var(--brand-primary, #1766bd);
   display: flex;
   flex-direction: column;
   gap: 5px;

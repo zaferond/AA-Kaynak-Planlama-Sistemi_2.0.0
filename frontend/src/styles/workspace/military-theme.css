@@ -1101,10 +1101,10 @@ html[data-theme="military"]
   .summary
   td:first-child {
   padding-inline: 12px;
-  background: #eef1f4;
-  color: #344654;
-  border-right: 1px solid #c7d0d7;
-  border-bottom: 1px solid #c7d0d7;
+  background: var(--brand-surface-soft);
+  color: var(--brand-text);
+  border-right: 1px solid var(--brand-border);
+  border-bottom: 1px solid var(--brand-border);
   font-weight: 600;
   vertical-align: middle;
 }
@@ -1311,4 +1311,36 @@ html[data-theme="military"] [data-slot="table-container"] > .today-date-line {
     ):not([data-timeline-item]):not(.phasebutton):not(.phase-chip):hover {
     filter: brightness(0.84);
   }
+}
+
+/* Legacy blue left in the precompiled base stylesheet (assets/base.css). */
+html[data-theme="military"] .matrix .group {
+  background: var(--table-project-background);
+}
+html[data-theme="military"] .indent {
+  color: #9aa794;
+}
+
+/* Keyboard focus: one brand-coloured ring instead of the browser's blue.
+   :where keeps specificity at zero, so component focus styles still win. */
+html[data-theme="military"]
+  :where(
+    button,
+    a[href],
+    summary,
+    [role="tab"],
+    [role="menuitem"],
+    input[type="checkbox"],
+    input[type="radio"],
+    [data-slot="table-container"],
+    [tabindex]:not([tabindex="-1"])
+  ):focus-visible {
+  outline: 2px solid var(--brand-focus);
+  outline-offset: 2px;
+}
+/* The tab panel is a focus stop for keyboard users; show where focus is. */
+html[data-theme="military"] [data-slot="tabs-content"]:focus-visible {
+  outline: 2px solid var(--brand-focus);
+  outline-offset: 4px;
+  border-radius: 4px;
 }

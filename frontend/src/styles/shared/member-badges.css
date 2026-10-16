@@ -144,7 +144,7 @@
 .app.tab-plan .project-team-view .team-manager {
   display: block;
   max-width: 100%;
-  color: #60788d;
+  color: var(--brand-muted, #60715e);
   font-size: var(--fs-xs);
   font-weight: 500;
   line-height: 1.25;

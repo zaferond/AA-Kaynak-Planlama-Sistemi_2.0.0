@@ -49,7 +49,7 @@
   background: #284f6b;
 }
 .app .workspace-nav-actions .project-create:focus-visible {
-  outline-color: #315f80;
+  outline-color: var(--brand-focus, #315f80);
 }
 .person-allocation .actual-control-fields {
   grid-template-columns: minmax(150px, 1fr) 125px 145px 120px 158px;
@@ -92,7 +92,7 @@
   border-color: #6b9cbe;
 }
 .person-allocation .actual-unit-item select:focus-visible {
-  outline: 2px solid #3a86b8;
+  outline: 2px solid var(--brand-focus, #3a86b8);
   outline-offset: 1px;
 }
 @media (max-width: 600px) {

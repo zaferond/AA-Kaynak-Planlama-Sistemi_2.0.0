@@ -82,7 +82,7 @@
 }
 .person-allocation .panelhead p {
   font-size: var(--fs-xs);
-  color: #60758b;
+  color: var(--brand-muted, #60715e);
 }
 .person-allocation .person-amount {
   position: relative;
@@ -107,7 +107,7 @@
 .person-allocation .actual-project-name span {
   margin-top: 3px;
   font-size: var(--fs-xs);
-  color: #60758b;
+  color: var(--brand-muted, #60715e);
 }
 .person-allocation .actual-phase-cell {
   padding: 3px 2px !important;
@@ -127,7 +127,7 @@
   cursor: pointer;
 }
 .person-allocation .actual-phase-button:focus-visible {
-  outline: 2px solid #1766bd;
+  outline: 2px solid var(--brand-focus, #1766bd);
   outline-offset: 1px;
 }
 .app.tab-plan .project-team-view .project-phase-group td {
@@ -145,14 +145,14 @@
   width: 100%;
   height: 28px;
   text-align: center;
-  border: 1px solid #d2dfeb;
+  border: 1px solid var(--brand-border, #ccd6c5);
   border-radius: 3px;
   background: #fff;
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
 }
 .person-allocation .person-amount input:focus {
-  outline: 2px solid #9bc1e7;
+  outline: 2px solid var(--brand-focus, #9bc1e7);
   border-color: #3478b6;
 }
 .person-allocation .person-amount input:disabled {

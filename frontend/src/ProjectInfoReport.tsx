@@ -476,32 +476,44 @@ export default function ProjectInfoReport({
                                   ) : (
                                     <>
                                       <span>{topic.text}</span>
-                                      <small>
-                                        {dateLabel(topic.start)} –{" "}
-                                        {dateLabel(topic.end)}
-                                      </small>
-                                      <TopicWeeks
-                                        weeks={topicWeeks(topic, today)}
-                                        thisWeek={thisWeek}
-                                        selected={weekKeys}
-                                      />
-                                      {topic.completed && (
+                                      {/* Dates and their weeks sit under the text. */}
+                                      <div className="project-info-topic-meta">
+                                        <small>
+                                          {dateLabel(topic.start)} –{" "}
+                                          {dateLabel(topic.end)}
+                                        </small>
+                                        <TopicWeeks
+                                          weeks={topicWeeks(topic)}
+                                          thisWeek={thisWeek}
+                                          selected={weekKeys}
+                                        />
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                                {!selected &&
+                                  (topic.completed ||
+                                    status === "late" ||
+                                    status === "active") && (
+                                    <div className="project-info-topic-state">
+                                      {topic.completed ? (
                                         <em className="project-info-complete-label">
                                           Tamamlandı
                                         </em>
-                                      )}
-                                      {(status === "late" ||
-                                        status === "active") && (
+                                      ) : (
                                         <em
                                           className="project-info-status"
                                           data-status={status}
                                         >
-                                          {STATUS_LABELS[status]}
+                                          {
+                                            STATUS_LABELS[
+                                              status as "late" | "active"
+                                            ]
+                                          }
                                         </em>
                                       )}
-                                    </>
+                                    </div>
                                   )}
-                                </div>
                                 {canEdit && (
                                   <div className="project-info-topic-actions">
                                     {selected ? (
@@ -641,29 +653,28 @@ export default function ProjectInfoReport({
   );
 }
 
-const WEEK_STATE_NOTES: Record<WeekState, string> = {
-  current: "",
-  history: " · önceki tarih planı",
-  missed: " · kapatılmadan geçti",
-};
+/** Current ranges longer than this collapse to one "W01–W20" chip. */
+const COLLAPSE_CURRENT_WEEKS = 9;
 
-/** Consecutive weeks in the same state; runs of three or more become one
- * "W33–W40" chip so long ranges stay on one line. */
+/** Consecutive weeks in the same state; only very long runs of current
+ * weeks collapse. Cancelled weeks stay one red box each. */
 function weekRuns(weeks: TopicWeek[]) {
   const runs: TopicWeek[][] = [];
   for (const item of weeks) {
-    const run = runs.at(-1);
-    const last = run?.at(-1);
+    const last = runs.at(-1)?.at(-1);
     if (
-      run &&
       last &&
       last.state === item.state &&
       shiftWeek(last.week, 1).key === item.week.key
     )
-      run.push(item);
+      runs.at(-1)!.push(item);
     else runs.push([item]);
   }
-  return runs.flatMap((run) => (run.length >= 3 ? [run] : run.map((w) => [w])));
+  return runs.flatMap((run) =>
+    run.length >= COLLAPSE_CURRENT_WEEKS && run[0].state === "current"
+      ? [run]
+      : run.map((w) => [w]),
+  );
 }
 
 function TopicWeeks({
@@ -677,45 +688,68 @@ function TopicWeeks({
 }) {
   if (!weeks.length) return null;
   const year = thisWeek.year;
+  const current = weeks.filter((w) => w.state !== "cancelled");
+  const cancelled = weeks.filter((w) => w.state === "cancelled");
+  const notes: Record<WeekState, string> = {
+    current: "",
+    cancelled: " · tarih değişikliğiyle iptal edildi",
+  };
+  const chip = (run: TopicWeek[]) => {
+    const first = run[0].week,
+      last = run.at(-1)!.week,
+      state = run[0].state;
+    return (
+      <span
+        key={state + first.key}
+        className="project-info-week"
+        data-state={state}
+        data-current={
+          run.some(({ week }) => week.key === thisWeek.key) || undefined
+        }
+        data-selected={
+          run.some(({ week }) => selected.has(week.key)) || undefined
+        }
+        title={
+          (run.length > 1
+            ? `${weekDates(first)} … ${weekDates(last)}`
+            : weekDates(first)) + notes[state]
+        }
+      >
+        {run.length > 1
+          ? `${weekLabel(first, year)}–${weekLabel(last, year)} · ${run.length} hafta`
+          : weekLabel(first, year)}
+      </span>
+    );
+  };
   return (
-    <span
-      className="project-info-weeks"
-      aria-label={
-        "Haftalar: " +
-        weeks
-          .map(
-            ({ week, state }) =>
-              weekLabel(week, year) + WEEK_STATE_NOTES[state],
-          )
-          .join(", ")
-      }
-    >
-      {weekRuns(weeks).map((run) => {
-        const first = run[0].week,
-          last = run.at(-1)!.week;
-        return (
-          <span
-            key={first.key}
-            className="project-info-week"
-            data-state={run[0].state}
-            data-current={
-              run.some(({ week }) => week.key === thisWeek.key) || undefined
-            }
-            data-selected={
-              run.some(({ week }) => selected.has(week.key)) || undefined
-            }
-            title={
-              (run.length > 1
-                ? `${weekDates(first)} … ${weekDates(last)}`
-                : weekDates(first)) + WEEK_STATE_NOTES[run[0].state]
-            }
-          >
-            {run.length > 1
-              ? `${weekLabel(first, year)}–${weekLabel(last, year)} · ${run.length} hafta`
-              : weekLabel(first, year)}
+    <>
+      {current.length > 0 && (
+        <span
+          className="project-info-weeks"
+          aria-label={
+            "Haftalar: " +
+            current
+              .map((w) => weekLabel(w.week, year) + notes[w.state])
+              .join(", ")
+          }
+        >
+          {weekRuns(current).map(chip)}
+        </span>
+      )}
+      {cancelled.length > 0 && (
+        <span
+          className="project-info-weeks project-info-weeks-cancelled"
+          aria-label={
+            "İptal edilen haftalar: " +
+            cancelled.map((w) => weekLabel(w.week, year)).join(", ")
+          }
+        >
+          <span className="project-info-weeks-caption" aria-hidden="true">
+            İptal edilen:
           </span>
-        );
-      })}
-    </span>
+          {cancelled.map((week) => chip([week]))}
+        </span>
+      )}
+    </>
   );
 }

@@ -195,18 +195,22 @@
   gap: 10px;
 }
 .app.tab-critical .project-info-topic-content {
-  flex-direction: row;
+  gap: 4px;
+}
+/* Second line under the text: the date range, its weeks, then any weeks a
+   date change cancelled. */
+.app.tab-critical .project-info-topic-meta {
+  display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 4px 10px;
-}
-.app.tab-critical .project-info-topic-content > span {
-  flex: 1 1 320px;
-  width: auto;
+  gap: 4px 8px;
 }
 .app.tab-critical .project-info-topic-content small {
   padding: 1px 6px;
   white-space: nowrap;
+}
+.app.tab-critical .project-info-topic-state {
+  flex: none;
 }
 .app.tab-critical .project-info-editor-fields {
   flex: 1 1 100%;
@@ -273,16 +277,18 @@
 }
 
 /* Week chips on each topic: the current week is outlined, the filtered
-   week is filled. */
-/* The week group is a direct span of the topic row: keep it out of the
-   text's flex sizing and the completed strike-through. */
-.app.tab-critical .project-info-topic-content > .project-info-weeks {
+   week is filled; weeks a date change dropped are red, one box each. */
+.app.tab-critical .project-info-weeks {
   display: inline-flex;
-  flex: none;
+  align-items: center;
   gap: 3px;
   flex-wrap: wrap;
-  width: auto;
-  text-decoration: none;
+}
+.app.tab-critical .project-info-weeks-caption {
+  margin-right: 2px;
+  color: #b42318;
+  font-size: var(--fs-xs);
+  font-weight: 650;
 }
 .app.tab-critical .project-info-week {
   padding: 1px 5px;
@@ -304,23 +310,18 @@
   background: #2f6f8f;
   color: #fff;
 }
-/* A week that ended while the topic was open, including weeks it slipped
-   from: red. A week from earlier dates that has not ended yet: dashed. */
-.app.tab-critical .project-info-week[data-state="missed"] {
+.app.tab-critical .project-info-week[data-state="cancelled"] {
   border-color: #e5a59d;
   background: #fdecea;
   color: #b42318;
 }
-.app.tab-critical .project-info-week[data-state="missed"][data-selected] {
+.app.tab-critical .project-info-week[data-state="cancelled"][data-current] {
+  box-shadow: inset 0 0 0 1px #b42318;
+}
+.app.tab-critical .project-info-week[data-state="cancelled"][data-selected] {
   border-color: #b42318;
   background: #b42318;
   color: #fff;
-}
-.app.tab-critical .project-info-week[data-state="history"] {
-  border-style: dashed;
-  border-color: #9aa9b5;
-  background: #fff;
-  color: #5d6d79;
 }
 .app.tab-critical .project-info-weekbar .project-info-week-remove svg {
   margin-left: 1px;
@@ -331,8 +332,5 @@
   }
   .app.tab-critical .project-info-jump select {
     min-width: 0;
-  }
-  .app.tab-critical .project-info-topic-content > span {
-    flex-basis: 100%;
   }
 }

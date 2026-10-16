@@ -27,37 +27,28 @@ export function matchesTopicFilter(status: TopicStatus, filter: TopicFilter) {
   return status !== "done";
 }
 
-export type WeekState = "current" | "history" | "missed";
+export type WeekState = "current" | "cancelled";
 export type TopicWeek = { week: IsoWeek; state: WeekState };
 /** Selected week keys; empty means every week. */
 export type WeekSelection = ReadonlySet<string>;
 
 /**
- * Weeks to show on a topic: its current range plus weeks it covered under
- * earlier dates. A week is "missed" once it has ended while the topic stayed
- * open; a slipped week (earlier dates) stays missed even after the topic is
- * closed, because it was not closed in that week.
+ * Weeks to show on a topic: its current range, then the weeks it covered
+ * under earlier dates that the change dropped ("cancelled"). Weeks inside the
+ * current range are never coloured, even once passed: lateness is the
+ * topic's status label. A week the new range still covers is not cancelled.
  */
-export function topicWeeks(topic: ReportTopic, today: string): TopicWeek[] {
+export function topicWeeks(topic: ReportTopic): TopicWeek[] {
   const current = weeksInRange(topic.start, topic.end);
   const currentKeys = new Set(current.map((week) => week.key));
-  const history = (topic.weekHistory || [])
+  const cancelled = [...new Set(topic.weekHistory || [])]
     .filter((key) => !currentKeys.has(key))
+    .sort()
     .flatMap((key) => weekFromKey(key) || []);
   return [
-    ...current.map((week) => ({ week, inCurrent: true })),
-    ...history.map((week) => ({ week, inCurrent: false })),
-  ]
-    .sort((a, b) => a.week.key.localeCompare(b.week.key))
-    .map(({ week, inCurrent }) => ({
-      week,
-      state:
-        week.end < today && (!topic.completed || !inCurrent)
-          ? "missed"
-          : inCurrent
-            ? "current"
-            : "history",
-    }));
+    ...current.map((week) => ({ week, state: "current" as const })),
+    ...cancelled.map((week) => ({ week, state: "cancelled" as const })),
+  ];
 }
 
 /** A topic belongs to every week it covers now or covered before. */

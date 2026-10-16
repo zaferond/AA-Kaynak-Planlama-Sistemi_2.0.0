@@ -81,50 +81,49 @@ test("notes match by text first, then by position", () => {
   assert.deepEqual(renamed.milestones[0].barNotes[0].weekHistory, ["2026-W45"]);
 });
 
-test("slipped and unclosed weeks are red; the report filters by them", () => {
+test("dropped weeks are listed as cancelled; the report filters by them", () => {
+  // Planned 1–25 January (W01–W04), moved to 3–15 March (W10–W11).
   const stored = project([
-    note("A", "2026-10-26", "2026-11-01", {
-      weekHistory: ["2026-W40"],
+    note("A", "2026-03-03", "2026-03-15", {
+      weekHistory: ["2026-W01", "2026-W02", "2026-W03", "2026-W04"],
     }),
-  ]); // now W44, earlier W40
+  ]);
   const [topic] = buildProjectInfoReport([stored])[0].infos[0].topics;
   assert.deepEqual(
-    topicWeeks(topic, "2026-10-16").map(({ week, state }) => [
-      week.week,
-      state,
-    ]),
+    topicWeeks(topic).map(({ week, state }) => [week.week, state]),
     [
-      [40, "missed"],
-      [44, "current"],
+      [10, "current"],
+      [11, "current"],
+      [1, "cancelled"],
+      [2, "cancelled"],
+      [3, "cancelled"],
+      [4, "cancelled"],
     ],
   );
+  // A week the new range still covers is current, not cancelled.
   assert.deepEqual(
-    topicWeeks(topic, "2026-11-10").map(({ state }) => state),
-    ["missed", "missed"],
-  );
-  // Closed later: only the slipped week stays red.
-  assert.deepEqual(
-    topicWeeks({ ...topic, completed: true }, "2026-11-10").map(
-      ({ state }) => state,
-    ),
-    ["missed", "current"],
-  );
-  // A future week from earlier dates is history, not yet missed.
-  assert.deepEqual(
-    topicWeeks({ ...topic, weekHistory: ["2026-W50"] }, "2026-10-16").map(
+    topicWeeks({ ...topic, weekHistory: ["2026-W10", "2026-W09"] }).map(
       ({ week, state }) => [week.week, state],
     ),
     [
-      [44, "current"],
-      [50, "history"],
+      [10, "current"],
+      [11, "current"],
+      [9, "cancelled"],
     ],
+  );
+  // Passed weeks inside the current range stay uncoloured, even when open.
+  assert.deepEqual(
+    topicWeeks(topic)
+      .slice(0, 2)
+      .map(({ state }) => state),
+    ["current", "current"],
   );
   const groups = buildProjectInfoReport([stored]);
   const count = (keys) =>
     filterReportGroups(groups, "all", "2026-10-16", new Set(keys)).length;
-  assert.equal(count(["2026-W40"]), 1);
-  assert.equal(count(["2026-W41", "2026-W44"]), 1);
-  assert.equal(count(["2026-W41", "2026-W42"]), 0);
+  assert.equal(count(["2026-W02"]), 1);
+  assert.equal(count(["2026-W05", "2026-W11"]), 1);
+  assert.equal(count(["2026-W05", "2026-W06"]), 0);
 });
 
 test("the server keeps week history across saves and restarts", async () => {

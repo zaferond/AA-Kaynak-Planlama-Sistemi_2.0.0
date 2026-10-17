@@ -567,6 +567,13 @@ export async function prepareSchema(c, { provider, auto }) {
       );
     await executeSqlMigration(c, provider, 40);
   }
+  if (!versions.includes(41)) {
+    if (!auto)
+      throw Error(
+        "Oturum tablosu indeksleri için IT npm run db:migrate çalıştırmalı.",
+      );
+    await executeSqlMigration(c, provider, 41);
+  }
   assertMigrationHistory(
     (await c.query("SELECT version FROM kp_schema_migrations")).rows.map(
       (row) => Number(row.version),

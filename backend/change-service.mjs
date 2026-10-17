@@ -14,6 +14,15 @@ export async function changeAndView(store, user, changes, response = {}) {
       : (data, active) => stageChanges(data, active, changes),
     {
       returnView: true,
+      // Deleting an employee clears a linked account's resource link through
+      // the foreign key; auditing users records that change instead of
+      // letting it happen silently.
+      auditUsers:
+        Array.isArray(changes) &&
+        changes.some(
+          (change) =>
+            change?.kind === "resource" && change?.operation === "delete",
+        ),
       planningDelta:
         planningOnly &&
         response.responseMode === "planning-delta-v1" &&

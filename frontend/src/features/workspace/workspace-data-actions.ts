@@ -82,7 +82,7 @@ export function createWorkspaceDataActions({
     if (
       !confirm(
         message +
-          "\n\nKayıtlar ve bu kişilere ait gerçekleşen dağılımlar silinir; aylık kaynaklar yeniden hesaplanır. Takımların planlanan proje tahsisleri korunur. Geri almak için silme öncesi yedeği yüklemeniz gerekir.",
+          "\n\nKayıtlar ve bu kişilere ait gerçekleşen dağılımlar silinir; aylık kaynaklar yeniden hesaplanır. Takımların planlanan proje tahsisleri korunur. Bağlı kullanıcı hesapları silinmez, yalnız çalışan bağlantıları kaldırılır (Değişiklik Geçmişi'ne yazılır). Geri almak için silme öncesi yedeği yüklemeniz gerekir.",
       )
     )
       return;

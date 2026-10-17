@@ -1,6 +1,9 @@
 import { selectedLeadershipScope } from "./leadership-planning.ts";
 import type { Data, Version } from "./model.ts";
-import { resourceMonthFraction } from "./resource-dates.ts";
+import {
+  currentPlanningMonth,
+  resourceMonthFraction,
+} from "./resource-dates.ts";
 
 export type HeadcountPoint = {
   month: string;
@@ -15,18 +18,14 @@ export type HeadcountPoint = {
   future: boolean;
 };
 
-function localMonth() {
-  const today = new Date();
-  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
-}
-
 /** A resource contributes its active share of the month; FTE amount does not affect headcount. */
 export function buildHeadcountTrend(
   data: Data,
   teamIds: string[],
   leads: string[],
   months: string[],
-  asOfMonth = localMonth(),
+  // Europe/Istanbul like every other "current month", not the browser clock.
+  asOfMonth = currentPlanningMonth(),
 ): HeadcountPoint[] {
   const selectedTeams = new Set(teamIds),
     selectedLeads = selectedLeadershipScope(data, leads, true);

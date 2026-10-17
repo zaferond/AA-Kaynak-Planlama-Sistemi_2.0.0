@@ -68,16 +68,22 @@
   gap: 4px;
   min-width: 0;
 }
+/* The team wraps to two lines like the names; the picker stays beside it. */
 .app .person-allocation .actual-person-sub small {
+  display: -webkit-box;
   flex: 1;
   min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 .app .person-allocation .actual-person-title small {
   overflow: hidden;
   color: var(--brand-muted, #60715e);
   font-size: var(--fs-xs);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
 }
 /* "+" beside the team opens a project picker; choosing one adds a row. */
 .app .person-allocation .actual-person-add {

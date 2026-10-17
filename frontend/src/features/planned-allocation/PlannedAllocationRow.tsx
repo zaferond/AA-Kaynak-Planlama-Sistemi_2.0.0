@@ -137,6 +137,7 @@ export default function PlannedAllocationRow({
             <TableCell
               key={m}
               data-plan-cell={k}
+              data-current-month={m === props.currentMonth || undefined}
               data-plan-density={
                 planDensity(value, capacity).level || undefined
               }

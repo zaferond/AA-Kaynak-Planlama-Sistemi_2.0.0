@@ -14,6 +14,18 @@ type Props = {
   onError: (message: string) => void;
 };
 
+/** Whether active job postings count in planning: all of them, or none/some.
+ * null when there is no active posting. */
+export function activePostingsIncluded(data: Data): boolean | null {
+  const postings = data.resources.flatMap((resource) => {
+    const version = activePostingVersion(resource);
+    return version ? [version] : [];
+  });
+  if (!postings.length) return null;
+  return postings.every((v) => v.included && !!v.start);
+}
+
+/** Admin-only switch. Others see the state as a chip in the filter summary. */
 export default function ActivePostingPlanningToggle({
   data,
   canEdit,

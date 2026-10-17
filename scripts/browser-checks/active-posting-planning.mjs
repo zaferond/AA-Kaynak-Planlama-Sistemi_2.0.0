@@ -143,13 +143,21 @@ export async function checkActivePostingPlanning(f) {
   try {
     await selectWorkspaceTab(manager.page, "Kaynak Planlama Raporları");
     await f.check(
-      "report vacancies: manager sees read-only toggle and API rejects global resource changes",
+      "report vacancies: manager sees the setting as a filter chip (no switch) and API rejects global resource changes",
       async () => {
-        const toggle = manager.page.getByRole("switch", {
-          name: "Aktif İlanları Dahil Et",
-          exact: true,
-        });
-        assert.equal(await toggle.isDisabled(), true);
+        assert.equal(
+          await manager.page
+            .getByRole("switch", {
+              name: "Aktif İlanları Dahil Et",
+              exact: true,
+            })
+            .count(),
+          0,
+        );
+        assert.match(
+          await manager.page.locator(".reports-filter-summary").innerText(),
+          /Aktif İlanlar\s*Dahil( değil)?/,
+        );
         const before = await f.state();
         const response = await manager.context.request.post(
           f.origin + "/api/changes",

@@ -40,7 +40,9 @@ import { useActivityReport } from "./features/activity-report/useActivityReport"
 import MonthlyActivityReport from "./features/activity-report/MonthlyActivityReport";
 import WorkspaceReports from "./features/workspace/WorkspaceReports";
 import HeadcountReports from "./features/resource-reports/HeadcountReports";
-import ActivePostingPlanningToggle from "./features/workspace/ActivePostingPlanningToggle";
+import ActivePostingPlanningToggle, {
+  activePostingsIncluded,
+} from "./features/workspace/ActivePostingPlanningToggle";
 import AccessPanel from "./AccessPanel";
 import PortalEditorDialog from "./features/PortalEditorDialog";
 import ScheduleScenarioDialog from "./features/schedule-scenario/ScheduleScenarioDialog";
@@ -624,18 +626,38 @@ export default function Portal() {
                                 values: [months.length + " ay"],
                                 active: true,
                               },
+                              // Read-only users see the posting setting here
+                              // instead of a disabled switch row.
+                              ...(tab === "overview" &&
+                              reportView === "resources" &&
+                              !isAdmin &&
+                              activePostingsIncluded(data) !== null
+                                ? [
+                                    {
+                                      label: "Aktif İlanlar",
+                                      values: [
+                                        activePostingsIncluded(data)
+                                          ? "Dahil"
+                                          : "Dahil değil",
+                                      ],
+                                      active: true,
+                                    },
+                                  ]
+                                : []),
                             ]
                       }
                     />
-                    {tab === "overview" && reportView === "resources" && (
-                      <ActivePostingPlanningToggle
-                        data={data}
-                        canEdit={!!isAdmin}
-                        saving={saving}
-                        onSave={batch}
-                        onError={setError}
-                      />
-                    )}
+                    {tab === "overview" &&
+                      reportView === "resources" &&
+                      isAdmin && (
+                        <ActivePostingPlanningToggle
+                          data={data}
+                          canEdit={!!isAdmin}
+                          saving={saving}
+                          onSave={batch}
+                          onError={setError}
+                        />
+                      )}
                   </div>
                 </>
               ) : tab !== "resources" ? (

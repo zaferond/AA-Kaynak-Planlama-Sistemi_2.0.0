@@ -72,6 +72,19 @@
   td:has(> .person-amount) {
   z-index: 1;
 }
+/* Empty planned inputs are transparent; in the current month give them the
+   band's own shade so the day line stays behind the "0" placeholder. */
+.app.tab-plan
+  .allocation-grid
+  td[data-current-month]:not(.has-entry)
+  .cell
+  input:not(:focus) {
+  background: color-mix(
+    in srgb,
+    var(--table-today-color, #397ba8) 8%,
+    var(--table-body-background, #fff)
+  );
+}
 /* Plain figures get the cell's own shade so the line stops at the digits. */
 [data-slot="table-container"]:has(> .today-date-column)
   tbody

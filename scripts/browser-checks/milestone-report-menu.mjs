@@ -57,9 +57,7 @@ export async function checkMilestoneReportMenu(f) {
   const row = () =>
     page.locator('[data-project-group="p-a"] .milestone-row').first();
   async function timeline(weekly = false) {
-    await page
-      .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
-      .click();
+    await page.getByRole("tab", { name: /Projeler/ }).click();
     await page
       .getByRole("switch", { name: "Detayları Göster", exact: true })
       .check();
@@ -148,7 +146,7 @@ export async function checkMilestoneReportMenu(f) {
         assert.equal(point.notes[0].completed, true);
         await page.keyboard.press("Escape");
         await page
-          .getByRole("tab", { name: "Kritik Proje Konuları", exact: true })
+          .getByRole("tab", { name: "Haftalık Kritik Konular", exact: true })
           .click();
         await page.getByText("QA Excluded Bullet", { exact: true }).waitFor();
         assert.equal(
@@ -173,7 +171,7 @@ export async function checkMilestoneReportMenu(f) {
         assert.equal(saved.ranges[0].notes[1].includeInReport, true);
         assert.equal(saved.ranges[1].notes[0].includeInReport, true);
         await page
-          .getByRole("tab", { name: "Kritik Proje Konuları", exact: true })
+          .getByRole("tab", { name: "Haftalık Kritik Konular", exact: true })
           .click();
         await page.getByText("QA Milestone", { exact: true }).waitFor();
         assert.equal(
@@ -228,9 +226,7 @@ export async function checkMilestoneReportMenu(f) {
       async () => {
         const viewer = await f.client("employee");
         try {
-          await viewer.page
-            .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
-            .click();
+          await viewer.page.getByRole("tab", { name: /Projeler/ }).click();
           await viewer.page
             .getByRole("switch", { name: "Detayları Göster", exact: true })
             .check();

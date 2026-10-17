@@ -49,7 +49,7 @@ export default function ActualAllocationControls({
   return (
     <div className="panelhead">
       <div>
-        <h2>Gerçekleşen Kaynak Dağılımı</h2>
+        <h2>Aktivite Girişi</h2>
       </div>
       <div className="actual-unit-control">
         <div className="actual-control-fields">

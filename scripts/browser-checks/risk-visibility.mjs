@@ -20,7 +20,7 @@ export async function checkRiskVisibility(f) {
           );
           await page
             .getByRole("tab", {
-              name: "Mühendislik Liderliği Projeler",
+              name: "Projeler",
               exact: true,
             })
             .click();

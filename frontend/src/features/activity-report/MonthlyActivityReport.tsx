@@ -101,11 +101,11 @@ export default function MonthlyActivityReport({
     <section
       ref={reportRef}
       className="panel monthly-activity-report"
-      aria-label="Aylık Aktivite Raporu"
+      aria-label="Aktivite Raporu"
     >
       <div className="activity-toolbar">
         <div>
-          <h2>Aylık Aktivite Raporu</h2>
+          <h2>Aktivite Raporu</h2>
           <span>
             {people} çalışan · {new Set(rows.map((row) => row.teamId)).size}{" "}
             takım

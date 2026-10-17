@@ -196,7 +196,7 @@ export function FullPlanHeader({
   return (
     <div className="full-plan-header">
       <div>
-        <strong>Planlanan Kaynak Dağılımı</strong>
+        <strong>Kaynak Planlama</strong>
         <span>Geniş Çalışma Alanı</span>
       </div>
       <div className="full-plan-header-actions">

@@ -64,9 +64,7 @@ export async function checkMilestoneParentDates(f) {
     });
     const { page } = c;
     await page.reload();
-    await page
-      .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
-      .click();
+    await page.getByRole("tab", { name: /Projeler/ }).click();
     await page
       .getByRole("switch", { name: "Detayları Göster", exact: true })
       .check();
@@ -137,9 +135,7 @@ export async function checkMilestoneParentDates(f) {
           ],
         );
         await page.reload();
-        await page
-          .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
-          .click();
+        await page.getByRole("tab", { name: /Projeler/ }).click();
         await page
           .getByRole("switch", { name: "Detayları Göster", exact: true })
           .check();
@@ -195,9 +191,7 @@ export async function checkMilestoneParentDates(f) {
         assert.equal((await reply).status(), 200);
         await dialog.waitFor({ state: "hidden" });
         await page.reload();
-        await page
-          .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
-          .click();
+        await page.getByRole("tab", { name: /Projeler/ }).click();
         await page
           .getByRole("switch", { name: "Detayları Göster", exact: true })
           .check();

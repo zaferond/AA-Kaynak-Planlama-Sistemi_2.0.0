@@ -39,7 +39,7 @@ export async function checkPermissionPopup(f) {
           .getByLabel("Rol", { exact: true })
           .selectOption("manager");
         const grants = popup().getByRole("group", {
-          name: "Planlanan Kaynak Dağılımı Yetkisi",
+          name: "Kaynak Planlama Yetkisi",
           exact: true,
         });
         await grants.waitFor();

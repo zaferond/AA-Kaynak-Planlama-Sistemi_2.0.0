@@ -59,7 +59,7 @@ export async function checkPasswordChange(f) {
         await fill(f.password, chosen);
         await page
           .getByRole("tab", {
-            name: "Mühendislik Liderliği Projeler",
+            name: "Projeler",
             exact: true,
           })
           .waitFor();
@@ -80,7 +80,7 @@ export async function checkPasswordChange(f) {
         await dialog.waitFor({ state: "hidden" });
         await page
           .getByRole("tab", {
-            name: "Mühendislik Liderliği Projeler",
+            name: "Projeler",
             exact: true,
           })
           .waitFor();
@@ -88,7 +88,7 @@ export async function checkPasswordChange(f) {
         await page.reload();
         await page
           .getByRole("tab", {
-            name: "Mühendislik Liderliği Projeler",
+            name: "Projeler",
             exact: true,
           })
           .waitFor();

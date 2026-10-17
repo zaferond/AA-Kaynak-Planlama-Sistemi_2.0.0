@@ -48,7 +48,7 @@ export async function checkFilterAppliedToast(f) {
   const { page } = await f.client("root-admin");
   const toast = () => page.locator(".filter-applied-toast:not(.message-toast)");
   try {
-    await selectWorkspaceTab(page, "Planlanan Kaynak Dağılımı");
+    await selectWorkspaceTab(page, "Kaynak Planlama");
     await f.check(
       "filters: no initial notification; changed filters show one green checked toast at bottom right then dismiss",
       async () => {
@@ -134,7 +134,7 @@ export async function checkFilterAppliedToast(f) {
           await page.keyboard.press("Escape");
           assert.equal(await toast().innerText(), message);
         }
-        await selectWorkspaceTab(page, "Gerçekleşen Kaynak Dağılımı");
+        await selectWorkspaceTab(page, "Aktivite Girişi");
         await page.getByRole("button", { name: "Kişi", exact: true }).click();
         await page
           .locator('.pickerpanel[data-state="open"]')

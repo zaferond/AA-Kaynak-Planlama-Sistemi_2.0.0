@@ -252,7 +252,7 @@ export default function AccessPermissionFields({
       {!creating && roleField}
       {form.role === "manager" && (
         <fieldset className="access-leader-field">
-          <legend>Planlanan Kaynak Dağılımı Yetkisi</legend>
+          <legend>Kaynak Planlama Yetkisi</legend>
           <p>
             Yönetici, planlanan kaynak dağılımında tüm takımları görüntüler.
             Seçilen liderlikler ve alt kırılımları veya tek tek seçilen takımlar

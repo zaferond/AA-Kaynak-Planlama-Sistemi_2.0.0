@@ -57,19 +57,19 @@ export async function measureTabTransitions(page, cycles = 2) {
   const results = [];
   const specs = [
     [
-      "Planlanan Kaynak Dağılımı",
+      "Kaynak Planlama",
       ".workspace-dock > [data-slot=table-container] > .allocation-grid",
     ],
-    ["Mühendislik Liderliği Projeler", ".projectmatrix"],
-    ["Gerçekleşen Kaynak Dağılımı", ".person-allocation .allocation-grid"],
-    ["Aylık Aktivite Raporu", ".activity-matrix"],
-    ["Kritik Proje Konuları", ".project-info-report"],
-    ["Kaynak Planlama Raporları", ".remaining-report"],
+    ["Projeler", ".projectmatrix"],
+    ["Aktivite Girişi", ".person-allocation .allocation-grid"],
+    ["Aktivite Raporu", ".activity-matrix"],
+    ["Haftalık Kritik Konular", ".project-info-report"],
+    ["Raporlar", ".remaining-report"],
     ["Çalışan & Yetki Tanımlama", ".employee-access-table"],
     ["Organizasyon Yapısı", ".team-directory table"],
   ];
   try {
-    await selectWorkspaceTab(page, "Mühendislik Liderliği Projeler");
+    await selectWorkspaceTab(page, "Projeler");
     for (let cycle = 0; cycle < cycles; cycle++)
       for (const [tab, selector] of specs) {
         const requests = [];
@@ -154,12 +154,7 @@ export async function checkTabTransitions(f) {
       async () => {
         const results = await measureTabTransitions(page);
         for (const result of results)
-          if (
-            [
-              "Planlanan Kaynak Dağılımı",
-              "Gerçekleşen Kaynak Dağılımı",
-            ].includes(result.tab)
-          ) {
+          if (["Kaynak Planlama", "Aktivite Girişi"].includes(result.tab)) {
             assert(
               result.inputs > 0 && result.inputs < 1000,
               JSON.stringify(result),
@@ -214,7 +209,7 @@ export async function checkTabTransitions(f) {
       "windowed actuals: failed draft stays mounted while scrolling; all rows on the current page remain reachable",
       async () => {
         await page.goto(f.origin);
-        await selectWorkspaceTab(page, "Gerçekleşen Kaynak Dağılımı");
+        await selectWorkspaceTab(page, "Aktivite Girişi");
         const table = page.locator(".person-allocation .allocation-grid");
         const input = table
           .locator(".person-amount input:not(:disabled)")

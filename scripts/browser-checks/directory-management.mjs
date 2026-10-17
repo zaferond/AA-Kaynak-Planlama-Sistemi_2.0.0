@@ -571,7 +571,7 @@ export async function checkDirectoryManagement(f) {
         assert.equal(worker.versions.at(-1).team, unit);
         await page
           .getByRole("tab", {
-            name: "Planlanan Kaynak Dağılımı",
+            name: "Kaynak Planlama",
             exact: true,
           })
           .click();
@@ -609,7 +609,7 @@ export async function checkDirectoryManagement(f) {
         );
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();

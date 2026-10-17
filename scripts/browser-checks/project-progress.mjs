@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 export async function checkProjectProgress(f) {
   const tab = (page) =>
     page.getByRole("tab", { name: "Proje İlerlemesi", exact: true });
+  const name = "Browser Project A · " + f.teamA.lead;
   const leader = await f.client("manager");
   const admin = await f.client("root-admin");
   const employee = await f.client("employee");
@@ -24,25 +25,26 @@ export async function checkProjectProgress(f) {
         await page
           .getByLabel("Yeni kayıt liderliği")
           .selectOption(f.teamA.lead);
-        await page.getByRole("button", { name: "Aç", exact: true }).click();
+        await page.getByRole("button", { name: "Ekle", exact: true }).click();
+        const card = page.getByRole("region", { name, exact: true });
+        const target = (month) => card.getByLabel(`${name} · ${month} hedef %`);
+        // Targets start empty; the suggestion needs the opening value first.
+        assert.equal(await target("Kas 2026").inputValue(), "");
+        const apply = card.getByRole("button", { name: "Önerileni Uygula" });
+        assert(await apply.isDisabled());
+        await card.getByLabel(`${name} · açılış %`).fill("0");
+        await apply.click();
         // Opening 0 % spread evenly to the project end (December).
-        assert.equal(
-          await page.getByLabel("Kas 2026 hedef %").inputValue(),
-          "50",
-        );
-        assert.equal(
-          await page.getByLabel("Ara 2026 hedef %").inputValue(),
-          "100",
-        );
+        assert.equal(await target("Kas 2026").inputValue(), "50");
+        assert.equal(await target("Ara 2026").inputValue(), "100");
         // A falling curve cannot be submitted.
-        await page.getByLabel("Ara 2026 hedef %").fill("40");
-        await page.getByText(/bir önceki aydan küçük olamaz/).waitFor();
-        assert(
-          await page.getByRole("button", { name: "Onaya Gönder" }).isDisabled(),
-        );
-        await page.getByLabel("Ara 2026 hedef %").fill("100");
-        await page.getByRole("button", { name: "Onaya Gönder" }).click();
-        await page.getByText("Onaya gönderildi.").waitFor();
+        await target("Ara 2026").fill("40");
+        await card.getByText(/bir önceki aydan küçük olamaz/).waitFor();
+        const submit = card.getByRole("button", { name: "Onaya Gönder" });
+        assert(await submit.isDisabled());
+        await target("Ara 2026").fill("100");
+        await submit.click();
+        await card.getByText("Onaya gönderildi.").waitFor();
         await f.wait(
           async () =>
             (await f.state()).projectProgress?.[0]?.proposal?.status ===
@@ -51,7 +53,7 @@ export async function checkProjectProgress(f) {
         );
         // Only an admin approves.
         assert.equal(
-          await page.getByRole("button", { name: "Onayla" }).count(),
+          await card.getByRole("button", { name: "Onayla" }).count(),
           0,
         );
       },
@@ -63,9 +65,17 @@ export async function checkProjectProgress(f) {
         await page.reload();
         await tab(page).click();
         await page.getByRole("tab", { name: /Temel Plan/ }).click();
-        await page.getByRole("button", { name: /Browser Project A/ }).click();
-        await page.getByRole("button", { name: "Onayla" }).click();
-        await page.getByText("Temel plan onaylandı.").waitFor();
+        // Every record is open; the pending proposal comes first.
+        assert.equal(
+          await page
+            .locator(".progress-card")
+            .first()
+            .getAttribute("aria-label"),
+          name,
+        );
+        const card = page.getByRole("region", { name, exact: true });
+        await card.getByRole("button", { name: "Onayla" }).click();
+        await card.getByText("Temel plan onaylandı.").waitFor();
         const record = (await f.state()).projectProgress[0];
         assert.equal(record.baselines.length, 1);
         assert.equal(record.baselines[0].approvedByName, "Browser root-admin");

@@ -12,7 +12,7 @@ export async function checkActualSaveFocus(f) {
     });
   try {
     await page
-      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
       .click();
     await f.check(
       "actual: Tab after a save keeps focus on the next cell and the saved value stays",

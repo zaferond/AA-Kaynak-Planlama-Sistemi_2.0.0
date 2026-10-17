@@ -202,7 +202,7 @@ export function plannedAllocationWorkbook(
   assertExcelRowCount(4 + teams.length * projects.length);
   return workbook({
     name: "Planlanan Dağılım",
-    title: "AA Mühendislik | Planlanan Kaynak Dağılımı",
+    title: "AA Mühendislik | Kaynak Planlama",
     unit: "Aylık kişi eşdeğeri",
     headers: ["Liderlik", "Takım", "Proje"],
     months,
@@ -340,7 +340,7 @@ export function actualAllocationWorkbook(
   );
   return workbook({
     name: "Gerçekleşen Dağılım",
-    title: "AA Mühendislik | Gerçekleşen Kaynak Dağılımı",
+    title: "AA Mühendislik | Aktivite Girişi",
     unit: "Aylık kaynak yüzdesi",
     headers: ["Liderlik", "Takım(lar)", "Proje", "Çalışan"],
     months,

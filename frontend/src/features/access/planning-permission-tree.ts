@@ -111,7 +111,7 @@ export function planningGrantSummary(
 ) {
   if (account.role === "admin") return "Tüm Liderlikler";
   if (account.role === "normal" && account.projectEditor)
-    return "Projeler ve Kritik Proje Konuları";
+    return "Projeler ve Haftalık Kritik Konular";
   const scope = selectedLeadershipScope(data, account.leaders, true);
   const allLeaders =
     !!data.leaders?.length && data.leaders.every((name) => scope.has(name));

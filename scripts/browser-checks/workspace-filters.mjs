@@ -211,7 +211,7 @@ export async function checkWorkspaceFilters(f) {
         await page.goto(f.origin);
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();
@@ -250,7 +250,7 @@ export async function checkWorkspaceFilters(f) {
         await page.goto(f.origin);
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();
@@ -261,7 +261,7 @@ export async function checkWorkspaceFilters(f) {
         );
         await page
           .getByRole("tab", {
-            name: "Mühendislik Liderliği Projeler",
+            name: "Projeler",
             exact: true,
           })
           .click();
@@ -281,7 +281,7 @@ export async function checkWorkspaceFilters(f) {
         );
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();

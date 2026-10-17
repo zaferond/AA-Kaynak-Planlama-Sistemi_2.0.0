@@ -123,7 +123,7 @@ export async function checkActivityReport(f) {
   }
   try {
     await page
-      .getByRole("tab", { name: "Aylık Aktivite Raporu", exact: true })
+      .getByRole("tab", { name: "Aktivite Raporu", exact: true })
       .click();
     await page
       .locator('.planning-filterbar input[type="month"]')
@@ -137,8 +137,8 @@ export async function checkActivityReport(f) {
           .getByRole("tab")
           .allTextContents();
         assert.equal(
-          tabs[tabs.findIndex((t) => t.includes("Gerçekleşen")) + 1],
-          "Aylık Aktivite Raporu",
+          tabs[tabs.findIndex((t) => t === "Aktivite Girişi") + 1],
+          "Aktivite Raporu",
         );
         for (const label of ["Liderlik", "Takım", "Proje"])
           assert.equal(
@@ -399,7 +399,7 @@ export async function checkActivityReport(f) {
           try {
             await client.page
               .getByRole("tab", {
-                name: "Aylık Aktivite Raporu",
+                name: "Aktivite Raporu",
                 exact: true,
               })
               .click();

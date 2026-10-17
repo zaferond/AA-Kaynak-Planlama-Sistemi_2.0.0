@@ -57,7 +57,7 @@ export async function checkCriticalProjectFilter(f) {
       "critical topics: the project filter keeps its choice and shows only that project",
       async () => {
         await page
-          .getByRole("tab", { name: "Kritik Proje Konuları", exact: true })
+          .getByRole("tab", { name: "Haftalık Kritik Konular", exact: true })
           .click();
         await page.getByText("QA Topic Alpha", { exact: true }).waitFor();
         assert.equal(await groups.count(), 2);

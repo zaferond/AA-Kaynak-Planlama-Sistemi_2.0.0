@@ -42,7 +42,7 @@ export async function checkActualRemainingHours(f) {
   const { page } = await f.client("employee");
   try {
     await page
-      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
       .click();
     // Person totals are load bars under each entry cell (no separate row).
     const january = page

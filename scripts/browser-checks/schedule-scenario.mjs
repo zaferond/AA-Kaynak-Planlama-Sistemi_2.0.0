@@ -50,7 +50,7 @@ export async function checkScheduleScenario(f) {
     await f.check(
       "scenario: +3 and +5 month delays are compared without saving and export to Excel",
       async () => {
-        await selectWorkspaceTab(page, "Planlanan Kaynak Dağılımı");
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         await page
           .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
           .click();
@@ -178,10 +178,7 @@ export async function checkScheduleScenario(f) {
     await f.check(
       "scenario: normal users do not get the scenario tool",
       async () => {
-        await selectWorkspaceTab(
-          employee.page,
-          "Mühendislik Liderliği Projeler",
-        );
+        await selectWorkspaceTab(employee.page, "Projeler");
         assert.equal(
           await employee.page
             .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
@@ -232,7 +229,7 @@ export async function checkScheduleScenarioApproval(f) {
     await f.check(
       "scenario: a manager saves a draft but cannot approve",
       async () => {
-        await selectWorkspaceTab(manager.page, "Planlanan Kaynak Dağılımı");
+        await selectWorkspaceTab(manager.page, "Kaynak Planlama");
         await manager.page
           .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
           .click();
@@ -262,7 +259,7 @@ export async function checkScheduleScenarioApproval(f) {
       async () => {
         // A saved draft is offered in the reports without opening the
         // dialog, and the admin sees how many wait for a decision.
-        await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
+        await selectWorkspaceTab(page, "Raporlar");
         await page
           .locator(".scenario-report-bar")
           .getByRole("button", { name: "Senaryo A · Taslak" })
@@ -280,7 +277,7 @@ export async function checkScheduleScenarioApproval(f) {
           .locator(".scenario-report-bar")
           .getByRole("button", { name: "Mevcut", exact: true })
           .click();
-        await selectWorkspaceTab(page, "Planlanan Kaynak Dağılımı");
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         await page
           .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
           .click();
@@ -361,7 +358,7 @@ export async function checkScheduleScenarioApproval(f) {
         assert.equal((await f.state()).scheduleScenarios, undefined);
         // Deleted scenarios leave nothing behind in the reports.
         await page.keyboard.press("Escape");
-        await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
+        await selectWorkspaceTab(page, "Raporlar");
         await page.locator("#rapor-liderlik-eksik").waitFor();
         assert.equal(await page.locator(".scenario-report-bar").count(), 0);
       },

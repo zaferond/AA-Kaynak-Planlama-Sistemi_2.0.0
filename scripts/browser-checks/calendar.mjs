@@ -7,7 +7,7 @@ import {
 
 const actualTab = (page) =>
   page.getByRole("tab", {
-    name: "Gerçekleşen Kaynak Dağılımı",
+    name: "Aktivite Girişi",
     exact: true,
   });
 const dialog = (page) => page.getByRole("dialog");

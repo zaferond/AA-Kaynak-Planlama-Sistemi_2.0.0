@@ -24,7 +24,7 @@ export async function checkActualPersonLayout(f) {
     });
   try {
     await page
-      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
       .click();
     await f.check(
       "actual person layout: default view lists only projects with entries under each person",
@@ -91,7 +91,7 @@ export async function checkActualPersonLayout(f) {
         await page.reload();
         await page
           .getByRole("tab", {
-            name: "Gerçekleşen Kaynak Dağılımı",
+            name: "Aktivite Girişi",
             exact: true,
           })
           .click();

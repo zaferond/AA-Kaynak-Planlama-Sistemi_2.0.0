@@ -11,9 +11,7 @@ export async function checkCalendarDrafts(f) {
   );
   const dialog = () => page.locator(".work-calendar-dialog");
   const actual = () =>
-    page
-      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
-      .click();
+    page.getByRole("tab", { name: "Aktivite Girişi", exact: true }).click();
   const open = () =>
     page
       .getByRole("button", { name: "Çalışma Takvimi'ni aç", exact: true })

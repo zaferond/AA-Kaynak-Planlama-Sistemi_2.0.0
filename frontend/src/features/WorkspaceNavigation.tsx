@@ -77,13 +77,19 @@ export default function WorkspaceNavigation({
         group: "actuals",
         show: anyRole,
       },
+      { value: "projects", Icon: FolderKanban, group: "planning", show: true },
+      {
+        value: "progress",
+        Icon: TrendingUp,
+        group: "planning",
+        show: isAdmin || isManager,
+      },
       {
         value: "plan",
         Icon: CalendarDays,
         group: "planning",
         show: isAdmin || isManager,
       },
-      { value: "projects", Icon: FolderKanban, group: "planning", show: true },
       {
         value: "risk",
         Icon: ShieldAlert,
@@ -99,12 +105,6 @@ export default function WorkspaceNavigation({
       {
         value: "overview",
         Icon: Layers3,
-        group: "reports",
-        show: isAdmin || isManager,
-      },
-      {
-        value: "progress",
-        Icon: TrendingUp,
         group: "reports",
         show: isAdmin || isManager,
       },

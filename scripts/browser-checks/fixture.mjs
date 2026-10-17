@@ -183,7 +183,7 @@ export async function fixture({ mutationLimits } = {}) {
       if (login)
         await page
           .getByRole("tab", {
-            name: "Mühendislik Liderliği Projeler",
+            name: "Projeler",
             exact: true,
           })
           .waitFor();

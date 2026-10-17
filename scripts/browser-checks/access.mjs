@@ -130,7 +130,7 @@ export async function checkAccess(f) {
         assert(
           await employee.page
             .getByRole("tab", {
-              name: "Planlanan Kaynak Dağılımı",
+              name: "Kaynak Planlama",
               exact: true,
             })
             .isVisible(),
@@ -378,7 +378,7 @@ export async function checkAccess(f) {
         const manager = await f.client("new-manager");
         await manager.page
           .getByRole("tab", {
-            name: "Gerçekleşen Kaynak Dağılımı",
+            name: "Aktivite Girişi",
             exact: true,
           })
           .click();

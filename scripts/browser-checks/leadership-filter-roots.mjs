@@ -89,10 +89,10 @@ export async function checkLeadershipFilterRoots(f) {
       "leadership filters: all leaderships, team-only choices and descendant scope across workspace tabs",
       async () => {
         for (const tab of [
-          "Planlanan Kaynak Dağılımı",
-          "Kaynak Planlama Raporları",
-          "Gerçekleşen Kaynak Dağılımı",
-          "Aylık Aktivite Raporu",
+          "Kaynak Planlama",
+          "Raporlar",
+          "Aktivite Girişi",
+          "Aktivite Raporu",
         ]) {
           await selectWorkspaceTab(page, tab);
           const panel = await open("Liderlik");
@@ -183,7 +183,7 @@ export async function checkLeadershipFilterRoots(f) {
             );
           }
           await page.keyboard.press("Escape");
-          if (tab === "Aylık Aktivite Raporu")
+          if (tab === "Aktivite Raporu")
             await page
               .locator('[data-activity-resource="qa-filter-worker-1"]')
               .waitFor();
@@ -241,7 +241,7 @@ export async function checkLeadershipFilterRoots(f) {
         assert.equal(await dialog.locator(".access-leader-field").count(), 0);
         await dialog.getByLabel("Rol", { exact: true }).selectOption("manager");
         const grants = dialog.getByRole("group", {
-          name: "Planlanan Kaynak Dağılımı Yetkisi",
+          name: "Kaynak Planlama Yetkisi",
           exact: true,
         });
         const childBox = grants.getByRole("checkbox", {
@@ -311,7 +311,7 @@ export async function checkLeadershipFilterRoots(f) {
       async () => {
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();

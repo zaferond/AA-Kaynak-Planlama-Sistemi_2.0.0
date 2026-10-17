@@ -267,7 +267,7 @@
   gap: 6px;
 }
 
-/* Kaynak Planlama Raporları: which plan the reports are drawn for. */
+/* Raporlar: which plan the reports are drawn for. */
 .app .scenario-report-bar {
   display: flex;
   flex-wrap: wrap;

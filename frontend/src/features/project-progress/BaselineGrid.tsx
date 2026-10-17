@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import type { Project } from "../../model";
 import { milestoneRanges } from "../../milestone-ranges";
 import {
@@ -6,6 +7,7 @@ import {
   phaseRunKey,
   phaseRunSpans,
 } from "../../phase-chip";
+import { positionPointerTooltip } from "../position-pointer-tooltip";
 import {
   monthsAfter,
   targetAt,
@@ -29,14 +31,18 @@ const MONTHS = [
 ];
 const short = (month: string) =>
   MONTHS[Number(month.slice(5, 7)) - 1] + " " + month.slice(2, 4);
-const full = (month: string) =>
+export const fullMonth = (month: string) =>
   MONTHS[Number(month.slice(5, 7)) - 1] + " " + month.slice(0, 4);
-const num = (value: string) => Number(value.replace(",", "."));
+const day = (date: string) =>
+  /^\d{4}-\d{2}-\d{2}$/.test(date)
+    ? `${date.slice(8, 10)}.${date.slice(5, 7)}.${date.slice(0, 4)}`
+    : date;
 const accent = (color: string) =>
   phaseChipPalette.find((item) => item.id === color)?.accent || "#7b8794";
 
 type Topic = {
   name: string;
+  note: string;
   start: string;
   end: string;
   point: boolean;
@@ -53,6 +59,7 @@ function topicsIn(project: Project, month: string): Topic[] {
       )
       .map((range) => ({
         name: milestone.name,
+        note: range.notes?.find((n) => n.text?.trim())?.text.trim() || "",
         start: range.start,
         end: range.end,
         point: range.displayKind === "milestone",
@@ -68,6 +75,7 @@ function topicsIn(project: Project, month: string): Topic[] {
  */
 export default function BaselineGrid({
   project,
+  label,
   openingMonth,
   openingPct,
   currentMonth,
@@ -79,8 +87,10 @@ export default function BaselineGrid({
   onTarget,
 }: {
   project: Project;
+  /** Names the inputs: "<project> · <leadership>". */
+  label: string;
   openingMonth: string;
-  openingPct: number;
+  openingPct: number | null;
   currentMonth: string;
   planned: Record<string, number> | undefined;
   suggested: Record<string, number> | undefined;
@@ -92,19 +102,23 @@ export default function BaselineGrid({
   const months = monthsAfter(openingMonth, project.end);
   const keys = months.map((m) => phaseRunKey(project, m));
   const spans = phaseRunSpans(keys);
-  const value = (m: string) =>
-    targets[m]?.trim() ? num(targets[m]) : Number.NaN;
   const now = (m: string) => (m === currentMonth ? "true" : undefined);
+  const tipRef = useRef<HTMLDivElement>(null);
+  const [tip, setTip] = useState<Topic[] | null>(null);
+  const showTip = (topics: Topic[], x: number, y: number) => {
+    setTip(topics);
+    requestAnimationFrame(() => positionPointerTooltip(tipRef.current, x, y));
+  };
   return (
     <div className="progress-grid-scroll">
-      <table className="progress-grid" aria-label="Temel plan ay ay">
+      <table className="progress-grid" aria-label={label + " temel plan"}>
         <thead>
           <tr>
             <th scope="col">Ay</th>
             <th
               scope="col"
               className="opening"
-              title="Açılış: takip başladığı ayın sonu"
+              title="Açılış: takibin başladığı ayın sonu"
             >
               {short(openingMonth)}
               <small>açılış</small>
@@ -117,7 +131,7 @@ export default function BaselineGrid({
           </tr>
         </thead>
         <tbody>
-          <tr className="progress-grid-phases">
+          <tr className="readonly">
             <th scope="row">Aşama</th>
             <td className="opening" />
             {months.map((m, i) => {
@@ -137,7 +151,7 @@ export default function BaselineGrid({
               );
             })}
           </tr>
-          <tr className="progress-grid-topics">
+          <tr className="readonly progress-grid-topics">
             <th scope="row">Kritik konular</th>
             <td className="opening" />
             {months.map((m) => {
@@ -148,12 +162,26 @@ export default function BaselineGrid({
                 <td
                   key={m}
                   data-now={now(m)}
-                  title={topics
-                    .map(
-                      (t) =>
-                        `${t.point ? "◆" : "▬"} ${t.name} (${t.start} – ${t.end})`,
-                    )
-                    .join("\n")}
+                  data-has-topics={topics.length ? "true" : undefined}
+                  tabIndex={topics.length ? 0 : undefined}
+                  aria-label={
+                    topics.length
+                      ? `${fullMonth(m)}: ${topics.map((t) => t.name).join(", ")}`
+                      : undefined
+                  }
+                  onMouseEnter={(e) =>
+                    topics.length && showTip(topics, e.clientX, e.clientY)
+                  }
+                  onMouseMove={(e) =>
+                    tip &&
+                    positionPointerTooltip(tipRef.current, e.clientX, e.clientY)
+                  }
+                  onMouseLeave={() => setTip(null)}
+                  onFocus={(e) => {
+                    const box = e.currentTarget.getBoundingClientRect();
+                    if (topics.length) showTip(topics, box.left, box.bottom);
+                  }}
+                  onBlur={() => setTip(null)}
                 >
                   {bars.slice(0, 3).map((t, i) => (
                     <i
@@ -162,100 +190,97 @@ export default function BaselineGrid({
                       style={{ background: accent(t.color) }}
                     />
                   ))}
-                  {points.map((t, i) => (
+                  {points.length > 0 && (
                     <b
-                      key={i}
-                      style={{ color: accent(t.color) }}
+                      style={{ color: accent(points[0].color) }}
                       aria-hidden="true"
                     >
                       ◆
                     </b>
-                  ))}
-                  {topics.length > 0 && (
-                    <span className="sr-only">
-                      {topics.map((t) => t.name).join(", ")}
-                    </span>
                   )}
                 </td>
               );
             })}
           </tr>
-          <tr>
+          <tr className="readonly">
             <th scope="row">Planlanan kaynak (kişi-ay)</th>
-            <td className="opening num">{pctLabel(planned?.[openingMonth])}</td>
+            <td className="opening">
+              {planned?.[openingMonth] ? pctLabel(planned[openingMonth]) : "—"}
+            </td>
             {months.map((m) => (
-              <td key={m} className="num" data-now={now(m)}>
+              <td key={m} data-now={now(m)}>
                 {planned?.[m] ? pctLabel(planned[m]) : "—"}
               </td>
             ))}
           </tr>
           {approved && (
-            <tr className="progress-grid-quiet">
+            <tr className="readonly">
               <th scope="row">Onaylı hedef %</th>
-              <td className="opening num">
+              <td className="opening">
                 {pctLabel(targetAt(approved, openingMonth))}
               </td>
               {months.map((m) => (
-                <td key={m} className="num" data-now={now(m)}>
+                <td key={m} data-now={now(m)}>
                   {pctLabel(targetAt(approved, m))}
                 </td>
               ))}
             </tr>
           )}
-          {suggested && editable && (
-            <tr className="progress-grid-quiet">
+          {editable && (
+            <tr className="readonly">
               <th scope="row">Önerilen hedef %</th>
-              <td className="opening num">{pctLabel(openingPct)}</td>
+              <td className="opening">{pctLabel(openingPct)}</td>
               {months.map((m) => (
-                <td key={m} className="num" data-now={now(m)}>
-                  {pctLabel(suggested[m])}
+                <td key={m} data-now={now(m)}>
+                  {suggested ? pctLabel(suggested[m]) : "—"}
                 </td>
               ))}
             </tr>
           )}
-          <tr className="progress-grid-targets">
+          <tr className={editable ? "editable" : "readonly"}>
             <th scope="row">Hedef % (kümülatif)</th>
-            <td className="opening num">
+            <td className="opening">
               <strong>{pctLabel(openingPct)}</strong>
             </td>
             {months.map((m) => (
               <td key={m} data-now={now(m)}>
                 {editable ? (
                   <input
-                    aria-label={`${full(m)} hedef %`}
+                    aria-label={`${label} · ${fullMonth(m)} hedef %`}
                     inputMode="decimal"
                     value={targets[m] ?? ""}
                     onChange={(e) => onTarget(m, e.target.value)}
                   />
                 ) : (
-                  <span className="num">{targets[m] ?? "—"}</span>
+                  <strong>{targets[m] ?? "—"}</strong>
                 )}
               </td>
             ))}
           </tr>
-          <tr className="progress-grid-delta">
-            <th scope="row">Aylık artış</th>
-            <td className="opening" />
-            {months.map((m, i) => {
-              const before = i ? value(months[i - 1]) : openingPct;
-              const delta = value(m) - before;
-              return (
-                <td
-                  key={m}
-                  className="num"
-                  data-now={now(m)}
-                  data-negative={delta < 0 ? "true" : undefined}
-                >
-                  {Number.isFinite(delta)
-                    ? (delta > 0 ? "+" : "") +
-                      pctLabel(Math.round(delta * 10) / 10)
-                    : "—"}
-                </td>
-              );
-            })}
-          </tr>
         </tbody>
       </table>
+      {tip && (
+        <div
+          ref={tipRef}
+          className="project-phase-tooltip progress-topic-tip"
+          role="tooltip"
+        >
+          {tip.map((t, i) => (
+            <div key={i}>
+              <strong>
+                {t.point ? "◆ " : "▬ "}
+                {t.name}
+              </strong>
+              <span>
+                {t.point || t.start === t.end
+                  ? day(t.start)
+                  : `${day(t.start)} – ${day(t.end)}`}
+              </span>
+              {t.note && t.note !== t.name && <small>{t.note}</small>}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

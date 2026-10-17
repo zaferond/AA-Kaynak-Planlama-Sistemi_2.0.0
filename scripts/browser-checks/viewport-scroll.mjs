@@ -135,8 +135,8 @@ export async function checkViewportScroll(f) {
   }
   try {
     for (const [tab, screenshot] of [
-      ["Planlanan Kaynak Dağılımı", "plan"],
-      ["Mühendislik Liderliği Projeler", "projects"],
+      ["Kaynak Planlama", "plan"],
+      ["Projeler", "projects"],
     ]) {
       await page.getByRole("tab", { name: tab, exact: true }).click();
       await f.check(
@@ -366,7 +366,7 @@ export async function checkViewportScroll(f) {
     try {
       await actual.page
         .getByRole("tab", {
-          name: "Gerçekleşen Kaynak Dağılımı",
+          name: "Aktivite Girişi",
           exact: true,
         })
         .click();

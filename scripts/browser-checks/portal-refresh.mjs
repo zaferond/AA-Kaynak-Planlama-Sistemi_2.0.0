@@ -15,9 +15,7 @@ async function pollingClient(f) {
     };
   });
   await c.page.reload();
-  await c.page
-    .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
-    .click();
+  await c.page.getByRole("tab", { name: /Projeler/ }).click();
   await c.page.locator('[data-project-heading="p-a"]').waitFor();
   return c;
 }

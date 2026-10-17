@@ -97,7 +97,7 @@ export async function checkActualManagerHierarchy(f) {
     });
   try {
     await page
-      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
       .click();
     await page.locator("#actual-entry-unit").selectOption("hours");
     for (const url of ["/api/data", "/api/actual-view?start=2026-01&count=1"]) {
@@ -166,7 +166,7 @@ export async function checkActualManagerHierarchy(f) {
         await page.reload();
         await page
           .getByRole("tab", {
-            name: "Gerçekleşen Kaynak Dağılımı",
+            name: "Aktivite Girişi",
             exact: true,
           })
           .click();
@@ -240,7 +240,7 @@ export async function checkActualManagerHierarchy(f) {
         try {
           await admin.page
             .getByRole("tab", {
-              name: "Gerçekleşen Kaynak Dağılımı",
+              name: "Aktivite Girişi",
               exact: true,
             })
             .click();

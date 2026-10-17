@@ -4,23 +4,23 @@ import { isProjectEditor } from "../../shared/project-access.ts";
 const adminDefaultTabs = [
   "actual",
   "activity",
-  "plan",
   "projects",
+  "progress",
+  "plan",
   "risk",
   "critical",
   "overview",
-  "progress",
   "resources",
 ] as const;
 const managerDefaultTabs = [
   "actual",
   "activity",
-  "plan",
   "projects",
+  "progress",
+  "plan",
   "risk",
   "critical",
   "overview",
-  "progress",
 ] as const;
 const normalDefaultTabs = ["actual", "activity", "projects", "risk"] as const;
 const projectEditorDefaultTabs = ["projects", "critical"] as const;

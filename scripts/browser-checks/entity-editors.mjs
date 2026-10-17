@@ -6,9 +6,7 @@ export async function checkEntityEditors(f) {
     page = client.page;
   const original = (await f.state()).projects.find((p) => p.id === "p-a");
   try {
-    await page
-      .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
-      .click();
+    await page.getByRole("tab", { name: /Projeler/ }).click();
     const heading = page.locator('[data-project-heading="p-a"]');
     await heading.waitFor();
     const field = () => page.getByLabel("Proje Adı", { exact: true });
@@ -217,7 +215,7 @@ export async function checkEntityEditors(f) {
         c = await f.client("employee");
         await c.page
           .getByRole("tab", {
-            name: "Gerçekleşen Kaynak Dağılımı",
+            name: "Aktivite Girişi",
             exact: true,
           })
           .click();

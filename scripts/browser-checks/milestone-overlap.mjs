@@ -66,9 +66,7 @@ export async function checkMilestoneOverlap(f) {
         const client = await f.client("root-admin");
         const { page } = client;
         async function openTimeline() {
-          await page
-            .getByRole("tab", { name: /Mühendislik Liderliği Projeler/ })
-            .click();
+          await page.getByRole("tab", { name: /Projeler/ }).click();
           await page
             .getByRole("switch", { name: "Detayları Göster", exact: true })
             .check();

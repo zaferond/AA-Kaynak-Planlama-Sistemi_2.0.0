@@ -117,9 +117,7 @@ export async function checkResourceReports(f) {
     await page.keyboard.press("Escape");
   }
   try {
-    await page
-      .getByRole("tab", { name: "Kaynak Planlama Raporları", exact: true })
-      .click();
+    await page.getByRole("tab", { name: "Raporlar", exact: true }).click();
     await page
       .locator('.planning-filterbar input[type="month"]')
       .fill("2026-10");
@@ -406,7 +404,7 @@ export async function checkResourceReports(f) {
         await page.setViewportSize({ width: 1800, height: 1050 });
         await page
           .getByRole("tab", {
-            name: "Planlanan Kaynak Dağılımı",
+            name: "Kaynak Planlama",
             exact: true,
           })
           .click();
@@ -429,7 +427,7 @@ export async function checkResourceReports(f) {
         assert.deepEqual(await background(), closed);
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();
@@ -444,7 +442,7 @@ export async function checkResourceReports(f) {
         await report.waitFor();
         assert.match(await report.innerText(), /Synthetic report leave/);
         assert.equal(await report.locator("tbody tr").count(), 1);
-        await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
+        await selectWorkspaceTab(page, "Raporlar");
         await page
           .locator('.planning-filterbar input[type="month"]')
           .fill("2026-12");
@@ -453,7 +451,7 @@ export async function checkResourceReports(f) {
           await report.innerText(),
           /Seçili dönemde izin veya eğitim kaydı yok/,
         );
-        await selectWorkspaceTab(page, "Kaynak Planlama Raporları");
+        await selectWorkspaceTab(page, "Raporlar");
         await page
           .locator('.planning-filterbar input[type="month"]')
           .fill("2026-10");

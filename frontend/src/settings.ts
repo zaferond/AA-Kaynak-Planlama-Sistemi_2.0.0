@@ -4,14 +4,14 @@ export { SYSTEM_NAME, UI_THEME } from "./branding.ts";
 export const RISK_MANAGEMENT_ENABLED =
   process.env.AA_RISK_UI_ENABLED === "true";
 export const TAB_LABELS = {
-  plan: "Planlanan Kaynak Dağılımı",
-  projects: "Mühendislik Liderliği Projeler",
+  plan: "Kaynak Planlama",
+  projects: "Projeler",
   risk: "Risk Yönetimi",
   resources: "Organizasyon & Çalışan & Yetki",
-  actual: "Gerçekleşen Kaynak Dağılımı",
-  activity: "Aylık Aktivite Raporu",
-  critical: "Kritik Proje Konuları",
-  overview: "Kaynak Planlama Raporları",
+  actual: "Aktivite Girişi",
+  activity: "Aktivite Raporu",
+  critical: "Haftalık Kritik Konular",
+  overview: "Raporlar",
   progress: "Proje İlerlemesi",
 };
 export const DEFAULT_FILTERS = {

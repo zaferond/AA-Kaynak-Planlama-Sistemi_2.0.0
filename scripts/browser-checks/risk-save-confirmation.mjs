@@ -165,7 +165,7 @@ export async function checkRiskSaveConfirmation(f) {
           () =>
             page
               .getByRole("tab", {
-                name: "Kaynak Planlama Raporları",
+                name: "Raporlar",
                 exact: true,
               })
               .click(),

@@ -23,7 +23,7 @@ export async function checkActualAllocation(f) {
     );
   try {
     await page
-      .getByRole("tab", { name: "Gerçekleşen Kaynak Dağılımı", exact: true })
+      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
       .click();
     await f.check(
       "actual: cell/total selection, outside click and Escape; units and manual/automatic hours remain consistent",
@@ -33,7 +33,7 @@ export async function checkActualAllocation(f) {
         assert.equal(await hours().inputValue(), "198");
         await page
           .getByRole("heading", {
-            name: "Gerçekleşen Kaynak Dağılımı",
+            name: "Aktivite Girişi",
             exact: true,
           })
           .click();

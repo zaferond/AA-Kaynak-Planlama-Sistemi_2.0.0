@@ -163,7 +163,10 @@ test("report groups only selected notes by project and info across date ranges",
     "Seçimsiz Proje",
   ])
     assert.ok(!sheet.includes(value), value);
-  assert.match(zipEntry(workbook, "xl/workbook.xml"), /Kritik Proje Konuları/);
+  assert.match(
+    zipEntry(workbook, "xl/workbook.xml"),
+    /Haftalık Kritik Konular/,
+  );
 });
 
 test("Excel export treats special text as strings and rejects empty report", () => {

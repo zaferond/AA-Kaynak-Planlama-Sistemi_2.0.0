@@ -57,9 +57,7 @@ export async function checkRemainingReportTotals(f) {
   );
   const { page } = await f.client("root-admin");
   try {
-    await page
-      .getByRole("tab", { name: "Kaynak Planlama Raporları", exact: true })
-      .click();
+    await page.getByRole("tab", { name: "Raporlar", exact: true }).click();
     await page
       .locator('.planning-filterbar input[type="month"]')
       .fill("2026-01");

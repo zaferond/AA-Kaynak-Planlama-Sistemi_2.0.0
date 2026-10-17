@@ -221,7 +221,7 @@ export async function checkRisks(f) {
         );
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();
@@ -245,7 +245,7 @@ export async function checkRisks(f) {
         );
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();
@@ -303,7 +303,7 @@ export async function checkRisks(f) {
         await field(page, "description").fill("");
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .focus();
@@ -344,13 +344,13 @@ export async function checkRisks(f) {
           assert(await field(page, "impact").isDisabled());
           await page
             .getByRole("tab", {
-              name: "Kaynak Planlama Raporları",
+              name: "Raporlar",
               exact: true,
             })
             .click();
           await page
             .getByRole("tab", {
-              name: "Mühendislik Liderliği Projeler",
+              name: "Projeler",
               exact: true,
             })
             .click();

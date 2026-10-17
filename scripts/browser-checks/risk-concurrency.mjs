@@ -155,7 +155,7 @@ export async function checkRiskConcurrency(f) {
         );
         await page
           .getByRole("tab", {
-            name: "Kaynak Planlama Raporları",
+            name: "Raporlar",
             exact: true,
           })
           .click();

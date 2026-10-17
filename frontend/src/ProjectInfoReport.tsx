@@ -161,7 +161,7 @@ export default function ProjectInfoReport({
     <section className="panel report project-info-report">
       <div className="panelhead">
         <div>
-          <h2>Kritik Proje Konuları</h2>
+          <h2>Haftalık Kritik Konular</h2>
           <p>
             Proje ve kritik konu bazında seçilen açıklamalar · {topicCount}{" "}
             detay konu

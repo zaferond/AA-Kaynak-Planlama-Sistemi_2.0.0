@@ -29,7 +29,7 @@ export function projectInfoReportSheet(projects: ReportProject[]): string {
   ];
   const rows: string[] = [];
   rows.push(
-    `<row r="1" ht="29" customHeight="1">${cell(1, 0, "AA Mühendislik | Kritik Proje Konuları", 1)}</row>`,
+    `<row r="1" ht="29" customHeight="1">${cell(1, 0, "AA Mühendislik | Haftalık Kritik Konular", 1)}</row>`,
   );
   rows.push(
     `<row r="2" ht="22" customHeight="1">${cell(2, 0, `Rapora Ekle seçili açıklamalar · ${new Date().toLocaleDateString("tr-TR")}`, 2)}</row>`,
@@ -85,7 +85,10 @@ export function projectInfoReportWorkbook(
     throw Error("Rapora eklenecek açıklama bulunamadı.");
   return createWorkbook({
     sheets: [
-      { name: "Kritik Proje Konuları", xml: projectInfoReportSheet(projects) },
+      {
+        name: "Haftalık Kritik Konular",
+        xml: projectInfoReportSheet(projects),
+      },
     ],
     styles,
   });

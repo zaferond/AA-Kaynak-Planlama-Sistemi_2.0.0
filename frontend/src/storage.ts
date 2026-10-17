@@ -194,6 +194,24 @@ export async function login(
   });
   publishSessionChange();
 }
+/** Replaces the account password. The server closes every session of the
+ * account and opens a new one, so this tab adopts the new session identity
+ * (other tabs are signed out). A refused change keeps the old session. */
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+) {
+  const token = csrf;
+  clearSession();
+  csrf = token;
+  try {
+    await api("/auth/password", { currentPassword, newPassword });
+  } catch (error) {
+    await api("/auth/me").catch(() => {});
+    throw error;
+  }
+  publishSessionChange();
+}
 export async function resumeRemembered() {
   try {
     await api("/auth/me");

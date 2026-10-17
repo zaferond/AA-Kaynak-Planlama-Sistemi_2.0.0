@@ -5,6 +5,7 @@ import { activityQuery } from "./activity-report.mjs";
 import { ReportReadAdmission } from "./report-read-admission.mjs";
 import express from "express";
 import { randomUUID } from "node:crypto";
+import { assertAdminPassword } from "./admin-credentials.mjs";
 import { z } from "zod";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -191,28 +192,32 @@ export function createApp(
       }
       await req.releaseIpAttempt();
       await releaseName();
-      const raw = token(),
-        csrf = token(),
-        age =
-          u.authSource === "ldap"
-            ? 12 * 3600000
-            : (body.remember ? 30 * 24 : 12) * 3600000;
-      await store.createSession({
-        _id: digest(raw),
-        userId: u._id,
-        userVersion: u.version,
-        csrf,
-        expiresAt: new Date(Date.now() + age),
-      });
-      res.cookie("kp_session", raw, {
-        ...cookieOptions,
-        ...(body.remember ? { maxAge: age } : {}),
-      });
-      const identity = sessionIdentity(digest(raw));
-      res.set("X-Session-Identity", identity);
-      res.json({ user: publicUser(u), csrf, sessionIdentity: identity });
+      res.json(await issueSession(res, u, body.remember));
     },
   );
+  /** New session cookie + CSRF token for `u` (login, password change). */
+  async function issueSession(res, u, remember) {
+    const raw = token(),
+      csrf = token(),
+      age =
+        u.authSource === "ldap"
+          ? 12 * 3600000
+          : (remember ? 30 * 24 : 12) * 3600000;
+    await store.createSession({
+      _id: digest(raw),
+      userId: u._id,
+      userVersion: u.version,
+      csrf,
+      expiresAt: new Date(Date.now() + age),
+    });
+    res.cookie("kp_session", raw, {
+      ...cookieOptions,
+      ...(remember ? { maxAge: age } : {}),
+    });
+    const identity = sessionIdentity(digest(raw));
+    res.set("X-Session-Identity", identity);
+    return { user: publicUser(u), csrf, sessionIdentity: identity };
+  }
   const authenticate = async (req, res) => {
     const raw = cookie(req);
     if (!raw) fail(401, "Giriş yapın.");
@@ -247,8 +252,19 @@ export function createApp(
     )
       fail(403, "Oturum doğrulaması başarısız.");
   };
+  // Paths an account that must replace its password may still use.
+  const passwordChangePaths = new Set([
+    "/auth/me",
+    "/auth/logout",
+    "/auth/password",
+  ]);
   app.use("/api", async (req, res, next) => {
     await authenticate(req, res);
+    if (req.user.mustChangePassword && !passwordChangePaths.has(req.path))
+      throw Object.assign(Error("Devam etmeden önce şifrenizi değiştirin."), {
+        status: 403,
+        code: "PASSWORD_CHANGE_REQUIRED",
+      });
     next();
   });
   const admission = mutationAdmissionMiddleware(mutationGate, authenticate);
@@ -272,6 +288,64 @@ export function createApp(
       user: publicUser(req.user),
       csrf: req.session.csrf,
       sessionIdentity: req.sessionIdentity,
+    }),
+  );
+  app.post(
+    "/api/auth/password",
+    admission.handler(async (req, res) => {
+      const body = z
+        .object({
+          currentPassword: z.string().max(256),
+          newPassword: z.string().max(256),
+        })
+        .parse(req.body);
+      const u = req.user;
+      if (u.authSource === "ldap")
+        fail(400, "AD hesabının şifresi Active Directory'de değiştirilir.");
+      // Same per-account budget as login: guessing the current password here
+      // is no cheaper than at the login form.
+      const release = await attemptLimiter.reserve(
+        "password-change",
+        u._id,
+        ATTEMPT_LIMITS.account,
+      );
+      if (!(await verifyPassword(body.currentPassword, u.password)))
+        fail(400, "Mevcut şifre hatalı.");
+      const next = body.newPassword;
+      if (next.length < 10 || next.includes("'"))
+        fail(400, "Yeni şifre en az 10 karakter olmalı; tek tırnak içeremez.");
+      if (next === body.currentPassword)
+        fail(400, "Yeni şifre mevcut şifreyle aynı olamaz.");
+      try {
+        assertAdminPassword(next, u.username, "Yeni şifre");
+      } catch (error) {
+        fail(400, error.message);
+      }
+      const password = await hashPassword(next);
+      // One transaction: new password, flag cleared, every session of the
+      // account closed (version bump). The change is audited as a user edit.
+      await store.mutate(
+        u,
+        async (_d, active, c) => {
+          await store.saveUser(
+            {
+              ...active,
+              password,
+              mustChangePassword: false,
+              revision: active.revision + 1,
+              version: active.version + 1,
+            },
+            c,
+          );
+          await store.revokeUser(active._id, c);
+        },
+        { auditUsers: true },
+      );
+      await release();
+      const updated = await store.findUser({ id: u._id });
+      // Keep "Beni Hatırla": only remembered sessions outlive 12 hours.
+      const remembered = req.session.expiresAt - Date.now() > 12 * 3600000;
+      res.json(await issueSession(res, updated, remembered));
     }),
   );
   app.post("/api/auth/logout", async (req, res) => {

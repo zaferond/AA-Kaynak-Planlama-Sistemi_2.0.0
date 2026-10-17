@@ -52,6 +52,9 @@ try {
       leaders: [],
       active: true,
       password: await hashPassword(env.ADMIN_PASSWORD),
+      // The .env password is known to whoever set up the server: the first
+      // login must replace it inside the application.
+      mustChangePassword: true,
       revision: 1,
       version: 1,
     });

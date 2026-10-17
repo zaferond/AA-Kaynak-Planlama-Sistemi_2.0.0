@@ -7,12 +7,21 @@ import {
   ChevronDown,
   Download,
   Upload,
+  KeyRound,
 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import PasswordChangeForm from "../PasswordChangeForm";
 import type { Principal } from "../access";
 import { allowedDefaultTabs } from "../navigation";
 import { SYSTEM_NAME, TAB_LABELS } from "../settings";
@@ -43,6 +52,7 @@ export default function WorkspaceHeader({
         ? "Normal-Proje"
         : "Normal Kullanıcı";
   const [menuOpen, setMenuOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
   const restoreInput = useRef<HTMLInputElement>(null);
   return (
     <header className="mast">
@@ -88,6 +98,21 @@ export default function WorkspaceHeader({
                 </select>
                 <small>Bu tarayıcıda sonraki girişte açılacak sekme.</small>
               </label>
+              {user && user.authSource !== "ldap" && (
+                <div className="user-menu-section">
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setPasswordOpen(true);
+                    }}
+                  >
+                    <KeyRound size={14} aria-hidden="true" />
+                    Şifre Değiştir
+                  </button>
+                </div>
+              )}
               {isAdmin && (
                 <div className="user-menu-section">
                   <span className="user-menu-title">Veri yedeği</span>
@@ -119,6 +144,27 @@ export default function WorkspaceHeader({
               )}
             </PopoverContent>
           </Popover>
+          <Dialog open={passwordOpen} onOpenChange={setPasswordOpen}>
+            <DialogContent className="password-change-dialog">
+              <DialogHeader>
+                <DialogTitle>Şifre Değiştir</DialogTitle>
+                <DialogDescription>
+                  Değişiklikten sonra diğer tarayıcılardaki oturumlarınız
+                  kapanır.
+                </DialogDescription>
+              </DialogHeader>
+              {passwordOpen && (
+                <PasswordChangeForm
+                  onCancel={() => setPasswordOpen(false)}
+                  onDone={() => {
+                    setPasswordOpen(false);
+                    // The server issued a new session; reload under it.
+                    window.dispatchEvent(new Event("session-changed"));
+                  }}
+                />
+              )}
+            </DialogContent>
+          </Dialog>
           {/* Outside the menu: the menu unmounts on close, the chooser must not. */}
           {isAdmin && (
             <input

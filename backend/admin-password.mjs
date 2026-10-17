@@ -15,7 +15,14 @@ try {
     const u = await s.findUser({ id: ROOT_ADMIN_ID }, c);
     if (!u) throw Error("Önce sistemi başlatın.");
     await s.saveUser(
-      { ...u, password, revision: u.revision + 1, version: u.version + 1 },
+      {
+        ...u,
+        password,
+        // Set through .env again: the next login must replace it.
+        mustChangePassword: true,
+        revision: u.revision + 1,
+        version: u.version + 1,
+      },
       c,
     );
     await s.revokeUser(u._id, c);

@@ -14,6 +14,10 @@ const mapUser = (r) =>
     ...(r.role === "normal" && Number(r.project_editor) === 1
       ? { projectEditor: true }
       : {}),
+    // A password someone else knows (.env bootstrap or reset) must be replaced.
+    ...(Number(r.must_change_password) === 1
+      ? { mustChangePassword: true }
+      : {}),
     leaders: [],
     planningTeams: [],
     password: { salt: r.password_salt, hash: r.password_hash },
@@ -76,6 +80,7 @@ export async function saveUser(c, u) {
       email: u.email || "",
       active: u.active,
       project_editor: u.role === "normal" && u.projectEditor ? 1 : 0,
+      must_change_password: u.mustChangePassword ? 1 : 0,
       password_salt: u.password.salt,
       password_hash: u.password.hash,
       revision: u.revision,
@@ -122,6 +127,7 @@ export async function readSession(c, id) {
       userId: r.user_id,
       userVersion: Number(r.user_version),
       csrf: r.csrf,
+      expiresAt: new Date(r.expires_at),
     }
   );
 }

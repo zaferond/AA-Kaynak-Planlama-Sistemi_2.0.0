@@ -55,3 +55,7 @@ Taslakları admin ve yöneticiler kaydeder (yönetici yalnız kendi taslağını
 ## 41 — Oturum tablosu indeksleri
 
 SQL.js'te 013 geçişi `kp_sessions` tablosunu yeniden oluştururken 001'deki `kp_sessions_user_idx` ve `kp_sessions_expiry_idx` indekslerini geri eklemiyordu; MSSQL'de 013 yalnız satırları sildiği için indeksler duruyordu. 41 iki indeksi SQL.js'te `IF NOT EXISTS` ile yeniden oluşturur. MSSQL'de yalnız eksikse oluşturur, mevcut veritabanlarında yalnız sürüm kaydı eklenir. Veri değişmez. Üretim MSSQL ortamında dağıtımdan önce `npm run db:migrate` çalıştırılmalıdır (38–40 ile aynı komut).
+
+## 42 — İlk girişte şifre değiştirme
+
+`kp_users.must_change_password` (varsayılan 0) eklenir. Sunucu ilk kurulumda `.env` içindeki `ADMIN_PASSWORD` ile ana yöneticiyi oluştururken ve `npm run admin:password` şifreyi `.env` üzerinden sıfırlarken bu alanı 1 yapar. Alan 1 iken hesap yalnız oturum bilgisini okuyabilir, çıkış yapabilir ve şifresini değiştirebilir (`POST /api/auth/password`); diğer bütün istekler 403 alır. Şifre değiştirilince alan 0 olur, hesabın diğer oturumları kapanır ve yeni bir oturum açılır. Mevcut hesaplar 0 ile gelir; davranış değişmez. AD hesaplarının şifresi uygulamada değiştirilmez. Üretim MSSQL ortamında dağıtımdan önce `npm run db:migrate` çalıştırılmalıdır (38–41 ile aynı komut).

@@ -198,6 +198,7 @@ export const tables = {
       auth_source: "varchar(10)",
       active: "bit",
       project_editor: "bit",
+      must_change_password: "bit",
       password_salt: "varchar(100)",
       password_hash: "varchar(200)",
       revision: "bigint",

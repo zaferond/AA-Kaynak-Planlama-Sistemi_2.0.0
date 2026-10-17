@@ -4,7 +4,14 @@ import { ArrowRight, Eye, EyeOff, LockKeyhole, UserRound } from "lucide-react";
 import { SYSTEM_NAME, UI_THEME } from "./settings";
 import Portal from "./App";
 import ErrorBoundary from "./ErrorBoundary";
-import { login, observeSessionChanges, resumeRemembered } from "./storage";
+import PasswordChangeForm from "./PasswordChangeForm";
+import {
+  currentUser,
+  login,
+  logout,
+  observeSessionChanges,
+  resumeRemembered,
+} from "./storage";
 
 function App() {
   const [ready, setReady] = useState(false);
@@ -87,6 +94,27 @@ function App() {
       usernameRef.current?.focus();
   }, [checking, ready]);
 
+  if (ready && currentUser()?.mustChangePassword)
+    return (
+      <AuthLayout label="Şifre Belirleme">
+        <div className="auth-heading">
+          <h2>Şifrenizi Belirleyin</h2>
+          <p>
+            Hesabınız geçici bir şifreyle açıldı. Devam etmeden önce yalnız
+            sizin bildiğiniz yeni bir şifre belirleyin.
+          </p>
+        </div>
+        <PasswordChangeForm
+          onDone={() => window.dispatchEvent(new Event("session-changed"))}
+          onCancel={() => {
+            void logout()
+              .catch(() => {})
+              .finally(() => window.location.reload());
+          }}
+          cancelLabel="Çıkış Yap"
+        />
+      </AuthLayout>
+    );
   if (ready) return <Portal key={sessionKey} />;
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -112,6 +140,104 @@ function App() {
   }
 
   return (
+    <AuthLayout label="Hesap Girişi">
+      <div className="auth-heading">
+        <h2>Oturum Aç</h2>
+        <p>Kurum kullanıcı adınız ve şifrenizle giriş yapın.</p>
+      </div>
+      <form className="auth-form" aria-label="Giriş Formu" onSubmit={submit}>
+        <label htmlFor="login-username">Kullanıcı Adı</label>
+        <div className="auth-field">
+          <UserRound size={19} aria-hidden="true" />
+          <input
+            ref={usernameRef}
+            id="login-username"
+            type="text"
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            placeholder="Kullanıcı adınız"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            required
+            disabled={checking || busy}
+          />
+        </div>
+        <label htmlFor="login-password">Şifre</label>
+        <div className="auth-field">
+          <LockKeyhole size={19} aria-hidden="true" />
+          <input
+            id="login-password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            placeholder="Şifreniz"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            onKeyDown={(event) =>
+              setCapsLock(event.getModifierState("CapsLock"))
+            }
+            onKeyUp={(event) => setCapsLock(event.getModifierState("CapsLock"))}
+            onBlur={() => setCapsLock(false)}
+            aria-describedby={capsLock ? "login-caps" : undefined}
+            required
+            disabled={checking || busy}
+          />
+          <button
+            className="auth-visibility"
+            type="button"
+            aria-label={showPassword ? "Şifreyi Gizle" : "Şifreyi Göster"}
+            aria-pressed={showPassword}
+            onClick={() => setShowPassword((value) => !value)}
+          >
+            {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+          </button>
+        </div>
+        {capsLock && (
+          <p className="auth-caps" id="login-caps" role="status">
+            Caps Lock açık.
+          </p>
+        )}
+        <label className="auth-remember">
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={(event) => setRemember(event.target.checked)}
+            disabled={checking || busy}
+          />
+          <span>Beni Hatırla</span>
+        </label>
+        {error && (
+          <p className="auth-error" role="alert">
+            {error}
+          </p>
+        )}
+        <button
+          className="auth-submit"
+          type="submit"
+          disabled={checking || busy}
+        >
+          <span>
+            {checking
+              ? "Oturum Kontrol Ediliyor…"
+              : busy
+                ? "Giriş Yapılıyor…"
+                : "Giriş Yap"}
+          </span>
+          {!checking && !busy && <ArrowRight size={19} aria-hidden="true" />}
+        </button>
+      </form>
+    </AuthLayout>
+  );
+}
+
+function AuthLayout({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
     <main className="auth-screen">
       <div className="auth-shell">
         <aside className="auth-brand">
@@ -132,102 +258,8 @@ function App() {
           <div className="auth-brand-art" aria-hidden="true" />
         </aside>
 
-        <section className="auth-panel" aria-label="Hesap Girişi">
-          <div className="auth-panel-inner">
-            <div className="auth-heading">
-              <h2>Oturum Aç</h2>
-              <p>Kurum kullanıcı adınız ve şifrenizle giriş yapın.</p>
-            </div>
-            <form
-              className="auth-form"
-              aria-label="Giriş Formu"
-              onSubmit={submit}
-            >
-              <label htmlFor="login-username">Kullanıcı Adı</label>
-              <div className="auth-field">
-                <UserRound size={19} aria-hidden="true" />
-                <input
-                  ref={usernameRef}
-                  id="login-username"
-                  type="text"
-                  autoComplete="username"
-                  autoCapitalize="none"
-                  spellCheck={false}
-                  placeholder="Kullanıcı adınız"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                  required
-                  disabled={checking || busy}
-                />
-              </div>
-              <label htmlFor="login-password">Şifre</label>
-              <div className="auth-field">
-                <LockKeyhole size={19} aria-hidden="true" />
-                <input
-                  id="login-password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  placeholder="Şifreniz"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  onKeyDown={(event) =>
-                    setCapsLock(event.getModifierState("CapsLock"))
-                  }
-                  onKeyUp={(event) =>
-                    setCapsLock(event.getModifierState("CapsLock"))
-                  }
-                  onBlur={() => setCapsLock(false)}
-                  aria-describedby={capsLock ? "login-caps" : undefined}
-                  required
-                  disabled={checking || busy}
-                />
-                <button
-                  className="auth-visibility"
-                  type="button"
-                  aria-label={showPassword ? "Şifreyi Gizle" : "Şifreyi Göster"}
-                  aria-pressed={showPassword}
-                  onClick={() => setShowPassword((value) => !value)}
-                >
-                  {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
-                </button>
-              </div>
-              {capsLock && (
-                <p className="auth-caps" id="login-caps" role="status">
-                  Caps Lock açık.
-                </p>
-              )}
-              <label className="auth-remember">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(event) => setRemember(event.target.checked)}
-                  disabled={checking || busy}
-                />
-                <span>Beni Hatırla</span>
-              </label>
-              {error && (
-                <p className="auth-error" role="alert">
-                  {error}
-                </p>
-              )}
-              <button
-                className="auth-submit"
-                type="submit"
-                disabled={checking || busy}
-              >
-                <span>
-                  {checking
-                    ? "Oturum Kontrol Ediliyor…"
-                    : busy
-                      ? "Giriş Yapılıyor…"
-                      : "Giriş Yap"}
-                </span>
-                {!checking && !busy && (
-                  <ArrowRight size={19} aria-hidden="true" />
-                )}
-              </button>
-            </form>
-          </div>
+        <section className="auth-panel" aria-label={label}>
+          <div className="auth-panel-inner">{children}</div>
         </section>
       </div>
     </main>

@@ -25,6 +25,9 @@ export type Account = {
   /** "Normal-Proje": a normal account that sees only the project screens and
    * has admin rights there (projects, phases, details, critical topics). */
   projectEditor?: boolean;
+  /** Set after a bootstrap/reset password from .env; only a password change
+   * is allowed until it is replaced. */
+  mustChangePassword?: boolean;
   active: boolean;
   credential?: Credential;
 };

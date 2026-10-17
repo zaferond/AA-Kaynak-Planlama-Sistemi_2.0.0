@@ -18,6 +18,8 @@ async function setup(t) {
       DB_PROVIDER: "sqljs",
       SQLJS_FILE: path.join(dir, "test.sqlite"),
     },
+    // These tests observe the per-user SQL narrowing of the uncached read.
+    viewCacheMaxAgeMs: 0,
   });
   t.after(async () => {
     await store.close();

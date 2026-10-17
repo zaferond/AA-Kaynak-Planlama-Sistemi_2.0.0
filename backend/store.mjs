@@ -28,9 +28,28 @@ import {
   directoryCatalogChanged,
 } from "../shared/directory-policy.ts";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+// A database edited outside the application (no generation bump) is picked up
+// within this time at the latest. VIEW_CACHE_MAX_AGE_MS=0 turns the cache off:
+// every view then reads only the rows its user may see, as before.
+const VIEW_CACHE_MAX_AGE_MS = 60_000;
+function deepFreeze(value) {
+  if (value && typeof value === "object" && !Object.isFrozen(value)) {
+    Object.freeze(value);
+    for (const item of Object.values(value)) deepFreeze(item);
+  }
+  return value;
+}
 export class Store {
+  /** Complete planning snapshot of the last committed generation, shared by
+   * read-only views. Frozen: views build new objects instead of editing it. */
+  #viewCache = null;
   constructor(options = {}) {
     this.env = options.env || process.env;
+    this.viewCacheMaxAgeMs =
+      options.viewCacheMaxAgeMs ??
+      Number(this.env.VIEW_CACHE_MAX_AGE_MS ?? VIEW_CACHE_MAX_AGE_MS);
+    if (!Number.isFinite(this.viewCacheMaxAgeMs) || this.viewCacheMaxAgeMs < 0)
+      throw Error("VIEW_CACHE_MAX_AGE_MS 0 veya pozitif bir sayı olmalıdır.");
     this.provider = this.env.DB_PROVIDER || "sqljs";
     if (!["sqljs", "mssql"].includes(this.provider))
       throw Error("DB_PROVIDER sqljs veya mssql olmalıdır.");
@@ -113,15 +132,44 @@ export class Store {
   async read(c = this.db, viewUser) {
     return readPlanningSnapshot(c, this.provider, viewUser);
   }
+  /**
+   * Every committed snapshot change goes through mutate(), which bumps the
+   * generation in the same transaction. A read-only transaction never sees an
+   * uncommitted write (SQL.js runs transactions one at a time; MSSQL readers
+   * hold the shared data lock writers take exclusively), so a snapshot read
+   * here is exactly the one committed under its generation. Only views fill
+   * the cache; mutate() keeps reading inside its own transaction.
+   */
+  async #viewSnapshot(c) {
+    const generation = Number(
+      (await c.query("SELECT generation FROM kp_settings WHERE id=1")).rows[0]
+        .generation,
+    );
+    const cached = this.#viewCache;
+    if (
+      cached?.generation === generation &&
+      Date.now() - cached.at < this.viewCacheMaxAgeMs
+    )
+      return cached;
+    const fresh = await this.read(c);
+    if (Number(fresh.generation) !== generation) return fresh;
+    this.#viewCache = {
+      data: deepFreeze(fresh.data),
+      generation,
+      at: Date.now(),
+    };
+    return this.#viewCache;
+  }
   async view(u) {
     return this.transaction(async (c) => {
       const active = await this.findUser({ id: u._id }, c);
       if (!active?.active || active.version !== u.version)
         fail(401, "Oturum yenilenmeli.");
-      // Only this authenticated read-only path narrows planned rows/revisions.
-      // Mutations still validate and persist a complete snapshot; actual rows
-      // remain complete here to compute historical anonymous team totals.
-      const { data, generation } = await this.read(c, publicUser(active));
+      // The complete snapshot is shared; scopeData() narrows it per user.
+      // Without the cache, the read itself skips rows the user cannot see.
+      const { data, generation } = this.viewCacheMaxAgeMs
+        ? await this.#viewSnapshot(c)
+        : await this.read(c, publicUser(active));
       return this.projectView(data, generation, active, c);
     }, true);
   }
@@ -157,8 +205,13 @@ export class Store {
   }
   async projectView(data, generation, active, c) {
     if (active.role === "admin") {
+      // New objects: `data` may be the shared, frozen view snapshot.
       const users = await this.users(c);
-      data.users = users.map(publicUser);
+      data = {
+        ...data,
+        users: users.map(publicUser),
+        revisions: { ...data.revisions },
+      };
       for (const x of users) data.revisions["user:" + x._id] = x.revision;
     }
     const principal = publicUser(active);

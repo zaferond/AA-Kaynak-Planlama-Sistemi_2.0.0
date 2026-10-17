@@ -59,8 +59,12 @@ try {
       version: 1,
     });
   }
+  const slowRequestMs = Number(env.SLOW_REQUEST_MS ?? 2000);
+  if (!Number.isFinite(slowRequestMs) || slowRequestMs < 0)
+    throw Error("SLOW_REQUEST_MS 0 veya pozitif bir sayı olmalıdır.");
   const app = createApp(store, {
     origin,
+    slowRequestMs,
     trustedProxies,
     mutationLimits,
     directory,

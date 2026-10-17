@@ -22,6 +22,7 @@ Aşağıdaki maddeler dağıtım gereksinimleridir; bu bilgisayarda gerçek serv
 4. Servis hesabı uygulama kodu, bağımlılıklar, `shared/`, hazırlanmış `site/`, `.env` ve gerekiyorsa CA dosyasını okuyabilmelidir. Kod/ayar/sertifika dosyalarını yazma hakkı yalnız dağıtım yöneticilerine verilmelidir. Servis logları için ayrı ve erişimi sınırlı hedef hazırlanır; sıradan kullanıcılar ayarları ve logları okuyamamalıdır. Bunlar burada uygulanmış ACL sonuçları değildir.
 5. Kurum çalışma modu MSSQL'dir: ayrı çalışma zamanı SQL hesabı, doğrulanan TLS ve HTTPS proxy. Şema geçişi dağıtım sırasında ayrı yetkili hesapla açık operasyon olarak yapılır; servis hesabına kalıcı migration yetkisi verilmez. Ayrıntılar [MSSQL geçiş kılavuzunda](IT-MSSQL-GECIS.md).
 6. `NODE_EXTRA_CA_CERTS` gerekiyorsa Node süreci başlamadan önce servis ortamına tanımlanır. Windows oturumunu otomatik devralan Kerberos/gMSA bağlantısı bu uygulamada hazır bir özellik değildir; yapılandırılmış SQL login/NTLM ayrıca doğrulanır.
+7. İzleme ve otomatik yeniden başlatma için `GET /api/health` kullanılır. Oturum gerektirmez; veritabanı 5 saniye içinde yanıt verirse `200 {"status":"ok"}`, vermezse `503 {"status":"unavailable"}` döner, başka bilgi içermez. İstek `APP_ORIGIN` adresine (aynı host adı, HTTPS ise proxy üzerinden) gönderilmelidir; farklı host adı 403 alır. Servis yöneticisi süreç çökünce yeniden başlatacak biçimde ayarlanır.
 
 ## Gerçek Windows kabulü için kayıt tablosu
 

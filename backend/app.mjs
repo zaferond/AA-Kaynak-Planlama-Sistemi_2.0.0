@@ -53,6 +53,9 @@ export function createApp(
     trustedProxies = [],
     directory = disabledDirectory,
     mutationLimits,
+    // API requests slower than this are logged (method, path, status, time).
+    slowRequestMs = 2000,
+    log = console.warn,
     mutationGate = new MutationAdmission(mutationLimits),
     attemptLimiter = createAttemptLimiter(store),
     reportReadGate = new ReportReadAdmission(),
@@ -95,6 +98,23 @@ export function createApp(
   });
   app.use("/api", (_req, res, next) => {
     res.set("Cache-Control", "no-store");
+    next();
+  });
+  // One line per slow request. The path never includes the query string
+  // (search text) and the body is never logged.
+  app.use("/api", (req, res, next) => {
+    const start = performance.now();
+    res.on("finish", () => {
+      const ms = Math.round(performance.now() - start);
+      if (ms >= slowRequestMs)
+        log(
+          "Slow request",
+          req.method,
+          req.originalUrl.split("?")[0],
+          res.statusCode,
+          ms + "ms",
+        );
+    });
     next();
   });
   app.use("/api", (req, res, next) => {
@@ -140,6 +160,24 @@ export function createApp(
     );
     return m?.[1];
   };
+  // For IT monitoring and service restarts: no session, no details. 503 when
+  // the database does not answer within 5 seconds.
+  app.get("/api/health", async (_req, res) => {
+    let timeout;
+    try {
+      await Promise.race([
+        store.generation(),
+        new Promise((_, reject) => {
+          timeout = setTimeout(() => reject(Error("timeout")), 5000);
+        }),
+      ]);
+      res.json({ status: "ok" });
+    } catch {
+      res.status(503).json({ status: "unavailable" });
+    } finally {
+      clearTimeout(timeout);
+    }
+  });
   const dummy = hashPassword(token());
   app.post(
     "/api/auth/login",

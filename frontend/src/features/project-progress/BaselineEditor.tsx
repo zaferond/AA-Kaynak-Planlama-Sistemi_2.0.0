@@ -13,6 +13,7 @@ import {
   type ProjectProgress,
 } from "../../../../shared/project-progress.ts";
 import { monthLabel } from "../../format";
+import BaselineGrid from "./BaselineGrid";
 import {
   canLead,
   newProgressId,
@@ -259,34 +260,57 @@ export default function BaselineEditor({
   const editable =
     !!form && !pending && (!baseline || rebaseline || !!record?.proposal);
 
+  const gridOpening = form?.openingMonth || baseline?.openingMonth;
+
   return (
     <div className="progress-baseline">
-      <aside className="progress-baseline-list" aria-label="İlerleme kayıtları">
-        <ul>
-          {records.map((r) => (
-            <li key={r.id}>
+      <div className="progress-baseline-picker">
+        <div className="progress-record-chips">
+          <label>
+            Kayıt
+            <select
+              aria-label="İlerleme kaydı"
+              value={record?.id || ""}
+              onChange={(e) => {
+                const r = records.find((item) => item.id === e.target.value);
+                if (r)
+                  setSelection({ projectId: r.projectId, leader: r.leader });
+              }}
+            >
+              <option value="">
+                {records.length
+                  ? `Kayıt seçin… (${records.length})`
+                  : "Henüz kayıt yok"}
+              </option>
+              {records.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {projects.get(r.projectId)!.name} · {r.leader} ·{" "}
+                  {statusLabel(r)}
+                </option>
+              ))}
+            </select>
+          </label>
+          {/* Proposals waiting for a decision stay one click away. */}
+          {records
+            .filter((r) => r.proposal?.status === "pending")
+            .map((r) => (
               <button
+                key={r.id}
                 type="button"
+                className="progress-record-chip"
                 aria-current={r === record ? "true" : undefined}
+                data-status="pending"
                 onClick={() =>
                   setSelection({ projectId: r.projectId, leader: r.leader })
                 }
               >
                 <strong>{projects.get(r.projectId)!.name}</strong>
-                <small>{r.leader}</small>
-                <span
-                  className="progress-status"
-                  data-status={
-                    r.proposal?.status ||
-                    (r.baselines.length ? "approved" : "empty")
-                  }
-                >
-                  {statusLabel(r)}
-                </span>
+                <small>
+                  {r.leader} · {statusLabel(r)}
+                </small>
               </button>
-            </li>
-          ))}
-        </ul>
+            ))}
+        </div>
         <div className="progress-baseline-new">
           <span>Yeni kayıt</span>
           <select
@@ -324,88 +348,29 @@ export default function BaselineEditor({
             Aç
           </button>
         </div>
-      </aside>
+      </div>
       <section className="progress-baseline-editor" aria-label="Temel plan">
         {!selection || !project ? (
           <p className="emptymsg">
-            Soldan bir kayıt seçin ya da yeni kayıt açın.
+            Üstten bir kayıt seçin ya da yeni kayıt açın.
           </p>
         ) : (
           <>
-            <header>
-              <h3>
-                {project.name} · {selection.leader}
-              </h3>
-              <small>
-                Proje bitişi {monthLabel(project.end)} ·{" "}
-                {record ? statusLabel(record) : "Yeni kayıt"}
-                {record?.proposal?.submittedByName &&
-                  ` · gönderen ${record.proposal.submittedByName}`}
-              </small>
-            </header>
-            {baseline && !rebaseline && !record?.proposal && (
-              <div className="progress-baseline-current">
-                <p>
-                  Onaylı temel plan (sürüm {baseline.version}) ·{" "}
-                  {baseline.approvedByName} ·{" "}
-                  {new Date(baseline.approvedAt).toLocaleDateString("tr-TR")}
-                  {baseline.reason && ` · ${baseline.reason}`}
-                </p>
-                <table className="progress-table compact">
-                  <thead>
-                    <tr>
-                      <th>Ay</th>
-                      <th className="num">Hedef %</th>
-                      {record!.baselines.length > 1 && (
-                        <th className="num">İlk plan %</th>
-                      )}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{monthLabel(baseline.openingMonth)} (açılış)</td>
-                      <td className="num">{pctLabel(baseline.openingPct)}</td>
-                      {record!.baselines.length > 1 && (
-                        <td className="num">
-                          {pctLabel(
-                            targetAt(
-                              record!.baselines[0],
-                              baseline.openingMonth,
-                            ),
-                          )}
-                        </td>
-                      )}
-                    </tr>
-                    {Object.keys(baseline.targets)
-                      .sort()
-                      .map((m) => (
-                        <tr key={m}>
-                          <td>{monthLabel(m)}</td>
-                          <td className="num">
-                            {pctLabel(baseline.targets[m])}
-                          </td>
-                          {record!.baselines.length > 1 && (
-                            <td className="num">
-                              {pctLabel(targetAt(record!.baselines[0], m))}
-                            </td>
-                          )}
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-                {canLead(user, selection.leader) && (
-                  <button
-                    type="button"
-                    className="button"
-                    onClick={startRebaseline}
-                  >
-                    Yeni Temel Plan Öner
-                  </button>
-                )}
+            <header className="progress-baseline-head">
+              <div>
+                <h3>
+                  {project.name} · {selection.leader}
+                </h3>
+                <small>
+                  {monthLabel(project.start)} – {monthLabel(project.end)} ·{" "}
+                  {record ? statusLabel(record) : "Yeni kayıt"}
+                  {record?.proposal?.submittedByName &&
+                    ` · gönderen ${record.proposal.submittedByName}`}
+                  {baseline &&
+                    ` · onaylı plan ${baseline.approvedByName}, ${new Date(baseline.approvedAt).toLocaleDateString("tr-TR")}`}
+                </small>
               </div>
-            )}
-            {form && (
-              <div className="progress-baseline-form">
+              {form && (
                 <div className="progress-baseline-fields">
                   <label>
                     Açılış ayı
@@ -472,144 +437,153 @@ export default function BaselineEditor({
                     Öneriyi Doldur
                   </button>
                 </div>
-                <p className="progress-muted">
-                  Açılış değeri, takibin başladığı ay sonundaki tamamlanma
-                  yüzdesidir. Öneri, kalan işi liderliğin planlanan kaynak
-                  eğrisine göre dağıtır.
-                </p>
-                <table
-                  className="progress-table compact"
-                  aria-label="Aylık hedefler"
+              )}
+            </header>
+            {gridOpening && (
+              <BaselineGrid
+                project={project}
+                openingMonth={gridOpening}
+                openingPct={
+                  form ? num(form.openingPct) : (baseline?.openingPct ?? 0)
+                }
+                currentMonth={currentMonth}
+                planned={planned}
+                suggested={
+                  form && num(form.openingPct) >= 0
+                    ? suggestTargets(
+                        form.openingMonth,
+                        num(form.openingPct),
+                        project.end,
+                        planned,
+                      )
+                    : undefined
+                }
+                approved={baseline && form ? baseline : undefined}
+                targets={
+                  form
+                    ? form.targets
+                    : Object.fromEntries(
+                        Object.entries(baseline?.targets || {}).map(
+                          ([m, v]) => [m, text(v)],
+                        ),
+                      )
+                }
+                editable={editable}
+                onTarget={(month, value) =>
+                  form &&
+                  setForm({
+                    ...form,
+                    targets: { ...form.targets, [month]: value },
+                  })
+                }
+              />
+            )}
+            <p className="progress-muted">
+              Açılış değeri, takibin başladığı ay sonundaki tamamlanma
+              yüzdesidir. Hedefler kümülatiftir; “Öneriyi Doldur” kalan işi
+              liderliğin planlanan kaynak eğrisine göre dağıtır.
+            </p>
+            {editable && problems.length > 0 && (
+              <p className="progress-error" role="status">
+                Onaya göndermeden önce: {problems[0]}
+              </p>
+            )}
+            <div className="progress-actions">
+              {baseline && !form && canLead(user, selection.leader) && (
+                <button
+                  type="button"
+                  className="button"
+                  onClick={startRebaseline}
                 >
-                  <thead>
-                    <tr>
-                      <th>Ay</th>
-                      <th className="num">Planlanan kaynak (kişi-ay)</th>
-                      <th>Hedef % (kümülatif)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {months.map((m) => (
-                      <tr key={m}>
-                        <td>{monthLabel(m)}</td>
-                        <td className="num">{pctLabel(planned?.[m])}</td>
-                        <td>
-                          <input
-                            aria-label={`${monthLabel(m)} hedef %`}
-                            inputMode="decimal"
-                            value={form.targets[m] ?? ""}
-                            disabled={!editable}
-                            onChange={(e) =>
-                              setForm({
-                                ...form,
-                                targets: {
-                                  ...form.targets,
-                                  [m]: e.target.value,
-                                },
-                              })
-                            }
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {editable && problems.length > 0 && (
-                  <p className="progress-error" role="status">
-                    Onaya göndermeden önce: {problems[0]}
-                  </p>
-                )}
-                <div className="progress-actions">
-                  {editable && (
-                    <>
-                      <button
-                        type="button"
-                        className="button"
-                        disabled={saving}
-                        onClick={() => void send("draft", "Taslak kaydedildi.")}
-                      >
-                        Taslak Olarak Kaydet
-                      </button>
-                      <button
-                        type="button"
-                        className="button primary"
-                        disabled={saving || problems.length > 0}
-                        onClick={() =>
-                          void send("pending", "Onaya gönderildi.")
-                        }
-                      >
-                        Onaya Gönder
-                      </button>
-                      {admin && (
-                        <button
-                          type="button"
-                          className="button primary"
-                          disabled={saving || problems.length > 0}
-                          onClick={() =>
-                            void send("approved", "Temel plan onaylandı.")
-                          }
-                        >
-                          Onayla
-                        </button>
-                      )}
-                      {rebaseline && (
-                        <button
-                          type="button"
-                          className="button"
-                          onClick={() => {
-                            setRebaseline(false);
-                            setForm(null);
-                          }}
-                        >
-                          Vazgeç
-                        </button>
-                      )}
-                    </>
+                  Yeni Temel Plan Öner
+                </button>
+              )}
+              {editable && (
+                <>
+                  <button
+                    type="button"
+                    className="button"
+                    disabled={saving}
+                    onClick={() => void send("draft", "Taslak kaydedildi.")}
+                  >
+                    Taslak Olarak Kaydet
+                  </button>
+                  <button
+                    type="button"
+                    className="button primary"
+                    disabled={saving || problems.length > 0}
+                    onClick={() => void send("pending", "Onaya gönderildi.")}
+                  >
+                    Onaya Gönder
+                  </button>
+                  {admin && (
+                    <button
+                      type="button"
+                      className="button primary"
+                      disabled={saving || problems.length > 0}
+                      onClick={() =>
+                        void send("approved", "Temel plan onaylandı.")
+                      }
+                    >
+                      Onayla
+                    </button>
                   )}
-                  {pending && (
-                    <>
-                      <button
-                        type="button"
-                        className="button"
-                        disabled={saving}
-                        onClick={() =>
-                          void send(
-                            "draft",
-                            admin
-                              ? "Öneri taslağa döndürüldü."
-                              : "Öneri geri çekildi.",
-                          )
-                        }
-                      >
-                        {admin ? "Reddet" : "Geri Çek"}
-                      </button>
-                      {admin && (
-                        <button
-                          type="button"
-                          className="button primary"
-                          disabled={saving}
-                          onClick={() =>
-                            void send("approved", "Temel plan onaylandı.")
-                          }
-                        >
-                          Onayla
-                        </button>
-                      )}
-                    </>
-                  )}
-                  {record?.proposal && !pending && baseline && (
+                  {rebaseline && (
                     <button
                       type="button"
                       className="button"
-                      disabled={saving}
-                      onClick={() => void send(null, "Öneri silindi.")}
+                      onClick={() => {
+                        setRebaseline(false);
+                        setForm(null);
+                      }}
                     >
-                      Öneriyi Sil
+                      Vazgeç
                     </button>
                   )}
-                </div>
-              </div>
-            )}
+                </>
+              )}
+              {pending && (
+                <>
+                  <button
+                    type="button"
+                    className="button"
+                    disabled={saving}
+                    onClick={() =>
+                      void send(
+                        "draft",
+                        admin
+                          ? "Öneri taslağa döndürüldü."
+                          : "Öneri geri çekildi.",
+                      )
+                    }
+                  >
+                    {admin ? "Reddet" : "Geri Çek"}
+                  </button>
+                  {admin && (
+                    <button
+                      type="button"
+                      className="button primary"
+                      disabled={saving}
+                      onClick={() =>
+                        void send("approved", "Temel plan onaylandı.")
+                      }
+                    >
+                      Onayla
+                    </button>
+                  )}
+                </>
+              )}
+              {record?.proposal && !pending && baseline && (
+                <button
+                  type="button"
+                  className="button"
+                  disabled={saving}
+                  onClick={() => void send(null, "Öneri silindi.")}
+                >
+                  Öneriyi Sil
+                </button>
+              )}
+            </div>
             {admin && record && (
               <div className="progress-admin">
                 <label>

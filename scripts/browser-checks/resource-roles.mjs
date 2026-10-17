@@ -51,10 +51,22 @@ export async function checkResourceRoles(f) {
   }
   // The draft has a name typed in, so Escape asks before discarding it.
   async function cancel() {
-    await page.keyboard.press("Escape");
-    await dialog()
-      .getByRole("button", { name: "Değişiklikleri At", exact: true })
-      .click();
+    const discard = dialog().getByRole("button", {
+      name: "Değişiklikleri At",
+      exact: true,
+    });
+    // The first Escape may only close an open picker inside the dialog.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await page.keyboard.press("Escape");
+      if (
+        await discard
+          .waitFor({ timeout: 2000 })
+          .then(() => true)
+          .catch(() => false)
+      )
+        break;
+    }
+    await discard.click();
     await dialog().waitFor({ state: "hidden" });
   }
   async function expectPopup(action, owner, leader = false) {

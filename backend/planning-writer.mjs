@@ -109,6 +109,21 @@ export async function persistPlanningSnapshot(
       .filter((x) => x.value === undefined)
       .map((x) => ({ id: x.id })),
   );
+  for (const [kind, table] of [
+    ["progress", "project_progress"],
+    ["progressLock", "progress_locks"],
+  ]) {
+    await c.upsert(
+      table,
+      up(kind).map((item) => ({ id: item.id, payload: JSON.stringify(item) })),
+    );
+    await c.remove(
+      table,
+      changed[kind]
+        .filter((x) => x.value === undefined)
+        .map((x) => ({ id: x.id })),
+    );
+  }
   const rs = up("resource");
   await c.upsert(
     "resources",
@@ -332,35 +347,47 @@ export async function persistPlanningSnapshot(
                   record_id: "@scenario:" + k.slice(9),
                   revision,
                 }
-              : k.startsWith("actual:")
+              : k.startsWith("progressLock:")
                 ? {
                     kind: "allocation",
-                    record_id: "@actual:" + k.slice(7),
+                    record_id: "@progressLock:" + k.slice(13),
                     revision,
                   }
-                : k.startsWith("workedHours:")
+                : k.startsWith("progress:")
                   ? {
                       kind: "allocation",
-                      record_id: "@worked:" + k.slice(12),
+                      record_id: "@progress:" + k.slice(9),
                       revision,
                     }
-                  : k.startsWith("calendar:")
+                  : k.startsWith("actual:")
                     ? {
                         kind: "allocation",
-                        record_id: "@calendar:" + k.slice(9),
+                        record_id: "@actual:" + k.slice(7),
                         revision,
                       }
-                    : k.startsWith("personDay:")
+                    : k.startsWith("workedHours:")
                       ? {
                           kind: "allocation",
-                          record_id: "@person:" + k.slice(10),
+                          record_id: "@worked:" + k.slice(12),
                           revision,
                         }
-                      : {
-                          kind: k.slice(0, i),
-                          record_id: k.slice(i + 1),
-                          revision,
-                        };
+                      : k.startsWith("calendar:")
+                        ? {
+                            kind: "allocation",
+                            record_id: "@calendar:" + k.slice(9),
+                            revision,
+                          }
+                        : k.startsWith("personDay:")
+                          ? {
+                              kind: "allocation",
+                              record_id: "@person:" + k.slice(10),
+                              revision,
+                            }
+                          : {
+                              kind: k.slice(0, i),
+                              record_id: k.slice(i + 1),
+                              revision,
+                            };
       }),
   );
   await c.remove(

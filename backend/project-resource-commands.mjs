@@ -15,6 +15,14 @@ export function stageProjectResourceChange(d, { kind, id, value, operation }) {
           d.revisions["risk:" + risk.id] =
             (d.revisions["risk:" + risk.id] || 0) + 1;
       d.risks = (d.risks || []).filter((risk) => risk.projectId !== id);
+      for (const item of d.projectProgress || [])
+        if (item.projectId === id)
+          d.revisions["progress:" + item.id] =
+            (d.revisions["progress:" + item.id] || 0) + 1;
+      if (d.projectProgress)
+        d.projectProgress = d.projectProgress.filter(
+          (item) => item.projectId !== id,
+        );
       for (const key of Object.keys(d.allocations))
         if (key.split("|")[1] === id) {
           delete d.allocations[key];

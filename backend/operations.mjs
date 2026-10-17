@@ -16,6 +16,10 @@ import {
 } from "../shared/project-access.ts";
 import { stageRiskChange, stageRiskSystemChange } from "./risk-commands.mjs";
 import { stageScenarioChange } from "./scenario-commands.mjs";
+import {
+  stageProgressChange,
+  stageProgressLockChange,
+} from "./progress-commands.mjs";
 import { stageTeamChange } from "./directory-commands.mjs";
 import { stageProjectResourceChange } from "./project-resource-commands.mjs";
 import {
@@ -38,6 +42,8 @@ const changesSchema = z
         "risk",
         "riskSystem",
         "scenario",
+        "progress",
+        "progressLock",
         "resource",
         "allocation",
         "actual",
@@ -167,6 +173,8 @@ function stageParsedChanges(d, u, changes) {
     // Delay scenarios: managers keep drafts; status moves are checked in the handler.
     const canScenario =
       kind === "scenario" && (u.role === "admin" || u.role === "manager");
+    // Project progress: leaders write their own leadership; checked in the handler.
+    const canProgress = kind === "progress" && u.role === "manager";
     if (
       u.role !== "admin" &&
       !managerPlan &&
@@ -175,7 +183,8 @@ function stageParsedChanges(d, u, changes) {
       !ownDay &&
       !projectEditor &&
       !canRisk &&
-      !canScenario
+      !canScenario &&
+      !canProgress
     )
       fail(403, "Bu işlem için yetkiniz yok.");
     if (
@@ -211,7 +220,17 @@ function stageParsedChanges(d, u, changes) {
       )
         continue;
     }
-    if (kind === "scenario") {
+    if (kind === "progress") {
+      stageProgressChange(
+        d,
+        u,
+        ch,
+        d.projectProgress?.find((item) => item.id === id),
+        canSeeProject,
+      );
+    } else if (kind === "progressLock") {
+      stageProgressLockChange(d, u, ch);
+    } else if (kind === "scenario") {
       stageScenarioChange(
         d,
         u,

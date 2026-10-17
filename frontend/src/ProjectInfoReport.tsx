@@ -59,6 +59,7 @@ type Props = {
   onAddInfo: (project: Project) => void;
   onEditInfo: (project: Project, infoId: string) => void;
   onOpenProjects?: () => void;
+  progressBadge?: (projectId: string) => React.ReactNode;
 };
 
 export default function ProjectInfoReport({
@@ -68,6 +69,7 @@ export default function ProjectInfoReport({
   onAddInfo,
   onEditInfo,
   onOpenProjects,
+  progressBadge,
 }: Props) {
   const [editing, setEditing] = useState<Editing | null>(null);
   const [busy, setBusy] = useState(false);
@@ -357,6 +359,7 @@ export default function ProjectInfoReport({
                         )}
                         {project.name}
                       </button>
+                      {progressBadge?.(project.id)}
                     </h3>
                     <small>
                       {project.infos.length} kritik konu · {projectTopicCount}{" "}

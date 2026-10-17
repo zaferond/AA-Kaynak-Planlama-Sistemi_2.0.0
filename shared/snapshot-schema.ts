@@ -252,6 +252,79 @@ export const scheduleScenarioSchema = z
   })
   .strict();
 
+// Project progress: cumulative percentages with at most one decimal.
+const pct = z
+  .number()
+  .finite()
+  .min(0)
+  .max(100)
+  .refine(
+    (value) => Math.abs(Math.round(value * 10) - value * 10) < 1e-6,
+    "Yüzde en fazla bir ondalık basamak içerebilir.",
+  );
+const progressTargets = z
+  .record(mo, pct)
+  .refine((value) => Object.keys(value).length <= 600, "Çok fazla hedef ayı.");
+const stamp = z.string().max(200).optional();
+export const projectProgressSchema = z
+  .object({
+    id: scenarioId,
+    projectId: z.string().min(1).max(120),
+    leader: z.string().trim().min(1).max(200),
+    weight: z.number().finite().min(0).max(1000).optional(),
+    baselines: z
+      .array(
+        z
+          .object({
+            version: z.number().int().min(1),
+            openingMonth: mo,
+            openingPct: pct,
+            targets: progressTargets,
+            reason: z.string().trim().max(500).optional(),
+            approvedByName: z.string().max(200),
+            approvedAt: z.string().max(40),
+          })
+          .strict(),
+      )
+      .max(100),
+    proposal: z
+      .object({
+        openingMonth: mo,
+        openingPct: pct,
+        targets: progressTargets,
+        status: z.enum(["draft", "pending", "approved"]),
+        reason: z.string().trim().max(500).optional(),
+        updatedByName: stamp,
+        updatedAt: stamp,
+        submittedByName: stamp,
+        submittedAt: stamp,
+      })
+      .strict()
+      .optional(),
+    actuals: z.record(
+      mo,
+      z
+        .object({
+          pct,
+          note: z.string().trim().max(500),
+          byName: stamp,
+          at: stamp,
+        })
+        .strict(),
+    ),
+    createdBy: z.string().min(1).max(120),
+    createdByName: z.string().max(200),
+    createdAt: z.string().max(40),
+  })
+  .strict();
+export const progressLockSchema = z
+  .object({
+    id: mo,
+    lockedByName: z.string().max(200),
+    lockedAt: z.string().max(40),
+  })
+  .strict();
+
 export const snapshotSchema = z.object({
   teams: z.array(teamSchema).min(1),
   resources: z.array(res),
@@ -259,6 +332,8 @@ export const snapshotSchema = z.object({
   risks: z.array(risk).max(100000).default([]),
   // Optional: snapshots without scenarios keep their previous shape.
   scheduleScenarios: z.array(scheduleScenarioSchema).max(1000).optional(),
+  projectProgress: z.array(projectProgressSchema).max(20000).optional(),
+  progressLocks: z.array(progressLockSchema).max(1000).optional(),
   riskSystems: z
     .array(riskSystemSchema)
     .max(5000)

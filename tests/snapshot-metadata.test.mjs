@@ -20,6 +20,8 @@ test("one snapshot's metadata batch uses the same ordered queries and never reus
     "projects",
     "risks",
     "scenarios",
+    "progress",
+    "progressLocks",
     "phases",
     "milestones",
     "projectAccess",

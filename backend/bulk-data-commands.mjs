@@ -139,5 +139,7 @@ export function restore(d, u, backup) {
   if (!Object.hasOwn(next, "legacyArchive")) delete d.legacyArchive;
   // Restore replaces the plan: a backup without scenarios clears them.
   if (!Object.hasOwn(next, "scheduleScenarios")) delete d.scheduleScenarios;
+  if (!Object.hasOwn(next, "projectProgress")) delete d.projectProgress;
+  if (!Object.hasOwn(next, "progressLocks")) delete d.progressLocks;
   Object.assign(d, next);
 }

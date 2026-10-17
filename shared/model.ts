@@ -124,6 +124,10 @@ export type Data = {
   riskSystems?: RiskSystem[];
   /** Saved delay scenarios (Erteleme Senaryosu). */
   scheduleScenarios?: import("./schedule-shift.ts").SavedScenario[];
+  /** Project progress per project × leadership (Proje İlerlemesi). */
+  projectProgress?: import("./project-progress.ts").ProjectProgress[];
+  /** Months closed to actual progress entry. */
+  progressLocks?: import("./project-progress.ts").ProgressLock[];
   resources: Resource[];
   allocations: Record<string, number>;
   actualAllocations?: Record<string, number>;

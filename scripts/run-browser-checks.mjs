@@ -65,6 +65,7 @@ import { checkActualPersonLayout } from "./browser-checks/actual-person-layout.m
 import { checkActualSaveFocus } from "./browser-checks/actual-save-focus.mjs";
 import { checkPasswordChange } from "./browser-checks/password-change.mjs";
 import { checkCriticalProjectFilter } from "./browser-checks/critical-project-filter.mjs";
+import { checkProjectProgress } from "./browser-checks/project-progress.mjs";
 
 for (const check of [
   checkHeadcountReports,
@@ -81,6 +82,7 @@ for (const check of [
   checkActualSaveFocus,
   checkPasswordChange,
   checkCriticalProjectFilter,
+  checkProjectProgress,
   checkTeamCapacityHeader,
   checkAllocationFocusLayers,
   checkTeamOnlyResource,

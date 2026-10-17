@@ -174,6 +174,13 @@ export async function applyLeaderChange(d, u, input, c, generation) {
           d.revisions["team:" + team.id] =
             (d.revisions["team:" + team.id] || 0) + 1;
         }
+      // Progress records follow the leadership's new name.
+      d.projectProgress = d.projectProgress?.map((item) => {
+        if (item.leader !== change.name) return item;
+        d.revisions["progress:" + item.id] =
+          (d.revisions["progress:" + item.id] || 0) + 1;
+        return { ...item, leader: newName };
+      });
       updateResourceLeaders(
         d,
         (version) => version.lead === change.name,
@@ -204,6 +211,11 @@ export async function applyLeaderChange(d, u, input, c, generation) {
       fail(
         409,
         "Liderlik kullanıcı yetkilerinde kullanılıyor. Önce yetkileri güncelleyin.",
+      );
+    if ((d.projectProgress || []).some((item) => item.leader === change.name))
+      fail(
+        409,
+        "Bu liderliğin proje ilerlemesi kayıtları var. Önce admin bu kayıtları silmeli.",
       );
     const teams = d.teams.filter((team) => team.lead === change.name),
       ids = new Set(teams.map((team) => team.id));

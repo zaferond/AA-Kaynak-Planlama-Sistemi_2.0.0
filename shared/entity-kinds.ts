@@ -7,4 +7,6 @@ export const entityCollections = {
   allocation: "allocations",
   actual: "actualAllocations",
   scenario: "scheduleScenarios",
+  progress: "projectProgress",
+  progressLock: "progressLocks",
 };

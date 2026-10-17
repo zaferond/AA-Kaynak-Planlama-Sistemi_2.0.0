@@ -59,3 +59,9 @@ SQL.js'te 013 geçişi `kp_sessions` tablosunu yeniden oluştururken 001'deki `k
 ## 42 — İlk girişte şifre değiştirme
 
 `kp_users.must_change_password` (varsayılan 0) eklenir. Sunucu ilk kurulumda `.env` içindeki `ADMIN_PASSWORD` ile ana yöneticiyi oluştururken ve `npm run admin:password` şifreyi `.env` üzerinden sıfırlarken bu alanı 1 yapar. Alan 1 iken hesap yalnız oturum bilgisini okuyabilir, çıkış yapabilir ve şifresini değiştirebilir (`POST /api/auth/password`); diğer bütün istekler 403 alır. Şifre değiştirilince alan 0 olur, hesabın diğer oturumları kapanır ve yeni bir oturum açılır. Mevcut hesaplar 0 ile gelir; davranış değişmez. AD hesaplarının şifresi uygulamada değiştirilmez. Üretim MSSQL ortamında dağıtımdan önce `npm run db:migrate` çalıştırılmalıdır (38–41 ile aynı komut).
+
+## 43 — Proje ilerlemesi
+
+`kp_project_progress(id, payload)` ve `kp_progress_locks(id, payload)` eklenir. Her ilerleme satırı bir proje × liderlik kaydının JSON içeriğidir: onaylanmış temel planlar (sürüm, açılış ayı ve yüzdesi, aylık kümülatif hedefler, onaylayan), varsa onay bekleyen ya da taslak öneri, aylık gerçekleşen yüzdeler ve açıklamaları (giren ve zaman sunucuda damgalanır), adminin isteğe bağlı elle verdiği ağırlık. Kilit satırı bir ayın (`YYYY-MM`) gerçekleşen girişine kapatıldığını gösterir. Revizyonlar `kp_revisions` tablosunda `@progress:` ve `@progressLock:` ad alanlarıyla tutulur; yeni CHECK değeri gerekmez. Proje silinince o projenin ilerleme kayıtları da aynı işlemde silinir; liderlik adı değişince kayıtlardaki ad güncellenir.
+
+Kayıtları admin ve ilgili liderliğin yöneticisi yazar; temel plan onayı, ağırlık, kilit ve silme yalnız admin yetkisindedir. Normal ve Normal-Proje kullanıcılarına ilerleme kayıtları gönderilmez. Mevcut veride kayıt yoktur; davranış değişmez. Üretim MSSQL ortamında dağıtımdan önce `npm run db:migrate` çalıştırılmalıdır (38–42 ile aynı komut).

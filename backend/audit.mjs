@@ -67,6 +67,7 @@ export function auditEntries(
       ].join(" · ");
     if (kind === "workedHours" || kind === "personDay")
       return [ownValue(resources, owner) || owner, projectOrDate].join(" · ");
+    if (kind === "progressLock") return id;
     return fallback;
   };
   const collect = (kind, records) => {
@@ -75,8 +76,16 @@ export function auditEntries(
         next = sanitized(kind, value);
       const changes = fields(old, next);
       if (!changes.length) continue;
-      const name =
-        next?.name || old?.name || next?.description || old?.description || id;
+      const progress = kind === "progress" ? next || old : undefined;
+      const name = progress
+        ? (ownValue(projects, progress.projectId) || progress.projectId) +
+          " · " +
+          progress.leader
+        : next?.name ||
+          old?.name ||
+          next?.description ||
+          old?.description ||
+          id;
       entries.push({
         id: randomUUID(),
         occurred_at: time,

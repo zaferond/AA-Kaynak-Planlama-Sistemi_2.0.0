@@ -7,6 +7,7 @@ import {
   Layers3,
   Plus,
   ShieldAlert,
+  TrendingUp,
   Users,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -101,6 +102,12 @@ export default function WorkspaceNavigation({
         group: "reports",
         show: isAdmin || isManager,
       },
+      {
+        value: "progress",
+        Icon: TrendingUp,
+        group: "reports",
+        show: isAdmin || isManager,
+      },
       { value: "resources", Icon: Users, group: "admin", show: isAdmin },
     ] as const
   ).filter((item) => item.show);
@@ -129,7 +136,14 @@ export default function WorkspaceNavigation({
           </TabsTrigger>
         ))}
       </TabsList>
-      {!["access", "teams", "critical", "risk", "activity"].includes(tab) && (
+      {![
+        "access",
+        "teams",
+        "critical",
+        "risk",
+        "activity",
+        "progress",
+      ].includes(tab) && (
         <div className="workspace-nav-actions">
           {tab === "overview" && (
             <Tabs

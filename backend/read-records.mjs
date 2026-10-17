@@ -232,15 +232,19 @@ export function revisionRecordKey(values) {
       ? "risk:" + id.slice(6)
       : kind === "allocation" && id.startsWith("@scenario:")
         ? "scenario:" + id.slice(10)
-        : kind === "allocation" && id.startsWith("@actual:")
-          ? "actual:" + id.slice(8)
-          : kind === "allocation" && id.startsWith("@worked:")
-            ? "workedHours:" + id.slice(8)
-            : kind === "allocation" && id.startsWith("@calendar:")
-              ? "calendar:" + id.slice(10)
-              : kind === "allocation" && id.startsWith("@person:")
-                ? "personDay:" + id.slice(8)
-                : kind + ":" + id;
+        : kind === "allocation" && id.startsWith("@progressLock:")
+          ? "progressLock:" + id.slice(14)
+          : kind === "allocation" && id.startsWith("@progress:")
+            ? "progress:" + id.slice(10)
+            : kind === "allocation" && id.startsWith("@actual:")
+              ? "actual:" + id.slice(8)
+              : kind === "allocation" && id.startsWith("@worked:")
+                ? "workedHours:" + id.slice(8)
+                : kind === "allocation" && id.startsWith("@calendar:")
+                  ? "calendar:" + id.slice(10)
+                  : kind === "allocation" && id.startsWith("@person:")
+                    ? "personDay:" + id.slice(8)
+                    : kind + ":" + id;
 }
 
 // Full snapshots only. All five maps remain complete and retain SELECT order;

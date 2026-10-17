@@ -43,6 +43,20 @@ export function validateSnapshotRisks(
   const scenarios = d.scheduleScenarios || [];
   if (new Set(scenarios.map((item) => item.id)).size !== scenarios.length)
     throw bad("Tekrarlanan senaryo kimliği.");
+  const progress = d.projectProgress || [];
+  if (new Set(progress.map((item) => item.id)).size !== progress.length)
+    throw bad("Tekrarlanan ilerleme kaydı kimliği.");
+  if (
+    new Set(progress.map((item) => item.projectId + "\u0000" + item.leader))
+      .size !== progress.length
+  )
+    throw bad("Bu proje ve liderlik için ilerleme kaydı zaten var.");
+  for (const item of progress)
+    if (!projectsById.has(item.projectId))
+      throw bad("İlerleme kaydının projesi bulunamadı.");
+  const locks = d.progressLocks || [];
+  if (new Set(locks.map((item) => item.id)).size !== locks.length)
+    throw bad("Tekrarlanan ay kilidi.");
   const systemsById = new Map(
     (d.riskSystems || []).map((item) => [item.id, item]),
   );

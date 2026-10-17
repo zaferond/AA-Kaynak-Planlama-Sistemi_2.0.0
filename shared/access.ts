@@ -197,6 +197,9 @@ export function scopeData(
     if (key.startsWith("project:")) return isProjectEditor(u);
     // Managers save and update their own delay scenarios.
     if (key.startsWith("scenario:")) return u.role === "manager";
+    // Leaders write project progress; month locks are shown to them.
+    if (key.startsWith("progress:") || key.startsWith("progressLock:"))
+      return u.role === "manager";
     return key.startsWith("allocation:")
       ? canSeePlanningRevision(u, key.slice(11).split("|")[0], ids) &&
           !hiddenProjects.has(key.slice(11).split("|")[1])
@@ -296,6 +299,14 @@ export function scopeData(
     ),
     // Delay scenarios are planning tools: managers see those whose projects
     // they can all view, without the undo snapshot; other roles none.
+    // Project progress: leaders and senior managers, never ordinary users.
+    projectProgress:
+      u.role === "manager"
+        ? (d.projectProgress || []).filter(
+            (item) => !hiddenProjects.has(item.projectId),
+          )
+        : undefined,
+    progressLocks: u.role === "manager" ? d.progressLocks : undefined,
     scheduleScenarios:
       u.role === "manager"
         ? (d.scheduleScenarios || [])

@@ -73,6 +73,14 @@ export const tables = {
     key: ["id"],
     columns: { id: "nvarchar(120)", payload: "nvarchar(max)" },
   },
+  project_progress: {
+    key: ["id"],
+    columns: { id: "nvarchar(120)", payload: "nvarchar(max)" },
+  },
+  progress_locks: {
+    key: ["id"],
+    columns: { id: "varchar(7)", payload: "nvarchar(max)" },
+  },
   risk_systems: {
     key: ["id"],
     columns: { id: "nvarchar(120)", name: "nvarchar(200)" },

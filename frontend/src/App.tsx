@@ -56,6 +56,10 @@ import PersonAllocationPanel from "./PersonAllocationPanel";
 import ErrorBoundary from "./ErrorBoundary";
 import { mergeNewerActuals } from "./features/actual-allocation/merge-actual-view";
 import ProjectInfoReport from "./ProjectInfoReport";
+import ProjectProgressPanel from "./features/project-progress/ProjectProgressPanel";
+import ProgressBadge, {
+  progressBadgeIndex,
+} from "./features/project-progress/ProgressBadge";
 import ProjectResponsible from "./ProjectResponsible";
 import ProjectTimelinePanel from "./features/ProjectTimelinePanel";
 import ResourcesPanel from "./features/ResourcesPanel";
@@ -133,6 +137,26 @@ export default function Portal() {
   useEffect(() => {
     if (tab !== "actual" || !isAdmin) setSharedCalendarOpen(false);
   }, [tab, isAdmin]);
+  // Proje İlerlemesi badges on the project screens; a click opens the report.
+  const [progressFocus, setProgressFocus] = useState("");
+  const progressBadges = useMemo(
+    () =>
+      data && (isAdmin || isManager) ? progressBadgeIndex(data) : new Map(),
+    [data, isAdmin, isManager],
+  );
+  const progressBadge = (compact: boolean) =>
+    progressBadges.size
+      ? (projectId: string) => (
+          <ProgressBadge
+            compact={compact}
+            badge={progressBadges.get(projectId)}
+            onOpen={() => {
+              setProgressFocus(projectId);
+              changeTab("progress");
+            }}
+          />
+        )
+      : undefined;
   const {
     leads,
     setLeads,
@@ -668,7 +692,7 @@ export default function Portal() {
                     </WorkspaceFilterSummary>
                   </div>
                 </>
-              ) : tab !== "resources" ? (
+              ) : tab !== "resources" && tab !== "progress" ? (
                 workspaceFilters
               ) : null}
               {(isAdmin || isManager) && tab === "plan" && (
@@ -747,6 +771,7 @@ export default function Portal() {
                       },
                     ]}
                     selection={projectMenus.phaseGrid}
+                    progressBadge={progressBadge(true)}
                     projects={projects}
                     revisions={data.revisions}
                     months={months}
@@ -984,6 +1009,7 @@ export default function Portal() {
                     canEdit={canEditProjects}
                     onSave={(project) => save("project", project.id, project)}
                     onOpenProjects={() => changeTab("projects")}
+                    progressBadge={progressBadge(false)}
                     onAddInfo={(project) => openMilestone(project)}
                     onEditInfo={(project, infoId) => {
                       const milestone = project.milestones?.find(
@@ -991,6 +1017,18 @@ export default function Portal() {
                       );
                       if (milestone) openMilestone(project, milestone);
                     }}
+                  />
+                </TabsContent>
+              )}
+              {(isAdmin || isManager) && tab === "progress" && (
+                <TabsContent value="progress">
+                  <ProjectProgressPanel
+                    data={data}
+                    user={user}
+                    saving={saving}
+                    onSave={batch}
+                    focusProjectId={progressFocus}
+                    onFocusHandled={() => setProgressFocus("")}
                   />
                 </TabsContent>
               )}

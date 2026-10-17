@@ -57,6 +57,7 @@ export default function ProjectTimelineRows({
   onMilestoneContextMenu,
   onChangeMilestoneRange,
   onChangeMilestoneNote,
+  progressBadge,
 }: ProjectTimelineRowProps) {
   const [localExpanded, setLocalExpanded] = useState(expandAllDetails);
   const expanded = controlledExpanded ?? localExpanded;
@@ -185,6 +186,10 @@ export default function ProjectTimelineRows({
               >
                 {milestones.length}
               </span>
+            )}
+            {progressBadge && (
+              // Under the topic count, so the row never grows for it.
+              <span className="project-progress-slot">{progressBadge}</span>
             )}
           </div>
         </TableCell>

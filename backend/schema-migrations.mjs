@@ -581,6 +581,13 @@ export async function prepareSchema(c, { provider, auto }) {
       );
     await executeSqlMigration(c, provider, 42);
   }
+  if (!versions.includes(43)) {
+    if (!auto)
+      throw Error(
+        "Proje ilerlemesi takibi için IT npm run db:migrate çalıştırmalı.",
+      );
+    await executeSqlMigration(c, provider, 43);
+  }
   assertMigrationHistory(
     (await c.query("SELECT version FROM kp_schema_migrations")).rows.map(
       (row) => Number(row.version),

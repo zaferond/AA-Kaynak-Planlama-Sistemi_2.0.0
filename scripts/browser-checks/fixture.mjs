@@ -145,12 +145,24 @@ export async function fixture({ mutationLimits } = {}) {
       options.executablePath = process.env.UI_BROWSER_EXECUTABLE;
     else if (process.platform === "darwin") options.channel = "chrome";
     browser = await chromium.launch(options);
-    async function client(id, { login = true } = {}) {
+    // Most actual-tab checks cover the "Proje → Kişi" layout, so clients start
+    // there; pass actualLayout: null for the app's own default ("Kişi → Proje").
+    // Only an unset choice is seeded, so switching in a check sticks.
+    async function client(id, { login = true, actualLayout = "project" } = {}) {
       const context = await browser.newContext({
         viewport: { width: 1800, height: 1050 },
         acceptDownloads: true,
       });
       contexts.push(context);
+      if (actualLayout)
+        await context.addInitScript((layout) => {
+          try {
+            if (!localStorage.getItem("aa.actualLayout"))
+              localStorage.setItem("aa.actualLayout", layout);
+          } catch {
+            // Storage-less pages keep the app default.
+          }
+        }, actualLayout);
       if (login) {
         const response = await context.request.post(
           origin + "/api/auth/login",

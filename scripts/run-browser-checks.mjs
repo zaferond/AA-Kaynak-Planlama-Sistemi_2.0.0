@@ -61,6 +61,7 @@ import { checkWorkspaceNavigation } from "./browser-checks/workspace-navigation.
 import { checkPortalRefresh } from "./browser-checks/portal-refresh.mjs";
 
 import { checkMutationAdmission } from "./browser-checks/mutation-admission.mjs";
+import { checkActualPersonLayout } from "./browser-checks/actual-person-layout.mjs";
 
 for (const check of [
   checkHeadcountReports,
@@ -73,6 +74,7 @@ for (const check of [
   checkAdAdminRole,
   checkActualManagerHierarchy,
   checkActualRemainingHours,
+  checkActualPersonLayout,
   checkTeamCapacityHeader,
   checkAllocationFocusLayers,
   checkTeamOnlyResource,

@@ -1,0 +1,153 @@
+/* Gerçekleşen "Kişi → Proje": a person row with month totals, then only the
+   projects that person has entries for. Loaded after the theme. */
+.app .person-allocation .actual-view-bar {
+  gap: 10px;
+}
+.app .person-allocation .actual-layout-switch {
+  flex: none;
+}
+.app .person-allocation .actual-person-search {
+  flex: none;
+  width: 190px;
+  height: 28px;
+  min-height: 28px;
+  padding: 3px 8px;
+  font-size: var(--fs-xs);
+}
+
+.app .person-allocation .actual-person-heading > td {
+  background: var(--brand-surface, #eef2e9);
+  border-top: 2px solid var(--table-label-border, #b8c7b0);
+}
+.app .person-allocation .actual-person-cell {
+  padding: 4px 6px;
+}
+.app .person-allocation .actual-person-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.app .person-allocation .actual-person-toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--brand-primary, #405341);
+  cursor: pointer;
+}
+.app .person-allocation button.actual-person-toggle:hover {
+  background: var(--brand-selected, #e6eddf);
+}
+.app .person-allocation .actual-person-title {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.25;
+}
+/* Names wrap to two lines; the full name is in the tooltip. */
+.app .person-allocation .actual-person-title strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--brand-dark, #29372d);
+  font-size: var(--fs-sm);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+.app .person-allocation .actual-person-sub {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.app .person-allocation .actual-person-sub small {
+  flex: 1;
+  min-width: 0;
+}
+.app .person-allocation .actual-person-title small {
+  overflow: hidden;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* "+" beside the team opens a project picker; choosing one adds a row. */
+.app .person-allocation .actual-person-add {
+  flex: none;
+  width: 30px;
+  height: 20px;
+  min-height: 20px;
+  padding: 0 2px;
+  text-align: center;
+  text-align-last: center;
+  appearance: none;
+  cursor: pointer;
+  border-color: var(--brand-border, #ccd6c5);
+  background: #fff;
+  color: var(--brand-primary, #405341);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+}
+
+/* Month total and what is left; colours follow the "Kalan" field. */
+/* Centered in the month column even when "kalan %24" is wider than it. */
+.app .person-allocation .allocation-grid td.actual-person-month {
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.app .person-allocation .actual-person-month > :is(strong, small) {
+  display: flex;
+  justify-content: center;
+  margin-inline: -6px;
+}
+.app .person-allocation .actual-person-month strong {
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+.app .person-allocation .actual-person-month small {
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+.app .person-allocation .actual-person-month[data-remaining-state="open"] {
+  color: #8a5a00;
+}
+.app .person-allocation .actual-person-month[data-remaining-state="done"] {
+  color: #1f6b3a;
+}
+.app .person-allocation .actual-person-month[data-remaining-state="over"] {
+  color: #b42318;
+}
+.app .person-allocation .actual-person-month[data-remaining-state="none"] {
+  color: var(--brand-muted, #60715e);
+}
+
+.app .person-allocation .actual-project-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding-left: 18px;
+}
+/* Project names wrap to two lines within the row; longer ones end in "…"
+   and the full name is in the tooltip. */
+.app .person-allocation .actual-project-row-name {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--fs-xs);
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}

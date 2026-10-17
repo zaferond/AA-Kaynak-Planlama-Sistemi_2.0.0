@@ -39,5 +39,6 @@
   "workspace/viewport-tables.css",
   "workspace/compact-chrome.css",
   "allocation/empty-cells.css",
-  "reports/critical-topics.css"
+  "reports/critical-topics.css",
+  "allocation/actual-person-layout.css"
 ]

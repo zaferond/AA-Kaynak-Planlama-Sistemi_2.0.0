@@ -3,8 +3,10 @@ import {
   useWindowedSections,
   type WindowedSection,
 } from "../workspace/useWindowedSections";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, ChevronDown, ChevronRight } from "lucide-react";
 import type { Data, Project, Resource } from "../../model";
+import { actualVersionAt } from "../../model";
+import { addableProjects } from "./person-layout";
 import {
   phaseChipStyle,
   phaseRunKey,
@@ -54,6 +56,7 @@ export default function ActualAllocationTable({
   openLimit,
   onPhaseDetail,
   onOpenPersonalCalendar,
+  personControls,
 }: {
   data: Data;
   projects: Project[];
@@ -71,8 +74,15 @@ export default function ActualAllocationTable({
   openLimit: ActualCapacityDialog["openLimit"];
   onPhaseDetail: (detail: ActualPhaseDetail) => void;
   onOpenPersonalCalendar: (resource: Resource) => void;
+  personControls: {
+    collapsed: ReadonlySet<string>;
+    onToggle: (personId: string) => void;
+    onAdd: (personId: string, projectId: string) => void;
+  };
 }) {
   const monthWidth = 76;
+  // Person rows carry a name, team and picker; give names room to read.
+  const labelWidth = view.layout === "person" ? 260 : 200;
   const { people, eligible, groups, years, actualMonths, personMonthTotals } =
     view;
   const calendarTotals = (resourceId: string, month: string) =>
@@ -117,12 +127,308 @@ export default function ActualAllocationTable({
         : " · Kalan %" + numberFormat.format(remainingPercent),
     };
   }
+  /** One entry cell; shared by both layouts so saving, permissions and the
+   * capacity checks are identical. The load bar is only drawn where no
+   * person row shows the month total. */
+  function entryCell(
+    resource: Resource,
+    project: Project,
+    month: string,
+    withLoad: boolean,
+  ) {
+    const key = resource.id + "|" + project.id + "|" + month;
+    const amount = amountFor(resource, project, month);
+    const selectable =
+      month <= currentMonth &&
+      eligible.has(resource.id + "|" + month) &&
+      month >= project.start &&
+      month <= project.end;
+    return (
+      <TableCell
+        key={month}
+        data-actual-context-cell={selectable ? "true" : undefined}
+        className={
+          [
+            amount > 0 ? "has-entry" : "",
+            !canEditPersonMonth(resource.id, month)
+              ? "actual-cell-readonly"
+              : "",
+            selectedCell?.key === key ? "actual-context-selected" : "",
+          ]
+            .filter(Boolean)
+            .join(" ") || undefined
+        }
+        onClick={() => {
+          if (selectable) selectHoursContext(resource.id, month, key);
+        }}
+        onFocusCapture={() => {
+          if (selectable) selectHoursContext(resource.id, month, key);
+        }}
+      >
+        <Amount
+          value={amount}
+          month={month}
+          unit={unit}
+          workedHours={effectiveHours(resource.id, month)}
+          savedPercent={data.actualPercentEntries?.[key]}
+          otherAllocated={
+            (personMonthTotals[resource.id + "|" + month] || 0) - amount
+          }
+          fullyAllocated={
+            (personMonthTotals[resource.id + "|" + month] || 0) >=
+            actualMonths.get(resource.id, month).capacityFte -
+              ACTUAL_FTE_TOLERANCE
+          }
+          disabled={!selectable || !canEditPersonMonth(resource.id, month)}
+          onLimitExceeded={(input) => openLimit("allocation", input)}
+          onDeselect={() => clearSelection()}
+          label={resource.name + " / " + project.name + " / " + month}
+          onSave={(amount) => save(resource, project, month, amount)}
+        />
+        {withLoad &&
+          eligible.has(resource.id + "|" + month) &&
+          (() => {
+            const load = personMonthLoad(resource, month);
+            return (
+              <span
+                className={
+                  "actual-cell-load" + (load.full ? " actual-total-full" : "")
+                }
+                role="img"
+                aria-label={load.label + ": " + load.value}
+                title={
+                  load.label +
+                  ": " +
+                  load.value +
+                  "\n" +
+                  load.title +
+                  load.remaining
+                }
+                data-actual-total={resource.id + "|" + month}
+                data-value={load.value}
+                data-detail={load.title}
+                style={
+                  {
+                    "--actual-load":
+                      Math.min(100, Math.max(0, load.percent)) + "%",
+                  } as React.CSSProperties
+                }
+              />
+            );
+          })()}
+      </TableCell>
+    );
+  }
   const tableRef = useRef<HTMLTableElement>(null);
   const chunkSize = Math.max(
     4,
     Math.min(20, Math.floor(200 / Math.max(1, months.length))),
   );
-  const sections: WindowedSection[] = groups.flatMap((group) => {
+  const calendarButton = (resource: Resource) =>
+    canViewPersonalCalendar(resource.id) && (
+      <button
+        type="button"
+        className="person-calendar-trigger"
+        aria-label={resource.name + " izin ve eğitim takvimini aç"}
+        title={resource.name + " · izin ve eğitim takvimi"}
+        onClick={() => onOpenPersonalCalendar(resource)}
+      >
+        <CalendarDays size={15} />
+      </button>
+    );
+  /** Person row cell: the month's total over all projects and what is left. */
+  function balanceCell(resource: Resource, month: string) {
+    const shown =
+      month <= currentMonth && eligible.has(resource.id + "|" + month);
+    if (!shown)
+      return <TableCell key={month} className="actual-person-month" />;
+    const summary = actualMonths.get(resource.id, month);
+    const balance = personMonthBalance({
+      ...summary,
+      totalFte: personMonthTotals[resource.id + "|" + month] || 0,
+    });
+    const hours = unit === "hours";
+    // Whole numbers keep the summary inside the month column; the exact
+    // figures are in the tooltip and in the project rows.
+    const whole = (value: number) => {
+      const rounded = Math.round(Math.abs(value));
+      return rounded === 0 && Math.abs(value) > 0 ? "<1" : String(rounded);
+    };
+    const left = hours
+      ? whole(balance.remainingHours) + " sa"
+      : "%" + whole(balance.remainingPercent);
+    const exactLeft = hours
+      ? numberFormat.format(Math.abs(balance.remainingHours)) + " saat"
+      : "%" + numberFormat.format(Math.abs(balance.remainingPercent));
+    const note =
+      balance.state === "done"
+        ? "tamam"
+        : balance.state === "over"
+          ? "aşım " + left
+          : balance.state === "none"
+            ? "çalışma yok"
+            : "kalan " + left;
+    const key = resource.id + "|*|" + month;
+    return (
+      <TableCell
+        key={month}
+        className={
+          "actual-person-month" +
+          (selectedCell?.key === key ? " actual-context-selected" : "")
+        }
+        data-actual-context-cell="true"
+        data-remaining-state={balance.state}
+        data-person-month={resource.id + "|" + month}
+        title={
+          resource.name +
+          " · " +
+          month +
+          " · tüm projeler ve eğitim: %" +
+          numberFormat.format(balance.percent) +
+          (balance.state === "open"
+            ? " · kalan " + exactLeft
+            : balance.state === "over"
+              ? " · aşım " + exactLeft
+              : "")
+        }
+        onClick={() => selectHoursContext(resource.id, month, key)}
+      >
+        <strong>%{whole(balance.percent)}</strong>
+        <small>{note}</small>
+      </TableCell>
+    );
+  }
+  // "Kişi → Proje": a sticky person row, then the projects they have entries
+  // for; "+ Proje" opens an empty row for a new entry.
+  const personSections: WindowedSection[] = view.personPage.map((group) => {
+    const resource = group.person;
+    const open = !personControls.collapsed.has(resource.id);
+    const rows = open ? group.projects : [];
+    const addable = addableProjects(group, projects).filter((project) =>
+      months.some(
+        (month) =>
+          month <= currentMonth &&
+          month >= project.start &&
+          month <= project.end,
+      ),
+    );
+    const canAdd = months.some(
+      (month) =>
+        month <= currentMonth &&
+        eligible.has(resource.id + "|" + month) &&
+        canEditPersonMonth(resource.id, month),
+    );
+    const lastMonth = months.filter((month) => month <= currentMonth).at(-1);
+    const version = lastMonth
+      ? actualVersionAt(resource, lastMonth)
+      : undefined;
+    const team = data.teams.find((item) => item.id === version?.team)?.name;
+    const key = "person:" + resource.id;
+    return {
+      key,
+      height: 52 + rows.length * 44,
+      render: () => (
+        <TableBody
+          key={key}
+          data-window-key={key}
+          className="project-row-group actual-person-group"
+          data-project-group={key}
+        >
+          <TableRow
+            className="group actual-person-heading project-freeze-row"
+            data-project-heading={key}
+            data-person-heading={resource.id}
+          >
+            <TableCell className="actual-person-cell">
+              <div className="actual-person-head">
+                {group.projects.length > 0 ? (
+                  <button
+                    type="button"
+                    className="actual-person-toggle"
+                    aria-expanded={open}
+                    aria-label={
+                      resource.name + " projelerini " + (open ? "daralt" : "aç")
+                    }
+                    onClick={() => personControls.onToggle(resource.id)}
+                  >
+                    {open ? (
+                      <ChevronDown size={15} />
+                    ) : (
+                      <ChevronRight size={15} />
+                    )}
+                  </button>
+                ) : (
+                  <span className="actual-person-toggle" aria-hidden="true" />
+                )}
+                <span className="actual-person-title">
+                  <strong title={resource.name}>{resource.name}</strong>
+                  <span className="actual-person-sub">
+                    <small title={team}>
+                      {team || ""}
+                      {!group.projects.length &&
+                        (team ? " · " : "") + "Bu dönemde giriş yok"}
+                    </small>
+                    {canAdd && addable.length > 0 && (
+                      <select
+                        className="actual-person-add"
+                        title="Proje ekle: yeni giriş için satır açar"
+                        aria-label={resource.name + " için proje ekle"}
+                        value=""
+                        onChange={(event) => {
+                          if (event.target.value)
+                            personControls.onAdd(
+                              resource.id,
+                              event.target.value,
+                            );
+                        }}
+                      >
+                        <option value="">+</option>
+                        {addable.map((project) => (
+                          <option key={project.id} value={project.id}>
+                            {project.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </span>
+                </span>
+                {canViewPersonalCalendar(resource.id) && (
+                  <span className="person-calendar-slot">
+                    {calendarButton(resource)}
+                  </span>
+                )}
+              </div>
+            </TableCell>
+            {months.map((month) => balanceCell(resource, month))}
+          </TableRow>
+          {rows.map((project) => (
+            <TableRow
+              key={resource.id + "|" + project.id}
+              data-person-project={project.id}
+            >
+              <TableCell className="rowname">
+                <div className="actual-project-label">
+                  <span className="indent" aria-hidden="true">
+                    ↳
+                  </span>
+                  <span
+                    className="actual-project-row-name"
+                    title={project.name}
+                  >
+                    {project.name}
+                  </span>
+                </div>
+              </TableCell>
+              {months.map((month) =>
+                entryCell(resource, project, month, false),
+              )}
+            </TableRow>
+          ))}
+        </TableBody>
+      ),
+    };
+  });
+  const projectSections: WindowedSection[] = groups.flatMap((group) => {
     const project = projects[group.outer];
     const parts = Math.max(1, Math.ceil(group.inners.length / chunkSize));
     const headingKey = project.id + ":" + (group.inners[0] ?? "empty");
@@ -241,118 +547,9 @@ export default function ActualAllocationTable({
                           </span>
                         </div>
                       </TableCell>
-                      {months.map((month) => {
-                        const key =
-                          resource.id + "|" + project.id + "|" + month;
-                        const amount = amountFor(resource, project, month);
-                        const selectable =
-                          month <= currentMonth &&
-                          eligible.has(resource.id + "|" + month) &&
-                          month >= project.start &&
-                          month <= project.end;
-                        return (
-                          <TableCell
-                            key={month}
-                            data-actual-context-cell={
-                              selectable ? "true" : undefined
-                            }
-                            className={
-                              [
-                                amount > 0 ? "has-entry" : "",
-                                !canEditPersonMonth(resource.id, month)
-                                  ? "actual-cell-readonly"
-                                  : "",
-                                selectedCell?.key === key
-                                  ? "actual-context-selected"
-                                  : "",
-                              ]
-                                .filter(Boolean)
-                                .join(" ") || undefined
-                            }
-                            onClick={() => {
-                              if (selectable)
-                                selectHoursContext(resource.id, month, key);
-                            }}
-                            onFocusCapture={() => {
-                              if (selectable)
-                                selectHoursContext(resource.id, month, key);
-                            }}
-                          >
-                            <Amount
-                              value={amount}
-                              month={month}
-                              unit={unit}
-                              workedHours={effectiveHours(resource.id, month)}
-                              savedPercent={data.actualPercentEntries?.[key]}
-                              otherAllocated={
-                                (personMonthTotals[resource.id + "|" + month] ||
-                                  0) - amount
-                              }
-                              fullyAllocated={
-                                (personMonthTotals[resource.id + "|" + month] ||
-                                  0) >=
-                                actualMonths.get(resource.id, month)
-                                  .capacityFte -
-                                  ACTUAL_FTE_TOLERANCE
-                              }
-                              disabled={
-                                !selectable ||
-                                !canEditPersonMonth(resource.id, month)
-                              }
-                              onLimitExceeded={(input) =>
-                                openLimit("allocation", input)
-                              }
-                              onDeselect={() => clearSelection()}
-                              label={
-                                resource.name +
-                                " / " +
-                                project.name +
-                                " / " +
-                                month
-                              }
-                              onSave={(amount) =>
-                                save(resource, project, month, amount)
-                              }
-                            />
-                            {eligible.has(resource.id + "|" + month) &&
-                              (() => {
-                                const load = personMonthLoad(resource, month);
-                                return (
-                                  <span
-                                    className={
-                                      "actual-cell-load" +
-                                      (load.full ? " actual-total-full" : "")
-                                    }
-                                    role="img"
-                                    aria-label={load.label + ": " + load.value}
-                                    title={
-                                      load.label +
-                                      ": " +
-                                      load.value +
-                                      "\n" +
-                                      load.title +
-                                      load.remaining
-                                    }
-                                    data-actual-total={
-                                      resource.id + "|" + month
-                                    }
-                                    data-value={load.value}
-                                    data-detail={load.title}
-                                    style={
-                                      {
-                                        "--actual-load":
-                                          Math.min(
-                                            100,
-                                            Math.max(0, load.percent),
-                                          ) + "%",
-                                      } as React.CSSProperties
-                                    }
-                                  />
-                                );
-                              })()}
-                          </TableCell>
-                        );
-                      })}
+                      {months.map((month) =>
+                        entryCell(resource, project, month, true),
+                      )}
                     </TableRow>
                   </React.Fragment>
                 );
@@ -364,7 +561,7 @@ export default function ActualAllocationTable({
   });
   const windowedRows = useWindowedSections(
     tableRef,
-    sections,
+    view.layout === "person" ? personSections : projectSections,
     months.length + 1,
     view.scopeKey + ":" + view.visiblePage,
   );
@@ -376,10 +573,15 @@ export default function ActualAllocationTable({
       todayColumn
       todayMonthsKey={months.join("|")}
       className="matrix planning-grid allocation-grid"
-      style={{ width: 200 + months.length * monthWidth }}
+      style={
+        {
+          width: labelWidth + months.length * monthWidth,
+          "--label-width": labelWidth + "px",
+        } as React.CSSProperties
+      }
     >
       <colgroup>
-        <col style={{ width: 200 }} />
+        <col style={{ width: labelWidth }} />
         {months.map((month) => (
           <col key={month} style={{ width: monthWidth }} />
         ))}
@@ -398,7 +600,9 @@ export default function ActualAllocationTable({
           ))}
         </TableRow>
         <TableRow>
-          <TableHead>Proje / Kişi</TableHead>
+          <TableHead>
+            {view.layout === "person" ? "Kişi / Proje" : "Proje / Kişi"}
+          </TableHead>
           {months.map((month) => (
             <TableHead
               key={month}

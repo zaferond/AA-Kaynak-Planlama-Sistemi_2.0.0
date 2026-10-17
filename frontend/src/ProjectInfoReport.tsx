@@ -74,7 +74,22 @@ export default function ProjectInfoReport({
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<TopicFilter>("all");
   const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
-  const groups = useMemo(() => buildProjectInfoReport(projects), [projects]);
+  const allGroups = useMemo(() => buildProjectInfoReport(projects), [projects]);
+  // Project filter: "" shows every project. A project that no longer has
+  // reported topics falls back to all.
+  const [projectFilter, setProjectFilter] = useState("");
+  const projectId = allGroups.some((project) => project.id === projectFilter)
+    ? projectFilter
+    : "";
+  const groups = useMemo(
+    () =>
+      projectId
+        ? allGroups.filter((project) => project.id === projectId)
+        : allGroups,
+    [allGroups, projectId],
+  );
+  const groupTopicCount = (project: (typeof allGroups)[number]) =>
+    project.infos.reduce((count, info) => count + info.topics.length, 0);
   const [weekKeys, setWeekKeys] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
@@ -112,10 +127,8 @@ export default function ProjectInfoReport({
   const allCollapsed =
     visibleGroups.length > 0 &&
     visibleGroups.every((project) => collapsed.has(project.id));
-  const topicCount = groups.reduce(
-    (total, project) =>
-      total +
-      project.infos.reduce((count, info) => count + info.topics.length, 0),
+  const topicCount = allGroups.reduce(
+    (total, project) => total + groupTopicCount(project),
     0,
   );
 
@@ -158,7 +171,7 @@ export default function ProjectInfoReport({
             className="button project-info-export"
             onClick={() => {
               try {
-                downloadProjectInfoReport(groups);
+                downloadProjectInfoReport(allGroups);
                 setError("");
               } catch (cause) {
                 setError((cause as Error).message);
@@ -175,7 +188,7 @@ export default function ProjectInfoReport({
           {error}
         </p>
       )}
-      {groups.length > 0 && (
+      {allGroups.length > 0 && (
         <div className="project-info-toolbar">
           <div
             className="project-info-filter"
@@ -194,29 +207,42 @@ export default function ProjectInfoReport({
               </button>
             ))}
           </div>
-          <label className="project-info-jump">
-            Projeye git
-            <select
-              value=""
-              onChange={(event) => {
-                const id = event.target.value;
-                if (!id) return;
-                toggleProject(id, true);
-                requestAnimationFrame(() =>
-                  document
-                    .getElementById("critical-project-" + id)
-                    ?.scrollIntoView({ block: "start", behavior: "smooth" }),
-                );
-              }}
-            >
-              <option value="">Seçin…</option>
-              {visibleGroups.map((project) => (
-                <option key={project.id} value={project.id}>
-                  {project.name}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div
+            className="project-info-project-filter"
+            data-active={projectId ? "true" : undefined}
+          >
+            <label>
+              Proje
+              <select
+                aria-label="Proje süzgeci"
+                value={projectId}
+                onChange={(event) => {
+                  const id = event.target.value;
+                  setProjectFilter(id);
+                  // A chosen project is always shown expanded.
+                  if (id) toggleProject(id, true);
+                }}
+              >
+                <option value="">Tüm projeler ({allGroups.length})</option>
+                {allGroups.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name} ({groupTopicCount(project)})
+                  </option>
+                ))}
+              </select>
+            </label>
+            {projectId && (
+              <button
+                type="button"
+                className="project-info-project-clear"
+                aria-label="Proje süzgecini kaldır"
+                title="Tüm projeleri göster"
+                onClick={() => setProjectFilter("")}
+              >
+                <X size={13} aria-hidden="true" />
+              </button>
+            )}
+          </div>
           <button
             type="button"
             className="textbutton project-info-collapse-all"
@@ -291,7 +317,9 @@ export default function ProjectInfoReport({
       )}
       {groups.length && !visibleGroups.length ? (
         <p className="emptymsg project-info-filter-empty">
-          Bu durumda konu yok.
+          {projectId
+            ? "Bu projede seçili süzgeçlere uyan konu yok."
+            : "Bu durumda konu yok."}
         </p>
       ) : groups.length ? (
         <div className="project-info-groups">

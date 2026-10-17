@@ -56,7 +56,12 @@
   background: #ffffff2e;
   color: #fff;
 }
-.app.tab-critical .project-info-jump {
+.app.tab-critical .project-info-project-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.app.tab-critical .project-info-project-filter label {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -64,12 +69,36 @@
   font-size: var(--fs-xs);
   font-weight: 650;
 }
-.app.tab-critical .project-info-jump select {
+.app.tab-critical .project-info-project-filter select {
   width: auto;
   min-width: 200px;
   max-width: 320px;
   height: 30px;
   font-size: var(--fs-xs);
+}
+/* A chosen project reads as an active filter, like the pressed buttons. */
+.app.tab-critical .project-info-project-filter[data-active] select {
+  border-color: var(--brand-primary, #405440);
+  background: #eef3e8;
+  color: var(--brand-dark, #2f4030);
+  font-weight: 650;
+}
+.app.tab-critical .project-info-project-clear {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--brand-border, #d5dfcf);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--brand-muted, #60715e);
+  cursor: pointer;
+}
+.app.tab-critical .project-info-project-clear:hover,
+.app.tab-critical .project-info-project-clear:focus-visible {
+  border-color: var(--brand-primary, #405440);
+  color: var(--brand-dark, #2f4030);
 }
 .app.tab-critical .project-info-collapse-all {
   margin-left: auto;
@@ -385,7 +414,7 @@
   .app.tab-critical .project-info-collapse-all {
     margin-left: 0;
   }
-  .app.tab-critical .project-info-jump select {
+  .app.tab-critical .project-info-project-filter select {
     min-width: 0;
   }
 }

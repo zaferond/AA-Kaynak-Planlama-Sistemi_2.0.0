@@ -64,6 +64,7 @@ import { checkMutationAdmission } from "./browser-checks/mutation-admission.mjs"
 import { checkActualPersonLayout } from "./browser-checks/actual-person-layout.mjs";
 import { checkActualSaveFocus } from "./browser-checks/actual-save-focus.mjs";
 import { checkPasswordChange } from "./browser-checks/password-change.mjs";
+import { checkCriticalProjectFilter } from "./browser-checks/critical-project-filter.mjs";
 
 for (const check of [
   checkHeadcountReports,
@@ -79,6 +80,7 @@ for (const check of [
   checkActualPersonLayout,
   checkActualSaveFocus,
   checkPasswordChange,
+  checkCriticalProjectFilter,
   checkTeamCapacityHeader,
   checkAllocationFocusLayers,
   checkTeamOnlyResource,

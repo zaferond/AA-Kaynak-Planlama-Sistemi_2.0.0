@@ -49,8 +49,12 @@ export async function checkResourceRoles(f) {
     if (role === "leader") await choose("Liderlik", f.teamA.lead);
     else await choose("Takım", f.teamA.name);
   }
+  // The draft has a name typed in, so Escape asks before discarding it.
   async function cancel() {
     await page.keyboard.press("Escape");
+    await dialog()
+      .getByRole("button", { name: "Değişiklikleri At", exact: true })
+      .click();
     await dialog().waitFor({ state: "hidden" });
   }
   async function expectPopup(action, owner, leader = false) {

@@ -53,6 +53,8 @@ import { fmt, monthLabel, fullDateLabel } from "./format";
 import { Project } from "./model";
 import { phaseChipStyle } from "./phase-chip";
 import PersonAllocationPanel from "./PersonAllocationPanel";
+import ErrorBoundary from "./ErrorBoundary";
+import { mergeNewerActuals } from "./features/actual-allocation/merge-actual-view";
 import ProjectInfoReport from "./ProjectInfoReport";
 import ProjectResponsible from "./ProjectResponsible";
 import ProjectTimelinePanel from "./features/ProjectTimelinePanel";
@@ -188,6 +190,8 @@ export default function Portal() {
     projectIds,
     currentMonth,
   );
+  // The snapshot returned by the user's own actual save (see loading below).
+  const ownActualSave = useRef<unknown>(null);
   const actualView = useActualView(
     tab === "actual" && !!data && !isAdmin,
     data,
@@ -206,7 +210,9 @@ export default function Portal() {
             leaderParents: activity.catalog?.leaderParents || {},
           }
         : tab === "actual" && !isAdmin && data
-          ? actualView.value?.data || { ...data, teams: [], resources: [] }
+          ? actualView.value
+            ? mergeNewerActuals(actualView.value.data, data)
+            : { ...data, teams: [], resources: [] }
           : data,
     [tab, data, activity.catalog, actualView.value, isAdmin],
   );
@@ -582,7 +588,8 @@ export default function Portal() {
               <button onClick={load}>Tekrar Dene</button>
             </div>
           ) : (
-            <>
+            // Keyed by tab: one failing screen never blanks the others.
+            <ErrorBoundary key={tab} scope="section">
               {tab === "overview" || tab === "activity" ? (
                 <>
                   {tab === "overview" && workspaceFilters}
@@ -814,7 +821,7 @@ export default function Portal() {
               )}
               {tab === "actual" && (
                 <TabsContent value="actual">
-                  {actualView.busy && (
+                  {actualView.busy && !actualView.value && (
                     <p role="status">Gerçekleşen kaynak verileri yükleniyor…</p>
                   )}
                   {actualView.error && (
@@ -827,7 +834,17 @@ export default function Portal() {
                   (isManager && !!user?.leaders.length) ||
                   user?.resourceId ? (
                     <PersonAllocationPanel
-                      loading={actualView.busy || !!actualView.error}
+                      // The refresh that follows the user's own save keeps
+                      // cells editable (its values are merged in already);
+                      // any other refresh, e.g. after a remote change, locks
+                      // the old view until it arrives.
+                      loading={
+                        (actualView.busy &&
+                          !(
+                            actualView.value && data === ownActualSave.current
+                          )) ||
+                        !!actualView.error
+                      }
                       user={user!}
                       monthSummaries={actualView.value?.monthSummaries}
                       data={viewData || data}
@@ -846,6 +863,7 @@ export default function Portal() {
                         user?.role !== "admin" ? user?.resourceId : undefined
                       }
                       onSaved={(next) => {
+                        ownActualSave.current = next;
                         setData(next);
                         setNotice("Gerçekleşen kişi dağılımı kaydedildi.");
                       }}
@@ -1019,7 +1037,7 @@ export default function Portal() {
                   )}
                 </TabsContent>
               )}
-            </>
+            </ErrorBoundary>
           )}
         </Tabs>
       </main>

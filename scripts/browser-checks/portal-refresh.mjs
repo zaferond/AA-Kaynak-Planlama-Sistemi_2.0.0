@@ -107,7 +107,11 @@ export async function checkPortalRefresh(f) {
           await dialog.getByLabel("Proje Adı", { exact: true }).inputValue(),
           "Synthetic refresh draft",
         );
+        // Escape on an edited draft asks first; discard it explicitly.
         await page.keyboard.press("Escape");
+        await dialog
+          .getByRole("button", { name: "Değişiklikleri At", exact: true })
+          .click();
         await dialog.waitFor({ state: "hidden" });
         await f.wait(
           async () =>

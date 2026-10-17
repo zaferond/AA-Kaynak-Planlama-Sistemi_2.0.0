@@ -566,3 +566,44 @@ select {
   align-items: center;
   gap: 6px;
 }
+
+/* Shown by ErrorBoundary when a screen fails to render. */
+.error-boundary {
+  display: grid;
+  gap: 8px;
+  max-width: 640px;
+  margin: 24px auto;
+  padding: 18px 20px;
+  border: 1px solid #f0c4bf;
+  border-left: 4px solid #b42318;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--brand-dark, #29372d);
+}
+.error-boundary p {
+  margin: 0;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-sm);
+}
+.error-boundary > div {
+  display: flex;
+  gap: 8px;
+}
+
+/* Editor dialogs: Esc / outside click / × on an edited draft asks first. */
+.editor-discard {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #ecd29a;
+  border-radius: 6px;
+  background: #fdf6e7;
+  color: #6b4500;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.editor-discard > span {
+  flex: 1;
+}

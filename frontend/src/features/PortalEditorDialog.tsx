@@ -5,7 +5,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useEffect, useRef, type Dispatch, type SetStateAction } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import type { Data, Team } from "../model";
 import type { PortalEditor } from "./editor-state";
 import ProjectEditorFields from "./editors/ProjectEditorFields";
@@ -45,6 +51,25 @@ export default function PortalEditorDialog({
   deleteProject,
 }: Props) {
   const returnFocus = useRef<HTMLElement | null>(null);
+  // The editor as it was opened; any edit makes the draft differ from it.
+  const opened = useRef<string | null>(null);
+  const [discardPrompt, setDiscardPrompt] = useState(false);
+  useEffect(() => {
+    if (!editor) {
+      opened.current = null;
+      setDiscardPrompt(false);
+    } else if (opened.current === null) opened.current = JSON.stringify(editor);
+  }, [editor]);
+  const edited = () =>
+    !!editor &&
+    opened.current !== null &&
+    JSON.stringify(editor) !== opened.current;
+  /** Esc or a click outside — easy to do by accident — asks before an edited
+   * draft is thrown away. × and "Vazgeç" are explicit and close at once. */
+  const guardAccidentalClose = (event: Event) => {
+    if (saving || edited()) event.preventDefault();
+    if (!saving && edited()) setDiscardPrompt(true);
+  };
   useEffect(() => {
     if (editor) return;
     const remember = (target: EventTarget | null) => {
@@ -77,12 +102,8 @@ export default function PortalEditorDialog({
           event.preventDefault();
           if (returnFocus.current?.isConnected) returnFocus.current.focus();
         }}
-        onEscapeKeyDown={(event) => {
-          if (saving) event.preventDefault();
-        }}
-        onPointerDownOutside={(event) => {
-          if (saving) event.preventDefault();
-        }}
+        onEscapeKeyDown={guardAccidentalClose}
+        onPointerDownOutside={guardAccidentalClose}
         className={
           "editor" +
           (editor?.kind === "projectPhase" || editor?.kind === "milestone"
@@ -122,6 +143,27 @@ export default function PortalEditorDialog({
                       ? "Seçili kayıtların takımını, statüsünü ve planlama durumunu birlikte güncelleyin."
                       : "Düzenlemeler seçili planlama ayından itibaren uygulanır."}
             </DialogDescription>
+          )}
+          {/* Inside the header: dialogs lay out header and form as fixed grid rows. */}
+          {editor && discardPrompt && (
+            <div className="editor-discard" role="alert">
+              <span>Kaydedilmemiş değişiklikler var.</span>
+              <button
+                type="button"
+                className="button deletebutton"
+                onClick={() => setEditor(null)}
+              >
+                Değişiklikleri At
+              </button>
+              <button
+                type="button"
+                className="button primary"
+                autoFocus
+                onClick={() => setDiscardPrompt(false)}
+              >
+                Düzenlemeye Dön
+              </button>
+            </div>
           )}
         </DialogHeader>
         {editor && (

@@ -62,6 +62,7 @@ import { checkPortalRefresh } from "./browser-checks/portal-refresh.mjs";
 
 import { checkMutationAdmission } from "./browser-checks/mutation-admission.mjs";
 import { checkActualPersonLayout } from "./browser-checks/actual-person-layout.mjs";
+import { checkActualSaveFocus } from "./browser-checks/actual-save-focus.mjs";
 
 for (const check of [
   checkHeadcountReports,
@@ -75,6 +76,7 @@ for (const check of [
   checkActualManagerHierarchy,
   checkActualRemainingHours,
   checkActualPersonLayout,
+  checkActualSaveFocus,
   checkTeamCapacityHeader,
   checkAllocationFocusLayers,
   checkTeamOnlyResource,

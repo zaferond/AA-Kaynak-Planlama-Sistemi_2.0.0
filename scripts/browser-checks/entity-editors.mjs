@@ -112,7 +112,11 @@ export async function checkEntityEditors(f) {
               .isEnabled(),
           "failed editor write settled before Escape",
         );
+        // Escape on an edited draft asks first instead of discarding it.
         await page.keyboard.press("Escape");
+        await dialog()
+          .getByRole("button", { name: "Değişiklikleri At", exact: true })
+          .click();
         await dialog().waitFor({ state: "hidden" });
       },
     );
@@ -145,7 +149,11 @@ export async function checkEntityEditors(f) {
               .isEnabled(),
           "failed editor write settled before Escape",
         );
+        // Escape on an edited draft asks first instead of discarding it.
         await page.keyboard.press("Escape");
+        await dialog()
+          .getByRole("button", { name: "Değişiklikleri At", exact: true })
+          .click();
         await dialog().waitFor({ state: "hidden" });
       },
     );

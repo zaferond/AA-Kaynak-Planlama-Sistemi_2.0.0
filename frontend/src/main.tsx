@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, UserRound } from "lucide-react";
 import { SYSTEM_NAME, UI_THEME } from "./settings";
 import Portal from "./App";
+import ErrorBoundary from "./ErrorBoundary";
 import { login, observeSessionChanges, resumeRemembered } from "./storage";
 
 function App() {
@@ -234,4 +235,8 @@ function App() {
 }
 
 document.documentElement.dataset.theme = UI_THEME;
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <ErrorBoundary scope="page">
+    <App />
+  </ErrorBoundary>,
+);

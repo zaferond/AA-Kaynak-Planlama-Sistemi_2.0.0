@@ -4,8 +4,10 @@ import { acceptRiskSaveConfirmations, openRisks } from "./risk.mjs";
 
 // Real admission rejection against a separate temporary SQL.js/HTTP fixture.
 export async function checkMutationAdmission(report) {
+  // The blocking write and the page share one user; this check is about the
+  // shared queue (503), so the per-user cap (429) is lifted here.
   const f = await fixture({
-    mutationLimits: { activeLimit: 1, pendingLimit: 0 },
+    mutationLimits: { activeLimit: 1, pendingLimit: 0, perUserLimit: 32 },
   });
   let release = () => {},
     blocking,

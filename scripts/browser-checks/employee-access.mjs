@@ -337,7 +337,13 @@ export async function checkEmployeeAccess(f) {
           /Synthetic combined revision conflict/,
         );
         await page.unroute("**/api/employees/save");
+        // Escape keeps the edited draft until the user confirms discarding it.
         await page.keyboard.press("Escape");
+        assert.equal(await note.inputValue(), "QA Preserved Draft");
+        await dialog()
+          .getByRole("button", { name: "Değişiklikleri At", exact: true })
+          .click();
+        await dialog().waitFor({ state: "hidden" });
       },
     );
     await f.check(

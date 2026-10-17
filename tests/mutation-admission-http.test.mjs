@@ -66,6 +66,9 @@ async function fixture(t, limits = {}) {
     pendingLimit: 1,
     waitMs: 1000,
     bodyMs: 1000,
+    // These scenarios drive the shared queue with one synthetic user; the
+    // per-user cap is covered in mutation-admission.test.mjs.
+    perUserLimit: 32,
     ...limits,
   });
   const app = createApp(store, { origin, mutationGate: gate });
@@ -309,4 +312,23 @@ test("a failed transaction releases its lease only after rollback and allows the
   assert(!after.data.projects.some((p) => p.id === "invalid"));
   assert.equal(after.data.revisions["project:valid"], 1);
   assert.equal(f.gate.counts.active, 0);
+});
+
+test("HTTP refuses a second concurrent write from the same user without queueing it", async (t) => {
+  const f = await fixture(t, { perUserLimit: 1, pendingLimit: 4 });
+  const first = f.request("/changes", f.project("first"));
+  await f.entered.promise;
+  // Another session of the same user is refused at once (429), not queued.
+  const again = await f.session();
+  const refused = await f.request("/changes", f.project("second"), {
+    auth: again,
+  });
+  assert.equal(refused.status, 429);
+  assert.equal(refused.retryAfter, "1");
+  assert.match(refused.body.error, /Önceki kaydınız/);
+  assert.equal(f.gate.counts.pending, 0);
+  f.unblock();
+  assert.equal((await first).status, 200);
+  // Once the first write has finished the user may write again.
+  assert.equal((await f.request("/changes", f.project("third"))).status, 200);
 });

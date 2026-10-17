@@ -228,6 +228,12 @@ export class MssqlAdapter {
       15000,
     );
   }
+  /** Session rows (login, logout, expiry cleanup) are independent single-row
+   * writes: row locks suffice, so they never wait for the business-data lock
+   * held by a large save or restore. Shared mode keeps them concurrent. */
+  sessionTransaction(fn) {
+    return this.lockedTransaction(fn, "aa_kaynak_sessions", "Shared", 5000);
+  }
   rateLimitTransaction(key, fn) {
     if (typeof key !== "string" || !/^[a-f0-9]{64}$/.test(key))
       throw Error("Geçersiz giriş sayacı anahtarı.");

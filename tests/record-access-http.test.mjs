@@ -28,7 +28,12 @@ async function setup(t, options = {}) {
   const server = http.createServer();
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const origin = "http://127.0.0.1:" + server.address().port;
-  const app = createApp(store, { origin, ...options });
+  // Parallel writes here exercise atomicity, not the per-user admission cap.
+  const app = createApp(store, {
+    origin,
+    ...options,
+    mutationLimits: { perUserLimit: 32, ...options.mutationLimits },
+  });
   server.on("request", app);
   t.after(async () => {
     app.locals.close();

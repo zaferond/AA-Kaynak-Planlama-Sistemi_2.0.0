@@ -34,10 +34,11 @@ export async function concurrencySuite(store, t) {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const origin = "http://127.0.0.1:" + server.address().port;
   // This suite verifies all 24 accepted writes and revision conflicts. The
-  // default admission overload/rejection contract has its own HTTP suite.
+  // default admission overload/rejection and per-user contracts have their own
+  // HTTP suite; one synthetic user drives every parallel write here.
   const app = createApp(store, {
     origin,
-    mutationLimits: { pendingLimit: 32, waitMs: 10000 },
+    mutationLimits: { pendingLimit: 32, waitMs: 10000, perUserLimit: 32 },
   });
   server.on("request", app);
   async function request(url, body, auth = {}) {

@@ -5,12 +5,17 @@ const defaults = Object.freeze({
   pendingLimit: 8,
   waitMs: 5000,
   bodyMs: 60000,
+  // Writes one user may have admitted or queued at once. The client already
+  // sends a session's writes in order, so 1 only stops one user from holding
+  // every slot (e.g. slow bodies from several tabs or scripts).
+  perUserLimit: 1,
 });
 const ranges = {
   activeLimit: [1, 8],
   pendingLimit: [0, 32],
   waitMs: [100, 10000],
   bodyMs: [1000, 120000],
+  perUserLimit: [1, 32],
 };
 export function mutationAdmissionLimits(input = {}) {
   const result = {};
@@ -30,6 +35,7 @@ export function mutationAdmissionConfig(env = {}) {
     pendingLimit: "MUTATION_PENDING_LIMIT",
     waitMs: "MUTATION_WAIT_MS",
     bodyMs: "MUTATION_BODY_MS",
+    perUserLimit: "MUTATION_PER_USER_LIMIT",
   })) {
     if (env[name] === undefined) continue;
     if (typeof env[name] !== "string" || !/^\d+$/.test(env[name].trim()))
@@ -38,21 +44,28 @@ export function mutationAdmissionConfig(env = {}) {
   }
   return mutationAdmissionLimits(input);
 }
-const unavailable = () =>
-  Object.assign(
-    Error(
-      "Sunucu şu anda yoğun. Değişiklikleriniz kaydedilmedi. Düzenlemelerinizi koruyarak kısa bir süre sonra yeniden kaydedin.",
-    ),
-    { status: 503, retryAfter: 1 },
-  );
+const busyError = (message, status) => () =>
+  Object.assign(Error(message), { status, retryAfter: 1 });
+const writeMessages = {
+  unavailable:
+    "Sunucu şu anda yoğun. Değişiklikleriniz kaydedilmedi. Düzenlemelerinizi koruyarak kısa bir süre sonra yeniden kaydedin.",
+  userBusy:
+    "Önceki kaydınız henüz tamamlanmadı. Bu değişiklik kaydedilmedi; birkaç saniye sonra yeniden kaydedin.",
+};
 const cancelled = () =>
   Object.assign(Error("İstek iptal edildi."), { name: "AbortError" });
 export class MutationAdmission {
   #active = 0;
   #pending = [];
   #closed = false;
-  constructor(limits) {
+  #perUser = new Map();
+  #unavailable;
+  #userBusy;
+  /** `messages` lets another queue (e.g. data reads) explain its refusals. */
+  constructor(limits, messages = writeMessages) {
     this.limits = mutationAdmissionLimits(limits);
+    this.#unavailable = busyError(messages.unavailable, 503);
+    this.#userBusy = busyError(messages.userBusy, 429);
   }
   get counts() {
     return {
@@ -61,13 +74,41 @@ export class MutationAdmission {
       closed: this.#closed,
     };
   }
-  acquire(signal) {
+  /** `user` (optional) counts against perUserLimit from queueing to release. */
+  acquire(signal, user) {
     if (signal?.aborted) return Promise.reject(cancelled());
-    if (this.#closed) return Promise.reject(unavailable());
+    if (this.#closed) return Promise.reject(this.#unavailable());
+    if (user === undefined) return this.#acquire(signal);
+    const held = this.#perUser.get(user) || 0;
+    if (held >= this.limits.perUserLimit)
+      return Promise.reject(this.#userBusy());
+    this.#perUser.set(user, held + 1);
+    const done = () => {
+      const left = (this.#perUser.get(user) || 1) - 1;
+      if (left > 0) this.#perUser.set(user, left);
+      else this.#perUser.delete(user);
+    };
+    return this.#acquire(signal).then(
+      (release) => {
+        let released = false;
+        return () => {
+          if (released) return;
+          released = true;
+          done();
+          release();
+        };
+      },
+      (error) => {
+        done();
+        throw error;
+      },
+    );
+  }
+  #acquire(signal) {
     if (this.#active < this.limits.activeLimit)
       return Promise.resolve(this.#lease());
     if (this.#pending.length >= this.limits.pendingLimit)
-      return Promise.reject(unavailable());
+      return Promise.reject(this.#unavailable());
     return new Promise((resolve, reject) => {
       const entry = { resolve, reject, cleanup: () => {} };
       const remove = (error) => {
@@ -78,7 +119,10 @@ export class MutationAdmission {
         reject(error);
       };
       const abort = () => remove(cancelled());
-      const timer = setTimeout(() => remove(unavailable()), this.limits.waitMs);
+      const timer = setTimeout(
+        () => remove(this.#unavailable()),
+        this.limits.waitMs,
+      );
       timer.unref?.();
       entry.cleanup = () => {
         clearTimeout(timer);
@@ -110,7 +154,7 @@ export class MutationAdmission {
     this.#closed = true;
     for (const entry of this.#pending.splice(0)) {
       entry.cleanup();
-      entry.reject(unavailable());
+      entry.reject(this.#unavailable());
     }
   }
 }
@@ -157,7 +201,7 @@ export function mutationAdmissionMiddleware(gate, authenticate) {
       res.once("close", disconnect);
       res.once("finish", finish);
       try {
-        release = await gate.acquire(controller.signal);
+        release = await gate.acquire(controller.signal, req.user?._id);
         if (controller.signal.aborted || res.destroyed || req.aborted) {
           state.dispose();
           return;

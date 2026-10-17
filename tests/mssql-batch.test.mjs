@@ -97,3 +97,43 @@ test("metadata reads retain the enclosing locked transaction owner", async (t) =
   assert.deepEqual(result, [{ rows: [{ value: 0 }], rowCount: 1 }]);
   assert.equal(committed, 1);
 });
+
+test("session writes take their own shared lock, never the business-data lock", async (t) => {
+  const db = adapter();
+  const locks = [];
+  t.mock.method(db, "lockedTransaction", async (fn, resource, mode) => {
+    locks.push([resource, mode]);
+    return fn({ upsert: async () => {}, query: async () => ({}) });
+  });
+  await db.sessionTransaction(async () => {});
+  await db.transaction(async () => {});
+  assert.deepEqual(locks, [
+    ["aa_kaynak_sessions", "Shared"],
+    ["aa_kaynak_data", "Exclusive"],
+  ]);
+  // Store routes login, logout and cleanup through the session lock.
+  const { Store } = await import("../backend/store.mjs");
+  // Built without connecting; only the adapter is swapped for the mock.
+  const store = new Store({
+    env: {
+      NODE_ENV: "test",
+      DB_PROVIDER: "sqljs",
+      SQLJS_FILE: "unused.sqlite",
+    },
+  });
+  store.db = db;
+  locks.length = 0;
+  await store.createSession({
+    _id: "a".repeat(64),
+    userId: "u",
+    userVersion: 1,
+    csrf: "c",
+    expiresAt: new Date(),
+  });
+  await store.deleteSession("a".repeat(64));
+  await store.cleanupSessions();
+  assert.deepEqual(
+    locks.map(([resource]) => resource),
+    ["aa_kaynak_sessions", "aa_kaynak_sessions", "aa_kaynak_sessions"],
+  );
+});

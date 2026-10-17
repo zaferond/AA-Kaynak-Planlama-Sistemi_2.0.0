@@ -83,20 +83,26 @@ export class Store {
   async deleteUser(id, revision, c) {
     return identity.deleteUser(c, id, revision);
   }
+  // MSSQL keeps session writes off the data lock; SQL.js stays serial.
+  #sessionTransaction(fn) {
+    return this.db.sessionTransaction
+      ? this.db.sessionTransaction(fn)
+      : this.transaction(fn);
+  }
   async createSession(s) {
-    await this.transaction((c) => identity.createSession(c, s));
+    await this.#sessionTransaction((c) => identity.createSession(c, s));
   }
   async session(id) {
     return identity.readSession(this.db, id);
   }
   async deleteSession(id) {
-    await this.transaction((c) => identity.deleteSession(c, id));
+    await this.#sessionTransaction((c) => identity.deleteSession(c, id));
   }
   async revokeUser(id, c) {
     await identity.revokeUserSessions(c, id);
   }
   async cleanupSessions() {
-    await this.transaction((c) => identity.cleanupSessions(c));
+    await this.#sessionTransaction((c) => identity.cleanupSessions(c));
   }
   async generation() {
     return Number(

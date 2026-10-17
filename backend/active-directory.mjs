@@ -119,18 +119,65 @@ function profile(entry, now) {
     : null;
 }
 const publicProfile = ({ dn, ...user }) => user;
+// Never logs the bind password: LDAP errors do not carry it. Messages are
+// shortened so a verbose server diagnostic cannot flood the log.
+function logLdapFailure(error) {
+  console.error(
+    "LDAP isteği başarısız:",
+    error?.name || "Error",
+    error?.code ?? "",
+    String(error?.message || "").slice(0, 200),
+  );
+}
 export class ActiveDirectory {
   configured = true;
   #config;
   #createClient;
   #now;
   #active = 0;
+  #waiting = [];
+  #limits;
   #cache = new Map();
   #pending = new Map();
-  constructor(config, createClient, now = Date.now) {
+  /** At most `activeLimit` LDAP connections; further requests wait up to
+   * `waitMs` in a bounded queue (the 09:00 login burst) before a 503. */
+  constructor(
+    config,
+    createClient,
+    now = Date.now,
+    { activeLimit = 4, pendingLimit = 32, waitMs = 3000 } = {},
+  ) {
     this.#config = config;
     this.#createClient = createClient;
     this.#now = now;
+    this.#limits = { activeLimit, pendingLimit, waitMs };
+  }
+  #slot() {
+    if (this.#active < this.#limits.activeLimit) {
+      this.#active++;
+      return Promise.resolve();
+    }
+    if (this.#waiting.length >= this.#limits.pendingLimit)
+      return Promise.reject(unavailable());
+    return new Promise((resolve, reject) => {
+      const entry = {};
+      const timer = setTimeout(() => {
+        this.#waiting.splice(this.#waiting.indexOf(entry), 1);
+        reject(unavailable());
+      }, this.#limits.waitMs);
+      timer.unref?.();
+      // The releasing connection hands its slot over; #active is unchanged.
+      entry.resolve = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      this.#waiting.push(entry);
+    });
+  }
+  #release() {
+    const next = this.#waiting.shift();
+    if (next) next.resolve();
+    else this.#active--;
   }
   #filter(term) {
     // Use typed filters: string parsing can corrupt binary GUID / UTF-8 values.
@@ -160,8 +207,7 @@ export class ActiveDirectory {
     });
   }
   async #connection(run) {
-    if (this.#active >= 4) throw unavailable();
-    this.#active++;
+    await this.#slot();
     let client;
     try {
       client = this.#createClient();
@@ -169,10 +215,13 @@ export class ActiveDirectory {
       return await run(client);
     } catch (error) {
       if (error.status === 401) throw error;
-      throw unavailable(); // Never expose LDAP DNs, server diagnostics or credentials.
+      // The server log keeps the cause (wrong bind password, certificate,
+      // timeout); the response never exposes LDAP DNs or diagnostics.
+      logLdapFailure(error);
+      throw unavailable();
     } finally {
       if (client) await client.unbind().catch(() => {});
-      this.#active--;
+      this.#release();
     }
   }
   async #lookup(term) {

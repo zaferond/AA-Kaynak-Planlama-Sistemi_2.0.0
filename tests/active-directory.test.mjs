@@ -39,6 +39,7 @@ function fixture({
   references = [],
   groupDN = "",
   now = () => Date.now(),
+  limits,
 } = {}) {
   const calls = [];
   const state = {
@@ -79,6 +80,7 @@ function fixture({
       },
     }),
     now,
+    limits,
   );
   return { directory, calls, state };
 }
@@ -289,16 +291,39 @@ test("session activity checks deduplicate requests, expire within 60 seconds and
   await f.directory.ensureActive(guid);
 });
 
-test("LDAP work is bounded to four concurrent connections and releases capacity after completion", async () => {
-  const f = fixture();
+test("LDAP work is bounded to four concurrent connections; more requests wait in a bounded queue", async () => {
+  const f = fixture({ limits: { pendingLimit: 1, waitMs: 1000 } });
   let release;
   f.state.gate = new Promise((resolve) => {
     release = resolve;
   });
   const pending = Array.from({ length: 4 }, () => f.directory.getUser(guid));
+  // The fifth waits for a slot instead of failing at once; a sixth finds the
+  // queue full and is refused immediately.
+  const queued = f.directory.getUser(guid);
   await assert.rejects(f.directory.getUser(guid), { status: 503 });
+  assert.equal(f.calls.filter((c) => c.method === "bind").length, 4);
   release();
   await Promise.all(pending);
+  assert.equal((await queued).id, guid);
+  assert.equal((await f.directory.getUser(guid)).id, guid);
+  assert.equal(
+    f.calls.filter((c) => c.method === "bind").length,
+    f.calls.filter((c) => c.method === "unbind").length,
+  );
+});
+
+test("a queued LDAP request gives up with 503 after its wait time", async () => {
+  const f = fixture({ limits: { activeLimit: 1, waitMs: 30 } });
+  let release;
+  f.state.gate = new Promise((resolve) => {
+    release = resolve;
+  });
+  const first = f.directory.getUser(guid);
+  await assert.rejects(f.directory.getUser(guid), { status: 503 });
+  release();
+  assert.equal((await first).id, guid);
+  // The timed-out request left the queue; the slot is free again.
   assert.equal((await f.directory.getUser(guid)).id, guid);
 });
 

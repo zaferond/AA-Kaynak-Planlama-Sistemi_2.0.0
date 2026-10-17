@@ -4,6 +4,7 @@ import { isResponsibilityConflictCode } from "../shared/resource-roles.ts";
 import { activityQuery } from "./activity-report.mjs";
 import { ReportReadAdmission } from "./report-read-admission.mjs";
 import express from "express";
+import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -54,6 +55,17 @@ export function createApp(
     mutationGate = new MutationAdmission(mutationLimits),
     attemptLimiter = createAttemptLimiter(store),
     reportReadGate = new ReportReadAdmission(),
+    // Full snapshot reads queue briefly instead of exhausting the DB pool
+    // (10 connections: writes 2 + reports 4 + these 4).
+    dataReadGate = new MutationAdmission(
+      { activeLimit: 4, pendingLimit: 32, waitMs: 10000, perUserLimit: 2 },
+      {
+        unavailable:
+          "Sistem şu anda yoğun; veriler yüklenemedi. Birkaç saniye sonra Tekrar Dene ile yeniden yükleyin.",
+        userBusy:
+          "Önceki yükleme henüz tamamlanmadı. Birkaç saniye sonra yeniden deneyin.",
+      },
+    ),
   } = {},
 ) {
   const address = applicationAddress(origin);
@@ -109,6 +121,7 @@ export function createApp(
   cleanup.unref();
   app.locals.close = () => {
     mutationGate.close();
+    dataReadGate.close();
     clearInterval(timer);
     clearInterval(cleanup);
   };
@@ -266,9 +279,22 @@ export function createApp(
     res.clearCookie("kp_session", cookieOptions);
     res.json({ ok: true });
   });
-  app.get("/api/data", async (req, res) =>
-    sendDataSnapshot(req, res, await store.view(req.user)),
-  );
+  app.get("/api/data", async (req, res) => {
+    const controller = new AbortController();
+    const abort = () => controller.abort();
+    req.once("aborted", abort);
+    let release;
+    try {
+      release = await dataReadGate.acquire(controller.signal, req.user._id);
+    } finally {
+      req.off("aborted", abort);
+    }
+    try {
+      sendDataSnapshot(req, res, await store.view(req.user));
+    } finally {
+      release();
+    }
+  });
   app.get(
     "/api/actual-view",
     reportReadGate.handler(async (req, res) => {
@@ -527,8 +553,23 @@ export function createApp(
             err.message?.includes("constraint failed")
           ? 409
           : 500);
-    if (status === 500)
-      console.error("Request failed", req.method, req.path, err.name);
+    // A short reference ties the user's message to the server log line. The
+    // log keeps the cause (e.g. MSSQL 50001 = data lock timeout) but never the
+    // request body.
+    const reference = status === 500 ? randomUUID().slice(0, 8) : "";
+    if (reference) {
+      res.set("X-Request-Id", reference);
+      console.error(
+        "Request failed",
+        reference,
+        req.method,
+        req.path,
+        err.name,
+        err.code ?? "",
+        err.number ?? "",
+        String(err.message || "").slice(0, 300),
+      );
+    }
     if (err.retryAfter) res.set("Retry-After", String(err.retryAfter));
     res.status(status).json({
       ...(isResponsibilityConflictCode(err.code) ? { code: err.code } : {}),
@@ -540,7 +581,7 @@ export function createApp(
               err.message?.includes("constraint failed")
             ? "Kayıt benzersizlik, ilişki veya değer kuralına uymuyor. Bağlı kayıtları kontrol edin."
             : status === 500
-              ? "İşlem tamamlanamadı. Sunucu bağlantısını ve günlüklerini kontrol edin."
+              ? `İşlem tamamlanamadı. Sunucu bağlantısını ve günlüklerini kontrol edin (hata kodu: ${reference}).`
               : err.message,
     });
   });

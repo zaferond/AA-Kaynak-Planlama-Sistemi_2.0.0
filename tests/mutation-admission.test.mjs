@@ -13,6 +13,7 @@ test("admission limits validate bounded integers and redact invalid environment 
     pendingLimit: 8,
     waitMs: 5000,
     bodyMs: 60000,
+    perUserLimit: 1,
   });
   assert.equal(
     mutationAdmissionConfig({ MUTATION_PENDING_LIMIT: "0" }).pendingLimit,
@@ -23,6 +24,7 @@ test("admission limits validate bounded integers and redact invalid environment 
     pendingLimit: [-1, 33],
     waitMs: [99, 10001],
     bodyMs: [999, 120001],
+    perUserLimit: [0, 33],
   }))
     for (const value of values)
       assert.throws(() => mutationAdmissionLimits({ [key]: value }));
@@ -94,4 +96,44 @@ test("shutdown rejects pending work without releasing an executing lease", async
   await assert.rejects(gate.acquire(), { status: 503 });
   release();
   assert.equal(gate.counts.active, 0);
+});
+
+test("one user holds at most perUserLimit admitted or queued writes", async () => {
+  const gate = new MutationAdmission({
+    activeLimit: 1,
+    pendingLimit: 4,
+    waitMs: 1000,
+  });
+  const first = await gate.acquire(undefined, "u1");
+  // The same user is refused at once, without taking a queue place.
+  await assert.rejects(gate.acquire(undefined, "u1"), (e) => e.status === 429);
+  assert.equal(gate.counts.pending, 0);
+  // Another user still queues behind the shared slot.
+  const other = gate.acquire(undefined, "u2");
+  await setImmediate();
+  assert.equal(gate.counts.pending, 1);
+  first();
+  const otherRelease = await other;
+  // u1 is free again once its write is released; its next write queues.
+  const again = gate.acquire(undefined, "u1");
+  await setImmediate();
+  assert.equal(gate.counts.pending, 1);
+  otherRelease();
+  (await again)();
+  // A queued write that times out frees its user as well.
+  const holder = await gate.acquire(undefined, "u3");
+  const timeout = new MutationAdmission({ activeLimit: 1, waitMs: 100 });
+  const blocker = await timeout.acquire(undefined, "u4");
+  await assert.rejects(
+    timeout.acquire(undefined, "u5"),
+    (e) => e.status === 503,
+  );
+  blocker();
+  (await timeout.acquire(undefined, "u5"))();
+  holder();
+  // Requests without a user (none reach admission in the app) are not capped.
+  const a = await gate.acquire();
+  const b = gate.acquire();
+  a();
+  (await b)();
 });

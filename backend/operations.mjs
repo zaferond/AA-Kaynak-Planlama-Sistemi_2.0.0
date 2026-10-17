@@ -1,4 +1,5 @@
 import { ownValue } from "../shared/records.ts";
+import { PERSONAL_DAYS_PER_REQUEST } from "../shared/snapshot-calendar-validation.ts";
 import { parseAllocationKey } from "../shared/allocation-key.ts";
 import { z } from "zod";
 import { fail, publicUser } from "./auth.mjs";
@@ -109,6 +110,16 @@ export function preparePlanningCommand(command) {
 }
 
 function stageParsedChanges(d, u, changes) {
+  // Deletions only shrink the calendar; additions and edits are capped so one
+  // request cannot fill it (moving a long leave stays within the cap).
+  if (
+    changes.filter((change) => change.kind === "personDay" && !change.operation)
+      .length > PERSONAL_DAYS_PER_REQUEST
+  )
+    fail(
+      413,
+      `Tek seferde en fazla ${PERSONAL_DAYS_PER_REQUEST} izin/eğitim günü eklenebilir veya değiştirilebilir.`,
+    );
   const seen = new Set(),
     affectedActualMonths = new Set();
   // Decided on the snapshot before this batch; a batch cannot grant itself access.

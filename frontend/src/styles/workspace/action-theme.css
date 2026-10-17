@@ -155,7 +155,10 @@
     height: 28px;
     min-height: 28px;
   }
-  .app .person-allocation .actual-control-fields > .actual-unit-item:last-child {
+  .app
+    .person-allocation
+    .actual-control-fields
+    > .actual-unit-item:last-child {
     width: auto;
     margin: 0;
     padding: 3px 4px 3px 12px;

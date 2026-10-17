@@ -258,8 +258,9 @@ export async function checkTabTransitions(f) {
         // Page size follows the visible months (1200 / months); the pager
         // states the current page's last row.
         const lastRow = Number(
-          (await page.locator(".person-allocation .pager > span").innerText())
-            .match(/–(\d+)/)[1],
+          (
+            await page.locator(".person-allocation .pager > span").innerText()
+          ).match(/–(\d+)/)[1],
         );
         const person = before.resources
           .slice()

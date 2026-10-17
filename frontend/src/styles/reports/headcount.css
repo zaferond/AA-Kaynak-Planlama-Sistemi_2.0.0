@@ -128,3 +128,9 @@
   text-align: center;
   font-weight: 400;
 }
+
+/* Zeros recede so the counts that exist stand out. */
+.app.tab-overview .headcount-table tbody td[data-zero] {
+  color: #a7b0a2;
+  font-weight: 400;
+}

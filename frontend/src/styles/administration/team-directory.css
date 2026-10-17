@@ -17,18 +17,15 @@
   table-layout: fixed;
   min-width: 740px;
 }
-.directory-table .directory-lead-column {
-  width: 31%;
-}
 .directory-table .directory-team-column {
-  width: 37%;
+  width: 58%;
 }
 .directory-table .directory-action-column {
   width: 120px;
 }
 .team-directory td,
 .team-directory th {
-  padding: 10px 14px;
+  padding: 7px 14px;
   font-size: var(--fs-xs);
   border-bottom: 1px solid var(--brand-border, #dbe5d5);
   border-right: 1px solid #e8ede4;
@@ -97,6 +94,8 @@
 }
 .team-directory .directory-group .directory-team-count {
   display: inline-block;
+  flex: none;
+  margin: 0 0 0 4px;
   padding: 1px 7px;
   border: 1px solid var(--brand-border, #dbe5d5);
   border-radius: 10px;
@@ -110,6 +109,9 @@
 .team-directory .directory-unit-title > svg {
   flex: none;
   color: var(--brand-muted, #68745f);
+}
+.team-directory .directory-group .directory-parent-line {
+  margin-top: 3px;
 }
 .team-directory .directory-unit-kind {
   font-size: var(--fs-xs);
@@ -126,6 +128,7 @@
 }
 .team-directory .directory-team td:first-child {
   padding-left: calc(22px + var(--directory-indent, 0px)) !important;
+  color: var(--brand-text, #34452f);
 }
 .team-directory .directory-actions {
   display: flex;
@@ -421,7 +424,7 @@
 .team-directory .directory-team.directory-nested-team td {
   background: #f7f9f3;
 }
-.team-directory .directory-team.directory-nested-team td:nth-child(2) {
+.team-directory .directory-team.directory-nested-team td:first-child {
   box-shadow: inset 2px 0 #cbd8bd;
 }
 

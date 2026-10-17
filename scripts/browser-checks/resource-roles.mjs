@@ -89,7 +89,10 @@ export async function checkResourceRoles(f) {
         const row = page
           .locator(".directory-team")
           .filter({ has: page.getByText(f.teamA.name, { exact: true }) });
-        assert.equal(await row.locator("td").nth(2).innerText(), original.name);
+        assert.equal(
+          await row.locator(".directory-manager-cell").innerText(),
+          original.name,
+        );
         await row
           .getByRole("button", {
             name: f.teamA.name + " takımını düzenle",
@@ -138,7 +141,10 @@ export async function checkResourceRoles(f) {
         const row = page
           .locator(".directory-group")
           .filter({ has: page.getByText(f.teamA.lead, { exact: true }) });
-        assert.equal(await row.locator("td").nth(2).innerText(), worker.name);
+        assert.equal(
+          await row.locator(".directory-manager-cell").innerText(),
+          worker.name,
+        );
         await f.capture(page, "resource-role-managers");
       },
     );
@@ -285,8 +291,7 @@ export async function checkResourceRoles(f) {
           await page
             .locator(".directory-team")
             .filter({ has: page.getByText(f.teamA.name, { exact: true }) })
-            .locator("td")
-            .nth(2)
+            .locator(".directory-manager-cell")
             .innerText(),
           "—",
         );

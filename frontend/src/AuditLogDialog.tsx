@@ -132,6 +132,7 @@ const label = (path: string[]) =>
         .join(" › ")
     : "Değer";
 const pageSize = 30;
+const count = new Intl.NumberFormat("tr-TR");
 export default function AuditLogDialog({
   open,
   onOpenChange,
@@ -294,7 +295,9 @@ export default function AuditLogDialog({
         </div>
         <footer className="audit-log-footer">
           <span>
-            {result ? `${result.total} kayıt · Sayfa ${page + 1}` : " "}
+            {result
+              ? `${count.format(result.total)} kayıt · Sayfa ${count.format(page + 1)} / ${count.format(Math.max(1, Math.ceil(result.total / pageSize)))}`
+              : " "}
           </span>
           <button
             className="button"

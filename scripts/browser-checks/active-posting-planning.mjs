@@ -67,7 +67,10 @@ export async function checkActivePostingPlanning(f) {
             exact: true,
           })
           .boundingBox();
-        assert(options.y >= summary.y + summary.height - 1);
+        // The switch sits inside the applied-filter strip, at its right end.
+        assert(options.y >= summary.y - 1);
+        assert(options.y + options.height <= summary.y + summary.height + 1);
+        assert(options.x + options.width > summary.x + summary.width / 2);
         assert(options.y + options.height <= heading.y);
         assert(options.height <= 48);
         assert.equal(await control().getAttribute("aria-checked"), "false");

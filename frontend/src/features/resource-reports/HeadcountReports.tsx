@@ -133,12 +133,19 @@ export default function HeadcountReports({
                       <TableCell
                         key={column.key}
                         data-headcount-status={column.key}
+                        data-zero={!row.counts[column.key] || undefined}
                       >
                         {fmt(row.counts[column.key])}
                       </TableCell>
                     ))}
                     {definition.showTotal && (
-                      <TableCell className="headcount-row-total">
+                      <TableCell
+                        className="headcount-row-total"
+                        data-zero={
+                          !headcountColumnTotal(row.counts, definition.keys) ||
+                          undefined
+                        }
+                      >
                         {fmt(headcountColumnTotal(row.counts, definition.keys))}
                       </TableCell>
                     )}

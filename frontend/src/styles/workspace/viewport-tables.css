@@ -80,6 +80,20 @@
   font-size: var(--fs-xs);
   line-height: 1.4;
 }
+/* Admin's switch sits at the right end of the applied-filter strip. */
+.app .project-filter-summary > .report-posting-options {
+  flex: none;
+  min-height: 0;
+  margin: 0 0 0 auto;
+  padding: 3px 10px;
+  border: 1px solid #ffffff40;
+  border-radius: 6px;
+  background: #ffffff14;
+}
+.app .project-filter-summary > .report-posting-options > label,
+.app .project-filter-summary > .report-posting-options > small {
+  color: #fff;
+}
 
 /* Empty sections preserve the height of records outside the viewport. */
 .app .matrix .windowed-table-spacer,

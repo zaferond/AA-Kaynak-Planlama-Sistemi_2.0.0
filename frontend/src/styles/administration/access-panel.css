@@ -491,7 +491,7 @@
   text-align: left;
 }
 .app.tab-resources .employee-access-table td {
-  padding: 10px clamp(3px, 0.45vw, 8px);
+  padding: 6px clamp(3px, 0.45vw, 8px);
   border-bottom: 1px solid #e3e8df;
   border-right: 1px solid #edf0e9;
   vertical-align: middle;
@@ -690,8 +690,12 @@
   color: var(--resource-status-color, #5b6673);
   font-weight: 650;
   line-height: 1.35;
+  /* Breaks only between words: "Aktif Çalışan" stays on one line. */
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+}
+.app.tab-resources .employee-access-table .same-as-leadership {
+  color: var(--brand-muted, #60715e);
 }
 .app.tab-resources [data-resource-status="Aktif Çalışan"] {
   --resource-status-background: #e6f3e9;

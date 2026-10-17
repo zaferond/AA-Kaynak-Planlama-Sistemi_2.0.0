@@ -71,15 +71,13 @@ export default function TeamDirectory({
       </div>
       <Table className="directory-table" aria-label="Organizasyon yapısı">
         <colgroup>
-          <col className="directory-lead-column" />
           <col className="directory-team-column" />
           <col />
           {canEdit && <col className="directory-action-column" />}
         </colgroup>
         <TableHeader>
           <TableRow>
-            <TableHead scope="col">Liderlik</TableHead>
-            <TableHead scope="col">Takım / Birim</TableHead>
+            <TableHead scope="col">Liderlik / Takım</TableHead>
             <TableHead scope="col">Yönetici</TableHead>
             {canEdit && (
               <TableHead scope="col" className="directory-action-cell">
@@ -98,6 +96,8 @@ export default function TeamDirectory({
                 }
                 data-depth={depth}
               >
+                {/* The leadership heads its teams' rows, so it needs no
+                    column of its own. */}
                 <TableCell>
                   <span
                     className="directory-indent directory-unit-title"
@@ -106,19 +106,18 @@ export default function TeamDirectory({
                     {parent && <span aria-hidden="true">↳ </span>}
                     <Building2 size={14} aria-hidden="true" />
                     <strong>{lead || "Liderlik Eşleştirilmemiş"}</strong>
+                    <small className="directory-team-count">
+                      {teams.length} takım
+                    </small>
                   </span>
-                  <small className="directory-team-count">
-                    {teams.length} takım
-                  </small>
-                </TableCell>
-                <TableCell>
-                  {parent ? (
-                    <>
-                      <span className="directory-unit-kind">Alt Liderlik</span>
-                      <small>Bağlı olduğu liderlik · {parent}</small>
-                    </>
-                  ) : (
-                    <span className="directory-unit-kind">Liderlik</span>
+                  {parent && (
+                    <small
+                      className="directory-parent-line"
+                      style={{ paddingLeft: depth * 18 }}
+                    >
+                      <span className="directory-unit-kind">Alt Liderlik</span>{" "}
+                      · Bağlı olduğu liderlik · {parent}
+                    </small>
                   )}
                 </TableCell>
                 <TableCell className="directory-manager-cell">
@@ -156,19 +155,16 @@ export default function TeamDirectory({
                     } as React.CSSProperties
                   }
                 >
-                  {/* The leadership is the group heading above; keep its name
-                      for screen readers without repeating it on every row. */}
-                  <TableCell className="directory-lead-repeat">
-                    <span className="sr-only">{lead || "Liderlik yok"}</span>
-                  </TableCell>
                   <TableCell>
-                    <span
-                      className="directory-indent directory-unit-title"
-                      style={{ paddingLeft: depth * 18 }}
-                    >
+                    <span className="directory-indent directory-unit-title">
                       {parent && <span aria-hidden="true">↳ </span>}
                       <Users size={13} aria-hidden="true" />
                       <strong>{team.name}</strong>
+                      {/* The leadership is the group heading above; keep it
+                          for screen readers without repeating it. */}
+                      <span className="sr-only">
+                        , {lead || "Liderlik yok"}
+                      </span>
                     </span>
                   </TableCell>
                   <TableCell className="directory-manager-cell">

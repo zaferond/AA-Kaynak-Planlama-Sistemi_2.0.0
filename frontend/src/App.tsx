@@ -84,7 +84,7 @@ export default function Portal() {
     project: Project;
     month: string;
   } | null>(null);
-  const projectLabelWidth = 230;
+  const projectLabelWidth = 300;
   const planningLabelWidth = 220;
   const [browserFullScreen, setBrowserFullScreen] = useState(
     !!document.fullscreenElement,
@@ -653,18 +653,19 @@ export default function Portal() {
                                 : []),
                             ]
                       }
-                    />
-                    {tab === "overview" &&
-                      reportView === "resources" &&
-                      isAdmin && (
-                        <ActivePostingPlanningToggle
-                          data={data}
-                          canEdit={!!isAdmin}
-                          saving={saving}
-                          onSave={batch}
-                          onError={setError}
-                        />
-                      )}
+                    >
+                      {tab === "overview" &&
+                        reportView === "resources" &&
+                        isAdmin && (
+                          <ActivePostingPlanningToggle
+                            data={data}
+                            canEdit={!!isAdmin}
+                            saving={saving}
+                            onSave={batch}
+                            onError={setError}
+                          />
+                        )}
+                    </WorkspaceFilterSummary>
                   </div>
                 </>
               ) : tab !== "resources" ? (

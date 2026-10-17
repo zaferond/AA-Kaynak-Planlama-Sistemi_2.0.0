@@ -293,10 +293,26 @@ export default function ResourcesPanel({
                   ),
                   team: (
                     <TableCell className="resourceteam">
-                      {v
-                        ? data.teams.find((t) => t.id === v.team)?.name ||
-                          "Takım ataması bekliyor"
-                        : "—"}
+                      {(() => {
+                        if (!v) return "—";
+                        const team = data.teams.find((t) => t.id === v.team);
+                        if (!team) return "Takım ataması bekliyor";
+                        // A leader's own team carries the leadership's name;
+                        // repeating it beside the Liderlik column adds nothing.
+                        if (team.name === (v.lead || team.lead))
+                          return (
+                            <span
+                              className="same-as-leadership"
+                              title={"Liderlikle aynı: " + team.name}
+                            >
+                              <span aria-hidden="true">—</span>
+                              <span className="sr-only">
+                                Liderlikle aynı: {team.name}
+                              </span>
+                            </span>
+                          );
+                        return team.name;
+                      })()}
                     </TableCell>
                   ),
                   status: (
@@ -319,9 +335,13 @@ export default function ResourcesPanel({
                     </TableCell>
                   ),
                   start: (
-                    <TableCell>{v ? fullDateLabel(v.start) : "—"}</TableCell>
+                    <TableCell>
+                      {v?.start ? fullDateLabel(v.start) : "—"}
+                    </TableCell>
                   ),
-                  end: <TableCell>{v ? fullDateLabel(v.end) : "—"}</TableCell>,
+                  end: (
+                    <TableCell>{v?.end ? fullDateLabel(v.end) : "—"}</TableCell>
+                  ),
                   account: (
                     <TableCell>
                       {account ? (

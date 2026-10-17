@@ -1,4 +1,5 @@
 import { Layers3 } from "lucide-react";
+import type React from "react";
 
 export type SummaryFilter = {
   label: string;
@@ -26,11 +27,14 @@ export default function WorkspaceFilterSummary({
   title = "Filtrelenen Projeler",
   ariaLabel = "Proje ekranında uygulanan filtreler",
   className = "",
+  children,
 }: {
   filters: SummaryFilter[];
   title?: string;
   ariaLabel?: string;
   className?: string;
+  /** Controls shown at the right end of the strip. */
+  children?: React.ReactNode;
 }) {
   return (
     <div
@@ -45,6 +49,7 @@ export default function WorkspaceFilterSummary({
         <strong>{title}</strong>
         <FilterSummaryChips filters={filters} />
       </span>
+      {children}
     </div>
   );
 }

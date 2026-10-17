@@ -23,7 +23,6 @@ import {
   phaseRunParts,
   phaseRunSpans,
 } from "./phase-chip";
-import ProjectResponsible from "./ProjectResponsible";
 import { hasProjectAccessRules } from "../../shared/project-access.ts";
 import { milestoneRanges } from "./milestone-ranges";
 import { milestoneBarsForPeriods } from "./milestone-bars";
@@ -164,9 +163,19 @@ export default function ProjectTimelineRows({
                   </span>
                 )}
               </button>
-              <ProjectResponsible project={project} />
-              <small>
-                {project.start} → {project.end}
+              {/* Responsible and dates share one line to keep rows short. */}
+              <small
+                className="project-responsible project-meta"
+                title={
+                  "Proje Sorumlusu: " + (project.responsibleName?.trim() || "—")
+                }
+              >
+                <span className="sr-only">Proje Sorumlusu: </span>
+                {project.responsibleName?.trim() || "—"}
+                <span aria-hidden="true"> · </span>
+                <span className="project-meta-dates">
+                  {project.start} → {project.end}
+                </span>
               </small>
             </div>
             {milestones.length > 0 && (

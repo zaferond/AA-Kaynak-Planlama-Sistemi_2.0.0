@@ -7,7 +7,7 @@ export const EMPLOYEE_COLUMNS = [
   { id: "name", label: "Ad Soyad", width: 10, fixed: true },
   { id: "leadership", label: "Liderlik", width: 10 },
   { id: "team", label: "Takım", width: 10 },
-  { id: "status", label: "Statü", width: 7 },
+  { id: "status", label: "Statü", width: 9 },
   { id: "included", label: "Kaynak Planına Dahil", width: 5 },
   { id: "start", label: "İşbaşı Tarihi", width: 6 },
   { id: "end", label: "İşten Ayrılış Tarihi", width: 6 },
@@ -15,7 +15,7 @@ export const EMPLOYEE_COLUMNS = [
   { id: "email", label: "E-posta Adresi", width: 7 },
   { id: "role", label: "Rol / Yetki", width: 6 },
   { id: "scope", label: "Yetki Kapsamı", width: 8 },
-  { id: "note", label: "Açıklama", width: 9 },
+  { id: "note", label: "Açıklama", width: 7 },
   { id: "actions", label: "İşlemler", width: 5, fixed: true },
 ] as const;
 export type EmployeeColumn = (typeof EMPLOYEE_COLUMNS)[number];

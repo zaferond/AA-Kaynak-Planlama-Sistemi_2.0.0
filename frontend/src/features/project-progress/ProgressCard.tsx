@@ -9,6 +9,7 @@ import {
   leaderProgress,
   monthsAfter,
   previousMonth,
+  clearAfterComplete,
   proposalProblems,
   suggestTargets,
   targetAt,
@@ -357,12 +358,15 @@ export default function ProgressCard({
                   onChange={(e) =>
                     setForm({
                       ...form,
-                      targets: { ...form.targets, [m]: e.target.value },
+                      targets: clearAfterComplete(
+                        { ...form.targets, [m]: e.target.value },
+                        m,
+                      ),
                     })
                   }
                 />
               ) : (
-                <strong>{targets[m] ?? "—"}</strong>
+                <strong>{targets[m] ?? ""}</strong>
               ),
             ),
         },
@@ -568,7 +572,17 @@ export default function ProgressCard({
               onClick={() =>
                 form &&
                 suggested &&
-                setForm({ ...form, targets: asText(suggested) })
+                setForm({
+                  ...form,
+                  // Months after the curve reaches 100 % stay empty.
+                  targets: Object.entries(asText(suggested)).reduce(
+                    (out, [m, v]) =>
+                      Object.values(out).includes("100")
+                        ? out
+                        : { ...out, [m]: v },
+                    {} as Record<string, string>,
+                  ),
+                })
               }
             >
               Önerileni Uygula

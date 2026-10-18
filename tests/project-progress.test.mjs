@@ -64,11 +64,56 @@ test("the suggested curve follows the remaining planned resource and ends at 100
   );
 });
 
-test("a proposal must cover every month, never fall and end at 100", () => {
+test("a proposal may leave months empty, never falls and reaches 100 by the end", async () => {
+  const { clearAfterComplete } = await import("../shared/project-progress.ts");
   const base = { openingMonth: "2026-10", openingPct: 40 };
+  // Empty months keep the previous target; 100 % may come early.
+  assert.deepEqual(
+    proposalProblems({ ...base, targets: { "2027-01": 100 } }, "2027-03"),
+    [],
+  );
+  assert.deepEqual(
+    proposalProblems(
+      { ...base, targets: { "2026-11": 60, "2027-03": 100 } },
+      "2027-03",
+    ),
+    [],
+  );
   assert.match(
     proposalProblems({ ...base, targets: { "2026-11": 50 } }, "2026-12")[0],
-    /2026-12 için hedef/,
+    /%100'e ulaşmalı/,
+  );
+  // No targets outside the opening–end range.
+  assert.match(
+    proposalProblems({ ...base, targets: { "2027-02": 100 } }, "2026-12")[0],
+    /bitişe kadarki aylara/,
+  );
+  // Setting a month to 100 % clears the months after it.
+  assert.deepEqual(
+    clearAfterComplete(
+      { "2026-11": "50", "2026-12": "100", "2027-01": "100" },
+      "2026-12",
+    ),
+    { "2026-11": "50", "2026-12": "100" },
+  );
+  assert.deepEqual(
+    clearAfterComplete({ "2026-11": "50", "2026-12": "80" }, "2026-11"),
+    { "2026-11": "50", "2026-12": "80" },
+  );
+  // Months stay flat between entered targets.
+  assert.equal(
+    targetAt(
+      {
+        version: 1,
+        openingMonth: "2026-10",
+        openingPct: 40,
+        targets: { "2026-11": 60, "2027-03": 100 },
+        approvedByName: "A",
+        approvedAt: "x",
+      },
+      "2027-02",
+    ),
+    60,
   );
   assert.match(
     proposalProblems(

@@ -55,9 +55,18 @@ export async function checkProjectProgress(f) {
         // Opening 0 %, the remainder follows the planned resource (1 + 1).
         assert.equal(await target("Kas 2026").inputValue(), "50");
         assert.equal(await target("Ara 2026").inputValue(), "100");
+        // Done early: 100 % in November clears December, and the curve can
+        // still be submitted with the empty month.
+        await target("Kas 2026").fill("100");
+        assert.equal(await target("Ara 2026").inputValue(), "");
+        assert(
+          await card.getByRole("button", { name: "Onaya Gönder" }).isEnabled(),
+        );
+        await apply.click();
+        assert.equal(await target("Kas 2026").inputValue(), "50");
         // A falling curve cannot be submitted.
         await target("Ara 2026").fill("40");
-        await card.getByText(/bir önceki aydan küçük olamaz/).waitFor();
+        await card.getByText(/önceki hedeften küçük olamaz/).waitFor();
         const submit = card.getByRole("button", { name: "Onaya Gönder" });
         assert(await submit.isDisabled());
         await target("Ara 2026").fill("100");

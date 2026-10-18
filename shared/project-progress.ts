@@ -78,7 +78,11 @@ export function monthsAfter(from: string, to: string) {
 export const currentBaseline = (record: ProjectProgress) =>
   record.baselines.at(-1);
 
-/** Problems that keep a proposal from being submitted; empty when valid. */
+/**
+ * Problems that keep a proposal from being submitted; empty when valid.
+ * Months may stay empty: an empty month keeps the previous target. Entered
+ * targets never fall, and the curve reaches 100 % by the project end.
+ */
 export function proposalProblems(
   proposal: Pick<ProgressProposal, "openingMonth" | "openingPct" | "targets">,
   projectEnd: string,
@@ -87,22 +91,36 @@ export function proposalProblems(
   const months = monthsAfter(proposal.openingMonth, projectEnd);
   if (!months.length)
     problems.push("Projenin bitişi açılış ayından sonra olmalı.");
+  const inRange = new Set(months);
+  if (Object.keys(proposal.targets).some((month) => !inRange.has(month)))
+    problems.push(
+      "Hedefler açılıştan sonraki ve bitişe kadarki aylara girilir.",
+    );
   let last = proposal.openingPct;
   for (const month of months) {
     const value = ownValue(proposal.targets, month);
-    if (value === undefined) {
-      problems.push(`${month} için hedef girilmedi.`);
-      break;
-    }
+    if (value === undefined) continue;
     if (value < last) {
-      problems.push(`${month} hedefi bir önceki aydan küçük olamaz.`);
+      problems.push(`${month} hedefi önceki hedeften küçük olamaz.`);
       break;
     }
     last = value;
   }
   if (months.length && last !== 100)
-    problems.push("Bitiş ayının hedefi %100 olmalı.");
+    problems.push("Hedef en geç bitiş ayında %100'e ulaşmalı.");
   return problems;
+}
+
+/** Targets after a month set to 100 % are cleared: the work is done then. */
+export function clearAfterComplete(
+  targets: Record<string, string>,
+  month: string,
+) {
+  const value = Number(String(targets[month] ?? "").replace(",", "."));
+  if (!(value >= 100)) return targets;
+  return Object.fromEntries(
+    Object.entries(targets).filter(([m]) => m <= month),
+  );
 }
 
 /** Teams' planned and actual FTE by leadership and month for one project. */

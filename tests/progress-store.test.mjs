@@ -158,7 +158,7 @@ test("a leader proposes, an admin approves, and the baseline is frozen", async (
         status: "pending",
       },
     }),
-    (e) => e.status === 400 && /hedef girilmedi/.test(e.message),
+    (e) => e.status === 400 && /%100'e ulaşmalı/.test(e.message),
   );
   await f.save(users.lead, {
     ...saved,

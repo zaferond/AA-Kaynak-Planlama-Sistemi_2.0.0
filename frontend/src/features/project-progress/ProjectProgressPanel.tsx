@@ -9,8 +9,7 @@ import {
 } from "../../../../shared/project-progress.ts";
 import { monthLabel } from "../../format";
 import { currentPlanningMonth } from "../../resource-dates";
-import MonthlyEntry from "./MonthlyEntry";
-import BaselineEditor, { type BaselineSelection } from "./BaselineEditor";
+import PlanAndEntry from "./PlanAndEntry";
 import ProgressReport from "./ProgressReport";
 import {
   defaultEntryMonth,
@@ -19,9 +18,9 @@ import {
 } from "./progress-view";
 import "./project-progress.css";
 
-type View = "entry" | "baseline" | "report";
+type View = "plan" | "report";
 
-/** Proje İlerlemesi: monthly entry, baseline and report per leadership. */
+/** Proje İlerlemesi: plan and monthly entry on one screen, and the report. */
 export default function ProjectProgressPanel({
   data,
   user,
@@ -45,7 +44,7 @@ export default function ProjectProgressPanel({
     focus
       ? "report"
       : user?.role === "manager" && user.leaders.length
-        ? "entry"
+        ? "plan"
         : "report",
   );
   useEffect(() => {
@@ -53,7 +52,6 @@ export default function ProjectProgressPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [month, setMonth] = useState(() => defaultEntryMonth(currentMonth));
-  const [selection, setSelection] = useState<BaselineSelection>(null);
   const ctx = useMemo(() => progressContext(data), [data]);
   const pendingApprovals = (data.projectProgress || []).filter(
     (record) => record.proposal?.status === "pending",
@@ -78,9 +76,8 @@ export default function ProjectProgressPanel({
               className="organization-view-switch"
               aria-label="İlerleme görünümü"
             >
-              <TabsTrigger value="entry">Aylık Giriş</TabsTrigger>
-              <TabsTrigger value="baseline">
-                Temel Plan
+              <TabsTrigger value="plan">
+                Plan ve Giriş
                 {user?.role === "admin" && pendingApprovals > 0 && (
                   <span
                     className="progress-badge"
@@ -93,7 +90,7 @@ export default function ProjectProgressPanel({
               <TabsTrigger value="report">İlerleme Raporu</TabsTrigger>
             </TabsList>
           </Tabs>
-          {view !== "baseline" && months.length > 0 && (
+          {months.length > 0 && (
             <label className="progress-month">
               Ay
               <select value={month} onChange={(e) => setMonth(e.target.value)}>
@@ -107,36 +104,24 @@ export default function ProjectProgressPanel({
           )}
         </div>
       </div>
-      {view === "entry" &&
-        (month ? (
-          <MonthlyEntry
+      {view === "plan" && (
+        <>
+          {!month && (
+            <p className="progress-card-hint progress-plan-note">
+              Aylık gerçekleşen girişi{" "}
+              {monthLabel(nextMonth(PROGRESS_OPENING_MONTH))} ile başlar.
+              Şimdilik projelerin hedef eğrilerini girip onaya gönderin.
+            </p>
+          )}
+          <PlanAndEntry
             ctx={ctx}
             user={user}
             month={month}
+            currentMonth={currentMonth}
             saving={saving}
             onSave={onSave}
-            onStartBaseline={(projectId, leader) => {
-              setSelection({ projectId, leader });
-              setView("baseline");
-            }}
           />
-        ) : (
-          <p className="emptymsg">
-            Aylık giriş {monthLabel(nextMonth(PROGRESS_OPENING_MONTH))} ile
-            başlar. Şimdilik Temel Plan görünümünden projelerin hedef eğrilerini
-            girip onaya gönderin.
-          </p>
-        ))}
-      {view === "baseline" && (
-        <BaselineEditor
-          ctx={ctx}
-          user={user}
-          currentMonth={currentMonth}
-          saving={saving}
-          onSave={onSave}
-          selection={selection}
-          setSelection={setSelection}
-        />
+        </>
       )}
       {view === "report" && (
         <ProgressReport

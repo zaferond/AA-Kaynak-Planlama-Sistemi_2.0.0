@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import type { Project } from "../../model";
 import { milestoneRanges } from "../../milestone-ranges";
 import {
@@ -8,11 +8,7 @@ import {
   phaseRunSpans,
 } from "../../phase-chip";
 import { positionPointerTooltip } from "../position-pointer-tooltip";
-import {
-  monthsAfter,
-  targetAt,
-  type ProgressBaseline,
-} from "../../../../shared/project-progress.ts";
+import { monthsAfter } from "../../../../shared/project-progress.ts";
 import { pctLabel } from "./progress-view";
 
 const MONTHS = [
@@ -48,6 +44,13 @@ type Topic = {
   point: boolean;
   color: string;
 };
+export type GridRow = {
+  label: string;
+  /** Read-only rows sit on a grey ground; the row to fill stays white. */
+  editable?: boolean;
+  opening: ReactNode;
+  cell: (month: string) => ReactNode;
+};
 
 /** Critical topics and milestones of the project that touch a month. */
 function topicsIn(project: Project, month: string): Topic[] {
@@ -69,40 +72,36 @@ function topicsIn(project: Project, month: string): Topic[] {
 }
 
 /**
- * The target curve laid out like the project timeline: phases, critical
- * topics and the leadership's planned resource above the month inputs, so a
- * leader sets each month's target against what happens in that month.
+ * Months laid out like the project timeline: phases, critical topics and the
+ * leadership's planned resource first, then the rows of the screen using it
+ * (targets on the baseline, actuals on the monthly entry).
  */
-export default function BaselineGrid({
+export default function MonthGrid({
   project,
   label,
   openingMonth,
-  openingPct,
   currentMonth,
+  selectedMonth,
   planned,
-  suggested,
-  approved,
-  targets,
-  editable,
-  onTarget,
+  rows,
 }: {
   project: Project;
-  /** Names the inputs: "<project> · <leadership>". */
+  /** "<project> · <leadership>": names the table and its inputs. */
   label: string;
   openingMonth: string;
-  openingPct: number | null;
   currentMonth: string;
+  /** The month being entered, outlined. */
+  selectedMonth?: string;
   planned: Record<string, number> | undefined;
-  suggested: Record<string, number> | undefined;
-  approved: ProgressBaseline | undefined;
-  targets: Record<string, string>;
-  editable: boolean;
-  onTarget: (month: string, value: string) => void;
+  rows: GridRow[];
 }) {
   const months = monthsAfter(openingMonth, project.end);
   const keys = months.map((m) => phaseRunKey(project, m));
   const spans = phaseRunSpans(keys);
-  const now = (m: string) => (m === currentMonth ? "true" : undefined);
+  const mark = (m: string) => ({
+    "data-now": m === currentMonth ? "true" : undefined,
+    "data-selected": m === selectedMonth ? "true" : undefined,
+  });
   const tipRef = useRef<HTMLDivElement>(null);
   const [tip, setTip] = useState<Topic[] | null>(null);
   const showTip = (topics: Topic[], x: number, y: number) => {
@@ -111,7 +110,7 @@ export default function BaselineGrid({
   };
   return (
     <div className="progress-grid-scroll">
-      <table className="progress-grid" aria-label={label + " temel plan"}>
+      <table className="progress-grid" aria-label={label + " ay ay"}>
         <thead>
           <tr>
             <th scope="col">Ay</th>
@@ -124,7 +123,7 @@ export default function BaselineGrid({
               <small>açılış</small>
             </th>
             {months.map((m) => (
-              <th key={m} scope="col" data-now={now(m)}>
+              <th key={m} scope="col" {...mark(m)}>
                 {short(m)}
               </th>
             ))}
@@ -147,7 +146,7 @@ export default function BaselineGrid({
                   </span>
                 </td>
               ) : (
-                <td key={m} data-now={now(m)} />
+                <td key={m} {...mark(m)} />
               );
             })}
           </tr>
@@ -161,7 +160,7 @@ export default function BaselineGrid({
               return (
                 <td
                   key={m}
-                  data-now={now(m)}
+                  {...mark(m)}
                   data-has-topics={topics.length ? "true" : undefined}
                   tabIndex={topics.length ? 0 : undefined}
                   aria-label={
@@ -208,55 +207,25 @@ export default function BaselineGrid({
               {planned?.[openingMonth] ? pctLabel(planned[openingMonth]) : "—"}
             </td>
             {months.map((m) => (
-              <td key={m} data-now={now(m)}>
+              <td key={m} {...mark(m)}>
                 {planned?.[m] ? pctLabel(planned[m]) : "—"}
               </td>
             ))}
           </tr>
-          {approved && (
-            <tr className="readonly">
-              <th scope="row">Onaylı hedef %</th>
-              <td className="opening">
-                {pctLabel(targetAt(approved, openingMonth))}
-              </td>
+          {rows.map((row) => (
+            <tr
+              key={row.label}
+              className={row.editable ? "editable" : "readonly"}
+            >
+              <th scope="row">{row.label}</th>
+              <td className="opening">{row.opening}</td>
               {months.map((m) => (
-                <td key={m} data-now={now(m)}>
-                  {pctLabel(targetAt(approved, m))}
+                <td key={m} {...mark(m)}>
+                  {row.cell(m)}
                 </td>
               ))}
             </tr>
-          )}
-          {editable && (
-            <tr className="readonly">
-              <th scope="row">Önerilen hedef %</th>
-              <td className="opening">{pctLabel(openingPct)}</td>
-              {months.map((m) => (
-                <td key={m} data-now={now(m)}>
-                  {suggested ? pctLabel(suggested[m]) : "—"}
-                </td>
-              ))}
-            </tr>
-          )}
-          <tr className={editable ? "editable" : "readonly"}>
-            <th scope="row">Hedef % (kümülatif)</th>
-            <td className="opening">
-              <strong>{pctLabel(openingPct)}</strong>
-            </td>
-            {months.map((m) => (
-              <td key={m} data-now={now(m)}>
-                {editable ? (
-                  <input
-                    aria-label={`${label} · ${fullMonth(m)} hedef %`}
-                    inputMode="decimal"
-                    value={targets[m] ?? ""}
-                    onChange={(e) => onTarget(m, e.target.value)}
-                  />
-                ) : (
-                  <strong>{targets[m] ?? "—"}</strong>
-                )}
-              </td>
-            ))}
-          </tr>
+          ))}
         </tbody>
       </table>
       {tip && (

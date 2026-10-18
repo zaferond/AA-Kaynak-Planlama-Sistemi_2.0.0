@@ -3,8 +3,10 @@ import type { Principal } from "../../access";
 import type { Project } from "../../model";
 import type { Change } from "../../../../shared/commands";
 import {
+  PROGRESS_NOTE_MAX,
   PROGRESS_OPENING_MONTH,
   currentBaseline,
+  leaderProgress,
   monthsAfter,
   previousMonth,
   proposalProblems,
@@ -14,8 +16,11 @@ import {
   type ProjectProgress,
 } from "../../../../shared/project-progress.ts";
 import { monthLabel } from "../../format";
-import BaselineGrid from "./BaselineGrid";
+import MonthGrid, { fullMonth, type GridRow } from "./MonthGrid";
 import {
+  LEVEL_LABELS,
+  leaderRow,
+  pctLabel,
   canLead,
   newProgressId,
   progressChange,
@@ -37,25 +42,48 @@ export const baselineStatus = (record?: ProjectProgress): BaselineStatus =>
       : record?.baselines.length
         ? "approved"
         : "new";
-const STATUS_LABELS: Record<BaselineStatus, string> = {
-  pending: "Onay bekliyor",
-  draft: "Taslak",
+export type EntryStatus = "entered" | "waiting" | "locked" | "closed";
+/** The chosen month's actual: entered, still to enter, locked, or not open yet. */
+export function entryStatus(
+  record: ProjectProgress | undefined,
+  month: string,
+  locked: boolean,
+): EntryStatus | null {
+  if (!record?.baselines.length) return null;
+  if (!month || month <= record.baselines[0].openingMonth) return "closed";
+  if (record.actuals[month]) return "entered";
+  return locked ? "locked" : "waiting";
+}
+const STATUS_LABELS: Record<BaselineStatus | EntryStatus, string> = {
+  pending: "Plan onay bekliyor",
+  draft: "Plan taslağı",
   approved: "Onaylı",
   new: "Takibe alınmadı",
+  entered: "Girildi",
+  waiting: "Giriş bekliyor",
+  locked: "Ay kilitli",
+  closed: "Onaylı",
 };
+const decimal = (value: number) => String(value).replace(".", ",");
 const num = (value: string) =>
   value.trim() === "" ? Number.NaN : Number(value.replace(",", "."));
 const text = (value: number) => String(value).replace(".", ",");
 const asText = (targets: Record<string, number>) =>
   Object.fromEntries(Object.entries(targets).map(([m, v]) => [m, text(v)]));
 
-/** One project × leadership: its month grid and actions. */
-export default function BaselineCard({
+/**
+ * One project × leadership. Until its baseline is approved the card takes the
+ * target curve; afterwards the targets stay fixed and the chosen month's
+ * actual % (with a note) is entered on the same grid. A new baseline can be
+ * proposed alongside without stopping the monthly entry.
+ */
+export default function ProgressCard({
   ctx,
   user,
   project,
   leader,
   record,
+  month,
   currentMonth,
   saving,
   onSave,
@@ -65,6 +93,8 @@ export default function BaselineCard({
   project: Project;
   leader: string;
   record: ProjectProgress | undefined;
+  /** The month whose actual is entered ("" before tracking starts). */
+  month: string;
   currentMonth: string;
   saving: boolean;
   onSave: (changes: Change[]) => Promise<void>;
@@ -79,6 +109,22 @@ export default function BaselineCard({
   const [message, setMessage] = useState<{ text: string; error?: boolean }>();
   const [weight, setWeight] = useState("");
   const revision = record ? data.revisions["progress:" + record.id] || 0 : 0;
+  // Monthly actual of the chosen month.
+  const locked = (data.progressLocks || []).some((lock) => lock.id === month);
+  const entry = entryStatus(record, month, locked);
+  const saved = month ? record?.actuals[month] : undefined;
+  const [pct, setPct] = useState("");
+  const [note, setNote] = useState("");
+  const [entryMessage, setEntryMessage] = useState<{
+    text: string;
+    error?: boolean;
+  }>();
+  useEffect(() => {
+    setPct(saved ? decimal(saved.pct) : "");
+    setNote(saved?.note || "");
+    setEntryMessage(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month, revision]);
 
   // Fresh values whenever the saved record changes. Targets of a new plan
   // start empty: the leader fills them or applies the suggestion.
@@ -163,6 +209,43 @@ export default function BaselineCard({
     (!baseline || rebaseline || !!record?.proposal);
   const label = `${project.name} · ${leader}`;
 
+  const actualFte = ctx.actual(project.id).get(leader);
+  const canEnter =
+    !!baseline &&
+    canLead(user, leader) &&
+    (entry === "waiting" || entry === "entered") &&
+    month <= currentMonth;
+  const entryChanged =
+    pct !== (saved ? decimal(saved.pct) : "") || note !== (saved?.note || "");
+  const value = num(pct);
+  const entryProblem = !(value >= 0 && value <= 100)
+    ? "0 ile 100 arasında bir yüzde girin."
+    : Math.abs(Math.round(value * 10) - value * 10) > 1e-6
+      ? "En fazla bir ondalık basamak girin."
+      : !note.trim()
+        ? "Kısa bir açıklama yazın."
+        : "";
+  async function submitEntry() {
+    if (!record) return;
+    if (entryProblem)
+      return setEntryMessage({ text: entryProblem, error: true });
+    setEntryMessage(undefined);
+    try {
+      await onSave([
+        progressChange(data, {
+          ...record,
+          actuals: {
+            ...record.actuals,
+            [month]: { pct: value, note: note.trim() },
+          },
+        }),
+      ]);
+      setEntryMessage({ text: "Kaydedildi." });
+    } catch (error) {
+      setEntryMessage({ text: (error as Error).message, error: true });
+    }
+  }
+
   async function send(next: ProgressProposal["status"] | null, done: string) {
     setMessage(undefined);
     const base: ProjectProgress = record || {
@@ -227,8 +310,117 @@ export default function BaselineCard({
       previousMonth(currentMonth),
     ),
   ];
+  // With an approved plan the grid starts at its opening, so a new plan's
+  // later opening still shows the history before it.
   const gridOpening =
-    form?.openingMonth || baseline?.openingMonth || PROGRESS_OPENING_MONTH;
+    baseline?.openingMonth || form?.openingMonth || PROGRESS_OPENING_MONTH;
+
+  const openingCell = pctLabel(openingValid ? opening : null);
+  const targets = form ? form.targets : {};
+  // Months up to a new plan's opening carry no new target.
+  const proposalCell = (m: string, input: () => React.ReactNode) =>
+    !form || m < form.openingMonth ? (
+      ""
+    ) : m === form.openingMonth ? (
+      <strong>{openingCell}</strong>
+    ) : (
+      input()
+    );
+  const past = (m: string) => m <= currentMonth;
+  const row =
+    record && baseline && month ? leaderRow(ctx, record, project, month) : null;
+  const planRows: GridRow[] = form
+    ? [
+        ...(editable
+          ? [
+              {
+                label: baseline ? "Önerilen yeni hedef %" : "Önerilen hedef %",
+                opening: baseline ? "" : openingCell,
+                cell: (m: string) =>
+                  proposalCell(m, () =>
+                    suggested ? pctLabel(suggested[m]) : "—",
+                  ),
+              },
+            ]
+          : []),
+        {
+          label: baseline ? "Yeni hedef %" : "Hedef % (kümülatif)",
+          editable,
+          opening: baseline ? "" : <strong>{openingCell}</strong>,
+          cell: (m: string) =>
+            proposalCell(m, () =>
+              editable ? (
+                <input
+                  aria-label={`${label} · ${fullMonth(m)} hedef %`}
+                  inputMode="decimal"
+                  value={targets[m] ?? ""}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      targets: { ...form.targets, [m]: e.target.value },
+                    })
+                  }
+                />
+              ) : (
+                <strong>{targets[m] ?? "—"}</strong>
+              ),
+            ),
+        },
+      ]
+    : [];
+  const gridRows: GridRow[] = baseline
+    ? [
+        {
+          label: "Gerçekleşen kaynak (kişi-ay)",
+          opening: actualFte?.[baseline.openingMonth]
+            ? pctLabel(actualFte[baseline.openingMonth])
+            : "—",
+          cell: (m) =>
+            past(m) && actualFte?.[m] ? pctLabel(actualFte[m]) : "—",
+        },
+        {
+          label: form ? "Onaylı hedef %" : "Hedef % (kümülatif)",
+          opening: pctLabel(baseline.openingPct),
+          cell: (m) => pctLabel(targetAt(baseline, m)),
+        },
+        ...planRows,
+        {
+          label: "Gerçekleşen %",
+          editable: canEnter,
+          opening: <strong>{pctLabel(baseline.openingPct)}</strong>,
+          cell: (m) =>
+            m === month && canEnter ? (
+              <input
+                aria-label={`${label} · ${fullMonth(m)} gerçekleşen %`}
+                inputMode="decimal"
+                value={pct}
+                disabled={saving}
+                onChange={(e) => setPct(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") void submitEntry();
+                }}
+              />
+            ) : record!.actuals[m] ? (
+              <strong title={record!.actuals[m].note}>
+                {pctLabel(record!.actuals[m].pct)}
+              </strong>
+            ) : (
+              "—"
+            ),
+        },
+        {
+          label: "Harcanan kaynak %",
+          opening: pctLabel(baseline.openingPct),
+          cell: (m) =>
+            past(m)
+              ? pctLabel(
+                  leaderProgress(record!, m, planned, actualFte, project.end)
+                    .spent,
+                )
+              : "—",
+        },
+      ]
+    : planRows;
 
   return (
     <section className="progress-card" data-status={status} aria-label={label}>
@@ -236,12 +428,16 @@ export default function BaselineCard({
         <div className="progress-card-title">
           <strong>{project.name}</strong>
           <span>{leader}</span>
-          <em className="progress-status" data-status={status}>
-            {STATUS_LABELS[status]}
-            {baseline &&
-              status === "approved" &&
-              ` · sürüm ${baseline.version}`}
-          </em>
+          {entry && entry !== "closed" && (
+            <em className="progress-status" data-status={entry}>
+              {STATUS_LABELS[entry]}
+            </em>
+          )}
+          {(status !== "approved" || entry === "closed") && (
+            <em className="progress-status" data-status={status}>
+              {STATUS_LABELS[status]}
+            </em>
+          )}
         </div>
         {form && (
           <div className="progress-card-fields">
@@ -296,22 +492,71 @@ export default function BaselineCard({
             ` · onay ${baseline.approvedByName}, ${new Date(baseline.approvedAt).toLocaleDateString("tr-TR")}`}
         </small>
       </header>
-      <BaselineGrid
+      <MonthGrid
         project={project}
         label={label}
         openingMonth={gridOpening}
-        openingPct={openingValid ? opening : null}
         currentMonth={currentMonth}
+        selectedMonth={baseline && month ? month : undefined}
         planned={planned}
-        suggested={suggested}
-        approved={baseline && form ? baseline : undefined}
-        targets={form ? form.targets : asText(baseline?.targets || {})}
-        editable={editable}
-        onTarget={(month, value) =>
-          form &&
-          setForm({ ...form, targets: { ...form.targets, [month]: value } })
-        }
+        rows={gridRows}
       />
+      {baseline && (
+        <footer className="progress-card-actions progress-card-entry">
+          {entry === "closed" ? (
+            <span className="progress-card-hint">
+              Aylık giriş takibin başladığı aydan sonra açılır.
+            </span>
+          ) : (
+            <>
+              <label className="progress-card-noteinput">
+                Açıklama ({monthLabel(month)})
+                <input
+                  aria-label={`${label} · açıklama`}
+                  maxLength={PROGRESS_NOTE_MAX}
+                  value={note}
+                  disabled={!canEnter || saving}
+                  placeholder={canEnter ? "Bu ayın kısa açıklaması" : ""}
+                  onChange={(e) => setNote(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") void submitEntry();
+                  }}
+                />
+              </label>
+              {canEnter && (
+                <button
+                  type="button"
+                  className="button primary"
+                  disabled={saving || !entryChanged}
+                  onClick={() => void submitEntry()}
+                >
+                  Gerçekleşeni Kaydet
+                </button>
+              )}
+              {row && (
+                <span className="progress-level" data-level={row.level}>
+                  {LEVEL_LABELS[row.level]}
+                </span>
+              )}
+              {row && row.signals.length > 0 && (
+                <span className="progress-card-hint">
+                  {row.signals.map((s) => s.reason).join(" · ")}
+                </span>
+              )}
+              {entryMessage && (
+                <span
+                  role={entryMessage.error ? "alert" : "status"}
+                  className={
+                    entryMessage.error ? "progress-error" : "progress-ok"
+                  }
+                >
+                  {entryMessage.text}
+                </span>
+              )}
+            </>
+          )}
+        </footer>
+      )}
       <footer className="progress-card-actions">
         {editable && (
           <>

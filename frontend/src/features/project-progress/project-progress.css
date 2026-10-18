@@ -668,3 +668,76 @@
   max-width: 300px;
   padding-block: 0;
 }
+/* Cards grouped under their leadership. */
+.project-progress .progress-leader-group {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+.project-progress .progress-leader-group > h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--brand-primary, #405341);
+  color: var(--brand-text, #293a2d);
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+.project-progress .progress-leader-group > h3 small {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+/* The month being entered. */
+.project-progress .progress-grid tr td[data-selected] {
+  background-color: #fff8e6;
+}
+.project-progress .progress-grid thead tr th[data-selected] {
+  background: #f6e7bf;
+}
+/* Monthly entry cards. */
+.project-progress .progress-card.compact .progress-card-head {
+  border-bottom: 0;
+}
+.project-progress .progress-card-note {
+  margin: 0;
+  padding: 6px 12px 8px;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.project-progress .progress-status[data-status="waiting"] {
+  background: #fdf3e1;
+  color: #8a5a00;
+}
+.project-progress .progress-status[data-status="entered"] {
+  background: #e7f3e8;
+  color: var(--progress-green);
+}
+.project-progress .progress-status[data-status="locked"] {
+  background: #fbe9e7;
+  color: var(--progress-red);
+}
+.project-progress .progress-card-noteinput {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 360px;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+}
+.project-progress .progress-card-noteinput input {
+  flex: 1;
+  height: 26px;
+  font-size: var(--fs-xs);
+}
+.project-progress .progress-entry-count {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+}
+.project-progress .progress-entry-count[data-pending] {
+  color: #8a5a00;
+}

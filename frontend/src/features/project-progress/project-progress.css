@@ -741,3 +741,11 @@
 .project-progress .progress-entry-count[data-pending] {
   color: #8a5a00;
 }
+/* An empty month's carried target: shown faintly, never stored. */
+.project-progress .progress-grid tr.editable input::placeholder {
+  color: #a9b3a4;
+  font-weight: 500;
+}
+.project-progress .progress-implied {
+  color: #a9b3a4;
+}

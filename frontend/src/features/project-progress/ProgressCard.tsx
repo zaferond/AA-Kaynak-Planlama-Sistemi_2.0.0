@@ -327,6 +327,16 @@ export default function ProgressCard({
     ) : (
       input()
     );
+  // The target an empty month takes: the last entered one (or the opening).
+  const implied = (m: string) => {
+    if (!form) return "";
+    let value = openingValid ? text(opening!) : "";
+    for (const month of months) {
+      if (month >= m) break;
+      if (targets[month]?.trim()) value = targets[month];
+    }
+    return value;
+  };
   const past = (m: string) => m <= currentMonth;
   const row =
     record && baseline && month ? leaderRow(ctx, record, project, month) : null;
@@ -355,6 +365,12 @@ export default function ProgressCard({
                   aria-label={`${label} · ${fullMonth(m)} hedef %`}
                   inputMode="decimal"
                   value={targets[m] ?? ""}
+                  placeholder={implied(m)}
+                  title={
+                    targets[m]?.trim()
+                      ? undefined
+                      : "Boş ay önceki hedefin devamı sayılır"
+                  }
                   onChange={(e) =>
                     setForm({
                       ...form,
@@ -365,8 +381,10 @@ export default function ProgressCard({
                     })
                   }
                 />
+              ) : targets[m]?.trim() ? (
+                <strong>{targets[m]}</strong>
               ) : (
-                <strong>{targets[m] ?? ""}</strong>
+                <span className="progress-implied">{implied(m)}</span>
               ),
             ),
         },

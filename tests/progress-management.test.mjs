@@ -261,6 +261,14 @@ test("all-zero comparison weights are explicit and exports retain missing data a
     "unweighted",
   );
   const scope = row("Proje & <A>");
+  scope.project.milestones = [
+    {
+      id: "topic",
+      name: "Kabul & kontrol",
+      start: "2026-09-10",
+      end: "2026-09-20",
+    },
+  ];
   scope.leaders.push(leader("Liderlik B", null));
   const managed = manageProject(context(), scope, "2026-09");
   const sheets = managementSheets(context(), [managed], "2026-09", [
@@ -274,5 +282,7 @@ test("all-zero comparison weights are explicit and exports retain missing data a
   assert.match(sheets[0].xml, /Proje &amp; &lt;A&gt;/);
   assert.match(sheets[0].xml, /Gerçekleşen verisi eksik/);
   assert.match(sheets[1].xml, /Gelecek dönem/);
+  assert.match(sheets[1].xml, /Kritik konular/);
+  assert.match(sheets[1].xml, /Kabul &amp; kontrol/);
   assert.equal(managementExportRows([managed])[0].actual, null);
 });

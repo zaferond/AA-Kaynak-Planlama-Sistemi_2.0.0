@@ -1,13 +1,7 @@
-import { useRef, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { Project } from "../../model";
-import { milestoneRanges } from "../../milestone-ranges";
-import {
-  phaseChipPalette,
-  phaseChipStyle,
-  phaseRunKey,
-  phaseRunSpans,
-} from "../../phase-chip";
-import { positionPointerTooltip } from "../position-pointer-tooltip";
+import { phaseChipStyle, phaseRunKey, phaseRunSpans } from "../../phase-chip";
+import ProgressTopicCells from "./ProgressTopicCells";
 import { monthsAfter } from "../../../../shared/project-progress.ts";
 import { pctLabel } from "./progress-view";
 
@@ -29,21 +23,6 @@ const short = (month: string) =>
   MONTHS[Number(month.slice(5, 7)) - 1] + " " + month.slice(2, 4);
 export const fullMonth = (month: string) =>
   MONTHS[Number(month.slice(5, 7)) - 1] + " " + month.slice(0, 4);
-const day = (date: string) =>
-  /^\d{4}-\d{2}-\d{2}$/.test(date)
-    ? `${date.slice(8, 10)}.${date.slice(5, 7)}.${date.slice(0, 4)}`
-    : date;
-const accent = (color: string) =>
-  phaseChipPalette.find((item) => item.id === color)?.accent || "#7b8794";
-
-type Topic = {
-  name: string;
-  note: string;
-  start: string;
-  end: string;
-  point: boolean;
-  color: string;
-};
 export type GridRow = {
   label: string;
   /** Read-only rows sit on a grey ground; the row to fill stays white. */
@@ -51,25 +30,6 @@ export type GridRow = {
   opening: ReactNode;
   cell: (month: string) => ReactNode;
 };
-
-/** Critical topics and milestones of the project that touch a month. */
-function topicsIn(project: Project, month: string): Topic[] {
-  return (project.milestones || []).flatMap((milestone) =>
-    milestoneRanges(milestone)
-      .filter(
-        (range) =>
-          range.start.slice(0, 7) <= month && range.end.slice(0, 7) >= month,
-      )
-      .map((range) => ({
-        name: milestone.name,
-        note: range.notes?.find((n) => n.text?.trim())?.text.trim() || "",
-        start: range.start,
-        end: range.end,
-        point: range.displayKind === "milestone",
-        color: range.color || "red",
-      })),
-  );
-}
 
 /**
  * Months laid out like the project timeline: phases, critical topics and the
@@ -102,12 +62,6 @@ export default function MonthGrid({
     "data-now": m === currentMonth ? "true" : undefined,
     "data-selected": m === selectedMonth ? "true" : undefined,
   });
-  const tipRef = useRef<HTMLDivElement>(null);
-  const [tip, setTip] = useState<Topic[] | null>(null);
-  const showTip = (topics: Topic[], x: number, y: number) => {
-    setTip(topics);
-    requestAnimationFrame(() => positionPointerTooltip(tipRef.current, x, y));
-  };
   return (
     <div className="progress-grid-scroll">
       <table className="progress-grid" aria-label={label + " ay ay"}>
@@ -153,53 +107,12 @@ export default function MonthGrid({
           <tr className="readonly progress-grid-topics">
             <th scope="row">Kritik konular</th>
             <td className="opening" />
-            {months.map((m) => {
-              const topics = topicsIn(project, m);
-              const bars = topics.filter((t) => !t.point);
-              const points = topics.filter((t) => t.point);
-              return (
-                <td
-                  key={m}
-                  {...mark(m)}
-                  data-has-topics={topics.length ? "true" : undefined}
-                  tabIndex={topics.length ? 0 : undefined}
-                  aria-label={
-                    topics.length
-                      ? `${fullMonth(m)}: ${topics.map((t) => t.name).join(", ")}`
-                      : undefined
-                  }
-                  onMouseEnter={(e) =>
-                    topics.length && showTip(topics, e.clientX, e.clientY)
-                  }
-                  onMouseMove={(e) =>
-                    tip &&
-                    positionPointerTooltip(tipRef.current, e.clientX, e.clientY)
-                  }
-                  onMouseLeave={() => setTip(null)}
-                  onFocus={(e) => {
-                    const box = e.currentTarget.getBoundingClientRect();
-                    if (topics.length) showTip(topics, box.left, box.bottom);
-                  }}
-                  onBlur={() => setTip(null)}
-                >
-                  {bars.slice(0, 3).map((t, i) => (
-                    <i
-                      key={i}
-                      className="progress-topic-bar"
-                      style={{ background: accent(t.color) }}
-                    />
-                  ))}
-                  {points.length > 0 && (
-                    <b
-                      style={{ color: accent(points[0].color) }}
-                      aria-hidden="true"
-                    >
-                      ◆
-                    </b>
-                  )}
-                </td>
-              );
-            })}
+            <ProgressTopicCells
+              project={project}
+              months={months}
+              currentMonth={currentMonth}
+              selectedMonth={selectedMonth}
+            />
           </tr>
           <tr className="readonly">
             <th scope="row">Planlanan kaynak (kişi-ay)</th>
@@ -228,28 +141,6 @@ export default function MonthGrid({
           ))}
         </tbody>
       </table>
-      {tip && (
-        <div
-          ref={tipRef}
-          className="project-phase-tooltip progress-topic-tip"
-          role="tooltip"
-        >
-          {tip.map((t, i) => (
-            <div key={i}>
-              <strong>
-                {t.point ? "◆ " : "▬ "}
-                {t.name}
-              </strong>
-              <span>
-                {t.point || t.start === t.end
-                  ? day(t.start)
-                  : `${day(t.start)} – ${day(t.end)}`}
-              </span>
-              {t.note && t.note !== t.name && <small>{t.note}</small>}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

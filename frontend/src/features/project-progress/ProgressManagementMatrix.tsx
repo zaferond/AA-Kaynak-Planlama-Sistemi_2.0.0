@@ -5,6 +5,7 @@ import {
   TimelineYearRow,
 } from "../../components/TimelineHeaders";
 import ProjectResponsible from "../../ProjectResponsible";
+import ProgressTopicCells from "./ProgressTopicCells";
 import { phaseChipStyle, phaseRunKey, phaseRunSpans } from "../../phase-chip";
 import { monthLabel } from "../../format";
 import { pctLabel, type ProgressContext } from "./progress-view";
@@ -146,106 +147,115 @@ export default function ProgressManagementMatrix({
             const phaseSpans = phaseRunSpans(phaseKeys);
             return (
               <Fragment key={row.project.id}>
-                {[{ key: "phase", label: "Aşama" } as const, ...metrics].map(
-                  ({ key, label }, index) => (
-                    <tr
-                      key={key}
-                      className={
-                        index === 0
-                          ? "progress-project-row"
+                {[
+                  { key: "phase", label: "Aşama" } as const,
+                  { key: "topics", label: "Kritik konular" } as const,
+                  ...metrics,
+                ].map(({ key, label }, index) => (
+                  <tr
+                    key={key}
+                    className={
+                      index === 0
+                        ? "progress-project-row"
+                        : key === "topics"
+                          ? "progress-project-metric progress-grid-topics"
                           : "progress-project-metric"
-                      }
-                      data-project={row.project.id}
-                      data-metric={key}
-                      data-selected={detail === row.project.id || undefined}
-                    >
-                      {index === 0 && (
-                        <td rowSpan={4} className="progress-matrix-assessment">
-                          <AssessmentStatus value={project.assessment} />
-                        </td>
-                      )}
-                      {index === 0 && (
-                        <td rowSpan={4} className="progress-matrix-name">
-                          <button
-                            type="button"
-                            className="progress-expand"
-                            aria-expanded={isExpanded}
-                            aria-label={
-                              row.project.name +
-                              (isExpanded
-                                ? " liderliklerini gizle"
-                                : " liderliklerini göster")
-                            }
-                            onClick={() => {
-                              const next = new Set(expanded);
-                              if (isExpanded) next.delete(row.project.id);
-                              else next.add(row.project.id);
-                              setExpanded(next);
-                            }}
-                          >
-                            {isExpanded ? (
-                              <ChevronDown size={14} />
-                            ) : (
-                              <ChevronRight size={14} />
-                            )}
-                          </button>
-                          <button
-                            type="button"
-                            className="textbutton"
-                            onClick={() =>
-                              onDetail(
-                                detail === row.project.id ? "" : row.project.id,
-                              )
-                            }
-                          >
-                            {row.project.name}
-                          </button>
-                          <ProjectResponsible project={row.project} />
-                          <small>
-                            {row.leaders.length} liderlik · Bitiş:{" "}
-                            {monthLabel(row.project.end)}
-                          </small>
-                        </td>
-                      )}
-                      <th scope="row" className="progress-matrix-metric">
-                        {label}
-                      </th>
-                      {key === "phase"
-                        ? months.map((m, i) => {
-                            if (
-                              phaseKeys[i] &&
-                              phaseKeys[i - 1] === phaseKeys[i]
+                    }
+                    data-project={row.project.id}
+                    data-metric={key}
+                    data-selected={detail === row.project.id || undefined}
+                  >
+                    {index === 0 && (
+                      <td rowSpan={5} className="progress-matrix-assessment">
+                        <AssessmentStatus value={project.assessment} />
+                      </td>
+                    )}
+                    {index === 0 && (
+                      <td rowSpan={5} className="progress-matrix-name">
+                        <button
+                          type="button"
+                          className="progress-expand"
+                          aria-expanded={isExpanded}
+                          aria-label={
+                            row.project.name +
+                            (isExpanded
+                              ? " liderliklerini gizle"
+                              : " liderliklerini göster")
+                          }
+                          onClick={() => {
+                            const next = new Set(expanded);
+                            if (isExpanded) next.delete(row.project.id);
+                            else next.add(row.project.id);
+                            setExpanded(next);
+                          }}
+                        >
+                          {isExpanded ? (
+                            <ChevronDown size={14} />
+                          ) : (
+                            <ChevronRight size={14} />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          className="textbutton"
+                          onClick={() =>
+                            onDetail(
+                              detail === row.project.id ? "" : row.project.id,
                             )
-                              return null;
-                            return (
-                              <td
-                                key={m}
-                                colSpan={phaseKeys[i] ? phaseSpans[i] : 1}
-                                className="progress-matrix-phase"
-                                data-month={m}
-                              >
-                                {phaseKeys[i] ? (
-                                  <span
-                                    className="progress-phase"
-                                    style={phaseChipStyle(
-                                      row.project,
-                                      m,
-                                      phaseSpans[i],
-                                    )}
-                                    title={row.project.phases[m]}
-                                  >
-                                    {row.project.phases[m]}
-                                  </span>
-                                ) : (
-                                  "—"
+                          }
+                        >
+                          {row.project.name}
+                        </button>
+                        <ProjectResponsible project={row.project} />
+                        <small>
+                          {row.leaders.length} liderlik · Bitiş:{" "}
+                          {monthLabel(row.project.end)}
+                        </small>
+                      </td>
+                    )}
+                    <th scope="row" className="progress-matrix-metric">
+                      {label}
+                    </th>
+                    {key === "topics" ? (
+                      <ProgressTopicCells
+                        project={row.project}
+                        months={months}
+                        selectedMonth={month}
+                      />
+                    ) : key === "phase" ? (
+                      months.map((m, i) => {
+                        if (phaseKeys[i] && phaseKeys[i - 1] === phaseKeys[i])
+                          return null;
+                        return (
+                          <td
+                            key={m}
+                            colSpan={phaseKeys[i] ? phaseSpans[i] : 1}
+                            className="progress-matrix-phase"
+                            data-month={m}
+                          >
+                            {phaseKeys[i] ? (
+                              <span
+                                className="progress-phase"
+                                style={phaseChipStyle(
+                                  row.project,
+                                  m,
+                                  phaseSpans[i],
                                 )}
-                              </td>
-                            );
-                          })
-                        : cells(points.project, key)}
-                    </tr>
-                  ),
-                )}
+                                title={row.project.phases[m]}
+                              >
+                                {row.project.phases[m]}
+                              </span>
+                            ) : (
+                              "—"
+                            )}
+                          </td>
+                        );
+                      })
+                    ) : (
+                      cells(points.project, key)
+                    )}
+                  </tr>
+                ))}
                 {isExpanded &&
                   project.leaders.map((l) => (
                     <Fragment key={l.row.record.id}>

@@ -16,7 +16,34 @@ export async function checkProgressManagement(f) {
       "2026-11": "Doğrulama",
     },
     phaseColors: { "2026-09": "blue", "2026-10": "blue", "2026-11": "green" },
-    milestones: [],
+    milestones: [
+      {
+        id: "report-topic-range",
+        name: "Tasarım gözden geçirmesi",
+        start: "2026-08-25",
+        end: "2026-09-15",
+        barColor: "amber",
+        barText: "Tasarım dokümanları kontrol edilecek",
+        additionalRanges: [
+          { start: "2026-10-05", end: "2026-11-10", color: "green" },
+        ],
+      },
+      {
+        id: "report-topic-point",
+        name: "Prototip kabulü",
+        start: "2026-09-21",
+        end: "2026-09-21",
+        displayKind: "milestone",
+        barColor: "red",
+      },
+      {
+        id: "report-topic-hidden",
+        name: "Gizli kritik konu",
+        start: "2026-09-01",
+        end: "2026-09-30",
+        hasCriticalTopics: false,
+      },
+    ],
   };
   const progress = (projectId, leader, id) => ({
     id,
@@ -122,7 +149,7 @@ export async function checkProgressManagement(f) {
           /Değerlendirme durumu/,
         );
         const projectA = matrix.locator('[data-project="p-a"]');
-        assert.equal(await projectA.count(), 4);
+        assert.equal(await projectA.count(), 5);
         await projectA
           .first()
           .getByRole("rowheader", { name: "Aşama", exact: true })
@@ -222,6 +249,73 @@ export async function checkProgressManagement(f) {
         await page
           .getByRole("combobox", { name: "Ay", exact: true })
           .selectOption("2026-09");
+        const topicRow = matrix.locator(
+          `[data-project="${extra.id}"][data-metric="topics"]`,
+        );
+        await topicRow
+          .getByRole("rowheader", { name: "Kritik konular", exact: true })
+          .waitFor();
+        assert.equal(await topicRow.locator("td").count(), 12);
+        const septemberTopics = topicRow.locator('td[data-month="2026-09"]');
+        assert.equal(
+          await septemberTopics.locator(".progress-topic-bar").count(),
+          1,
+        );
+        assert.equal(await septemberTopics.locator("b").innerText(), "◆");
+        assert.equal(
+          await topicRow
+            .locator('td[data-month="2026-08"] .progress-topic-bar')
+            .count(),
+          1,
+        );
+        assert.equal(
+          await topicRow
+            .locator('td[data-month="2026-10"] .progress-topic-bar')
+            .count(),
+          1,
+        );
+        assert.equal(
+          await topicRow
+            .locator('td[data-month="2026-11"] .progress-topic-bar')
+            .count(),
+          1,
+        );
+        const accessibleTopics =
+          await septemberTopics.getAttribute("aria-label");
+        assert(!accessibleTopics.includes("Gizli kritik konu"));
+        await septemberTopics.scrollIntoViewIfNeeded();
+        await septemberTopics.focus();
+        const tooltip = page.getByRole("tooltip");
+        await tooltip
+          .getByText("Tasarım dokümanları kontrol edilecek", { exact: true })
+          .waitFor();
+        await tooltip
+          .getByText("25.08.2026 – 15.09.2026", { exact: true })
+          .waitFor();
+        await tooltip.getByText("21.09.2026", { exact: true }).waitFor();
+        await f.capture(page, "management-critical-topics-tooltip");
+        await page
+          .getByRole("tab", { name: "Plan ve Giriş", exact: true })
+          .click();
+        const planTopicCell = page
+          .getByRole("region", {
+            name: extra.name + " · " + f.teamA.lead,
+            exact: true,
+          })
+          .locator('.progress-grid-topics td[data-month="2026-09"]');
+        assert.equal(
+          await planTopicCell.getAttribute("aria-label"),
+          accessibleTopics,
+        );
+        await planTopicCell.scrollIntoViewIfNeeded();
+        await planTopicCell.focus();
+        await page
+          .getByRole("tooltip")
+          .getByText("Tasarım dokümanları kontrol edilecek", { exact: true })
+          .waitFor();
+        await page
+          .getByRole("tab", { name: "İlerleme Raporu", exact: true })
+          .click();
         await f.capture(page, "management-progress-collapsed");
         await matrix
           .getByRole("button", {

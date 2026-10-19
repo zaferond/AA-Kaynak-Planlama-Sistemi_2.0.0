@@ -1,5 +1,6 @@
 import { EXCEL_MAX_ROWS, columnName, excelCellText } from "../../xlsx-cells.ts";
 import type { ProgressContext } from "./progress-view.ts";
+import { topicsIn } from "./progress-topics.ts";
 import {
   managementPoint,
   STATE_LABELS,
@@ -115,6 +116,9 @@ export function managementSheets(
           m >= p.row.project.start && m <= p.row.project.end
             ? p.row.project.phases[m]?.trim() || "—"
             : "—",
+          topicsIn(p.row.project, m)
+            .map((topic) => topic.name)
+            .join(" · ") || "—",
         ]);
       }
     }
@@ -157,6 +161,7 @@ export function managementSheets(
           "Fark (puan)",
           "Veri / ilerleme durumu",
           "Aşama",
+          "Kritik konular",
         ],
         monthly,
       ),

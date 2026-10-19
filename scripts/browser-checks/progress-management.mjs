@@ -118,6 +118,11 @@ export async function checkProgressManagement(f) {
       .getByRole("tab", { name: "İlerleme Raporu", exact: true })
       .click();
   };
+  const showDetails = async (cell, section, open = true) => {
+    const details = cell.locator(`details[data-section="${section}"]`);
+    const isOpen = (await details.getAttribute("open")) !== null;
+    if (isOpen !== open) await details.locator(":scope > summary").click();
+  };
   try {
     await open();
     const matrix = page.getByRole("table", {
@@ -148,6 +153,16 @@ export async function checkProgressManagement(f) {
             .innerText(),
           /İlerleme ve kaynak değerlendirmesi/,
         );
+        assert.equal(
+          await matrix.locator(".progress-assessment-section[open]").count(),
+          0,
+        );
+        assert.equal(
+          await matrix
+            .getByRole("rowheader", { name: "Fark %", exact: true })
+            .count(),
+          3,
+        );
         const projectA = matrix.locator('[data-project="p-a"]');
         assert.equal(await projectA.count(), 5);
         await projectA
@@ -164,6 +179,28 @@ export async function checkProgressManagement(f) {
           .locator('[data-project="p-b"] .progress-matrix-assessment')
           .getByText("Planın gerisinde", { exact: true })
           .waitFor();
+        const projectACell = projectA
+          .first()
+          .locator(".progress-matrix-assessment");
+        const projectBCell = matrix.locator(
+          '[data-project="p-b"] .progress-matrix-assessment',
+        );
+        assert.equal(
+          await projectACell
+            .getByText("Kalan iş: %30", { exact: true })
+            .isVisible(),
+          false,
+        );
+        await showDetails(projectACell, "plan");
+        assert.equal(
+          await projectACell
+            .locator('details[data-section="evaluation"][open]')
+            .count(),
+          0,
+        );
+        await showDetails(projectBCell, "plan");
+        await showDetails(projectACell, "evaluation");
+        await showDetails(projectBCell, "evaluation");
         await projectA
           .first()
           .getByText("Hedefin 20 puan önünde.", { exact: true })
@@ -193,9 +230,43 @@ export async function checkProgressManagement(f) {
             { exact: true },
           )
           .waitFor();
-        await projectBStatus.getByText(/^Dikkat gerektiren konular/).click();
         assert(!(await projectBStatus.innerText()).includes("Perf."));
-        await projectBStatus.getByText(/^Dikkat gerektiren konular/).click();
+        const typography = await projectBStatus
+          .locator(
+            ".progress-assessment-content span, .progress-resource-action, .progress-assessment-reasons li",
+          )
+          .evaluateAll((nodes) =>
+            nodes.map((node) => {
+              const style = getComputedStyle(node);
+              return {
+                font: style.fontFamily,
+                size: style.fontSize,
+                fits: node.scrollWidth <= node.clientWidth + 1,
+              };
+            }),
+          );
+        assert.equal(new Set(typography.map((item) => item.font)).size, 1);
+        assert.equal(new Set(typography.map((item) => item.size)).size, 1);
+        assert(
+          typography.every((item) => item.fits),
+          "Detail text wraps inside the narrower column",
+        );
+        await f.capture(page, "management-assessment-open-details");
+        await showDetails(projectACell, "plan", false);
+        assert.equal(
+          await projectACell
+            .getByText("Kalan iş: %30", { exact: true })
+            .isVisible(),
+          false,
+        );
+        assert.equal(
+          await projectACell
+            .getByText("Önümüzdeki 3 ay kaynak planı: 0,6 kişi-ay", {
+              exact: true,
+            })
+            .isVisible(),
+          true,
+        );
         await page
           .getByText("İlerleme ve kaynak kararları nasıl değerlendirilir?", {
             exact: true,
@@ -418,6 +489,8 @@ export async function checkProgressManagement(f) {
         );
         assert.match(entries["xl/worksheets/sheet3.xml"], /2026-12/);
         assert.match(entries["xl/worksheets/sheet3.xml"], /Aşama/);
+        assert.match(entries["xl/worksheets/sheet2.xml"], /Fark %/);
+        assert.match(entries["xl/worksheets/sheet3.xml"], /Fark %/);
         assert.match(entries["xl/worksheets/sheet3.xml"], /Design/);
         await project.selectOption("");
         await page
@@ -492,7 +565,7 @@ export async function checkProgressManagement(f) {
           await rows
             .filter({
               has: page.getByRole("rowheader", {
-                name: "Fark (puan)",
+                name: "Fark %",
                 exact: true,
               }),
             })
@@ -560,6 +633,9 @@ export async function checkProgressManagement(f) {
         await decisionCell
           .getByText("İş devam ediyor, kaynak planı yok", { exact: true })
           .waitFor();
+        assert.equal(await decisionCell.locator("details[open]").count(), 0);
+        await showDetails(decisionCell, "plan");
+        await showDetails(decisionCell, "evaluation");
         await decisionCell
           .getByText("Kalan iş: %70", { exact: true })
           .waitFor();
@@ -612,6 +688,9 @@ export async function checkProgressManagement(f) {
         });
         await selectProject("p-a");
         await decisionCell.getByText("Tamamlandı", { exact: true }).waitFor();
+        assert.equal(await decisionCell.locator("details[open]").count(), 0);
+        await showDetails(decisionCell, "plan");
+        await showDetails(decisionCell, "evaluation");
         await decisionCell.getByText("Kalan iş: %0", { exact: true }).waitFor();
         await decisionCell
           .getByText("Tamamlanan işte kaynak planı sürüyor", { exact: true })

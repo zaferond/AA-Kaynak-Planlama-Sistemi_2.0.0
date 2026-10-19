@@ -1044,7 +1044,7 @@
 .project-progress .progress-monthly-matrix .progress-matrix-assessment,
 .project-progress .progress-monthly-matrix .progress-matrix-name {
   position: sticky;
-  left: 300px;
+  left: 220px;
   z-index: 2;
   background: #f1f5eb;
   white-space: normal;
@@ -1170,4 +1170,53 @@
 .project-progress .progress-assessment [data-state="completed"],
 .project-progress .progress-assessment [data-state="onTrack"] {
   color: #216c38;
+}
+
+.project-progress .progress-assessment {
+  gap: 10px;
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.project-progress .progress-assessment :is(strong, span, p, ul, li, summary) {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.project-progress .progress-assessment-section {
+  min-width: 0;
+}
+.project-progress .progress-assessment-section > summary {
+  cursor: pointer;
+}
+.project-progress .progress-assessment-caption {
+  color: #60715e;
+  font-weight: 600;
+}
+.project-progress .progress-assessment-section > summary > strong {
+  display: block;
+  margin-top: 0;
+  font-weight: 700;
+}
+.project-progress .progress-assessment-content {
+  display: grid;
+  gap: 5px;
+  margin-top: 6px;
+  padding-left: 10px;
+  border-left: 2px solid #d5dfcf;
+  font-weight: 500;
+}
+.project-progress .progress-assessment-months {
+  display: grid;
+  gap: 2px;
+}
+.project-progress .progress-assessment .progress-resource-action {
+  margin: 0;
+}
+.project-progress .progress-assessment-reasons ul {
+  margin: 4px 0 0;
+  padding-left: 14px;
 }

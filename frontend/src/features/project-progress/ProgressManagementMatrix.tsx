@@ -65,7 +65,7 @@ export default function ProgressManagementMatrix({
   const metrics = [
     { key: "target", label: "Planlanan %" },
     { key: "actual", label: "Gerçekleşen %" },
-    { key: "gap", label: "Fark (puan)" },
+    { key: "gap", label: "Fark %" },
   ] as const;
   const cells = (points: ReportPoint[], key: "target" | "actual" | "gap") =>
     months.map((m, index) => {
@@ -99,10 +99,10 @@ export default function ProgressManagementMatrix({
       <table
         className="progress-table progress-report-table progress-monthly-matrix"
         aria-label="Proje ilerleme raporu"
-        style={{ width: 660 + months.length * 86, minWidth: "100%" }}
+        style={{ width: 580 + months.length * 86, minWidth: "100%" }}
       >
         <colgroup>
-          <col style={{ width: 300 }} />
+          <col style={{ width: 220 }} />
           <col style={{ width: 240 }} />
           <col style={{ width: 120 }} />
           {months.map((m) => (
@@ -311,59 +311,82 @@ function AssessmentStatus({ value }: { value: ManagementAssessment }) {
   );
   return (
     <div className="progress-assessment">
-      <strong data-state={point.state}>{evaluationLabel(point)}</strong>
-      {point.gap !== null ? (
-        <>
-          <small>
-            Hedef %{pctLabel(point.target)} · Gerçekleşen %
-            {pctLabel(point.actual)}
-          </small>
-          <small className="progress-assessment-meaning">
-            {point.state === "completed"
-              ? "Tüm liderliklerin işi tamamlandı."
-              : point.gap < 0
-                ? `Hedefin ${pctLabel(Math.abs(point.gap))} puan gerisinde.`
-                : point.gap > 0
-                  ? `Hedefin ${pctLabel(point.gap)} puan önünde.`
-                  : "Gerçekleşen ilerleme, hedefle eşit."}
-          </small>
-          <span>
-            Kalan iş:{" "}
-            {value.remaining === null
-              ? "Tamamlanmamış liderlik işi var"
-              : `%${pctLabel(value.remaining)}`}
-          </span>
-        </>
-      ) : (
-        <small>
-          {STATE_LABELS[point.state]}
-          {point.state === "missing"
-            ? ` · ${point.entered}/${point.total} liderlik için veri mevcut`
-            : ""}
-        </small>
-      )}
-      <span
-        title={value.upcomingMonths
-          .map((m) => `${monthLabel(m.month)}: ${fmt(m.planned)} kişi-ay`)
-          .join(" · ")}
+      <details className="progress-assessment-section" data-section="plan">
+        <summary>
+          <span className="progress-assessment-caption">Plan durumu</span>
+          <strong data-state={point.state}>{evaluationLabel(point)}</strong>
+        </summary>
+        <div className="progress-assessment-content">
+          {point.gap !== null ? (
+            <>
+              <span>
+                Hedef %{pctLabel(point.target)} · Gerçekleşen %
+                {pctLabel(point.actual)}
+              </span>
+              <span>
+                {point.state === "completed"
+                  ? "Tüm liderliklerin işi tamamlandı."
+                  : point.gap < 0
+                    ? `Hedefin ${pctLabel(Math.abs(point.gap))} puan gerisinde.`
+                    : point.gap > 0
+                      ? `Hedefin ${pctLabel(point.gap)} puan önünde.`
+                      : "Gerçekleşen ilerleme, hedefle eşit."}
+              </span>
+              <span>
+                Kalan iş:{" "}
+                {value.remaining === null
+                  ? "Tamamlanmamış liderlik işi var"
+                  : `%${pctLabel(value.remaining)}`}
+              </span>
+            </>
+          ) : (
+            <span>
+              {STATE_LABELS[point.state]}
+              {point.state === "missing"
+                ? ` · ${point.entered}/${point.total} liderlik için veri mevcut`
+                : ""}
+            </span>
+          )}
+        </div>
+      </details>
+      <details
+        className="progress-assessment-section"
+        data-section="evaluation"
       >
-        Önümüzdeki 3 ay kaynak planı:{" "}
-        {value.upcoming > 0 ? `${fmt(value.upcoming)} kişi-ay` : "Yok"}
-      </span>
-      <b className="progress-resource-decision" data-review={resourceReview}>
-        {value.resourceTitle}
-      </b>
-      <p className="progress-resource-action">{value.action}</p>
-      {otherReasons.length > 0 && (
-        <details className="progress-assessment-reasons">
-          <summary>Dikkat gerektiren konular ({otherReasons.length})</summary>
-          <ul>
-            {otherReasons.map((reason) => (
-              <li key={reason}>{reason}</li>
+        <summary>
+          <span className="progress-assessment-caption">Değerlendirme</span>
+          <strong
+            className="progress-resource-decision"
+            data-review={resourceReview}
+          >
+            {value.resourceTitle}
+          </strong>
+        </summary>
+        <div className="progress-assessment-content">
+          <span>
+            Önümüzdeki 3 ay kaynak planı:{" "}
+            {value.upcoming > 0 ? `${fmt(value.upcoming)} kişi-ay` : "Yok"}
+          </span>
+          <div className="progress-assessment-months">
+            {value.upcomingMonths.map((m) => (
+              <span key={m.month}>
+                {monthLabel(m.month)}: {fmt(m.planned)} kişi-ay
+              </span>
             ))}
-          </ul>
-        </details>
-      )}
+          </div>
+          <p className="progress-resource-action">{value.action}</p>
+          {otherReasons.length > 0 && (
+            <div className="progress-assessment-reasons">
+              <strong>Dikkat gerektiren konular</strong>
+              <ul>
+                {otherReasons.map((reason) => (
+                  <li key={reason}>{reason}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </details>
     </div>
   );
 }

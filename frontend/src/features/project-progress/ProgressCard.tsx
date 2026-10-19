@@ -1,26 +1,28 @@
 import { useEffect, useState } from "react";
 import type { Principal } from "../../access";
 import type { Project } from "../../model";
+import ProjectResponsible from "../../ProjectResponsible";
 import type { Change } from "../../../../shared/commands";
 import {
   PROGRESS_NOTE_MAX,
-  PROGRESS_OPENING_MONTH,
   currentBaseline,
+  defaultPlanStart,
   leaderProgress,
   monthsAfter,
+  nextMonth,
   previousMonth,
   clearAfterComplete,
+  recalculateTargetsAfterEdit,
   proposalProblems,
   suggestTargets,
   targetAt,
   type ProgressProposal,
   type ProjectProgress,
+  type ProgressTargets,
 } from "../../../../shared/project-progress.ts";
 import { monthLabel } from "../../format";
 import MonthGrid, { fullMonth, type GridRow } from "./MonthGrid";
 import {
-  LEVEL_LABELS,
-  leaderRow,
   pctLabel,
   canLead,
   newProgressId,
@@ -28,42 +30,24 @@ import {
   type ProgressContext,
 } from "./progress-view";
 
+import {
+  baselineStatus,
+  entryStatus,
+  entryIsEditable,
+  PLAN_LABELS,
+  PLAN_STATUS_TITLE,
+  ENTRY_STATUS_TITLE,
+  PLAN_HELP,
+  ENTRY_LABELS,
+  ENTRY_HELP,
+} from "./progress-status";
+
 type Form = {
   openingMonth: string;
   openingPct: string;
   targets: Record<string, string>;
   reason: string;
-};
-export type BaselineStatus = "pending" | "draft" | "approved" | "new";
-export const baselineStatus = (record?: ProjectProgress): BaselineStatus =>
-  record?.proposal?.status === "pending"
-    ? "pending"
-    : record?.proposal
-      ? "draft"
-      : record?.baselines.length
-        ? "approved"
-        : "new";
-export type EntryStatus = "entered" | "waiting" | "locked" | "closed";
-/** The chosen month's actual: entered, still to enter, locked, or not open yet. */
-export function entryStatus(
-  record: ProjectProgress | undefined,
-  month: string,
-  locked: boolean,
-): EntryStatus | null {
-  if (!record?.baselines.length) return null;
-  if (!month || month <= record.baselines[0].openingMonth) return "closed";
-  if (record.actuals[month]) return "entered";
-  return locked ? "locked" : "waiting";
-}
-const STATUS_LABELS: Record<BaselineStatus | EntryStatus, string> = {
-  pending: "Plan onay bekliyor",
-  draft: "Plan taslağı",
-  approved: "Onaylı",
-  new: "Takibe alınmadı",
-  entered: "Girildi",
-  waiting: "Giriş bekliyor",
-  locked: "Ay kilitli",
-  closed: "Onaylı",
+  adjustedSuggestion?: ProgressTargets;
 };
 const decimal = (value: number) => String(value).replace(".", ",");
 const num = (value: string) =>
@@ -108,11 +92,10 @@ export default function ProgressCard({
   const [rebaseline, setRebaseline] = useState(false);
   const [form, setForm] = useState<Form | null>(null);
   const [message, setMessage] = useState<{ text: string; error?: boolean }>();
-  const [weight, setWeight] = useState("");
   const revision = record ? data.revisions["progress:" + record.id] || 0 : 0;
   // Monthly actual of the chosen month.
   const locked = (data.progressLocks || []).some((lock) => lock.id === month);
-  const entry = entryStatus(record, month, locked);
+  const entry = entryStatus(record, month, currentMonth);
   const saved = month ? record?.actuals[month] : undefined;
   const [pct, setPct] = useState("");
   const [note, setNote] = useState("");
@@ -131,7 +114,6 @@ export default function ProgressCard({
   // start empty: the leader fills them or applies the suggestion.
   useEffect(() => {
     setRebaseline(false);
-    setWeight(record?.weight === undefined ? "" : text(record.weight));
     const p = record?.proposal;
     if (p)
       return setForm({
@@ -142,7 +124,7 @@ export default function ProgressCard({
       });
     if (baseline) return setForm(null);
     setForm({
-      openingMonth: PROGRESS_OPENING_MONTH,
+      openingMonth: previousMonth(defaultPlanStart(project, currentMonth)),
       openingPct: "",
       targets: {},
       reason: "",
@@ -173,7 +155,8 @@ export default function ProgressCard({
     Number.isFinite(opening) && opening! >= 0 && opening! <= 100;
   const suggested =
     form && openingValid
-      ? suggestTargets(form.openingMonth, opening!, project.end, planned)
+      ? (form.adjustedSuggestion ??
+        suggestTargets(form.openingMonth, opening!, project.end, planned))
       : undefined;
   const months = form ? monthsAfter(form.openingMonth, project.end) : [];
   const proposal = form && {
@@ -189,7 +172,7 @@ export default function ProgressCard({
   const problems =
     proposal && form
       ? [
-          ...(!openingValid ? ["Açılış değerini (0–100) girin."] : []),
+          ...(!openingValid ? ["Başlangıç değerini (0–100) girin."] : []),
           ...(months.some(
             (m) =>
               form.targets[m]?.trim() && !Number.isFinite(num(form.targets[m])),
@@ -198,7 +181,7 @@ export default function ProgressCard({
             : []),
           ...proposalProblems(proposal, project.end),
           ...(baseline && !proposal.reason
-            ? ["Yeni temel plan için gerekçe yazın."]
+            ? ["Hedef planı revizyonu için gerekçe yazın."]
             : []),
         ]
       : [];
@@ -212,10 +195,7 @@ export default function ProgressCard({
 
   const actualFte = ctx.actual(project.id).get(leader);
   const canEnter =
-    !!baseline &&
-    canLead(user, leader) &&
-    (entry === "waiting" || entry === "entered") &&
-    month <= currentMonth;
+    !!baseline && canLead(user, leader) && entryIsEditable(entry, locked);
   const entryChanged =
     pct !== (saved ? decimal(saved.pct) : "") || note !== (saved?.note || "");
   const value = num(pct);
@@ -227,7 +207,7 @@ export default function ProgressCard({
         ? "Kısa bir açıklama yazın."
         : "";
   async function submitEntry() {
-    if (!record) return;
+    if (!record || !canEnter || saving) return;
     if (entryProblem)
       return setEntryMessage({ text: entryProblem, error: true });
     setEntryMessage(undefined);
@@ -285,39 +265,67 @@ export default function ProgressCard({
       setMessage({ text: (error as Error).message, error: true });
     }
   }
-  async function saveWeight() {
-    if (!record) return;
-    const value = num(weight);
-    if (weight.trim() && !(value >= 0 && value <= 1000))
-      return setMessage({
-        text: "Ağırlık 0 ile 1000 arasında olmalı.",
-        error: true,
-      });
-    const { weight: _, ...rest } = record;
-    try {
-      await onSave([
-        progressChange(data, weight.trim() ? { ...rest, weight: value } : rest),
-      ]);
-      setMessage({ text: "Ağırlık kaydedildi." });
-    } catch (error) {
-      setMessage({ text: (error as Error).message, error: true });
-    }
-  }
-
-  const openingOptions = [
-    baseline?.openingMonth || PROGRESS_OPENING_MONTH,
-    ...monthsAfter(
-      baseline?.openingMonth || PROGRESS_OPENING_MONTH,
-      previousMonth(currentMonth),
-    ),
-  ];
+  // The start month is free within the project; a new baseline cannot start
+  // before the approved one it replaces. Stored as the month before it.
+  const firstStart = baseline
+    ? nextMonth(baseline.openingMonth)
+    : project.start;
+  const startOptions = [firstStart, ...monthsAfter(firstStart, project.end)];
+  if (form && !startOptions.includes(nextMonth(form.openingMonth)))
+    startOptions.unshift(nextMonth(form.openingMonth));
   // With an approved plan the grid starts at its opening, so a new plan's
   // later opening still shows the history before it.
   const gridOpening =
-    baseline?.openingMonth || form?.openingMonth || PROGRESS_OPENING_MONTH;
+    baseline?.openingMonth ||
+    form?.openingMonth ||
+    previousMonth(defaultPlanStart(project, currentMonth));
 
   const openingCell = pctLabel(openingValid ? opening : null);
   const targets = form ? form.targets : {};
+  function editTarget(month: string, input: string) {
+    setForm((current) => {
+      if (!current) return current;
+      const numericTargets = Object.fromEntries(
+        Object.entries(current.targets)
+          .filter(
+            ([m, value]) =>
+              m > current.openingMonth &&
+              value.trim() &&
+              Number.isFinite(num(value)),
+          )
+          .map(([m, value]) => [m, num(value)]),
+      );
+      const recalculated = recalculateTargetsAfterEdit(
+        numericTargets,
+        month,
+        num(input),
+        project.end,
+        planned,
+      );
+      const next = { ...current.targets, [month]: input };
+      const updated = recalculated
+        ? {
+            ...Object.fromEntries(
+              Object.entries(next).filter(([m]) => m <= month),
+            ),
+            ...asText(
+              Object.fromEntries(
+                Object.entries(recalculated).filter(([m]) => m > month),
+              ),
+            ),
+          }
+        : next;
+      // Keep months after completion empty, including an earlier new finish.
+      const firstComplete = Object.keys(updated)
+        .sort()
+        .find((m) => m > current.openingMonth && num(updated[m]) === 100);
+      return {
+        ...current,
+        targets: clearAfterComplete(updated, firstComplete || month),
+        ...(recalculated ? { adjustedSuggestion: recalculated } : {}),
+      };
+    });
+  }
   // Months up to a new plan's opening carry no new target.
   const proposalCell = (m: string, input: () => React.ReactNode) =>
     !form || m < form.openingMonth ? (
@@ -327,19 +335,7 @@ export default function ProgressCard({
     ) : (
       input()
     );
-  // The target an empty month takes: the last entered one (or the opening).
-  const implied = (m: string) => {
-    if (!form) return "";
-    let value = openingValid ? text(opening!) : "";
-    for (const month of months) {
-      if (month >= m) break;
-      if (targets[month]?.trim()) value = targets[month];
-    }
-    return value;
-  };
   const past = (m: string) => m <= currentMonth;
-  const row =
-    record && baseline && month ? leaderRow(ctx, record, project, month) : null;
   const planRows: GridRow[] = form
     ? [
         ...(editable
@@ -365,26 +361,17 @@ export default function ProgressCard({
                   aria-label={`${label} · ${fullMonth(m)} hedef %`}
                   inputMode="decimal"
                   value={targets[m] ?? ""}
-                  placeholder={implied(m)}
                   title={
                     targets[m]?.trim()
                       ? undefined
                       : "Boş ay önceki hedefin devamı sayılır"
                   }
-                  onChange={(e) =>
-                    setForm({
-                      ...form,
-                      targets: clearAfterComplete(
-                        { ...form.targets, [m]: e.target.value },
-                        m,
-                      ),
-                    })
-                  }
+                  onChange={(e) => editTarget(m, e.target.value)}
                 />
               ) : targets[m]?.trim() ? (
                 <strong>{targets[m]}</strong>
               ) : (
-                <span className="progress-implied">{implied(m)}</span>
+                "—"
               ),
             ),
         },
@@ -450,29 +437,56 @@ export default function ProgressCard({
         <div className="progress-card-title">
           <strong>{project.name}</strong>
           <span>{leader}</span>
-          {entry && entry !== "closed" && (
-            <em className="progress-status" data-status={entry}>
-              {STATUS_LABELS[entry]}
-            </em>
+          <ProjectResponsible project={project} />
+        </div>
+        <div className="progress-card-statuses" aria-label="İlerleme durumları">
+          <ProgressStatusCard
+            label={PLAN_STATUS_TITLE}
+            value={PLAN_LABELS[baseline ? "approved" : status]}
+            status={baseline ? "approved" : status}
+            help={PLAN_HELP[baseline ? "approved" : status]}
+          />
+          {baseline && record?.proposal && (
+            <ProgressStatusCard
+              label="Revizyon Giriş Durumu"
+              value={PLAN_LABELS[status]}
+              status={status}
+              help={PLAN_HELP[status]}
+            />
           )}
-          {(status !== "approved" || entry === "closed") && (
-            <em className="progress-status" data-status={status}>
-              {STATUS_LABELS[status]}
-            </em>
+          <ProgressStatusCard
+            label={
+              ENTRY_STATUS_TITLE + (month ? ` (${monthLabel(month)})` : "")
+            }
+            value={ENTRY_LABELS[entry]}
+            status={entry}
+            help={ENTRY_HELP[entry]}
+          />
+          {month && (
+            <ProgressStatusCard
+              label="Ay kilidi"
+              value={locked ? "Değişikliğe kapalı" : "Değişikliğe açık"}
+              status={locked ? "locked" : "unlocked"}
+            />
           )}
         </div>
         {form && (
           <div className="progress-card-fields">
             <label>
-              Açılış
+              Başlangıç ayı
               <select
-                value={form.openingMonth}
+                aria-label={label + " · başlangıç ayı"}
+                value={nextMonth(form.openingMonth)}
                 disabled={!editable}
                 onChange={(e) =>
-                  setForm({ ...form, openingMonth: e.target.value })
+                  setForm({
+                    ...form,
+                    openingMonth: previousMonth(e.target.value),
+                    adjustedSuggestion: undefined,
+                  })
                 }
               >
-                {openingOptions.map((m) => (
+                {startOptions.map((m) => (
                   <option key={m} value={m}>
                     {monthLabel(m)}
                   </option>
@@ -480,15 +494,20 @@ export default function ProgressCard({
               </select>
             </label>
             <label>
-              Açılış %
+              Başlangıç %
               <input
-                aria-label={label + " · açılış %"}
+                aria-label={label + " · başlangıç %"}
+                title="Başlangıç ayı başında tamamlanmış olan yüzde"
                 inputMode="decimal"
                 placeholder="%"
                 value={form.openingPct}
                 disabled={!editable}
                 onChange={(e) =>
-                  setForm({ ...form, openingPct: e.target.value })
+                  setForm({
+                    ...form,
+                    openingPct: e.target.value,
+                    adjustedSuggestion: undefined,
+                  })
                 }
               />
             </label>
@@ -496,6 +515,7 @@ export default function ProgressCard({
               <label className="wide">
                 Gerekçe
                 <input
+                  aria-label={label + " · revizyon gerekçesi"}
                   value={form.reason}
                   maxLength={500}
                   disabled={!editable}
@@ -527,7 +547,8 @@ export default function ProgressCard({
         <footer className="progress-card-actions progress-card-entry">
           {entry === "closed" ? (
             <span className="progress-card-hint">
-              Aylık giriş takibin başladığı aydan sonra açılır.
+              Gerçekleşen girişi henüz açık değil. Plan başlangıcı:{" "}
+              {monthLabel(nextMonth(record!.baselines[0].openingMonth))}.
             </span>
           ) : (
             <>
@@ -545,6 +566,12 @@ export default function ProgressCard({
                   }}
                 />
               </label>
+              {locked && (
+                <span className="progress-locked">
+                  Bu ay değişikliğe kapalı. Düzenlemek için sistem yöneticisi
+                  ayın kilidini açmalı.
+                </span>
+              )}
               {canEnter && (
                 <button
                   type="button"
@@ -554,16 +581,6 @@ export default function ProgressCard({
                 >
                   Gerçekleşeni Kaydet
                 </button>
-              )}
-              {row && (
-                <span className="progress-level" data-level={row.level}>
-                  {LEVEL_LABELS[row.level]}
-                </span>
-              )}
-              {row && row.signals.length > 0 && (
-                <span className="progress-card-hint">
-                  {row.signals.map((s) => s.reason).join(" · ")}
-                </span>
               )}
               {entryMessage && (
                 <span
@@ -586,7 +603,7 @@ export default function ProgressCard({
               type="button"
               className="button"
               disabled={!suggested}
-              title={suggested ? undefined : "Önce açılış değerini girin"}
+              title={suggested ? undefined : "Önce başlangıç yüzdesini girin"}
               onClick={() =>
                 form &&
                 suggested &&
@@ -609,26 +626,33 @@ export default function ProgressCard({
               type="button"
               className="button"
               disabled={saving || !openingValid}
-              onClick={() => void send("draft", "Taslak kaydedildi.")}
+              onClick={() =>
+                void send("draft", "Hedef planı taslağı kaydedildi.")
+              }
             >
-              Taslak Kaydet
+              Taslağı Kaydet
             </button>
             <button
               type="button"
               className="button primary"
               disabled={saving || problems.length > 0}
-              onClick={() => void send("pending", "Onaya gönderildi.")}
+              onClick={() =>
+                void send(
+                  "pending",
+                  "Hedef planı proje ekibi onayına gönderildi.",
+                )
+              }
             >
-              Onaya Gönder
+              Hedef Planını Onaya Gönder
             </button>
             {admin && (
               <button
                 type="button"
                 className="button primary"
                 disabled={saving || problems.length > 0}
-                onClick={() => void send("approved", "Temel plan onaylandı.")}
+                onClick={() => void send("approved", "Hedef planı onaylandı.")}
               >
-                Onayla
+                Hedef Planını Onayla
               </button>
             )}
             {rebaseline && (
@@ -655,11 +679,13 @@ export default function ProgressCard({
                 onClick={() =>
                   void send(
                     "draft",
-                    admin ? "Öneri taslağa döndürüldü." : "Öneri geri çekildi.",
+                    admin
+                      ? "Hedef planı düzeltme için geri gönderildi."
+                      : "Onay talebi geri çekildi; hedef planı taslağa döndü.",
                   )
                 }
               >
-                {admin ? "Reddet" : "Geri Çek"}
+                {admin ? "Düzeltme İçin Geri Gönder" : "Onay Talebini Geri Çek"}
               </button>
             )}
             {admin && (
@@ -667,16 +693,16 @@ export default function ProgressCard({
                 type="button"
                 className="button primary"
                 disabled={saving}
-                onClick={() => void send("approved", "Temel plan onaylandı.")}
+                onClick={() => void send("approved", "Hedef planı onaylandı.")}
               >
-                Onayla
+                Hedef Planını Onayla
               </button>
             )}
           </>
         )}
         {baseline && !form && canLead(user, leader) && (
           <button type="button" className="button" onClick={startRebaseline}>
-            Yeni Temel Plan Öner
+            Hedef Planını Revize Et
           </button>
         )}
         {record?.proposal && !pending && baseline && (
@@ -684,40 +710,20 @@ export default function ProgressCard({
             type="button"
             className="button"
             disabled={saving}
-            onClick={() => void send(null, "Öneri silindi.")}
+            onClick={() => void send(null, "Revizyon taslağı silindi.")}
           >
-            Öneriyi Sil
+            Revizyon Taslağını Sil
           </button>
         )}
         {admin && record && (
-          <span className="progress-card-admin">
-            <label>
-              Ağırlık
-              <input
-                aria-label={label + " · ağırlık"}
-                inputMode="decimal"
-                value={weight}
-                placeholder="Plan payı"
-                onChange={(e) => setWeight(e.target.value)}
-              />
-            </label>
-            <button
-              type="button"
-              className="button"
-              disabled={saving}
-              onClick={() => void saveWeight()}
-            >
-              Ağırlığı Kaydet
-            </button>
-            <button
-              type="button"
-              className="button danger"
-              disabled={saving}
-              onClick={() => void remove()}
-            >
-              Kaydı Sil
-            </button>
-          </span>
+          <button
+            type="button"
+            className="button danger progress-card-delete"
+            disabled={saving}
+            onClick={() => void remove()}
+          >
+            Kaydı Sil
+          </button>
         )}
         {editable && problems.length > 0 && !message && (
           <span className="progress-card-hint">{problems[0]}</span>
@@ -732,5 +738,26 @@ export default function ProgressCard({
         )}
       </footer>
     </section>
+  );
+}
+
+function ProgressStatusCard({
+  label,
+  value,
+  status,
+  help,
+}: {
+  label: string;
+  value: string;
+  status: string;
+  help?: string;
+}) {
+  return (
+    <div className="progress-status-card" title={help}>
+      <strong className="progress-status-card-label">{label}:</strong>{" "}
+      <span className="progress-status" data-status={status}>
+        {value}
+      </span>
+    </div>
   );
 }

@@ -4,10 +4,7 @@ import {
   projectProgressSchema,
   progressLockSchema,
 } from "../shared/snapshot-schema.ts";
-import {
-  PROGRESS_OPENING_MONTH,
-  proposalProblems,
-} from "../shared/project-progress.ts";
+import { proposalProblems } from "../shared/project-progress.ts";
 import { currentPlanningDate } from "../shared/resource-dates.ts";
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -95,9 +92,13 @@ export function stageProgressChange(
       fail(409, "Onay bekleyen öneri değiştirilemez; önce geri çekin.");
     if (to === "approved" && !admin)
       fail(403, "Temel planı yalnız admin onaylar.");
-    const opening = baselines.at(-1)?.openingMonth || PROGRESS_OPENING_MONTH;
-    if (proposal.openingMonth < opening)
-      fail(400, "Açılış ayı önceki temel planın açılışından önce olamaz.");
+    // A new baseline cannot start before the approved one it replaces.
+    const opening = baselines.at(-1)?.openingMonth;
+    if (opening && proposal.openingMonth < opening)
+      fail(
+        400,
+        "Yeni plan önceki temel planın başlangıcından önce başlayamaz.",
+      );
     if (to !== "draft") {
       const problems = proposalProblems(proposal, project.end);
       if (problems.length) fail(400, problems[0]);

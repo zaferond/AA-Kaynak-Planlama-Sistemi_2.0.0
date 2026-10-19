@@ -1,8 +1,20 @@
-import { useState } from "react";
+import { useId, useState, type ReactNode } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import type { Principal } from "../../access";
 import type { Change } from "../../../../shared/commands";
 import { monthLabel } from "../../format";
-import ProgressCard, { baselineStatus, entryStatus } from "./ProgressCard";
+import ProgressCard from "./ProgressCard";
+import ProgressProcessHelp from "./ProgressProcessHelp";
+import {
+  baselineStatus,
+  entryStatus,
+  PLAN_LABELS,
+  PLAN_STATUS_TITLE,
+  ENTRY_STATUS_TITLE,
+  ENTRY_LABELS,
+  type PlanStatus,
+  type EntryStatus,
+} from "./progress-status";
 import {
   progressGroups,
   progressLeaders,
@@ -10,22 +22,11 @@ import {
 } from "./progress-scope";
 import type { ProgressContext } from "./progress-view";
 
-type Status = "pending" | "waiting" | "draft" | "new" | "locked" | "entered";
-const ORDER: Record<Status, number> = {
+const PLAN_ORDER: Record<PlanStatus, number> = {
   pending: 0,
-  waiting: 1,
   draft: 2,
   new: 3,
-  locked: 4,
-  entered: 5,
-};
-const LABELS: Record<Status, string> = {
-  pending: "Plan onay bekliyor",
-  waiting: "Giriş bekliyor",
-  draft: "Plan taslağı",
-  new: "Takibe alınmadı",
-  locked: "Ay kilitli",
-  entered: "Girildi",
+  approved: 4,
 };
 
 /**
@@ -35,6 +36,7 @@ const LABELS: Record<Status, string> = {
  */
 export default function PlanAndEntry({
   ctx,
+  responsibleFilter,
   user,
   month,
   currentMonth,
@@ -42,6 +44,7 @@ export default function PlanAndEntry({
   onSave,
 }: {
   ctx: ProgressContext;
+  responsibleFilter: ReactNode;
   user: Principal | null;
   month: string;
   currentMonth: string;
@@ -50,32 +53,46 @@ export default function PlanAndEntry({
 }) {
   const leaders = progressLeaders(ctx, user);
   const [leader, setLeader] = useState("");
-  const [status, setStatus] = useState<"" | Status>("");
+  const [planFilter, setPlanFilter] = useState<"" | PlanStatus>("");
+  const [entryFilter, setEntryFilter] = useState<"" | EntryStatus>("");
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+  const groupId = useId();
   const locked = (ctx.data.progressLocks || []).some((l) => l.id === month);
-  const statusOf = (item: ProgressItem): Status => {
-    const plan = baselineStatus(item.record);
-    if (plan === "pending" || plan === "new") return plan;
-    const entry = entryStatus(item.record, month, locked);
-    if (entry === "waiting" || entry === "locked" || entry === "entered")
-      return entry;
-    return plan === "draft" ? "draft" : "entered";
-  };
+  const entryOf = (item: ProgressItem) =>
+    entryStatus(item.record, month, currentMonth);
+  const planOf = (item: ProgressItem) => baselineStatus(item.record);
   const all = progressGroups(ctx, leader ? [leader] : leaders);
-  const counts = all
-    .flatMap(([, items]) => items)
-    .reduce<Partial<Record<Status, number>>>((out, item) => {
-      const s = statusOf(item);
-      out[s] = (out[s] || 0) + 1;
-      return out;
-    }, {});
+  const items = all.flatMap(([, groupItems]) => groupItems);
+  const planCount = (status: PlanStatus) =>
+    items.filter(
+      (item) =>
+        planOf(item) === status &&
+        (!entryFilter || entryOf(item) === entryFilter),
+    ).length;
+  const entryCount = (status: EntryStatus) =>
+    items.filter(
+      (item) =>
+        entryOf(item) === status &&
+        (!planFilter || planOf(item) === planFilter),
+    ).length;
+  const priority = (item: ProgressItem) => {
+    const plan = planOf(item);
+    if (plan === "pending") return 0;
+    if (entryOf(item) === "waiting") return 1;
+    return PLAN_ORDER[plan];
+  };
   const groups = all
     .map(([name, items]): [string, ProgressItem[]] => [
       name,
       items
-        .filter((item) => !status || statusOf(item) === status)
+        .filter(
+          (item) =>
+            (!planFilter || planOf(item) === planFilter) &&
+            (!entryFilter || entryOf(item) === entryFilter),
+        )
         .sort(
           (a, b) =>
-            ORDER[statusOf(a)] - ORDER[statusOf(b)] ||
+            priority(a) - priority(b) ||
             a.project.name.localeCompare(b.project.name, "tr"),
         ),
     ])
@@ -95,35 +112,87 @@ export default function PlanAndEntry({
             ))}
           </select>
         </label>
+        {responsibleFilter}
         <label>
-          Durum
+          {PLAN_STATUS_TITLE}
           <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value as "" | Status)}
+            value={planFilter}
+            onChange={(e) => setPlanFilter(e.target.value as "" | PlanStatus)}
           >
             <option value="">Tümü</option>
-            {(Object.keys(ORDER) as Status[]).map((s) => (
-              <option key={s} value={s}>
-                {LABELS[s]} ({counts[s] || 0})
+            {(Object.keys(PLAN_ORDER) as PlanStatus[]).map((status) => (
+              <option key={status} value={status}>
+                {PLAN_LABELS[status]} ({planCount(status)})
               </option>
             ))}
           </select>
         </label>
-        {month ? (
-          locked ? (
-            <span className="progress-locked">
-              {monthLabel(month)} kilitli; değişiklik için admin kilidi açmalı.
-            </span>
-          ) : (
-            <span
-              className="progress-entry-count"
-              data-pending={counts.waiting ? "true" : undefined}
+        <label>
+          {ENTRY_STATUS_TITLE}
+          <select
+            value={entryFilter}
+            onChange={(e) => setEntryFilter(e.target.value as "" | EntryStatus)}
+          >
+            <option value="">Tümü</option>
+            {(Object.keys(ENTRY_LABELS) as EntryStatus[]).map((status) => (
+              <option key={status} value={status}>
+                {ENTRY_LABELS[status]} ({entryCount(status)})
+              </option>
+            ))}
+          </select>
+        </label>
+        {groups.length > 0 && (
+          <div className="progress-group-actions">
+            <button
+              type="button"
+              className="button"
+              disabled={!groups.some(([name]) => collapsed.has(name))}
+              onClick={() =>
+                setCollapsed((previous) => {
+                  const next = new Set(previous);
+                  groups.forEach(([name]) => next.delete(name));
+                  return next;
+                })
+              }
             >
-              {monthLabel(month)} için giriş bekleyen: {counts.waiting || 0}
-            </span>
-          )
-        ) : null}
+              Tümünü Aç
+            </button>
+            <button
+              type="button"
+              className="button"
+              disabled={groups.every(([name]) => collapsed.has(name))}
+              onClick={() =>
+                setCollapsed(
+                  (previous) =>
+                    new Set([...previous, ...groups.map(([name]) => name)]),
+                )
+              }
+            >
+              Tümünü Kapat
+            </button>
+          </div>
+        )}
       </div>
+      <div className="progress-entry-summary">
+        {month ? (
+          <>
+            <span
+              className={locked ? "progress-locked" : "progress-entry-count"}
+            >
+              Ay kilidi ({monthLabel(month)}):{" "}
+              {locked ? "Değişikliğe kapalı" : "Değişikliğe açık"}
+            </span>
+            <span className="progress-entry-count">
+              Gerçekleşeni girilmeyen: {entryCount("waiting")}
+            </span>
+          </>
+        ) : (
+          <span className="progress-entry-count">
+            Gerçekleşen girişi için henüz takip ayı yok.
+          </span>
+        )}
+      </div>
+      <ProgressProcessHelp />
       {groups.length ? (
         groups.map(([name, items]) => (
           <section
@@ -132,23 +201,56 @@ export default function PlanAndEntry({
             aria-label={name + " liderliği"}
           >
             <h3>
-              {name}
-              <small>{items.length} proje</small>
+              <button
+                type="button"
+                className="progress-group-toggle"
+                aria-label={name + " projeleri"}
+                aria-expanded={!collapsed.has(name)}
+                aria-controls={groupId + "-" + encodeURIComponent(name)}
+                title={
+                  name +
+                  (collapsed.has(name)
+                    ? " projelerini aç"
+                    : " projelerini kapat")
+                }
+                onClick={() =>
+                  setCollapsed((previous) => {
+                    const next = new Set(previous);
+                    if (next.has(name)) next.delete(name);
+                    else next.add(name);
+                    return next;
+                  })
+                }
+              >
+                {collapsed.has(name) ? (
+                  <ChevronRight size={16} />
+                ) : (
+                  <ChevronDown size={16} />
+                )}
+                {name}
+                <small>{items.length} proje</small>
+              </button>
             </h3>
-            {items.map((item) => (
-              <ProgressCard
-                key={item.project.id}
-                ctx={ctx}
-                user={user}
-                project={item.project}
-                leader={name}
-                record={item.record}
-                month={month}
-                currentMonth={currentMonth}
-                saving={saving}
-                onSave={onSave}
-              />
-            ))}
+            <div
+              id={groupId + "-" + encodeURIComponent(name)}
+              className="progress-group-projects"
+              hidden={collapsed.has(name)}
+            >
+              {items.map((item) => (
+                <ProgressCard
+                  key={item.project.id}
+                  ctx={ctx}
+                  user={user}
+                  project={item.project}
+                  leader={name}
+                  record={item.record}
+                  month={month}
+                  currentMonth={currentMonth}
+                  saving={saving}
+                  onSave={onSave}
+                />
+              ))}
+            </div>
           </section>
         ))
       ) : (

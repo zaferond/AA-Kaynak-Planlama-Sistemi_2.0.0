@@ -117,10 +117,10 @@ export default function MonthGrid({
             <th
               scope="col"
               className="opening"
-              title="Açılış: takibin başladığı ayın sonu"
+              title={`Başlangıç: ${short(openingMonth)} sonunda tamamlanmış olan`}
             >
               {short(openingMonth)}
-              <small>açılış</small>
+              <small>başlangıç</small>
             </th>
             {months.map((m) => (
               <th key={m} scope="col" {...mark(m)}>

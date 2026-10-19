@@ -8,6 +8,10 @@
   --progress-series-actual: #eb6834;
   --progress-series-spent: #1baf7a;
 }
+.project-progress > .progress-baseline,
+.project-progress > .progress-report {
+  margin-inline: 10px;
+}
 .project-progress .panelhead {
   display: flex;
   align-items: flex-start;
@@ -22,6 +26,7 @@
   flex-wrap: wrap;
 }
 .project-progress label.progress-month,
+.project-progress label.progress-responsible-filter,
 .project-progress .progress-filters label {
   display: inline-flex;
   align-items: center;
@@ -188,8 +193,7 @@
   flex-wrap: wrap;
 }
 .project-progress .progress-baseline-bar label,
-.project-progress .progress-card-fields label,
-.project-progress .progress-card-admin label {
+.project-progress .progress-card-fields label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -228,6 +232,7 @@
 }
 .project-progress .progress-card-title {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 8px;
   min-width: 0;
@@ -241,6 +246,69 @@
   color: var(--brand-muted, #60715e);
   font-size: var(--fs-xs);
   font-weight: 600;
+}
+.project-progress .progress-card-statuses {
+  display: flex;
+  flex: 1 1 100%;
+  order: 1;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: center;
+}
+.project-progress .progress-status-card {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+.project-progress .progress-status-card-label {
+  color: #161616;
+  font-size: var(--fs-xs);
+  font-weight: 750;
+}
+.project-progress .progress-status-card .progress-status {
+  padding: 3px 8px;
+}
+.project-progress .progress-entry-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+.project-progress .progress-process-help {
+  padding: 8px 10px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: var(--brand-surface-soft, #f6f8f2);
+  color: var(--brand-text, #293a2d);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+.project-progress .progress-process-help summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+.project-progress .progress-process-help p {
+  margin: 8px 0 0;
+}
+.project-progress .progress-process-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 18px;
+  margin-top: 12px;
+}
+.project-progress .progress-process-columns dl {
+  margin: 6px 0 0;
+}
+.project-progress .progress-process-columns dl > div + div {
+  margin-top: 8px;
+}
+.project-progress .progress-process-columns dt {
+  font-weight: 650;
+}
+.project-progress .progress-process-columns dd {
+  margin: 0;
+  color: var(--brand-muted, #60715e);
 }
 .project-progress .progress-status {
   padding: 1px 7px;
@@ -270,8 +338,7 @@
   flex-wrap: wrap;
 }
 .project-progress .progress-card-fields select,
-.project-progress .progress-card-fields input,
-.project-progress .progress-card-admin input {
+.project-progress .progress-card-fields input {
   height: 26px;
   font-size: var(--fs-xs);
 }
@@ -302,14 +369,8 @@
   padding: 0 10px;
   font-size: var(--fs-xs);
 }
-.project-progress .progress-card-admin {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.project-progress .progress-card-delete {
   margin-left: auto;
-}
-.project-progress .progress-card-admin input {
-  width: 80px;
 }
 .project-progress .progress-card-hint {
   color: var(--brand-muted, #60715e);
@@ -610,6 +671,35 @@
   white-space: nowrap;
 }
 
+.project-progress .progress-evaluation-definitions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 12px 20px;
+  margin: 12px 0;
+}
+.project-progress .progress-evaluation-definitions dt {
+  font-weight: 750;
+}
+.project-progress .progress-evaluation-definitions dd {
+  margin: 3px 0 0;
+}
+.project-progress .progress-assessment .progress-assessment-meaning {
+  color: #405440;
+  line-height: 1.4;
+}
+.project-progress .progress-assessment-reasons summary {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 650;
+}
+.project-progress .progress-assessment-reasons ul {
+  margin: 6px 0;
+  padding-left: 15px;
+}
+.project-progress .progress-assessment-reasons p {
+  margin: 6px 0 0;
+  font-weight: 650;
+}
 @media (max-width: 900px) {
   .project-progress .progress-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -669,6 +759,40 @@
   padding-block: 0;
 }
 /* Cards grouped under their leadership. */
+.project-progress .progress-group-actions {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.project-progress .progress-group-projects {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+.project-progress .progress-group-projects[hidden] {
+  display: none;
+}
+.project-progress .progress-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.project-progress .progress-group-toggle svg {
+  flex-shrink: 0;
+}
+.project-progress .progress-group-toggle:focus-visible {
+  outline: 2px solid var(--brand-focus, #6d855e);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 .project-progress .progress-leader-group {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -741,11 +865,285 @@
 .project-progress .progress-entry-count[data-pending] {
   color: #8a5a00;
 }
-/* An empty month's carried target: shown faintly, never stored. */
-.project-progress .progress-grid tr.editable input::placeholder {
-  color: #a9b3a4;
+
+/* Project / leadership progress uses the monthly layout of leadership reports. */
+.project-progress .progress-management-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.project-progress .progress-management-head h3 {
+  margin: 0 0 5px;
+  font-size: var(--fs-md);
+  color: var(--brand-text, #293a2d);
+  font-weight: 750;
+}
+.project-progress .progress-management-head p,
+.project-progress .progress-transfer-review p {
+  margin: 0;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.project-progress .progress-management-period {
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: #eef2ea;
+  font-size: var(--fs-xs);
+  font-weight: 650;
+}
+.project-progress .progress-management-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+.project-progress .progress-management-cards button {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 10px;
+  padding: 12px;
+  border: 1px solid #d5dfcf;
+  border-top: 3px solid #7b8b72;
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+  color: var(--brand-text, #293a2d);
+  cursor: pointer;
+}
+.project-progress .progress-management-cards button > span {
+  align-self: center;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+.project-progress .progress-management-cards button > strong {
+  grid-row: span 2;
+  font-size: 25px;
+  font-variant-numeric: tabular-nums;
+}
+.project-progress .progress-management-cards button small {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
+.project-progress .progress-management-cards button[data-tone="risk"] {
+  border-top-color: #c2413b;
+}
+.project-progress .progress-management-cards button[data-tone="ahead"] {
+  border-top-color: #2e7d32;
+}
+.project-progress .progress-management-cards button[data-tone="donor"] {
+  border-top-color: #287d8e;
+}
+.project-progress .progress-management-cards button[data-tone="missing"] {
+  border-top-color: #b7791f;
+}
+.project-progress .progress-management-cards button[aria-pressed="true"] {
+  outline: 2px solid #617852;
+  outline-offset: 1px;
+  background: #f4f7ef;
+}
+.project-progress .progress-report-help {
+  margin-bottom: 14px;
+}
+.project-progress .progress-transfer-review {
+  padding: 12px;
+  border: 1px solid #c9d9d5;
+  border-radius: 8px;
+  background: #f5faf8;
+  margin-bottom: 14px;
+}
+.project-progress .progress-transfer-review h4 {
+  margin: 0 0 5px;
+  font-size: var(--fs-sm);
+}
+.project-progress .progress-transfer-review > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+.project-progress .progress-transfer-review article {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid #d2e0dc;
+  border-radius: 6px;
+  background: #fff;
+  font-size: var(--fs-xs);
+}
+.project-progress .progress-transfer-review article small {
+  color: #60715e;
+}
+.project-progress .progress-matrix-toolbar,
+.project-progress .progress-report-pages {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 8px;
+  font-size: var(--fs-xs);
+  color: #60715e;
+}
+.project-progress .progress-matrix-toolbar > div {
+  display: flex;
+  gap: 6px;
+}
+.project-progress .progress-matrix-toolbar .button {
+  min-height: 28px;
+  height: 28px;
+  font-size: var(--fs-xs);
+}
+.project-progress .progress-matrix-scroll {
+  max-width: 100%;
+  overflow: auto;
+  max-height: 72vh;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 7px;
+  margin-bottom: 10px;
+}
+.project-progress .progress-monthly-matrix {
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.project-progress .progress-monthly-matrix thead th {
+  position: sticky;
+  top: 27px;
+  z-index: 4;
+  height: 34px;
+  border-right: 1px solid #d5dfcf;
+  background: var(--table-year-background, #e6ece0);
+  text-align: center;
+}
+.project-progress .progress-monthly-matrix thead .yearrow th {
+  top: 0;
+  height: 27px;
+  padding-block: 3px;
+  background: var(--table-year-background, #e0e8d9);
+  color: var(--table-year-color, #405440);
+}
+.project-progress .progress-monthly-matrix td,
+.project-progress .progress-monthly-matrix tbody th {
+  padding: 5px 8px;
+  height: 29px;
+  border-right: 1px solid #e0e6da;
+  border-bottom: 1px solid #e0e6da;
+  font-variant-numeric: tabular-nums;
+}
+.project-progress .progress-monthly-matrix tbody th.progress-matrix-metric {
+  text-align: left;
+  font-weight: 600;
+  background: #f4f6f0;
+}
+.project-progress .progress-monthly-matrix td:not([rowspan]) {
+  text-align: center;
+}
+.project-progress .progress-monthly-matrix .progress-matrix-assessment,
+.project-progress .progress-monthly-matrix .progress-matrix-name {
+  position: sticky;
+  left: 180px;
+  z-index: 2;
+  background: #f1f5eb;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  border-right: 2px solid #bac9b2;
+}
+.project-progress .progress-monthly-matrix .progress-matrix-assessment {
+  left: 0;
+  border-right: 1px solid #bac9b2;
+}
+.project-progress .progress-monthly-matrix .progress-matrix-assessment small {
+  display: block;
   font-weight: 500;
 }
-.project-progress .progress-implied {
-  color: #a9b3a4;
+.project-progress .progress-monthly-matrix thead .progress-matrix-assessment,
+.project-progress .progress-monthly-matrix thead .progress-matrix-name {
+  z-index: 6;
+}
+.project-progress .progress-monthly-matrix .progress-matrix-name .textbutton {
+  display: inline;
+  white-space: normal;
+  text-align: left;
+}
+.project-progress .progress-monthly-matrix .progress-project-row td,
+.project-progress .progress-monthly-matrix .progress-project-metric td,
+.project-progress .progress-monthly-matrix .progress-project-metric th {
+  background: #f1f5eb;
+  font-weight: 650;
+}
+.project-progress .progress-monthly-matrix .progress-matrix-phase {
+  overflow: hidden;
+}
+.project-progress
+  .progress-monthly-matrix
+  .progress-matrix-phase
+  .progress-phase {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.project-progress .progress-monthly-matrix .progress-project-row > td {
+  border-top: 2px solid #a8b99b;
+}
+.project-progress .progress-monthly-matrix .progress-leader-row td {
+  background: #fff;
+  font-weight: 500;
+  padding: 5px 8px;
+}
+.project-progress
+  .progress-monthly-matrix
+  .progress-leader-row
+  .progress-matrix-name {
+  background: #fafbf8;
+  padding-left: 18px;
+}
+.project-progress .progress-monthly-matrix td[data-selected="true"] {
+  box-shadow:
+    inset 2px 0 #c6b36b,
+    inset -2px 0 #c6b36b;
+}
+.project-progress .progress-monthly-matrix td[data-tone="behind"] {
+  color: #a32922;
+  background: #fff0eb;
+  font-weight: 750;
+}
+.project-progress .progress-monthly-matrix td[data-tone="ahead"] {
+  color: #216c38;
+  background: #edf7ed;
+  font-weight: 750;
+}
+.project-progress .progress-assessment {
+  display: grid;
+  gap: 3px;
+  white-space: normal;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+}
+.project-progress .progress-assessment > strong {
+  font-size: var(--fs-xs);
+}
+.project-progress .progress-assessment [data-state="behind"] {
+  color: #a32922;
+}
+.project-progress .progress-assessment [data-state="ahead"] {
+  color: #216c38;
+}
+.project-progress .progress-assessment [data-state="missing"],
+.project-progress .progress-assessment [data-state="unplanned"],
+.project-progress .progress-assessment [data-state="unweighted"] {
+  color: #98600b;
+}
+.project-progress .progress-assessment .progress-action {
+  margin-top: 2px;
+  color: #405440;
+}
+.project-progress .progress-assessment .progress-level {
+  font-size: 11px;
+}
+@media (max-width: 900px) {
+  .project-progress .progress-management-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

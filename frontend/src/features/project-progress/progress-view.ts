@@ -7,7 +7,8 @@ import { currentPlanningDate } from "../../resource-dates";
 import type { Principal } from "../../access";
 import type { Change } from "../../../../shared/commands";
 import {
-  PROGRESS_OPENING_MONTH,
+  earliestOpening,
+  currentBaseline,
   leaderProgress,
   leaderResourceByMonth,
   lateTopicSignal,
@@ -106,12 +107,15 @@ export const canLead = (user: Principal | null, leader: string) =>
   user?.role === "admin" ||
   (user?.role === "manager" && user.leaders.includes(leader));
 
-/** Months that can carry an actual entry: tracking start up to `current`. */
-export function entryMonths(current: string) {
-  return monthsAfter(PROGRESS_OPENING_MONTH, current);
+/** Months that can carry an actual entry: after the earliest plan opening. */
+export function entryMonths(current: string, records?: ProjectProgress[]) {
+  return monthsAfter(earliestOpening(records, current), current);
 }
-export const defaultEntryMonth = (current: string) => {
-  const months = entryMonths(current);
+export const defaultEntryMonth = (
+  current: string,
+  records?: ProjectProgress[],
+) => {
+  const months = entryMonths(current, records);
   const previous = previousMonth(current);
   return months.includes(previous) ? previous : months.at(-1) || "";
 };
@@ -147,7 +151,9 @@ export function leaderRow(
   );
   // Without an approved baseline the leadership is not rated yet.
   const signals =
-    row.target === null
+    row.target === null ||
+    month <= (record.baselines[0]?.openingMonth || month) ||
+    month > ctx.currentMonth
       ? []
       : [
           ...progressSignals(row),
@@ -174,7 +180,11 @@ const levelOrder: Record<RiskLevel, number> = { red: 0, amber: 1, green: 2 };
 export function projectRows(
   ctx: ProgressContext,
   month: string,
-  { leader, projectId }: { leader?: string; projectId?: string } = {},
+  {
+    leader,
+    projectId,
+    includeUntracked = false,
+  }: { leader?: string; projectId?: string; includeUntracked?: boolean } = {},
 ): ProjectRow[] {
   const records = ctx.data.projectProgress || [];
   const rows: ProjectRow[] = [];
@@ -185,13 +195,35 @@ export function projectRows(
         record.projectId === project.id &&
         (!leader || record.leader === leader),
     );
+    if (includeUntracked) {
+      for (const name of ctx.planned(project.id).keys()) {
+        if ((leader && name !== leader) || own.some((r) => r.leader === name))
+          continue;
+        own.push({
+          id: `untracked:${project.id}:${name}`,
+          projectId: project.id,
+          leader: name,
+          baselines: [],
+          actuals: {},
+          createdBy: "",
+          createdByName: "",
+          createdAt: "",
+        });
+      }
+    }
     if (!own.length) continue;
     const leaders = own
       .map((record) => leaderRow(ctx, record, project, month))
       .sort((a, b) => a.record.leader.localeCompare(b.record.leader, "tr"));
     const rollup = projectRollup(leaders);
     const signals =
-      rollup.target === null
+      rollup.target === null ||
+      !leaders.some(
+        (l) =>
+          currentBaseline(l.record) &&
+          month > l.record.baselines[0].openingMonth &&
+          month <= ctx.currentMonth,
+      )
         ? []
         : [
             ...progressSignals(rollup),
@@ -204,7 +236,14 @@ export function projectRows(
         levelOrder[row.level] < levelOrder[level] ? row.level : level,
       riskLevel(signals),
     );
-    rows.push({ project, leaders, ...rollup, signals, level: worst });
+    const missing = leaders.filter(
+      (l) =>
+        l.target !== null &&
+        month > l.record.baselines[0].openingMonth &&
+        month <= ctx.currentMonth &&
+        l.actual === null,
+    ).length;
+    rows.push({ project, leaders, ...rollup, missing, signals, level: worst });
   }
   return rows.sort(
     (a, b) =>

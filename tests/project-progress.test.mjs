@@ -9,6 +9,7 @@ import {
   proposalProblems,
   riskLevel,
   suggestTargets,
+  recalculateTargetsAfterEdit,
   targetAt,
 } from "../shared/project-progress.ts";
 
@@ -61,6 +62,117 @@ test("the suggested curve follows the remaining planned resource and ends at 100
       "2027-01",
     ),
     [],
+  );
+});
+
+test("raising a target above the next month rebuilds all following months by remaining resource", () => {
+  const targets = {
+    "2026-09": 10,
+    "2026-10": 30,
+    "2026-11": 50,
+    "2026-12": 75,
+    "2027-01": 100,
+  };
+  const updated = recalculateTargetsAfterEdit(
+    targets,
+    "2026-10",
+    80,
+    "2027-03",
+    {
+      "2026-10": 99,
+      "2026-11": 1,
+      "2026-12": 2,
+      "2027-01": 1,
+      "2027-02": 99,
+    },
+  );
+  assert.deepEqual(updated, {
+    "2026-09": 10,
+    "2026-10": 80,
+    "2026-11": 85,
+    "2026-12": 95,
+    "2027-01": 100,
+  });
+  assert.deepEqual(
+    proposalProblems(
+      { openingMonth: "2026-08", openingPct: 0, targets: updated },
+      "2027-03",
+    ),
+    [],
+  );
+  assert.equal(targets["2026-11"], 50);
+});
+
+test("recalculation without remaining resource spreads work evenly until the original completion", () => {
+  assert.deepEqual(
+    recalculateTargetsAfterEdit(
+      { "2026-10": 20, "2026-11": 30, "2026-12": 60, "2027-01": 100 },
+      "2026-10",
+      70,
+      "2027-03",
+      undefined,
+    ),
+    {
+      "2026-10": 70,
+      "2026-11": 80,
+      "2026-12": 90,
+      "2027-01": 100,
+    },
+  );
+});
+
+test("non-crossing, incomplete and invalid edits leave the rest of the curve untouched", () => {
+  const targets = { "2026-10": 20, "2026-11": 60, "2026-12": 100 };
+  for (const value of [40, 60, -1, 101, Number.NaN]) {
+    assert.equal(
+      recalculateTargetsAfterEdit(
+        targets,
+        "2026-10",
+        value,
+        "2026-12",
+        undefined,
+      ),
+      null,
+    );
+  }
+  assert.equal(
+    recalculateTargetsAfterEdit(
+      { "2026-10": 20, "2026-11": 30 },
+      "2026-10",
+      80,
+      "2026-12",
+      undefined,
+    ),
+    null,
+  );
+  assert.equal(
+    recalculateTargetsAfterEdit(targets, "2026-12", 90, "2026-12", undefined),
+    null,
+  );
+});
+
+test("early completion clears later suggestions and rounding preserves the original finish otherwise", () => {
+  const targets = {
+    "2026-09": 10,
+    "2026-10": 20,
+    "2026-11": 60,
+    "2026-12": 100,
+  };
+  assert.deepEqual(
+    recalculateTargetsAfterEdit(targets, "2026-10", 100, "2026-12", undefined),
+    { "2026-09": 10, "2026-10": 100 },
+  );
+  assert.deepEqual(
+    recalculateTargetsAfterEdit(targets, "2026-10", 99.9, "2026-12", {
+      "2026-11": 9,
+      "2026-12": 1,
+    }),
+    {
+      "2026-09": 10,
+      "2026-10": 99.9,
+      "2026-11": 99.9,
+      "2026-12": 100,
+    },
   );
 });
 

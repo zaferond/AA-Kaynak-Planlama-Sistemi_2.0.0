@@ -8,9 +8,35 @@ import { ownValue } from "./records.ts";
  * project: "how much of our part is done at the end of this month".
  */
 
-/** Tracking starts in November 2026: the opening value describes October. */
-export const PROGRESS_OPENING_MONTH = "2026-10";
 export const PROGRESS_NOTE_MAX = 500;
+
+/**
+ * A plan starts by default in January of the current year, or when the
+ * project starts if that is later; the leader may pick another month. The
+ * stored opening is the month before the start: its value is the share done
+ * when the plan begins.
+ */
+export function defaultPlanStart(
+  project: { start: string; end: string },
+  currentMonth: string,
+) {
+  const january = currentMonth.slice(0, 4) + "-01";
+  // A project that ended before this year is planned from its own start.
+  if (project.end < january) return project.start;
+  return project.start > january ? project.start : january;
+}
+
+/** The earliest opening among records, else the one before this January. */
+export function earliestOpening(
+  records: Pick<ProjectProgress, "baselines">[] | undefined,
+  currentMonth: string,
+) {
+  const openings = (records || [])
+    .map((record) => record.baselines[0]?.openingMonth)
+    .filter((month): month is string => !!month)
+    .sort();
+  return openings[0] || previousMonth(currentMonth.slice(0, 4) + "-01");
+}
 
 export type ProgressTargets = Record<string, number>;
 export type ProgressBaseline = {
@@ -168,6 +194,38 @@ export function suggestTargets(
   });
   if (months.length) targets[months.at(-1)!] = 100;
   return targets;
+}
+
+/** Rebuild a falling tail from the edited month to its existing completion. */
+export function recalculateTargetsAfterEdit(
+  targets: ProgressTargets,
+  month: string,
+  value: number,
+  projectEnd: string,
+  planned: Record<string, number> | undefined,
+): ProgressTargets | null {
+  if (!Number.isFinite(value) || value < 0 || value > 100) return null;
+  const months = Object.keys(targets)
+    .filter((m) => m <= projectEnd)
+    .sort();
+  const completion = months.find((m) => targets[m] === 100);
+  if (!completion || month >= completion) return null;
+  const prefix = Object.fromEntries(
+    months.filter((m) => m < month).map((m) => [m, targets[m]]),
+  );
+  if (value === 100) return { ...prefix, [month]: value };
+  const following = months.find((m) => m > month);
+  if (!following || value <= targets[following]) return null;
+  const tail = suggestTargets(month, value, completion, planned);
+  // Rounding must not move the existing completion to an earlier month.
+  for (const m of Object.keys(tail)) {
+    if (m < completion) tail[m] = Math.max(value, Math.min(99.9, tail[m]));
+  }
+  return {
+    ...prefix,
+    [month]: value,
+    ...tail,
+  };
 }
 
 /** Cumulative target of the approved baseline at the end of `month`. */

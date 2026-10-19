@@ -5,6 +5,7 @@ import {
   assessManagement,
   manageProject,
   transferComparisons,
+  RESOURCE_ACTIONS,
 } from "../frontend/src/features/project-progress/progress-management.ts";
 import {
   managementSheets,
@@ -201,7 +202,8 @@ test("behind progress with persistent capacity shortage identifies a calendar/re
   assert.equal(value.point.gap, -20);
   assert.equal(value.risk, "red");
   assert.equal(value.support, true);
-  assert.equal(value.action, "Takvim / kaynak senaryosu değerlendir");
+  assert.equal(value.resourceReview, "recovery");
+  assert.equal(value.action, RESOURCE_ACTIONS.recovery);
   assert(
     value.reasons.some((reason) => reason.includes("3 ayında kapasite açığı")),
   );
@@ -285,4 +287,188 @@ test("all-zero comparison weights are explicit and exports retain missing data a
   assert.match(sheets[1].xml, /Kritik konular/);
   assert.match(sheets[1].xml, /Kabul &amp; kontrol/);
   assert.equal(managementExportRows([managed])[0].actual, null);
+  assert(
+    managed.assessment.reasons.some((reason) =>
+      reason.includes("Liderlik A: Kaynak planı yeniden değerlendirilebilir"),
+    ),
+  );
+});
+
+function withFuturePlan(values = {}) {
+  const ctx = context();
+  ctx.planned = () =>
+    new Map(
+      ["Liderlik A", "Liderlik B"].map((name) => [
+        name,
+        { "2026-09": 2, ...values },
+      ]),
+    );
+  return ctx;
+}
+
+test("unfinished work without next-three-month resource produces an explicit planning decision", () => {
+  const value = assessManagement(
+    withFuturePlan(),
+    project,
+    [leader("Liderlik A", 30)],
+    "2026-09",
+  );
+  assert.equal(value.remaining, 70);
+  assert.equal(value.upcoming, 0);
+  assert.equal(value.resourceReview, "needsPlan");
+  assert.equal(value.action, RESOURCE_ACTIONS.needsPlan);
+  assert.equal(value.donor, false);
+  assert.equal(value.support, true);
+  assert(value.reasons.includes("İş devam ediyor, kaynak planı yok"));
+});
+
+test("any delay with allocated future resource asks to review the recovery plan", () => {
+  const value = assessManagement(
+    context(),
+    project,
+    [leader("Liderlik A", 49.9)],
+    "2026-09",
+  );
+  assert.equal(value.resourceReview, "recovery");
+  assert.equal(value.remaining, 50.1);
+  assert.equal(value.action, RESOURCE_ACTIONS.recovery);
+});
+
+test("ahead progress with remaining work is reviewed even when a capacity warning blocks transfer candidacy", () => {
+  const value = assessManagement(
+    context({ shortages: [1, 0, 0] }),
+    project,
+    [leader()],
+    "2026-09",
+  );
+  assert.equal(value.remaining, 30);
+  assert.equal(value.resourceReview, "review");
+  assert.equal(value.action, RESOURCE_ACTIONS.review);
+  assert.equal(value.donor, false);
+});
+
+test("all leadership work at 100 percent is completed and continuing allocations are reviewed", () => {
+  const value = assessManagement(
+    context(),
+    project,
+    [leader("Liderlik A", 100)],
+    "2026-09",
+  );
+  assert.equal(value.point.state, "completed");
+  assert.equal(value.remaining, 0);
+  assert.equal(value.resourceReview, "release");
+  assert.equal(value.upcoming, 12);
+  assert.equal(value.donor, true);
+  assert.equal(value.support, false);
+  const sameTarget = leader("Liderlik A", 100);
+  sameTarget.record.baselines[0].targets["2026-09"] = 100;
+  const equal = assessManagement(context(), project, [sameTarget], "2026-09");
+  assert.equal(equal.point.gap, 0);
+  assert.equal(equal.resourceReview, "release");
+  assert.equal(equal.donor, true);
+  const noPlan = assessManagement(
+    withFuturePlan(),
+    project,
+    [sameTarget],
+    "2026-09",
+  );
+  assert.equal(noPlan.resourceReview, "none");
+  assert.equal(noPlan.donor, false);
+});
+
+test("a rounded 100 percent project average cannot hide unfinished zero-weight leadership work", () => {
+  const value = assessManagement(
+    context(),
+    project,
+    [
+      leader("Liderlik A", 100, { weight: 1 }),
+      leader("Liderlik B", 40, { weight: 0 }),
+    ],
+    "2026-09",
+  );
+  assert.equal(value.point.actual, 100);
+  assert.notEqual(value.point.state, "completed");
+  assert.equal(value.remaining, null);
+  assert.notEqual(value.resourceReview, "release");
+});
+
+test("a leadership without a future plan remains visible when other leaderships have allocations", () => {
+  const ctx = context();
+  ctx.planned = () =>
+    new Map([
+      ["Liderlik A", { "2026-09": 2, "2026-10": 5 }],
+      ["Liderlik B", { "2026-09": 2 }],
+    ]);
+  const scope = row("Karma kaynak");
+  scope.leaders = [leader("Liderlik A", 80), leader("Liderlik B", 70)];
+  const value = manageProject(ctx, scope, "2026-09");
+  assert(value.assessment.upcoming > 0);
+  assert.equal(value.assessment.resourceReview, "needsPlan");
+  assert.equal(
+    value.assessment.resourceTitle,
+    "Bazı liderliklerde kaynak planı yok",
+  );
+  assert.equal(value.assessment.donor, false);
+  assert(
+    value.assessment.reasons.some((reason) =>
+      reason.includes("Liderlik B: tamamlanmamış iş var"),
+    ),
+  );
+});
+
+test("missing, future and pre-tracking data never implies no-resource or completed decisions", () => {
+  for (const [month, rows] of [
+    ["2026-09", [leader("Liderlik A", null)]],
+    ["2026-09", [leader("Liderlik A", null, { baselines: [] })]],
+    ["2026-08", [leader()]],
+    ["2026-11", [leader()]],
+    ["2027-01", [leader()]],
+  ]) {
+    const value = assessManagement(withFuturePlan(), project, rows, month);
+    assert.equal(value.resourceReview, "unassessed");
+    assert.equal(value.remaining, null);
+    assert.equal(value.donor, false);
+    assert.equal(value.support, false);
+  }
+});
+
+test("the three-month resource horizon crosses years and excludes allocations outside that horizon", () => {
+  const ctx = withFuturePlan({
+    "2026-12": 1,
+    "2027-01": 2,
+    "2027-02": 3,
+    "2027-03": 100,
+  });
+  ctx.currentMonth = "2026-11";
+  const l = leader("Liderlik A", null, {
+    actuals: { "2026-11": { pct: 30, note: "Test" } },
+  });
+  const value = assessManagement(
+    ctx,
+    { ...project, end: "2027-12" },
+    [l],
+    "2026-11",
+  );
+  assert.equal(value.upcoming, 6);
+  assert.deepEqual(
+    value.upcomingMonths.map((m) => m.month),
+    ["2026-12", "2027-01", "2027-02"],
+  );
+  const later = assessManagement(
+    withFuturePlan({ "2027-01": 10 }),
+    project,
+    [leader()],
+    "2026-09",
+  );
+  assert.equal(later.resourceReview, "needsPlan");
+  assert.equal(later.upcoming, 0);
+});
+
+test("completed projects can be compared for source review while recipients still require the same leadership", () => {
+  const source = manageProject(context(), row("Tamamlanan", 100), "2026-09");
+  const receiver = manageProject(context(), row("Geciken", 30), "2026-09");
+  const pairs = transferComparisons([source, receiver]);
+  assert.equal(pairs.length, 1);
+  assert.equal(pairs[0].from.assessment.resourceReview, "release");
+  assert.equal(pairs[0].planned, 12);
 });

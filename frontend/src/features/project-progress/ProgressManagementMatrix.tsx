@@ -7,12 +7,12 @@ import {
 import ProjectResponsible from "../../ProjectResponsible";
 import ProgressTopicCells from "./ProgressTopicCells";
 import { phaseChipStyle, phaseRunKey, phaseRunSpans } from "../../phase-chip";
-import { monthLabel } from "../../format";
+import { monthLabel, fmt } from "../../format";
 import { pctLabel, type ProgressContext } from "./progress-view";
 import {
   managementPoint,
   STATE_LABELS,
-  STATE_HELP,
+  evaluationLabel,
   type ManagedProject,
   type ManagementAssessment,
   type ReportPoint,
@@ -99,10 +99,10 @@ export default function ProgressManagementMatrix({
       <table
         className="progress-table progress-report-table progress-monthly-matrix"
         aria-label="Proje ilerleme raporu"
-        style={{ width: 540 + months.length * 86, minWidth: "100%" }}
+        style={{ width: 660 + months.length * 86, minWidth: "100%" }}
       >
         <colgroup>
-          <col style={{ width: 180 }} />
+          <col style={{ width: 300 }} />
           <col style={{ width: 240 }} />
           <col style={{ width: 120 }} />
           {months.map((m) => (
@@ -116,7 +116,7 @@ export default function ProgressManagementMatrix({
           />
           <tr>
             <th scope="col" className="progress-matrix-assessment">
-              Değerlendirme durumu
+              İlerleme ve kaynak değerlendirmesi
               <small>{monthLabel(month)}</small>
             </th>
             <th scope="col" className="progress-matrix-name">
@@ -302,39 +302,67 @@ export default function ProgressManagementMatrix({
 }
 
 function AssessmentStatus({ value }: { value: ManagementAssessment }) {
-  const { point, risk } = value;
+  const { point, resourceReview } = value;
+  const otherReasons = value.reasons.filter(
+    (reason) =>
+      reason !== value.resourceTitle &&
+      !reason.startsWith("Hedefin") &&
+      reason !== "Hedefe eşit ilerleme",
+  );
   return (
-    <div
-      className="progress-assessment"
-      title={[...value.reasons, value.action].join(" · ")}
-    >
-      <strong data-state={point.state}>{STATE_LABELS[point.state]}</strong>
-      <small className="progress-assessment-meaning">
-        {point.gap !== null
-          ? point.gap < 0
-            ? `Hedefin ${pctLabel(Math.abs(point.gap))} puan gerisinde.`
-            : point.gap > 0
-              ? `Hedefin ${pctLabel(point.gap)} puan önünde.`
-              : "Gerçekleşen ilerleme, hedefle eşit."
-          : point.state === "missing"
-            ? `${point.entered}/${point.total} liderlik giriş yaptı. Eksik girişler tamamlanmalı.`
-            : STATE_HELP[point.state]}
-      </small>
-      {risk && risk !== "green" && (
+    <div className="progress-assessment">
+      <strong data-state={point.state}>{evaluationLabel(point)}</strong>
+      {point.gap !== null ? (
         <>
-          <span className="progress-level" data-level={risk}>
-            {risk === "red" ? "Yüksek risk" : "Risk izlenmeli"}
+          <small>
+            Hedef %{pctLabel(point.target)} · Gerçekleşen %
+            {pctLabel(point.actual)}
+          </small>
+          <small className="progress-assessment-meaning">
+            {point.state === "completed"
+              ? "Tüm liderliklerin işi tamamlandı."
+              : point.gap < 0
+                ? `Hedefin ${pctLabel(Math.abs(point.gap))} puan gerisinde.`
+                : point.gap > 0
+                  ? `Hedefin ${pctLabel(point.gap)} puan önünde.`
+                  : "Gerçekleşen ilerleme, hedefle eşit."}
+          </small>
+          <span>
+            Kalan iş:{" "}
+            {value.remaining === null
+              ? "Tamamlanmamış liderlik işi var"
+              : `%${pctLabel(value.remaining)}`}
           </span>
-          <details className="progress-assessment-reasons">
-            <summary>Riskin nedeni ve öneri</summary>
-            <ul>
-              {value.reasons.map((reason) => (
-                <li key={reason}>{reason}</li>
-              ))}
-            </ul>
-            <p>{value.action}</p>
-          </details>
         </>
+      ) : (
+        <small>
+          {STATE_LABELS[point.state]}
+          {point.state === "missing"
+            ? ` · ${point.entered}/${point.total} liderlik için veri mevcut`
+            : ""}
+        </small>
+      )}
+      <span
+        title={value.upcomingMonths
+          .map((m) => `${monthLabel(m.month)}: ${fmt(m.planned)} kişi-ay`)
+          .join(" · ")}
+      >
+        Önümüzdeki 3 ay kaynak planı:{" "}
+        {value.upcoming > 0 ? `${fmt(value.upcoming)} kişi-ay` : "Yok"}
+      </span>
+      <b className="progress-resource-decision" data-review={resourceReview}>
+        {value.resourceTitle}
+      </b>
+      <p className="progress-resource-action">{value.action}</p>
+      {otherReasons.length > 0 && (
+        <details className="progress-assessment-reasons">
+          <summary>Dikkat gerektiren konular ({otherReasons.length})</summary>
+          <ul>
+            {otherReasons.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+        </details>
       )}
     </div>
   );

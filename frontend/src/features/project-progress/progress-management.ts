@@ -15,6 +15,7 @@ import type {
 } from "./progress-view.ts";
 
 export type ProgressState =
+  | "completed"
   | "behind"
   | "ahead"
   | "onTrack"
@@ -25,6 +26,7 @@ export type ProgressState =
   | "future"
   | "outside";
 export const STATE_LABELS: Record<ProgressState, string> = {
+  completed: "Tamamlandı",
   behind: "Planın gerisinde",
   ahead: "Planın önünde",
   onTrack: "Planla uyumlu",
@@ -37,6 +39,8 @@ export const STATE_LABELS: Record<ProgressState, string> = {
 };
 /** Plain-language meanings shared by the report cells and its guide. */
 export const STATE_HELP: Record<ProgressState, string> = {
+  completed:
+    "İlgili liderliklerin tamamı gerçekleşen ilerlemeyi %100 olarak girmiş.",
   behind:
     "Gerçekleşen ilerleme, seçili ayın hedefinden düşük. Gecikmenin nedeni incelenmeli.",
   ahead:
@@ -118,6 +122,7 @@ export function managementPoint(
   else if (month > ctx.currentMonth) state = "future";
   else if (allActive && entered === total && gap === null) state = "unweighted";
   else if (gap === null) state = "missing";
+  else if (values.every((v) => v.actual === 100)) state = "completed";
   else state = gap < 0 ? "behind" : gap > 0 ? "ahead" : "onTrack";
   return {
     target,
@@ -132,6 +137,67 @@ export function managementPoint(
   };
 }
 
+export type ResourceReview =
+  | "needsPlan"
+  | "recovery"
+  | "review"
+  | "release"
+  | "planned"
+  | "none"
+  | "unassessed";
+export const RESOURCE_LABELS: Record<ResourceReview, string> = {
+  needsPlan: "İş devam ediyor, kaynak planı yok",
+  recovery: "Gecikmeyi kapatma planı incelenmeli",
+  review: "Kaynak planı yeniden değerlendirilebilir",
+  release: "Tamamlanan işte kaynak planı sürüyor",
+  planned: "Devam eden iş için kaynak planı var",
+  none: "Tamamlandı, gelecek kaynak planı yok",
+  unassessed: "Kaynak kararı için veri bekleniyor",
+};
+export const RESOURCE_ACTIONS: Record<ResourceReview, string> = {
+  needsPlan: "Kaynak ayır veya proje takvimini güncelle.",
+  recovery:
+    "Ayrılan kaynağın gecikmeyi kapatıp kapatmayacağını ve teslim tarihlerini gözden geçir.",
+  review:
+    "Kalan işi ve kritik teslimleri koruyarak kaynak azaltma veya aktarma imkânını incele.",
+  release:
+    "Devam eden kaynak planını kontrol et; başka projelere aktarılabilecek kaynakları değerlendir.",
+  planned: "Kaynak planını ve ilerlemeyi izlemeye devam et.",
+  none: "Tamamlanan iş için önümüzdeki 3 ayda kaynak ayrılmamış.",
+  unassessed: "Önce hedef planını ve gerçekleşen girişlerini tamamla.",
+};
+
+/** The main label stays short; the underlying missing-data reason stays visible. */
+export const evaluationLabel = (point: ReportPoint) =>
+  ["behind", "ahead", "onTrack", "completed"].includes(point.state)
+    ? STATE_LABELS[point.state]
+    : "Değerlendirme bekliyor";
+
+function explainSignal(reason: string) {
+  if (reason.startsWith("Perf. ")) {
+    const ratio = Number(reason.slice(6).replace(",", "."));
+    if (Number.isFinite(ratio))
+      return `Gerçekleşen ilerleme hedefin %${round(ratio * 100).toLocaleString("tr-TR")} düzeyinde.`;
+  }
+  let match = /^harcama \+(.+) puan$/.exec(reason);
+  if (match)
+    return `Kaynak tüketimi gerçekleşen ilerlemenin ${match[1]} puan üzerinde.`;
+  match = /^(\d+) ay planın altında$/.exec(reason);
+  if (match)
+    return `Son ${match[1]} ayda kullanılan kaynak, planlananın %80'inin altında.`;
+  match = /^kaynak eksiği (\d+) ay$/.exec(reason);
+  if (match)
+    return `Önümüzdeki 3 ayın ${match[1]} ayında liderlik kapasitesi yetersiz.`;
+  match = /^(\d+) geciken kritik konu$/.exec(reason);
+  if (match) return `${match[1]} kritik işin tarihi geçti.`;
+  if (reason === "giriş gecikti") return "Aylık gerçekleşen girişi gecikmiş.";
+  if (reason === "erteleme senaryosu uygulandı")
+    return "Proje için erteleme senaryosu uygulanmış.";
+  if (reason === "erteleme senaryosu kayıtlı")
+    return "Proje için değerlendirilmesi gereken erteleme senaryosu var.";
+  return reason;
+}
+
 export type ManagementAssessment = {
   point: ReportPoint;
   risk: RiskLevel | null;
@@ -143,6 +209,10 @@ export type ManagementAssessment = {
   actualMonth: number | null;
   upcoming: number;
   shortageMonths: number;
+  remaining: number | null;
+  resourceReview: ResourceReview;
+  resourceTitle: string;
+  upcomingMonths: { month: string; planned: number }[];
 };
 
 /** Decisions name review candidates; capacity shortage is leadership-wide. */
@@ -170,22 +240,40 @@ export function assessManagement(
         0,
       )
     : null;
-  const upcoming = leaders.reduce(
-    (n, l) =>
-      n +
-      horizon.reduce(
-        (sum, m) =>
-          sum + (ctx.planned(project.id).get(l.record.leader)?.[m] || 0),
-        0,
-      ),
-    0,
-  );
+  const upcomingMonths = horizon.map((m) => ({
+    month: m,
+    planned: leaders.reduce(
+      (sum, l) =>
+        sum + (ctx.planned(project.id).get(l.record.leader)?.[m] || 0),
+      0,
+    ),
+  }));
+  const upcoming = upcomingMonths.reduce((sum, m) => sum + m.planned, 0);
   const shortageMonths = horizon.filter((_, index) =>
     leaders.some(
       (l) => (ctx.shortages(l.record.leader, month)[index] || 0) > 0.01,
     ),
   ).length;
   const complete = point.gap !== null;
+  const finished = point.state === "completed";
+  // A rounded project average can reach 100 while a small/zero-weight leadership is unfinished.
+  const remaining =
+    complete && (finished || point.actual! < 100)
+      ? round(100 - point.actual!)
+      : null;
+  const resourceReview: ResourceReview = !complete
+    ? "unassessed"
+    : finished
+      ? upcoming > 0
+        ? "release"
+        : "none"
+      : upcoming === 0
+        ? "needsPlan"
+        : point.gap! < 0
+          ? "recovery"
+          : point.gap! > 0
+            ? "review"
+            : "planned";
   const relevantSignals = [
     ...signals.filter(
       (s) => !s.reason.startsWith("Perf.") && !s.reason.startsWith("harcama"),
@@ -199,7 +287,10 @@ export function assessManagement(
       relevantSignals.some((s) => s.level === "red"));
   const warning =
     complete &&
-    (point.gap! < 0 || relevantSignals.length > 0 || shortageMonths > 0);
+    (point.gap! < 0 ||
+      relevantSignals.length > 0 ||
+      shortageMonths > 0 ||
+      resourceReview === "needsPlan");
   const risk: RiskLevel | null = complete
     ? severe
       ? "red"
@@ -207,7 +298,8 @@ export function assessManagement(
         ? "amber"
         : "green"
     : null;
-  const support = complete && point.gap! <= -5;
+  const support =
+    complete && !finished && (point.gap! < 0 || resourceReview === "needsPlan");
   const resourceKnown = leaders.every((l) =>
     Object.keys(ctx.actual(project.id).get(l.record.leader) || {}).some(
       (m) => m > (l.record.baselines[0]?.openingMonth || month) && m <= month,
@@ -215,13 +307,18 @@ export function assessManagement(
   );
   const donor =
     complete &&
-    point.gap! >= 5 &&
+    (finished || point.gap! >= 5) &&
     risk === "green" &&
     upcoming > 0 &&
-    resourceKnown &&
-    point.spent !== null &&
-    point.spent - point.actual! < 15;
-  const reasons = [...new Set(relevantSignals.map((s) => s.reason))];
+    (finished ||
+      (resourceKnown &&
+        point.spent !== null &&
+        point.spent - point.actual! < 15));
+  const reasons = [
+    ...new Set(relevantSignals.map((s) => explainSignal(s.reason))),
+  ];
+  if (["needsPlan", "recovery", "review", "release"].includes(resourceReview))
+    reasons.unshift(RESOURCE_LABELS[resourceReview]);
   if (point.gap !== null)
     reasons.unshift(
       point.gap < 0
@@ -234,21 +331,16 @@ export function assessManagement(
     reasons.push(
       `İlgili liderliklerde gelecek 3 ayın ${shortageMonths} ayında kapasite açığı`,
     );
-  let action = "İzlemeye devam et";
-  if (!complete)
-    action =
-      point.state === "unplanned"
-        ? "Hedef planını tamamla ve onaylat"
+  const action =
+    resourceReview === "unassessed"
+      ? point.state === "unplanned"
+        ? "Hedef planını tamamla ve onaylat."
         : point.state === "missing"
-          ? "Gerçekleşen girişlerini tamamla"
+          ? "İlgili liderliklerin gerçekleşen girişlerini tamamla."
           : point.state === "unweighted"
-            ? "Kaynak dağılımını kontrol et"
-            : "Takip döneminde değerlendir";
-  else if (support && shortageMonths === 3)
-    action = "Takvim / kaynak senaryosu değerlendir";
-  else if (support || risk === "red") action = "Destek ve darboğazları incele";
-  else if (donor) action = "Kaynak aktarımı için incele";
-  else if (risk === "amber") action = "Risk nedenlerini incele";
+            ? "Kaynak dağılımını kontrol et."
+            : "Takip dönemindeki bir ayı seç."
+      : RESOURCE_ACTIONS[resourceReview];
   return {
     point,
     risk,
@@ -260,6 +352,10 @@ export function assessManagement(
     actualMonth,
     upcoming,
     shortageMonths,
+    remaining,
+    resourceReview,
+    resourceTitle: RESOURCE_LABELS[resourceReview],
+    upcomingMonths,
   };
 }
 
@@ -291,29 +387,57 @@ export function manageProject(
         ? "amber"
         : base.risk;
   const support = base.support || leaders.some((l) => l.assessment.support);
-  const scenario =
-    (base.support && base.shortageMonths === 3) ||
-    leaders.some(
-      (l) => l.assessment.support && l.assessment.shortageMonths === 3,
-    );
+  const uncoveredLeaders = leaders.filter(
+    (l) => l.assessment.resourceReview === "needsPlan",
+  );
+  const delayedLeaders = leaders.filter(
+    (l) => l.assessment.resourceReview === "recovery",
+  );
+  const resourceReview =
+    base.point.gap !== null && uncoveredLeaders.length
+      ? "needsPlan"
+      : base.point.gap !== null && delayedLeaders.length
+        ? "recovery"
+        : base.resourceReview;
   const assessment: ManagementAssessment = {
     ...base,
     risk,
     support,
+    resourceReview,
+    resourceTitle:
+      resourceReview === "needsPlan" && base.resourceReview !== "needsPlan"
+        ? "Bazı liderliklerde kaynak planı yok"
+        : resourceReview === "recovery" && base.resourceReview !== "recovery"
+          ? "Bazı liderlikler planın gerisinde"
+          : base.resourceTitle,
     donor: base.donor && concerns.length === 0,
     reasons: [
       ...new Set([
         ...base.reasons,
+        ...uncoveredLeaders.map(
+          (l) =>
+            `${l.row.record.leader}: tamamlanmamış iş var, önümüzdeki 3 ayda kaynak planı yok.`,
+        ),
+        ...delayedLeaders.map(
+          (l) =>
+            `${l.row.record.leader}: gecikmeyi kapatmak için kaynak planı incelenmeli.`,
+        ),
+        ...leaders
+          .filter(
+            (l) =>
+              ["review", "release"].includes(l.assessment.resourceReview) &&
+              l.assessment.resourceReview !== base.resourceReview,
+          )
+          .map((l) => `${l.row.record.leader}: ${l.assessment.resourceTitle}.`),
         ...concerns.map(
           (l) =>
             `${l.row.record.leader}: ${STATE_LABELS[l.assessment.point.state]}${l.assessment.point.gap === null ? "" : ` (${l.assessment.point.gap.toLocaleString("tr-TR")} puan)`}`,
         ),
       ]),
     ],
-    action: scenario
-      ? "Takvim / kaynak senaryosu değerlendir"
-      : support || risk === "red"
-        ? "Destek ve darboğazları incele"
+    action:
+      resourceReview !== base.resourceReview
+        ? RESOURCE_ACTIONS[resourceReview]
         : base.action,
   };
   return {

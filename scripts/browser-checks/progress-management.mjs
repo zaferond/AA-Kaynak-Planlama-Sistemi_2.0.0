@@ -135,7 +135,7 @@ export async function checkProgressManagement(f) {
         assert.equal(await matrix.locator(".progress-project-row").count(), 3);
         assert.equal(await matrix.locator(".progress-leader-row").count(), 0);
         const statusHeader = matrix.getByRole("columnheader", {
-          name: "Değerlendirme durumu Eyl 2026",
+          name: "İlerleme ve kaynak değerlendirmesi Eyl 2026",
           exact: true,
         });
         await statusHeader.waitFor();
@@ -146,7 +146,7 @@ export async function checkProgressManagement(f) {
             .locator("th")
             .first()
             .innerText(),
-          /Değerlendirme durumu/,
+          /İlerleme ve kaynak değerlendirmesi/,
         );
         const projectA = matrix.locator('[data-project="p-a"]');
         assert.equal(await projectA.count(), 5);
@@ -174,30 +174,44 @@ export async function checkProgressManagement(f) {
         await projectBStatus
           .getByText("Hedefin 20 puan gerisinde.", { exact: true })
           .waitFor();
-        await projectBStatus
-          .getByText("Riskin nedeni ve öneri", { exact: true })
-          .click();
-        await projectBStatus
-          .getByText("Destek ve darboğazları incele", { exact: true })
+        await projectA
+          .first()
+          .getByText("Kalan iş: %30", { exact: true })
+          .waitFor();
+        await projectA
+          .first()
+          .getByText("Kaynak planı yeniden değerlendirilebilir", {
+            exact: true,
+          })
           .waitFor();
         await projectBStatus
-          .getByText("Riskin nedeni ve öneri", { exact: true })
-          .click();
+          .getByText("Gecikmeyi kapatma planı incelenmeli", { exact: true })
+          .waitFor();
+        await projectBStatus
+          .getByText(
+            "Ayrılan kaynağın gecikmeyi kapatıp kapatmayacağını ve teslim tarihlerini gözden geçir.",
+            { exact: true },
+          )
+          .waitFor();
+        await projectBStatus.getByText(/^Dikkat gerektiren konular/).click();
+        assert(!(await projectBStatus.innerText()).includes("Perf."));
+        await projectBStatus.getByText(/^Dikkat gerektiren konular/).click();
         await page
-          .getByText("Değerlendirme durumları ve riskler ne anlama geliyor?", {
+          .getByText("İlerleme ve kaynak kararları nasıl değerlendirilir?", {
             exact: true,
           })
           .click();
         const guide = page.locator(".progress-report-help");
         await guide
-          .getByText(
-            "Gerçekleşen ilerleme, seçili ayın hedefinden düşük. Gecikmenin nedeni incelenmeli.",
-            { exact: true },
-          )
+          .getByRole("table", {
+            name: "Kaynak değerlendirme kuralları",
+            exact: true,
+          })
+          .getByText("İş devam ediyor, kaynak planı yok", { exact: true })
           .waitFor();
         await f.capture(page, "management-assessment-guide");
         await page
-          .getByText("Değerlendirme durumları ve riskler ne anlama geliyor?", {
+          .getByText("İlerleme ve kaynak kararları nasıl değerlendirilir?", {
             exact: true,
           })
           .click();
@@ -237,14 +251,14 @@ export async function checkProgressManagement(f) {
           .selectOption("2026-10");
         await matrix
           .getByRole("columnheader", {
-            name: "Değerlendirme durumu Eki 2026",
+            name: "İlerleme ve kaynak değerlendirmesi Eki 2026",
             exact: true,
           })
           .waitFor();
         await projectA
           .first()
           .locator(".progress-matrix-assessment")
-          .getByText("Gerçekleşen verisi eksik", { exact: true })
+          .getByText("Değerlendirme bekliyor", { exact: true })
           .waitFor();
         await page
           .getByRole("combobox", { name: "Ay", exact: true })
@@ -463,7 +477,7 @@ export async function checkProgressManagement(f) {
         await rows
           .first()
           .locator(".progress-matrix-assessment")
-          .getByText("Gerçekleşen verisi eksik", { exact: true })
+          .getByText("Değerlendirme bekliyor", { exact: true })
           .waitFor();
         await page
           .getByRole("combobox", { name: "Liderlik", exact: true })
@@ -507,6 +521,104 @@ export async function checkProgressManagement(f) {
           "Sticky status and project columns do not overlap",
         );
         await f.capture(page, "management-progress-narrow");
+      },
+    );
+    await f.check(
+      "progress management: resource decisions distinguish unallocated work, recovery and completion",
+      async () => {
+        const selectProject = async (id) => {
+          await page.reload();
+          await open();
+          await page
+            .getByRole("combobox", { name: "Liderlik", exact: true })
+            .selectOption(f.teamA.lead);
+          await page
+            .getByRole("combobox", { name: "Proje", exact: true })
+            .selectOption(id);
+        };
+        const setFuture = async (value) =>
+          f.store.mutate(f.actor, (d, u) =>
+            applyChanges(
+              d,
+              u,
+              ["2026-10", "2026-11", "2026-12"].map((m) => {
+                const id = `${f.teamA.id}|p-b|${m}`;
+                return {
+                  kind: "allocation",
+                  id,
+                  value,
+                  revision: d.revisions["allocation:" + id] || 0,
+                };
+              }),
+            ),
+          );
+        await setFuture(0);
+        await selectProject("p-b");
+        const decisionCell = matrix.locator(
+          ".progress-project-row .progress-matrix-assessment",
+        );
+        await decisionCell
+          .getByText("İş devam ediyor, kaynak planı yok", { exact: true })
+          .waitFor();
+        await decisionCell
+          .getByText("Kalan iş: %70", { exact: true })
+          .waitFor();
+        await decisionCell
+          .getByText("Önümüzdeki 3 ay kaynak planı: Yok", { exact: true })
+          .waitFor();
+        await decisionCell
+          .getByText("Kaynak ayır veya proje takvimini güncelle.", {
+            exact: true,
+          })
+          .waitFor();
+        await decision.selectOption("needsPlan");
+        assert.equal(await matrix.locator(".progress-project-row").count(), 1);
+        const bytes = await download(
+          page,
+          page.getByRole("button", { name: "Excel’e Aktar", exact: true }),
+          path.join(f.dir, "resource-decision.xlsx"),
+        );
+        const entries = zipEntries(bytes);
+        await validateXml(page, entries);
+        assert.match(
+          entries["xl/worksheets/sheet2.xml"],
+          /İş devam ediyor, kaynak planı yok/,
+        );
+        assert.match(entries["xl/worksheets/sheet2.xml"], /Kalan iş %/);
+        await f.capture(page, "management-no-resource-plan");
+        await setFuture(0.2);
+        await selectProject("p-b");
+        await decisionCell
+          .getByText("Gecikmeyi kapatma planı incelenmeli", { exact: true })
+          .waitFor();
+        await f.store.mutate(f.actor, (d, u) => {
+          const record = d.projectProgress.find(
+            (r) => r.projectId === "p-a" && r.leader === f.teamA.lead,
+          );
+          return applyChanges(d, u, [
+            {
+              kind: "progress",
+              id: record.id,
+              revision: d.revisions["progress:" + record.id] || 0,
+              value: {
+                ...record,
+                actuals: {
+                  ...record.actuals,
+                  "2026-09": { pct: 100, note: "Tamamlanan test işi" },
+                },
+              },
+            },
+          ]);
+        });
+        await selectProject("p-a");
+        await decisionCell.getByText("Tamamlandı", { exact: true }).waitFor();
+        await decisionCell.getByText("Kalan iş: %0", { exact: true }).waitFor();
+        await decisionCell
+          .getByText("Tamamlanan işte kaynak planı sürüyor", { exact: true })
+          .waitFor();
+        await decision.selectOption("completed");
+        assert.equal(await matrix.locator(".progress-project-row").count(), 1);
+        await f.capture(page, "management-completed-resource-review");
       },
     );
   } finally {

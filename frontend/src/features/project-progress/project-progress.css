@@ -1044,7 +1044,7 @@
 .project-progress .progress-monthly-matrix .progress-matrix-assessment,
 .project-progress .progress-monthly-matrix .progress-matrix-name {
   position: sticky;
-  left: 180px;
+  left: 300px;
   z-index: 2;
   background: #f1f5eb;
   white-space: normal;
@@ -1146,4 +1146,28 @@
   .project-progress .progress-management-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.project-progress .progress-resource-decision {
+  display: block;
+  margin-top: 4px;
+  color: #405440;
+  font-size: var(--fs-xs);
+}
+.project-progress .progress-resource-decision[data-review="needsPlan"],
+.project-progress .progress-resource-decision[data-review="recovery"] {
+  color: #a32922;
+}
+.project-progress .progress-resource-decision[data-review="review"],
+.project-progress .progress-resource-decision[data-review="release"] {
+  color: #235a76;
+}
+.project-progress .progress-resource-action {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.project-progress .progress-assessment [data-state="completed"],
+.project-progress .progress-assessment [data-state="onTrack"] {
+  color: #216c38;
 }

@@ -13,9 +13,9 @@ import {
 } from "./progress-view";
 import {
   manageProject,
-  STATE_HELP,
-  STATE_LABELS,
-  type ProgressState,
+  RESOURCE_LABELS,
+  RESOURCE_ACTIONS,
+  type ResourceReview,
   transferComparisons,
   type ManagedProject,
 } from "./progress-management";
@@ -26,26 +26,48 @@ import {
 } from "./progress-management-export";
 
 type DecisionFilter =
-  "" | "risk" | "ahead" | "behind" | "missing" | "donor" | "scenario";
+  | ""
+  | "risk"
+  | "ahead"
+  | "behind"
+  | "missing"
+  | "donor"
+  | "needsPlan"
+  | "recovery"
+  | "review"
+  | "completed";
 const FILTER_LABELS: Record<DecisionFilter, string> = {
   "": "Tüm projeler",
-  risk: "Gecikme / teslim riski",
+  risk: "Dikkat gerektiren konular",
   ahead: "Planın önünde",
   behind: "Planın gerisinde",
-  missing: "Veri / plan eksik",
-  donor: "Aktarım için incelenebilir",
-  scenario: "Takvim / kaynak senaryosu",
+  missing: "Değerlendirme bekliyor",
+  donor: "Kaynak aktarımı için incelenebilecek projeler",
+  needsPlan: "Kaynak planı yok",
+  recovery: "Gecikmeyi kapatma planı incelenmeli",
+  review: "Kaynak planı yeniden değerlendirilebilir",
+  completed: "Tamamlandı",
 };
 const matches = (project: ManagedProject, filter: DecisionFilter) => {
   const { assessment: a } = project;
   if (filter === "risk") return a.risk === "red" || a.risk === "amber";
-  if (filter === "ahead" || filter === "behind")
+  if (filter === "ahead" || filter === "behind" || filter === "completed")
     return a.point.state === filter;
   if (filter === "missing")
     return ["missing", "unplanned", "unweighted"].includes(a.point.state);
   if (filter === "donor") return a.donor;
-  if (filter === "scenario")
-    return a.action === "Takvim / kaynak senaryosu değerlendir";
+  if (filter === "needsPlan" || filter === "recovery")
+    return (
+      a.resourceReview === filter ||
+      project.leaders.some((l) => l.assessment.resourceReview === filter)
+    );
+  if (filter === "review")
+    return (
+      ["review", "release"].includes(a.resourceReview) ||
+      project.leaders.some((l) =>
+        ["review", "release"].includes(l.assessment.resourceReview),
+      )
+    );
   return true;
 };
 const PAGE_SIZE = 10;
@@ -305,8 +327,8 @@ export default function ProgressReport({
             {
               filter: "risk",
               tone: "risk",
-              label: "Gecikme / teslim riski",
-              detail: "İlerleme veya kaynak riski sinyali",
+              label: "Dikkat gerektiren konular",
+              detail: "Gecikme, kaynak veya kritik iş uyarısı",
             },
             {
               filter: "ahead",
@@ -315,15 +337,15 @@ export default function ProgressReport({
               detail: "Gerçekleşen, hedefin üzerinde",
             },
             {
-              filter: "donor",
+              filter: "review",
               tone: "donor",
-              label: "Aktarım için incelenebilir",
-              detail: "En az 5 puan önde; kaynak incelemesine uygun",
+              label: "Kaynak planı incelenebilir",
+              detail: "Önde giden veya tamamlanan işte kaynak planı var",
             },
             {
               filter: "missing",
               tone: "missing",
-              label: "Veri / plan eksik",
+              label: "Değerlendirme bekliyor",
               detail: "Karşılaştırma için tamamlanmalı",
             },
           ] as const
@@ -344,53 +366,58 @@ export default function ProgressReport({
         ))}
       </div>
       <details className="progress-process-help progress-report-help">
-        <summary>Değerlendirme durumları ve riskler ne anlama geliyor?</summary>
+        <summary>İlerleme ve kaynak kararları nasıl değerlendirilir?</summary>
         <p>
-          Değerlendirme durumu seçili ayın hedef ve gerçekleşen ilerlemesine
-          göre her ay yeniden hesaplanır. Örneğin hedef %60, gerçekleşen %50 ise
-          proje 10 puan geridedir.
-        </p>
-        <dl className="progress-evaluation-definitions">
-          {(Object.keys(STATE_LABELS) as ProgressState[]).map((state) => (
-            <div key={state}>
-              <dt>{STATE_LABELS[state]}</dt>
-              <dd>{STATE_HELP[state]}</dd>
-            </div>
-          ))}
-        </dl>
-        <p>
-          <strong>Yüksek risk:</strong> Gecikme veya kaynak sorunları için
-          öncelikli inceleme gerekir. <strong>Risk izlenmeli:</strong> Planın
-          gerisinde kalma, kapasite açığı veya kritik konu gibi uyarılar takip
-          edilmelidir. Proje toplamı planın önünde olsa da bir liderlikteki
-          sorun nedeniyle risk etiketi gösterilebilir. İlgili satırdaki “Riskin
-          nedeni ve öneri” bağlantısı bu uyarının gerekçesini gösterir.
+          Seçili ayın hedefi ve gerçekleşeni karşılaştırılır. Gerçekleşen
+          düşükse “Planın gerisinde”, eşitse “Planla uyumlu”, yüksekse “Planın
+          önünde” gösterilir. İlgili liderliklerin tümü %100 gerçekleşme
+          girdiğinde “Tamamlandı” olur. Eksik veri varsa nedeni ile birlikte
+          “Değerlendirme bekliyor” gösterilir.
         </p>
         <p>
-          Planlanan ve gerçekleşen yüzdeler işin tamamlanma payıdır. Fark =
-          gerçekleşen − planlanan; birimi yüzde puandır. Pozitif fark planın
-          önünde, negatif fark planın gerisinde ilerlemeyi gösterir. Kaynak
-          değerleri ayrıca kişi-ay olarak verilir.
+          Kalan iş = %100 − gerçekleşen ilerleme. Kaynak değerlendirmesi seçili
+          ayı izleyen 3 ayın planını kapsar. Kişi-ay, bu dönemde planlanan iş
+          gücü toplamıdır.
+        </p>
+        <table
+          className="progress-table compact"
+          aria-label="Kaynak değerlendirme kuralları"
+        >
+          <thead>
+            <tr>
+              <th>Durum</th>
+              <th>Kaynak planı</th>
+              <th>Yönetici kararı</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(
+              ["needsPlan", "recovery", "review", "release"] as ResourceReview[]
+            ).map((key) => (
+              <tr key={key}>
+                <td>{RESOURCE_LABELS[key]}</td>
+                <td>
+                  {key === "needsPlan"
+                    ? "Önümüzdeki 3 ayda kaynak ayrılmamış"
+                    : "Önümüzdeki 3 ayda kaynak ayrılmış"}
+                </td>
+                <td>{RESOURCE_ACTIONS[key]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p>
+          Her liderlik ayrıca değerlendirilir; bir liderlikteki eksik kaynak
+          planı proje toplamında gizlenmez. Veri eksikken kalan iş veya
+          aktarılabilecek kaynak miktarı varsayılmaz. Planın önünde olmak
+          kaynakların boşta olduğunu göstermez; kalan işler, kritik teslimler ve
+          takım yetkinlikleri yönetici tarafından incelenmelidir.
         </p>
         <p>
-          Proje toplamları mevcut hesaplama ayarları ve planlanan kaynak
-          dağılımına göre hesaplanır. Onaylı plan veya gerçekleşen girişi eksik
-          liderlik varsa proje toplamında eksik gerçekleşen değer yerine “—”
-          gösterilir. Gelecek ve takip öncesi aylar gerçekleşmiş kabul edilmez.
-          Liderlik filtresi seçildiğinde proje toplamları bu kapsamı gösterir.
-        </p>
-        <p>
-          Gerçekleşen / hedef oranı 0,80’in altında veya fark −15 puan ve
-          altında ise yüksek risk; diğer negatif farklar ve kaynak / kritik konu
-          sinyalleri izleme gerektirir. Liderliklerdeki riskler proje özetine
-          taşınır. En az 5 puan önde, kaynak verisi mevcut, ek risk ve gelecek
-          dönem kapasite açığı bulunmayan projeler aktarım için incelenebilir.
-        </p>
-        <p>
-          En az 5 puan geride olup ilgili liderliklerinde sonraki 3 ayın
-          tamamında kapasite açığı bulunan projeler için takvim / kaynak
-          senaryosu önerilir. Proje öncelikleri, kritik teslimler ve takım
-          yetkinlikleri yönetici değerlendirmesine eklenmelidir.
+          Kaynak aktarımı karşılaştırmaları aynı liderlikteki projeler arasında
+          yapılır. Önde giden projelerde en az 5 puan fark, gerçekleşen kaynak
+          verisi ve ek uyarı bulunmaması aranır. Tamamlanan işlerde kalan kaynak
+          planı incelenir. Aktarılacak miktar otomatik belirlenmez.
         </p>
       </details>
       {comparisons.length > 0 && (
@@ -414,12 +441,12 @@ export default function ProgressReport({
                 </strong>
                 <span>{pair.leader}</span>
                 <small>
-                  Kaynak incelenecek proje: +{fmt(pair.fromGap)} puan · Destek
-                  ihtiyacı: {fmt(pair.toGap)} puan
+                  Hedef farkı: {pair.fromGap > 0 ? "+" : ""}
+                  {fmt(pair.fromGap)} puan → {pair.toGap > 0 ? "+" : ""}
+                  {fmt(pair.toGap)} puan
                 </small>
                 <small>
-                  İlk projenin bu liderlikteki sonraki 3 ay tahsisi:{" "}
-                  {fmt(pair.planned)} kişi-ay
+                  İncelenecek kaynak planı (3 ay): {fmt(pair.planned)} kişi-ay
                 </small>
               </article>
             ))}

@@ -4,6 +4,7 @@ import { topicsIn } from "./progress-topics.ts";
 import {
   managementPoint,
   STATE_LABELS,
+  evaluationLabel,
   type ManagedProject,
 } from "./progress-management.ts";
 
@@ -37,13 +38,8 @@ export function managementExportRows(projects: ManagedProject[]) {
     performance: assessment.point.performance,
     spent: assessment.point.spent,
     assessmentText:
-      STATE_LABELS[assessment.point.state] +
-      (assessment.risk === "red"
-        ? " · Yüksek risk"
-        : assessment.risk === "amber"
-          ? " · Risk izlenmeli"
-          : ""),
-    reasonText: assessment.reasons.join(" · "),
+      evaluationLabel(assessment.point) + " · " + assessment.resourceTitle,
+    reasonText: [assessment.action, ...assessment.reasons].join(" · "),
     leaders: leaders.map((l) => ({
       ...l.row,
       target: l.assessment.point.target,
@@ -51,13 +47,10 @@ export function managementExportRows(projects: ManagedProject[]) {
       spent: l.assessment.point.spent,
       performance: l.assessment.point.performance,
       assessmentText:
-        STATE_LABELS[l.assessment.point.state] +
-        (l.assessment.risk === "red"
-          ? " · Yüksek risk"
-          : l.assessment.risk === "amber"
-            ? " · Risk izlenmeli"
-            : ""),
-      reasonText: l.assessment.reasons.join(" · "),
+        evaluationLabel(l.assessment.point) +
+        " · " +
+        l.assessment.resourceTitle,
+      reasonText: [l.assessment.action, ...l.assessment.reasons].join(" · "),
     })),
   }));
 }
@@ -88,20 +81,21 @@ export function managementSheets(
         a.point.target,
         a.point.actual,
         a.point.gap,
-        STATE_LABELS[a.point.state],
-        a.risk === null
-          ? "Değerlendirilemedi"
-          : a.risk === "red"
-            ? "Yüksek risk"
-            : a.risk === "amber"
-              ? "İzlenmeli"
-              : "Ek risk sinyali yok",
+        evaluationLabel(a.point),
+        a.remaining,
+        a.resourceTitle,
         a.action,
         a.reasons.join(" · "),
         `${a.point.entered}/${a.point.total}`,
         a.plannedMonth,
         a.actualMonth,
         a.upcoming,
+        a.upcomingMonths
+          .map(
+            (m) => `${m.month}: ${m.planned.toLocaleString("tr-TR")} kişi-ay`,
+          )
+          .join(" · "),
+        a.resourceReview === "unassessed" ? STATE_LABELS[a.point.state] : "—",
       ]);
       for (const m of months) {
         const point = managementPoint(ctx, p.row.project, entity.leaders, m);
@@ -137,13 +131,16 @@ export function managementSheets(
           "Gerçekleşen %",
           "Fark (puan)",
           "İlerleme durumu",
-          "Risk",
-          "İnceleme / Aksiyon",
+          "Kalan iş %",
+          "Kaynak değerlendirmesi",
+          "Karar ihtiyacı",
           "Gerekçe",
           "Gerçekleşen kapsamı",
           "Aylık planlanan kaynak (kişi-ay)",
           "Aylık gerçekleşen kaynak (kişi-ay)",
           "Sonraki 3 ay planı (kişi-ay)",
+          "Aylara göre kaynak planı",
+          "Değerlendirme bekleme nedeni",
         ],
         summary,
       ),

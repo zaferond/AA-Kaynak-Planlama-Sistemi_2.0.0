@@ -22,9 +22,9 @@ const HEADERS = [
   "Liderlik",
   "Hedef %",
   "Gerçekleşen %",
-  "Harcanan %",
-  "Perf.",
-  "Risk",
+  "Kaynak tüketimi %",
+  "Hedef gerçekleşme oranı",
+  "İlerleme ve kaynak değerlendirmesi",
   "Neden",
   "Açıklama",
 ];

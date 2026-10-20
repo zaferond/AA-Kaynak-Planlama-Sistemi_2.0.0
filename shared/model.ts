@@ -128,6 +128,9 @@ export type Data = {
   projectProgress?: import("./project-progress.ts").ProjectProgress[];
   /** Months closed to actual progress entry. */
   progressLocks?: import("./project-progress.ts").ProgressLock[];
+  warningConfigs?: import("./scenario-warnings.ts").WarningConfig[];
+  warningAssessments?: import("./scenario-warnings.ts").WarningAssessment[];
+  scenarioWarnings?: import("./scenario-warnings.ts").ScenarioWarning[];
   resources: Resource[];
   allocations: Record<string, number>;
   actualAllocations?: Record<string, number>;

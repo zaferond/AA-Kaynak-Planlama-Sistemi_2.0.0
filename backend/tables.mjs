@@ -81,6 +81,18 @@ export const tables = {
     key: ["id"],
     columns: { id: "varchar(7)", payload: "nvarchar(max)" },
   },
+  warning_configs: {
+    key: ["id"],
+    columns: { id: "nvarchar(120)", payload: "nvarchar(max)" },
+  },
+  warning_assessments: {
+    key: ["id"],
+    columns: { id: "nvarchar(120)", payload: "nvarchar(max)" },
+  },
+  scenario_warnings: {
+    key: ["id"],
+    columns: { id: "nvarchar(240)", payload: "nvarchar(max)" },
+  },
   risk_systems: {
     key: ["id"],
     columns: { id: "nvarchar(120)", name: "nvarchar(200)" },

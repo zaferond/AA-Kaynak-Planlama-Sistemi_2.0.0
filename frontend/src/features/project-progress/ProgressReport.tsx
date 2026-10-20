@@ -1,3 +1,13 @@
+import {
+  SCENARIO_WARNING_RULES,
+  WARNING_PROGRESS_LABELS,
+  WARNING_RESOURCE_LABELS,
+} from "../../../../shared/scenario-warning-policy.ts";
+import {
+  WarningCalculationSummary,
+  ScenarioWarningStatus,
+} from "./ScenarioWarningStatus";
+import type { WarningAssessment } from "../../../../shared/scenario-warnings.ts";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowDownToLine, Lock, LockOpen } from "lucide-react";
 import type { Principal } from "../../access";
@@ -13,9 +23,6 @@ import {
 } from "./progress-view";
 import {
   manageProject,
-  RESOURCE_LABELS,
-  RESOURCE_ACTIONS,
-  type ResourceReview,
   transferComparisons,
   type ManagedProject,
 } from "./progress-management";
@@ -39,17 +46,42 @@ type DecisionFilter =
 const FILTER_LABELS: Record<DecisionFilter, string> = {
   "": "Tüm projeler",
   risk: "Dikkat gerektiren konular",
-  ahead: "Planın önünde",
-  behind: "Planın gerisinde",
+  ahead: "Planın İlerisinde",
+  behind: "Planın Gerisinde / Kritik Gecikme",
   missing: "Değerlendirme bekliyor",
   donor: "Kaynak aktarımı için incelenebilecek projeler",
   needsPlan: "Kaynak planı yok",
-  recovery: "Gecikmeyi kapatma planı incelenmeli",
-  review: "Kaynak planı yeniden değerlendirilebilir",
+  recovery: "Gecikme için aksiyon gerekli",
+  review: "Fazla kaynak değerlendirilebilir",
   completed: "Tamamlandı",
 };
 const matches = (project: ManagedProject, filter: DecisionFilter) => {
-  const { assessment: a } = project;
+  const { assessment: a, scenario: s } = project;
+  if (s) {
+    if (filter === "risk")
+      return (
+        s.progressState === "critical" ||
+        s.progressState === "behind" ||
+        !!s.warning2 ||
+        a.risk === "red" ||
+        a.risk === "amber"
+      );
+    if (filter === "ahead")
+      return s.status === "ready" && s.progressState === "ahead";
+    if (filter === "behind")
+      return (
+        s.status === "ready" &&
+        ["behind", "critical"].includes(s.progressState || "")
+      );
+    if (filter === "completed") return s.status === "completed";
+    if (filter === "missing")
+      return ["missing", "unlocked", "notStarted"].includes(s.status);
+    if (filter === "needsPlan") return s.resourceState === "unplanned";
+    if (filter === "recovery")
+      return ["S-01", "S-02", "S-03", "S-04"].includes(s.code || "");
+    if (filter === "review" || filter === "donor")
+      return ["S-07", "S-08"].includes(s.code || "");
+  }
   if (filter === "risk") return a.risk === "red" || a.risk === "amber";
   if (filter === "ahead" || filter === "behind" || filter === "completed")
     return a.point.state === filter;
@@ -133,18 +165,25 @@ export default function ProgressReport({
         .map((row) => manageProject(ctx, row, month))
         .sort((a, b) => {
           const order = (p: ManagedProject) =>
-            p.assessment.risk === "red"
-              ? 0
-              : p.assessment.point.state === "behind"
-                ? 1
-                : p.assessment.risk === "amber"
-                  ? 2
-                  : ["missing", "unplanned"].includes(p.assessment.point.state)
-                    ? 3
-                    : 4;
+            p.scenario?.progressState === "critical"
+              ? -2
+              : p.scenario?.progressState === "behind"
+                ? -1
+                : p.assessment.risk === "red"
+                  ? 0
+                  : p.assessment.point.state === "behind"
+                    ? 1
+                    : p.assessment.risk === "amber"
+                      ? 2
+                      : ["missing", "unplanned"].includes(
+                            p.assessment.point.state,
+                          )
+                        ? 3
+                        : 4;
           return (
             order(a) - order(b) ||
-            (a.assessment.point.gap ?? 0) - (b.assessment.point.gap ?? 0) ||
+            (a.scenario?.deviation ?? a.assessment.point.gap ?? 0) -
+              (b.scenario?.deviation ?? b.assessment.point.gap ?? 0) ||
             a.row.project.name.localeCompare(b.row.project.name, "tr")
           );
         }),
@@ -154,7 +193,10 @@ export default function ProgressReport({
     () => projects.filter((p) => matches(p, decision)),
     [projects, decision],
   );
-  const comparisons = useMemo(() => transferComparisons(projects), [projects]);
+  const comparisons = useMemo(
+    () => transferComparisons(projects, ctx),
+    [projects, ctx],
+  );
   const monthColumns = useMemo(
     () =>
       Array.from(
@@ -185,6 +227,10 @@ export default function ProgressReport({
     Math.min(page, pageCount - 1) * PAGE_SIZE,
     (Math.min(page, pageCount - 1) + 1) * PAGE_SIZE,
   );
+  const lastLockedMonth = [...(data.progressLocks || [])]
+    .map((l) => l.id)
+    .sort()
+    .at(-1);
   const lock = (data.progressLocks || []).find((item) => item.id === month);
   const detailRow = rows.find((row) => row.project.id === detail);
 
@@ -223,8 +269,11 @@ export default function ProgressReport({
         <div>
           <h3>Proje ve Liderlik Bazında Aylık İlerleme</h3>
           <p>
-            Değerlendirme: {monthLabel(month)} · Kümülatif tamamlanma yüzdeleri
-            · {projects.length} proje /{" "}
+            Senaryo değerlendirmesi:{" "}
+            {lastLockedMonth
+              ? monthLabel(lastLockedMonth) + " (son kilitli ay)"
+              : "Kilitli ay bekleniyor"}{" "}
+            · Kümülatif tamamlanma yüzdeleri · {projects.length} proje /{" "}
             {projects.reduce((n, p) => n + p.row.leaders.length, 0)} liderlik
             kaydı
           </p>
@@ -333,14 +382,14 @@ export default function ProgressReport({
             {
               filter: "ahead",
               tone: "ahead",
-              label: "Planın önünde",
-              detail: "Gerçekleşen, hedefin üzerinde",
+              label: "Planın İlerisinde",
+              detail: "Sapma ileride olma eşiğine ulaştı",
             },
             {
               filter: "review",
               tone: "donor",
-              label: "Kaynak planı incelenebilir",
-              detail: "Önde giden veya tamamlanan işte kaynak planı var",
+              label: "Fazla kaynak değerlendirilebilir",
+              detail: "S-07 / S-08: aktarım veya serbest bırakma",
             },
             {
               filter: "missing",
@@ -368,57 +417,57 @@ export default function ProgressReport({
       <details className="progress-process-help progress-report-help">
         <summary>İlerleme ve kaynak kararları nasıl değerlendirilir?</summary>
         <p>
-          Seçili ayın hedefi ve gerçekleşeni karşılaştırılır. Gerçekleşen
-          düşükse “Planın gerisinde”, eşitse “Planla uyumlu”, yüksekse “Planın
-          önünde” gösterilir. İlgili liderliklerin tümü %100 gerçekleşme
-          girdiğinde “Tamamlandı” olur. Eksik veri varsa nedeni ile birlikte
-          “Değerlendirme bekliyor” gösterilir.
+          İlerleme, son kilitli ayın kümülatif gerçekleşeni ile hedefi
+          arasındaki sapmadır. Eşiklere göre Planın İlerisinde, Planda, Planın
+          Gerisinde veya Kritik Gecikme gösterilir. Ardışık kilitli takvim
+          aylarında planın gerisinde kalma, ayarlanan süre sonunda Kritik
+          Gecikme durumuna yükseltilir.
         </p>
         <p>
-          Kalan iş = %100 − gerçekleşen ilerleme. Kaynak değerlendirmesi seçili
-          ayı izleyen 3 ayın planını kapsar. Kişi-ay, bu dönemde planlanan iş
-          gücü toplamıdır.
+          Kalan iş = %100 − gerçekleşen. Gelecek Planlı %, onay anında
+          sabitlenen kaynak/hedef oranıyla gelecekteki kaynaklardan hesaplanır.
+          Karşılama = Gelecek Planlı % / Kalan İş %. Yakın dönemde kaynak yoksa
+          Planlanmamış; diğer durumlarda karşılama eşiklerine göre Yetersiz,
+          Yeterli veya Fazla olur.
         </p>
-        <table
-          className="progress-table compact"
-          aria-label="Kaynak değerlendirme kuralları"
-        >
+        <p>
+          1. Uyarı ilerleme durumunu, 2. Uyarı senaryo matrisindeki aksiyonu
+          gösterir. Matriste karşılığı olmayan birleşimlerde yalnız 1. Uyarı
+          gösterilir. Gerçekleşen %100 ise uyarı üretilmez. Son kilitli ayda
+          herhangi bir liderliğin verisi eksikse “Veri eksik” gösterilir.
+        </p>
+        <p>
+          Senaryo değerlendirmesi proje genelini kapsar; liderlik filtresi veya
+          aylık görünüm seçimi bu hesabı değiştirmez. Eksik giriş, kapasite ve
+          kritik konu uyarıları “Hesap ve diğer uyarılar” ayrıntısında korunur.
+          Kaynak aktarımı için eşleşmeler aynı liderlikteki projelerle
+          sınırlıdır; miktar ve takım yetkinliği yönetici tarafından
+          değerlendirilir.
+        </p>
+        <table className="progress-table compact" aria-label="Senaryo matrisi">
           <thead>
             <tr>
-              <th>Durum</th>
-              <th>Kaynak planı</th>
-              <th>Yönetici kararı</th>
+              <th>Kod</th>
+              <th>İlerleme</th>
+              <th>Kaynak</th>
+              <th>2. Uyarı / Aksiyon</th>
             </tr>
           </thead>
           <tbody>
-            {(
-              ["needsPlan", "recovery", "review", "release"] as ResourceReview[]
-            ).map((key) => (
-              <tr key={key}>
-                <td>{RESOURCE_LABELS[key]}</td>
+            {SCENARIO_WARNING_RULES.map((rule) => (
+              <tr key={rule.kod}>
+                <td>{rule.kod}</td>
                 <td>
-                  {key === "needsPlan"
-                    ? "Önümüzdeki 3 ayda kaynak ayrılmamış"
-                    : "Önümüzdeki 3 ayda kaynak ayrılmış"}
+                  {rule.ilerleme
+                    .map((state) => WARNING_PROGRESS_LABELS[state])
+                    .join(" / ")}
                 </td>
-                <td>{RESOURCE_ACTIONS[key]}</td>
+                <td>{WARNING_RESOURCE_LABELS[rule.kaynak]}</td>
+                <td>{rule.uyari2}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <p>
-          Her liderlik ayrıca değerlendirilir; bir liderlikteki eksik kaynak
-          planı proje toplamında gizlenmez. Veri eksikken kalan iş veya
-          aktarılabilecek kaynak miktarı varsayılmaz. Planın önünde olmak
-          kaynakların boşta olduğunu göstermez; kalan işler, kritik teslimler ve
-          takım yetkinlikleri yönetici tarafından incelenmelidir.
-        </p>
-        <p>
-          Kaynak aktarımı karşılaştırmaları aynı liderlikteki projeler arasında
-          yapılır. Önde giden projelerde en az 5 puan fark, gerçekleşen kaynak
-          verisi ve ek uyarı bulunmaması aranır. Tamamlanan işlerde kalan kaynak
-          planı incelenir. Aktarılacak miktar otomatik belirlenmez.
-        </p>
       </details>
       {comparisons.length > 0 && (
         <section
@@ -446,7 +495,8 @@ export default function ProgressReport({
                   {fmt(pair.toGap)} puan
                 </small>
                 <small>
-                  İncelenecek kaynak planı (3 ay): {fmt(pair.planned)} kişi-ay
+                  İncelenecek kaynak planı ({pair.horizonMonths} ay):{" "}
+                  {fmt(pair.planned)} kişi-ay
                 </small>
               </article>
             ))}
@@ -455,8 +505,8 @@ export default function ProgressReport({
       )}
       <div className="progress-matrix-toolbar">
         <span>
-          {filtered.length} proje · {year} aylık görünümü · Değerlendirme ayı:{" "}
-          {monthLabel(month)}
+          {filtered.length} proje · {year} aylık görünümü · Son kilitli ay:{" "}
+          {lastLockedMonth ? monthLabel(lastLockedMonth) : "—"}
         </span>
         <div>
           <button
@@ -523,12 +573,25 @@ export default function ProgressReport({
           </button>
         </div>
       )}
-      {detailRow && <ProjectDetail row={detailRow} />}
+      {detailRow && (
+        <ProjectDetail
+          row={detailRow}
+          assessment={data.warningAssessments?.find(
+            (a) => a.id === detailRow.project.id,
+          )}
+        />
+      )}
     </div>
   );
 }
 
-function ProjectDetail({ row }: { row: ProjectRow }) {
+function ProjectDetail({
+  row,
+  assessment,
+}: {
+  row: ProjectRow;
+  assessment?: WarningAssessment;
+}) {
   const history = row.leaders
     .flatMap((l) =>
       Object.entries(l.record.actuals).map(([month, entry]) => ({
@@ -550,6 +613,8 @@ function ProjectDetail({ row }: { row: ProjectRow }) {
     >
       <h3>{row.project.name}</h3>
       <ProjectResponsible project={row.project} />
+      <ScenarioWarningStatus assessment={assessment} />
+      <WarningCalculationSummary assessment={assessment} />
       <h4>Açıklama geçmişi</h4>
       {history.length ? (
         <table className="progress-table compact">

@@ -9,4 +9,7 @@ export const entityCollections = {
   scenario: "scheduleScenarios",
   progress: "projectProgress",
   progressLock: "progressLocks",
+  warningConfig: "warningConfigs",
+  warningAssessment: "warningAssessments",
+  scenarioWarning: "scenarioWarnings",
 };

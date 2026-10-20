@@ -14,7 +14,6 @@ Yedek doğrulamasında bütün zorunlu kayıtlar bulunmalıdır; kod migration'l
 
 `npm run verify` ve `npm run test:ui` sentetik verilerle çalışır. Bakım regresyonları `tests/data-maintenance.test.mjs` içindedir. MSSQL migration davranışı için ayrıca native test ortamı gerekir.
 
-
 ## 3 Ekim 2026 doğrulama ekleri
 
 Başlangıç, uygulanmış her sürümü katalogla karşılaştırır. Bilinmeyen sürümde yükseltme veya katalog seed işlemi başlamaz. Transaction bitmeden zorunlu migration geçmişi yeniden doğrulanır. İsteğe bağlı v2 ve tarihsel 24→23 sırası korunur.
@@ -22,7 +21,6 @@ Başlangıç, uygulanmış her sürümü katalogla karşılaştırır. Bilinmeye
 Kod kontrolünün eklenmesi tam kaynak fingerprint'ini değiştirir. DDL/veri dönüşümü aynı olan önceki schema-30 fingerprint'i `compatible-migration-fingerprints.json` içinde yalnız bilinen SQL.js/provider/sürüm üçlüsüyle izinlidir. Rastgele hash kabul edilmez. Kaynak fingerprint'inin uyumlu olması şema, model, migration geçmişi ve parola kaydı kontrollerini atlatmaz. Yeni uyumluluk girdisi ancak ilgili DDL/veri dönüşümleri incelenerek eklenmelidir.
 
 Tam SQL.js yedeklerinde parola salt/hash kayıt biçimi ayrıca denetlenir. Bu kontrol doğru parolayı bilmeden salt ile hash'in birbirine ait olduğunu kanıtlayamaz. Eski tarihsiz çalışma dönemleri tam yedekte korunur; bu işlem yeni kaynağa boş tarih girme izni vermez.
-
 
 ## Store sınırı
 
@@ -65,3 +63,9 @@ SQL.js'te 013 geçişi `kp_sessions` tablosunu yeniden oluştururken 001'deki `k
 `kp_project_progress(id, payload)` ve `kp_progress_locks(id, payload)` eklenir. Her ilerleme satırı bir proje × liderlik kaydının JSON içeriğidir: onaylanmış temel planlar (sürüm, açılış ayı ve yüzdesi, aylık kümülatif hedefler, onaylayan), varsa onay bekleyen ya da taslak öneri, aylık gerçekleşen yüzdeler ve açıklamaları (giren ve zaman sunucuda damgalanır), adminin isteğe bağlı elle verdiği ağırlık. Kilit satırı bir ayın (`YYYY-MM`) gerçekleşen girişine kapatıldığını gösterir. Revizyonlar `kp_revisions` tablosunda `@progress:` ve `@progressLock:` ad alanlarıyla tutulur; yeni CHECK değeri gerekmez. Proje silinince o projenin ilerleme kayıtları da aynı işlemde silinir; liderlik adı değişince kayıtlardaki ad güncellenir.
 
 Kayıtları admin ve ilgili liderliğin yöneticisi yazar; temel plan onayı, ağırlık, kilit ve silme yalnız admin yetkisindedir. Normal ve Normal-Proje kullanıcılarına ilerleme kayıtları gönderilmez. Mevcut veride kayıt yoktur; davranış değişmez. Üretim MSSQL ortamında dağıtımdan önce `npm run db:migrate` çalıştırılmalıdır (38–42 ile aynı komut).
+
+### 44 — Senaryo uyarıları ve ayarlar
+
+`kp_warning_configs`, `kp_warning_assessments` ve `kp_scenario_warnings` JSON kayıt tablolarını ekler. Eşikler yalnız admin tarafından değiştirilir; hesaplar tam proje verisiyle sunucuda yapılır. Her proje × kural × ay için tek uyarı tutulur. Durum geçişleri, açıklama, kullanıcı ve tarih bilgileriyle kaydedilir; senaryo veya ay değişince eski kayıt kapanır. Revizyonlar mevcut `allocation` türünün `@warningConfig:`, `@warningAssessment:` ve `@scenarioWarning:` ad alanlarını kullanır.
+
+Yeni hedef planı onaylarında kaynak/hedef referansı temel planın içine sabitlenir. Eski onaylı planlarda referans bir kez geçiş anındaki kaynak dağılımından alınır (`source: migration`); arayüz bu durumu belirtir. Önceki hedefler ve gerçekleşenler korunur. Eksik yeni alanlar eski yedeklerin geri yüklenmesini engellemez. SQL.js otomatik geçiş yapar; canlı MSSQL kurulumlarında `npm run db:migrate` uygulanır.

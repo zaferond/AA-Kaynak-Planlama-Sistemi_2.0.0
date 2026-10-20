@@ -21,6 +21,7 @@ const rootFiles = new Set([
 const jsonFiles = new Set([
   "backend/compatible-migration-fingerprints.json",
   "shared/catalog.json",
+  "shared/scenario-warning-rules.json",
   "shared/data-retention-policy.json",
   "frontend/src/styles/manifest.json",
 ]);

@@ -155,6 +155,16 @@ export function scopeData(
 ): Data {
   if (u.role === "admin") return d;
   const canSeeProject = projectVisibility(projectAccessData, u);
+  const visibleWarningProjects = new Set(
+    d.projects.filter((p) => canSeeProject(p.id)).map((p) => p.id),
+  );
+  const visibleWarningRevisions = new Set(
+    u.role === "manager"
+      ? (d.scenarioWarnings || [])
+          .filter((w) => visibleWarningProjects.has(w.projectId))
+          .map((w) => "scenarioWarning:" + w.id)
+      : [],
+  );
   const hiddenProjects = new Set(
     d.projects
       .filter((project) => !canSeeProject(project.id))
@@ -198,6 +208,13 @@ export function scopeData(
     // Managers save and update their own delay scenarios.
     if (key.startsWith("scenario:")) return u.role === "manager";
     // Leaders write project progress; month locks are shown to them.
+    if (key.startsWith("scenarioWarning:"))
+      return visibleWarningRevisions.has(key);
+    if (
+      key.startsWith("warningConfig:") ||
+      key.startsWith("warningAssessment:")
+    )
+      return false;
     if (key.startsWith("progress:") || key.startsWith("progressLock:"))
       return u.role === "manager";
     return key.startsWith("allocation:")
@@ -307,6 +324,17 @@ export function scopeData(
           )
         : undefined,
     progressLocks: u.role === "manager" ? d.progressLocks : undefined,
+    warningConfigs: undefined,
+    warningAssessments:
+      u.role === "manager"
+        ? d.warningAssessments?.filter((a) => visibleWarningProjects.has(a.id))
+        : undefined,
+    scenarioWarnings:
+      u.role === "manager"
+        ? d.scenarioWarnings?.filter((w) =>
+            visibleWarningProjects.has(w.projectId),
+          )
+        : undefined,
     scheduleScenarios:
       u.role === "manager"
         ? (d.scheduleScenarios || [])

@@ -1,3 +1,8 @@
+import {
+  ScenarioWarningStatus,
+  WarningCalculationSummary,
+} from "./ScenarioWarningStatus";
+import { explainSignal } from "./progress-management";
 import { Fragment, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import {
@@ -12,9 +17,7 @@ import { pctLabel, type ProgressContext } from "./progress-view";
 import {
   managementPoint,
   STATE_LABELS,
-  evaluationLabel,
   type ManagedProject,
-  type ManagementAssessment,
   type ReportPoint,
 } from "./progress-management";
 
@@ -117,7 +120,7 @@ export default function ProgressManagementMatrix({
           <tr>
             <th scope="col" className="progress-matrix-assessment">
               İlerleme ve kaynak değerlendirmesi
-              <small>{monthLabel(month)}</small>
+              <small>Son kilitli ay</small>
             </th>
             <th scope="col" className="progress-matrix-name">
               Proje / Liderlik
@@ -167,7 +170,27 @@ export default function ProgressManagementMatrix({
                   >
                     {index === 0 && (
                       <td rowSpan={5} className="progress-matrix-assessment">
-                        <AssessmentStatus value={project.assessment} />
+                        <div className="progress-assessment">
+                          <ScenarioWarningStatus
+                            assessment={project.scenario}
+                          />
+                          <details className="progress-assessment-section">
+                            <summary>Hesap ve diğer uyarılar</summary>
+                            <WarningCalculationSummary
+                              assessment={project.scenario}
+                            />
+                            {[
+                              ...new Set(
+                                [
+                                  ...row.signals,
+                                  ...row.leaders.flatMap((l) => l.signals),
+                                ].map((signal) => explainSignal(signal.reason)),
+                              ),
+                            ].map((reason) => (
+                              <p key={reason}>{reason}</p>
+                            ))}
+                          </details>
+                        </div>
                       </td>
                     )}
                     {index === 0 && (
@@ -271,7 +294,14 @@ export default function ProgressManagementMatrix({
                               rowSpan={3}
                               className="progress-matrix-assessment"
                             >
-                              <AssessmentStatus value={l.assessment} />
+                              <div className="progress-assessment">
+                                <strong>Liderlik verisi</strong>
+                                <span>{monthLabel(month)}</span>
+                                <small>
+                                  Senaryo değerlendirmesi proje genelinde
+                                  gösterilir.
+                                </small>
+                              </div>
                             </td>
                           )}
                           {index === 0 && (
@@ -297,96 +327,6 @@ export default function ProgressManagementMatrix({
           })}
         </tbody>
       </table>
-    </div>
-  );
-}
-
-function AssessmentStatus({ value }: { value: ManagementAssessment }) {
-  const { point, resourceReview } = value;
-  const otherReasons = value.reasons.filter(
-    (reason) =>
-      reason !== value.resourceTitle &&
-      !reason.startsWith("Hedefin") &&
-      reason !== "Hedefe eşit ilerleme",
-  );
-  return (
-    <div className="progress-assessment">
-      <details className="progress-assessment-section" data-section="plan">
-        <summary>
-          <span className="progress-assessment-caption">Plan durumu</span>
-          <strong data-state={point.state}>{evaluationLabel(point)}</strong>
-        </summary>
-        <div className="progress-assessment-content">
-          {point.gap !== null ? (
-            <>
-              <span>
-                Hedef %{pctLabel(point.target)} · Gerçekleşen %
-                {pctLabel(point.actual)}
-              </span>
-              <span>
-                {point.state === "completed"
-                  ? "Tüm liderliklerin işi tamamlandı."
-                  : point.gap < 0
-                    ? `Hedefin ${pctLabel(Math.abs(point.gap))} puan gerisinde.`
-                    : point.gap > 0
-                      ? `Hedefin ${pctLabel(point.gap)} puan önünde.`
-                      : "Gerçekleşen ilerleme, hedefle eşit."}
-              </span>
-              <span>
-                Kalan iş:{" "}
-                {value.remaining === null
-                  ? "Tamamlanmamış liderlik işi var"
-                  : `%${pctLabel(value.remaining)}`}
-              </span>
-            </>
-          ) : (
-            <span>
-              {STATE_LABELS[point.state]}
-              {point.state === "missing"
-                ? ` · ${point.entered}/${point.total} liderlik için veri mevcut`
-                : ""}
-            </span>
-          )}
-        </div>
-      </details>
-      <details
-        className="progress-assessment-section"
-        data-section="evaluation"
-      >
-        <summary>
-          <span className="progress-assessment-caption">Değerlendirme</span>
-          <strong
-            className="progress-resource-decision"
-            data-review={resourceReview}
-          >
-            {value.resourceTitle}
-          </strong>
-        </summary>
-        <div className="progress-assessment-content">
-          <span>
-            Önümüzdeki 3 ay kaynak planı:{" "}
-            {value.upcoming > 0 ? `${fmt(value.upcoming)} kişi-ay` : "Yok"}
-          </span>
-          <div className="progress-assessment-months">
-            {value.upcomingMonths.map((m) => (
-              <span key={m.month}>
-                {monthLabel(m.month)}: {fmt(m.planned)} kişi-ay
-              </span>
-            ))}
-          </div>
-          <p className="progress-resource-action">{value.action}</p>
-          {otherReasons.length > 0 && (
-            <div className="progress-assessment-reasons">
-              <strong>Dikkat gerektiren konular</strong>
-              <ul>
-                {otherReasons.map((reason) => (
-                  <li key={reason}>{reason}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </details>
     </div>
   );
 }

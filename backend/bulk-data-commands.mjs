@@ -141,5 +141,11 @@ export function restore(d, u, backup) {
   if (!Object.hasOwn(next, "scheduleScenarios")) delete d.scheduleScenarios;
   if (!Object.hasOwn(next, "projectProgress")) delete d.projectProgress;
   if (!Object.hasOwn(next, "progressLocks")) delete d.progressLocks;
+  for (const key of [
+    "warningConfigs",
+    "warningAssessments",
+    "scenarioWarnings",
+  ])
+    if (!Object.hasOwn(next, key)) delete d[key];
   Object.assign(d, next);
 }

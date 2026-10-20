@@ -1,3 +1,4 @@
+import { ScenarioWarningStatus } from "./ScenarioWarningStatus";
 import { useEffect, useRef, useState } from "react";
 import type { Principal } from "../../access";
 import type { Project } from "../../model";
@@ -465,6 +466,11 @@ export default function ProgressCard({
       <header className="progress-card-head">
         <div className="progress-card-title">
           <strong>{project.name}</strong>
+          <ScenarioWarningStatus
+            assessment={data.warningAssessments?.find(
+              (a) => a.id === project.id,
+            )}
+          />
           <span>{leader}</span>
           <ProjectResponsible project={project} />
         </div>

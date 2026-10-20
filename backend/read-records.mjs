@@ -226,6 +226,13 @@ export function revisionRecordKey(values) {
     id = values[1];
   if (kind === "allocation" && id === "@directory:shared")
     return DIRECTORY_REVISION_KEY;
+  if (
+    kind === "allocation" &&
+    ["@warningConfig:", "@warningAssessment:", "@scenarioWarning:"].some(
+      (prefix) => id.startsWith(prefix),
+    )
+  )
+    return id.slice(1);
   return kind === "allocation" && id.startsWith("@riskSystem:")
     ? "riskSystem:" + id.slice(12)
     : kind === "allocation" && id.startsWith("@risk:")

@@ -14,7 +14,10 @@ import {
 } from "./progress-view";
 import "./project-progress.css";
 
-type View = "plan" | "report";
+import ScenarioWarningsPanel from "./ScenarioWarningsPanel";
+import WarningSettingsPanel from "./WarningSettingsPanel";
+
+type View = "plan" | "report" | "warnings" | "settings";
 
 /** Proje İlerlemesi: plan and monthly entry on one screen, and the report. */
 export default function ProjectProgressPanel({
@@ -117,9 +120,13 @@ export default function ProjectProgressPanel({
                 )}
               </TabsTrigger>
               <TabsTrigger value="report">Proje İlerleme Raporu</TabsTrigger>
+              <TabsTrigger value="warnings">Senaryo Uyarıları</TabsTrigger>
+              {user?.role === "admin" && (
+                <TabsTrigger value="settings">Uyarı Ayarları</TabsTrigger>
+              )}
             </TabsList>
           </Tabs>
-          {months.length > 0 && (
+          {(view === "plan" || view === "report") && months.length > 0 && (
             <label className="progress-month">
               Ay
               <select value={month} onChange={(e) => setMonth(e.target.value)}>
@@ -133,6 +140,16 @@ export default function ProjectProgressPanel({
           )}
         </div>
       </div>
+      {view === "warnings" && (
+        <ScenarioWarningsPanel
+          data={progressData}
+          saving={saving}
+          onSave={onSave}
+        />
+      )}
+      {view === "settings" && user?.role === "admin" && (
+        <WarningSettingsPanel data={data} saving={saving} onSave={onSave} />
+      )}
       {view === "plan" && (
         <PlanAndEntry
           ctx={ctx}

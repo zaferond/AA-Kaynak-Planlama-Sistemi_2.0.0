@@ -1,3 +1,7 @@
+import {
+  synchronizeScenarioWarnings,
+  captureLegacyResourceReferences,
+} from "./scenario-warning-engine.mjs";
 import { planningUnitManagerIndex } from "../shared/resource-roles.ts";
 import { actualView } from "./actual-view.mjs";
 import { activityReport } from "./activity-report.mjs";
@@ -380,6 +384,8 @@ export class Store {
       const valid = this.validateSnapshot(data, {
         previousResources: before.resources,
       });
+      captureLegacyResourceReferences(valid, { referenceData: before });
+      synchronizeScenarioWarnings(valid);
       // Same transaction/lock as the command. Imports and cascading team edits
       // participate too; unrelated risk/project/allocation writes do not.
       if (directoryCatalogChanged(before, valid))

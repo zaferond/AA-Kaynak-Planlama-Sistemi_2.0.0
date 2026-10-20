@@ -118,293 +118,101 @@ export async function checkProgressManagement(f) {
       .getByRole("tab", { name: "Proje İlerleme Raporu", exact: true })
       .click();
   };
-  const showDetails = async (cell, section, open = true) => {
-    const details = cell.locator(`details[data-section="${section}"]`);
-    const isOpen = (await details.getAttribute("open")) !== null;
-    if (isOpen !== open) await details.locator(":scope > summary").click();
-  };
+  await f.store.mutate(f.actor, (d, u) =>
+    applyChanges(d, u, [
+      ...["2026-10", "2026-11", "2026-12"].map((month) => ({
+        kind: "allocation",
+        id: `${f.teamA.id}|p-b|${month}`,
+        value: 0.1,
+        revision: d.revisions[`allocation:${f.teamA.id}|p-b|${month}`] || 0,
+      })),
+      {
+        kind: "progressLock",
+        id: "2026-09",
+        value: { id: "2026-09" },
+        revision: 0,
+      },
+    ]),
+  );
+  await page.reload();
   try {
     await open();
     const matrix = page.getByRole("table", {
       name: "Proje ilerleme raporu",
       exact: true,
     });
-    const decision = page.getByRole("combobox", {
-      name: "Değerlendirme",
-      exact: true,
-    });
+    const projectA = () => matrix.locator('[data-project="p-a"]').first();
+    const projectB = () => matrix.locator('[data-project="p-b"]').first();
     await f.check(
-      "progress management: monthly leadership matrix and decision summary distinguish ahead, behind and missing plans",
+      "scenario report: last locked month, decision badges, collapsed details, leadership expansion and critical topics",
       async () => {
         assert.equal(await matrix.locator(".monthhead").count(), 12);
         assert.equal(await matrix.locator(".progress-project-row").count(), 3);
         assert.equal(await matrix.locator(".progress-leader-row").count(), 0);
-        const statusHeader = matrix.getByRole("columnheader", {
-          name: "İlerleme ve kaynak değerlendirmesi Eyl 2026",
-          exact: true,
-        });
-        await statusHeader.waitFor();
-        assert.match(
-          await matrix
-            .locator("thead tr")
-            .nth(1)
-            .locator("th")
-            .first()
-            .innerText(),
-          /İlerleme ve kaynak değerlendirmesi/,
-        );
-        assert.equal(
-          await matrix.locator(".progress-assessment-section[open]").count(),
-          0,
-        );
-        assert.equal(
-          await matrix
-            .getByRole("rowheader", { name: "Fark %", exact: true })
-            .count(),
-          3,
-        );
-        const projectA = matrix.locator('[data-project="p-a"]');
-        assert.equal(await projectA.count(), 5);
-        await projectA
+        await projectA()
+          .getByText("Planın İlerisinde", { exact: true })
           .first()
-          .getByRole("rowheader", { name: "Aşama", exact: true })
           .waitFor();
-        await projectA.first().getByText("Design", { exact: true }).waitFor();
-        await projectA
+        await projectA()
+          .getByText("Kaynak serbest bırakılabilir", { exact: true })
+          .waitFor();
+        await projectB()
+          .getByText("Kritik Gecikme", { exact: true })
           .first()
-          .locator(".progress-matrix-assessment")
-          .getByText("Planın önünde", { exact: true })
           .waitFor();
-        await matrix
-          .locator('[data-project="p-b"] .progress-matrix-assessment')
-          .getByText("Planın gerisinde", { exact: true })
-          .waitFor();
-        const projectACell = projectA
-          .first()
-          .locator(".progress-matrix-assessment");
-        const projectBCell = matrix.locator(
-          '[data-project="p-b"] .progress-matrix-assessment',
-        );
-        assert.equal(
-          await projectACell
-            .getByText("Kalan iş: %30", { exact: true })
-            .isVisible(),
-          false,
-        );
-        await showDetails(projectACell, "plan");
-        assert.equal(
-          await projectACell
-            .locator('details[data-section="evaluation"][open]')
-            .count(),
-          0,
-        );
-        await showDetails(projectBCell, "plan");
-        await showDetails(projectACell, "evaluation");
-        await showDetails(projectBCell, "evaluation");
-        await projectA
-          .first()
-          .getByText("Hedefin 20 puan önünde.", { exact: true })
-          .waitFor();
-        const projectBStatus = matrix.locator(
-          '[data-project="p-b"] .progress-matrix-assessment',
-        );
-        await projectBStatus
-          .getByText("Hedefin 20 puan gerisinde.", { exact: true })
-          .waitFor();
-        await projectA
-          .first()
-          .getByText("Kalan iş: %30", { exact: true })
-          .waitFor();
-        await projectA
-          .first()
-          .getByText("Kaynak planı yeniden değerlendirilebilir", {
+        await projectB()
+          .getByText("Ek kaynak gerekli veya bitiş tarihi revize edilmeli", {
             exact: true,
           })
           .waitFor();
-        await projectBStatus
-          .getByText("Gecikmeyi kapatma planı incelenmeli", { exact: true })
-          .waitFor();
-        await projectBStatus
-          .getByText(
-            "Ayrılan kaynağın gecikmeyi kapatıp kapatmayacağını ve teslim tarihlerini gözden geçir.",
-            { exact: true },
-          )
-          .waitFor();
-        assert(!(await projectBStatus.innerText()).includes("Perf."));
-        const typography = await projectBStatus
-          .locator(
-            ".progress-assessment-content span, .progress-resource-action, .progress-assessment-reasons li",
-          )
+        assert.equal(await matrix.locator("details[open]").count(), 0);
+        await projectA()
+          .getByText("Hesap ve diğer uyarılar", { exact: true })
+          .click();
+        await projectA().getByText("Karşılama", { exact: true }).waitFor();
+        await projectA().getByText("%250", { exact: true }).waitFor();
+        const typography = await projectA()
+          .locator(".scenario-calculation dt, .scenario-calculation dd")
           .evaluateAll((nodes) =>
-            nodes.map((node) => {
-              const style = getComputedStyle(node);
-              return {
-                font: style.fontFamily,
-                size: style.fontSize,
-                fits: node.scrollWidth <= node.clientWidth + 1,
-              };
-            }),
+            nodes.map((node) => ({
+              size: getComputedStyle(node).fontSize,
+              font: getComputedStyle(node).fontFamily,
+              fits: node.scrollWidth <= node.clientWidth + 1,
+            })),
           );
-        assert.equal(new Set(typography.map((item) => item.font)).size, 1);
-        assert.equal(new Set(typography.map((item) => item.size)).size, 1);
-        assert(
-          typography.every((item) => item.fits),
-          "Detail text wraps inside the narrower column",
-        );
-        await f.capture(page, "management-assessment-open-details");
-        await showDetails(projectACell, "plan", false);
-        assert.equal(
-          await projectACell
-            .getByText("Kalan iş: %30", { exact: true })
-            .isVisible(),
-          false,
-        );
-        assert.equal(
-          await projectACell
-            .getByText("Önümüzdeki 3 ay kaynak planı: 0,6 kişi-ay", {
-              exact: true,
-            })
-            .isVisible(),
-          true,
-        );
-        await page
-          .getByText("İlerleme ve kaynak kararları nasıl değerlendirilir?", {
-            exact: true,
-          })
-          .click();
-        const guide = page.locator(".progress-report-help");
-        await guide
-          .getByRole("table", {
-            name: "Kaynak değerlendirme kuralları",
-            exact: true,
-          })
-          .getByText("İş devam ediyor, kaynak planı yok", { exact: true })
-          .waitFor();
-        await f.capture(page, "management-assessment-guide");
-        await page
-          .getByText("İlerleme ve kaynak kararları nasıl değerlendirilir?", {
-            exact: true,
-          })
-          .click();
-        await matrix
-          .getByRole("button", { name: "Browser Project A", exact: true })
-          .click();
-        const detail = page.getByRole("region", {
-          name: "Browser Project A ayrıntısı",
-          exact: true,
-        });
-        await detail
-          .getByRole("heading", { name: "Açıklama geçmişi", exact: true })
-          .waitFor();
-        assert.equal(await detail.locator(".progress-chart, svg").count(), 0);
-        assert.equal(
-          await detail
-            .getByText("Grafik için onaylı hedef planı gerekir.", {
-              exact: true,
-            })
-            .count(),
-          0,
-        );
-        await detail
-          .getByText("Aylık yönetici raporu testi", { exact: true })
-          .waitFor();
-        await f.capture(page, "management-project-history-without-chart");
-        await matrix
-          .getByRole("button", { name: "Browser Project A", exact: true })
-          .click();
-        const phase = matrix.locator(
-          `[data-project="${extra.id}"][data-metric="phase"] td[data-month="2026-09"]`,
-        );
-        assert.equal(await phase.getAttribute("colspan"), "2");
-        assert.equal(await phase.innerText(), "Tasarım");
+        assert.equal(new Set(typography.map((x) => x.size)).size, 1);
+        assert.equal(new Set(typography.map((x) => x.font)).size, 1);
+        assert(typography.every((x) => x.fits));
+        await f.capture(page, "scenario-report-details");
         await page
           .getByRole("combobox", { name: "Ay", exact: true })
           .selectOption("2026-10");
-        await matrix
-          .getByRole("columnheader", {
-            name: "İlerleme ve kaynak değerlendirmesi Eki 2026",
-            exact: true,
-          })
-          .waitFor();
-        await projectA
+        await projectA()
+          .getByText("Planın İlerisinde", { exact: true })
           .first()
-          .locator(".progress-matrix-assessment")
-          .getByText("Değerlendirme bekliyor", { exact: true })
           .waitFor();
         await page
           .getByRole("combobox", { name: "Ay", exact: true })
           .selectOption("2026-09");
-        const topicRow = matrix.locator(
-          `[data-project="${extra.id}"][data-metric="topics"]`,
+        const phase = matrix.locator(
+          `[data-project="${extra.id}"][data-metric="phase"] td[data-month="2026-09"]`,
         );
-        await topicRow
-          .getByRole("rowheader", { name: "Kritik konular", exact: true })
-          .waitFor();
-        assert.equal(await topicRow.locator("td").count(), 12);
-        const septemberTopics = topicRow.locator('td[data-month="2026-09"]');
-        assert.equal(
-          await septemberTopics.locator(".progress-topic-bar").count(),
-          1,
+        assert.equal(await phase.getAttribute("colspan"), "2");
+        const topics = matrix.locator(
+          `[data-project="${extra.id}"][data-metric="topics"] td[data-month="2026-09"]`,
         );
-        assert.equal(await septemberTopics.locator("b").innerText(), "◆");
-        assert.equal(
-          await topicRow
-            .locator('td[data-month="2026-08"] .progress-topic-bar')
-            .count(),
-          1,
+        assert.equal(await topics.locator(".progress-topic-bar").count(), 1);
+        assert(
+          !(await topics.getAttribute("aria-label")).includes(
+            "Gizli kritik konu",
+          ),
         );
-        assert.equal(
-          await topicRow
-            .locator('td[data-month="2026-10"] .progress-topic-bar')
-            .count(),
-          1,
-        );
-        assert.equal(
-          await topicRow
-            .locator('td[data-month="2026-11"] .progress-topic-bar')
-            .count(),
-          1,
-        );
-        const accessibleTopics =
-          await septemberTopics.getAttribute("aria-label");
-        assert(!accessibleTopics.includes("Gizli kritik konu"));
-        await septemberTopics.scrollIntoViewIfNeeded();
-        await septemberTopics.focus();
-        const tooltip = page.getByRole("tooltip");
-        await tooltip
-          .getByText("Tasarım dokümanları kontrol edilecek", { exact: true })
-          .waitFor();
-        await tooltip
-          .getByText("25.08.2026 – 15.09.2026", { exact: true })
-          .waitFor();
-        await tooltip.getByText("21.09.2026", { exact: true }).waitFor();
-        await f.capture(page, "management-critical-topics-tooltip");
-        await page
-          .getByRole("tab", {
-            name: "Hedef Plan / Gerçekleşen Plan Giriş",
-            exact: true,
-          })
-          .click();
-        const planTopicCell = page
-          .getByRole("region", {
-            name: extra.name + " · " + f.teamA.lead,
-            exact: true,
-          })
-          .locator('.progress-grid-topics td[data-month="2026-09"]');
-        assert.equal(
-          await planTopicCell.getAttribute("aria-label"),
-          accessibleTopics,
-        );
-        await planTopicCell.scrollIntoViewIfNeeded();
-        await planTopicCell.focus();
+        await topics.scrollIntoViewIfNeeded();
+        await topics.focus();
         await page
           .getByRole("tooltip")
           .getByText("Tasarım dokümanları kontrol edilecek", { exact: true })
           .waitFor();
-        await page
-          .getByRole("tab", { name: "Proje İlerleme Raporu", exact: true })
-          .click();
-        await f.capture(page, "management-progress-collapsed");
         await matrix
           .getByRole("button", {
             name: "Browser Project A liderliklerini göster",
@@ -412,64 +220,38 @@ export async function checkProgressManagement(f) {
           })
           .click();
         assert.equal(await matrix.locator(".progress-leader-row").count(), 3);
-        await matrix
-          .getByRole("button", {
-            name: "Browser Project Unplanned",
-            exact: true,
-          })
-          .waitFor();
-        await page
-          .locator('.progress-management-cards button[data-tone="risk"]')
-          .getByText("1", { exact: true })
-          .waitFor();
-        await page
-          .locator('.progress-management-cards button[data-tone="ahead"]')
-          .getByText("1", { exact: true })
-          .waitFor();
-        await page
-          .locator('.progress-management-cards button[data-tone="donor"]')
-          .getByText("1", { exact: true })
-          .waitFor();
-        await page
-          .locator('.progress-management-cards button[data-tone="missing"]')
-          .getByText("1", { exact: true })
-          .waitFor();
-        const comparisons = page.getByRole("region", {
-          name: "Kaynak aktarımı için karşılaştırma",
-          exact: true,
-        });
-        await comparisons
-          .getByText("Browser Project A → Browser Project B", { exact: true })
-          .waitFor();
-        await comparisons.getByText(f.teamA.lead, { exact: true }).waitFor();
         await page
           .getByRole("button", { name: "Liderlikleri Kapat", exact: true })
           .click();
         assert.equal(await matrix.locator(".progress-leader-row").count(), 0);
-        await page
-          .getByRole("button", { name: "Liderlikleri Aç", exact: true })
-          .click();
-        assert.equal(await matrix.locator(".progress-leader-row").count(), 9);
-        await f.capture(page, "management-progress-matrix");
-        await decision.selectOption("risk");
-        assert.equal(await matrix.locator(".progress-project-row").count(), 1);
-        await matrix
-          .getByRole("button", { name: "Browser Project B", exact: true })
-          .waitFor();
-        await decision.selectOption("ahead");
-        assert.equal(await matrix.locator(".progress-project-row").count(), 1);
         await matrix
           .getByRole("button", { name: "Browser Project A", exact: true })
+          .click();
+        const detail = page.getByRole("region", {
+          name: "Browser Project A ayrıntısı",
+          exact: true,
+        });
+        await detail.getByText("Hesap özeti", { exact: true }).waitFor();
+        assert.equal(await detail.locator(".progress-chart,svg").count(), 0);
+        await detail
+          .getByText("Aylık yönetici raporu testi", { exact: true })
           .waitFor();
-        await decision.selectOption("missing");
+        const decisions = page.getByRole("combobox", {
+          name: "Değerlendirme",
+          exact: true,
+        });
+        await decisions.selectOption("ahead");
+        assert.equal(await matrix.locator(".progress-project-row").count(), 1);
+        await decisions.selectOption("missing");
         await matrix
           .getByRole("button", { name: extra.name, exact: true })
           .waitFor();
-        await decision.selectOption("");
+        await decisions.selectOption("");
+        await f.capture(page, "scenario-progress-report");
       },
     );
     await f.check(
-      "progress management: Excel includes the filtered management and monthly sheets with numeric percentages",
+      "scenario report: Excel contains current matrix decisions and numeric monthly progress",
       async () => {
         const project = page.getByRole("combobox", {
           name: "Proje",
@@ -479,228 +261,161 @@ export async function checkProgressManagement(f) {
         const bytes = await download(
           page,
           page.getByRole("button", { name: "Excel’e Aktar", exact: true }),
-          path.join(f.dir, "management-progress.xlsx"),
+          path.join(f.dir, "scenario-progress.xlsx"),
         );
         const entries = zipEntries(bytes);
         await validateXml(page, entries);
-        assert.match(entries["xl/workbook.xml"], /Yönetici Değerlendirmesi/);
-        assert.match(entries["xl/workbook.xml"], /Aylık İlerleme/);
-        assert.match(entries["xl/worksheets/sheet2.xml"], /<v>70<\/v>/);
-        assert.match(entries["xl/worksheets/sheet2.xml"], /<v>20<\/v>/);
+        assert.match(entries["xl/worksheets/sheet2.xml"], /S-08/);
+        assert.match(
+          entries["xl/worksheets/sheet2.xml"],
+          /Kaynak serbest bırakılabilir/,
+        );
+        assert.match(entries["xl/worksheets/sheet2.xml"], /<v>250<\/v>/);
+        assert.match(entries["xl/worksheets/sheet3.xml"], /Kritik konular/);
         assert(
           !entries["xl/worksheets/sheet2.xml"].includes("Browser Project B"),
         );
-        assert.match(entries["xl/worksheets/sheet3.xml"], /2026-12/);
-        assert.match(entries["xl/worksheets/sheet3.xml"], /Aşama/);
-        assert.match(entries["xl/worksheets/sheet2.xml"], /Fark %/);
-        assert.match(entries["xl/worksheets/sheet3.xml"], /Fark %/);
-        assert.match(entries["xl/worksheets/sheet3.xml"], /Design/);
         await project.selectOption("");
-        await page
-          .getByRole("combobox", { name: "Aylık görünüm yılı", exact: true })
-          .selectOption("2027");
-        await matrix.locator(".monthhead[data-month='2027-01']").waitFor();
-        await page
-          .getByRole("combobox", { name: "Aylık görünüm yılı", exact: true })
-          .selectOption("2026");
       },
     );
     await f.check(
-      "progress management: incomplete leadership submissions suppress project comparisons and transfer suggestions",
+      "scenario alerts: lifecycle requires an explanation; filters, history, CSV and Excel preserve it",
       async () => {
-        await f.store.mutate(f.actor, (d, u) =>
-          applyChanges(d, u, [
-            {
-              kind: "allocation",
-              id: `${f.teamB.id}|p-a|2026-09`,
-              value: 0.1,
-              revision: 0,
-            },
-            {
-              kind: "progress",
-              id: "management-incomplete",
-              value: progress("p-a", f.teamB.lead, "management-incomplete"),
-              revision: 0,
-            },
-          ]),
-        );
-        await page.reload();
-        await open();
-        const rows = matrix.locator('[data-project="p-a"]');
         await page
-          .locator('.progress-management-cards button[data-tone="missing"]')
-          .getByText("2", { exact: true })
-          .waitFor();
-        assert.equal(await matrix.locator(".progress-leader-row").count(), 0);
-        assert.equal(
-          await page
-            .getByRole("region", {
-              name: "Kaynak aktarımı için karşılaştırma",
-              exact: true,
-            })
-            .count(),
-          0,
-        );
-        const actualSeptember = rows
-          .filter({
-            has: page.getByRole("rowheader", {
-              name: "Gerçekleşen %",
-              exact: true,
-            }),
-          })
-          .locator('td[data-selected="true"]');
-        assert.equal(await actualSeptember.textContent(), "—");
-        await rows
-          .first()
-          .locator(".progress-matrix-assessment")
-          .getByText("Değerlendirme bekliyor", { exact: true })
-          .waitFor();
-        await page
-          .getByRole("combobox", { name: "Liderlik", exact: true })
-          .selectOption(f.teamA.lead);
-        assert.equal(await actualSeptember.textContent(), "70");
-        await rows
-          .first()
-          .locator(".progress-matrix-assessment")
-          .getByText("Planın önünde", { exact: true })
-          .waitFor();
-        assert.equal(
-          await rows
-            .filter({
-              has: page.getByRole("rowheader", {
-                name: "Fark %",
-                exact: true,
-              }),
-            })
-            .locator('td[data-selected="true"]')
-            .textContent(),
-          "+20",
-        );
-        await f.capture(page, "management-progress-leadership-filter");
-        await page.setViewportSize({ width: 1100, height: 850 });
-        const statusHeader = matrix.locator(
-          "thead .progress-matrix-assessment",
-        );
-        const nameHeader = matrix.locator("thead .progress-matrix-name");
-        const before = await statusHeader.boundingBox();
-        await matrix.evaluate((table) => {
-          table.parentElement.scrollLeft = 600;
+          .getByRole("tab", { name: "Senaryo Uyarıları", exact: true })
+          .click();
+        const panel = page.getByRole("region", {
+          name: "Senaryo Uyarıları",
+          exact: true,
         });
-        const after = await statusHeader.boundingBox();
-        const nameBox = await nameHeader.boundingBox();
-        assert(
-          Math.abs(before.x - after.x) < 1,
-          "Assessment stays visible while scrolling months",
+        await panel
+          .getByRole("combobox", { name: "Proje", exact: true })
+          .selectOption("p-a");
+        const row = panel
+          .getByRole("table", { name: "Senaryo uyarı listesi", exact: true })
+          .locator("tbody tr");
+        assert.equal(await row.count(), 1);
+        await row.getByText("S-08", { exact: true }).waitFor();
+        await row
+          .getByRole("button", { name: "Görüldü İşaretle", exact: true })
+          .click();
+        await row
+          .getByRole("button", { name: "Aksiyon Gir", exact: true })
+          .click();
+        const acted = row.getByRole("button", {
+          name: "Aksiyon Alındı",
+          exact: true,
+        });
+        assert.equal(await acted.isEnabled(), false);
+        await row
+          .getByRole("textbox", { name: "Aksiyon açıklaması", exact: true })
+          .fill("Fazla kaynak için ekip değerlendirmesi yapıldı.");
+        await acted.click();
+        await row
+          .getByText("Aksiyon Alındı", { exact: true })
+          .first()
+          .waitFor();
+        await panel
+          .getByRole("combobox", { name: "Durum", exact: true })
+          .selectOption("acted");
+        const csv = await download(
+          page,
+          panel.getByRole("button", { name: "CSV’ye Aktar", exact: true }),
+          path.join(f.dir, "scenario-alerts.csv"),
         );
-        assert(
-          Math.abs(after.x + after.width - nameBox.x) < 2,
-          "Sticky status and project columns do not overlap",
+        assert.match(
+          csv.toString("utf8"),
+          /Fazla kaynak için ekip değerlendirmesi yapıldı/,
         );
-        await f.capture(page, "management-progress-narrow");
-      },
-    );
-    await f.check(
-      "progress management: resource decisions distinguish unallocated work, recovery and completion",
-      async () => {
-        const selectProject = async (id) => {
-          await page.reload();
-          await open();
-          await page
-            .getByRole("combobox", { name: "Liderlik", exact: true })
-            .selectOption(f.teamA.lead);
-          await page
-            .getByRole("combobox", { name: "Proje", exact: true })
-            .selectOption(id);
-        };
-        const setFuture = async (value) =>
-          f.store.mutate(f.actor, (d, u) =>
-            applyChanges(
-              d,
-              u,
-              ["2026-10", "2026-11", "2026-12"].map((m) => {
-                const id = `${f.teamA.id}|p-b|${m}`;
-                return {
-                  kind: "allocation",
-                  id,
-                  value,
-                  revision: d.revisions["allocation:" + id] || 0,
-                };
-              }),
-            ),
-          );
-        await setFuture(0);
-        await selectProject("p-b");
-        const decisionCell = matrix.locator(
-          ".progress-project-row .progress-matrix-assessment",
-        );
-        await decisionCell
-          .getByText("İş devam ediyor, kaynak planı yok", { exact: true })
-          .waitFor();
-        assert.equal(await decisionCell.locator("details[open]").count(), 0);
-        await showDetails(decisionCell, "plan");
-        await showDetails(decisionCell, "evaluation");
-        await decisionCell
-          .getByText("Kalan iş: %70", { exact: true })
-          .waitFor();
-        await decisionCell
-          .getByText("Önümüzdeki 3 ay kaynak planı: Yok", { exact: true })
-          .waitFor();
-        await decisionCell
-          .getByText("Kaynak ayır veya proje takvimini güncelle.", {
-            exact: true,
-          })
-          .waitFor();
-        await decision.selectOption("needsPlan");
-        assert.equal(await matrix.locator(".progress-project-row").count(), 1);
+        assert(!csv.toString("utf8").includes("Browser Project B"));
         const bytes = await download(
           page,
-          page.getByRole("button", { name: "Excel’e Aktar", exact: true }),
-          path.join(f.dir, "resource-decision.xlsx"),
+          panel.getByRole("button", { name: "Excel’e Aktar", exact: true }),
+          path.join(f.dir, "scenario-alerts.xlsx"),
         );
         const entries = zipEntries(bytes);
         await validateXml(page, entries);
-        assert.match(
-          entries["xl/worksheets/sheet2.xml"],
-          /İş devam ediyor, kaynak planı yok/,
-        );
-        assert.match(entries["xl/worksheets/sheet2.xml"], /Kalan iş %/);
-        await f.capture(page, "management-no-resource-plan");
-        await setFuture(0.2);
-        await selectProject("p-b");
-        await decisionCell
-          .getByText("Gecikmeyi kapatma planı incelenmeli", { exact: true })
+        assert.match(entries["xl/worksheets/sheet1.xml"], /Aksiyon Alındı/);
+        await row.getByText("Hesap ve geçmiş", { exact: true }).click();
+        await row
+          .getByText("Browser root-admin", { exact: false })
+          .first()
           .waitFor();
-        await f.store.mutate(f.actor, (d, u) => {
-          const record = d.projectProgress.find(
-            (r) => r.projectId === "p-a" && r.leader === f.teamA.lead,
-          );
-          return applyChanges(d, u, [
-            {
-              kind: "progress",
-              id: record.id,
-              revision: d.revisions["progress:" + record.id] || 0,
-              value: {
-                ...record,
-                actuals: {
-                  ...record.actuals,
-                  "2026-09": { pct: 100, note: "Tamamlanan test işi" },
-                },
-              },
-            },
-          ]);
+        await f.capture(page, "scenario-alert-history");
+      },
+    );
+    await f.check(
+      "scenario settings: admin changes recalculate alerts; managers cannot see settings",
+      async () => {
+        await page
+          .getByRole("tab", { name: "Uyarı Ayarları", exact: true })
+          .click();
+        const settings = page.getByRole("region", {
+          name: "Uyarı Ayarları",
+          exact: true,
         });
-        await selectProject("p-a");
-        await decisionCell.getByText("Tamamlandı", { exact: true }).waitFor();
-        assert.equal(await decisionCell.locator("details[open]").count(), 0);
-        await showDetails(decisionCell, "plan");
-        await showDetails(decisionCell, "evaluation");
-        await decisionCell.getByText("Kalan iş: %0", { exact: true }).waitFor();
-        await decisionCell
-          .getByText("Tamamlanan işte kaynak planı sürüyor", { exact: true })
-          .waitFor();
-        await decision.selectOption("completed");
-        assert.equal(await matrix.locator(".progress-project-row").count(), 1);
-        await f.capture(page, "management-completed-resource-review");
+        await settings
+          .getByRole("spinbutton", {
+            name: "Yeterli kaynak: en fazla karşılama (%)",
+            exact: true,
+          })
+          .fill("260");
+        await settings
+          .getByRole("button", { name: "Ayarları Kaydet", exact: true })
+          .click();
+        await settings.getByRole("status").waitFor();
+        const d = (await f.store.read()).data;
+        assert.equal(
+          d.warningAssessments.find((a) => a.id === "p-a").warning2,
+          "",
+        );
+        assert.equal(
+          d.scenarioWarnings.find(
+            (w) => w.projectId === "p-a" && w.code === "S-08",
+          ).status,
+          "closed",
+        );
+        await settings
+          .getByRole("button", { name: "Varsayılanları Getir", exact: true })
+          .click();
+        await settings
+          .getByRole("button", { name: "Ayarları Kaydet", exact: true })
+          .click();
+        await settings.getByRole("status").waitFor();
+        const next = (await f.store.read()).data;
+        assert.equal(
+          next.scenarioWarnings.filter(
+            (w) => w.projectId === "p-a" && w.code === "S-08",
+          ).length,
+          1,
+        );
+        assert.equal(
+          next.scenarioWarnings.find(
+            (w) => w.projectId === "p-a" && w.code === "S-08",
+          ).status,
+          "open",
+        );
+        await f.capture(page, "scenario-warning-settings");
+        const manager = await f.client("manager");
+        try {
+          await manager.page
+            .getByRole("tab", { name: "Proje İlerlemesi", exact: true })
+            .click();
+          assert.equal(
+            await manager.page
+              .getByRole("tab", { name: "Uyarı Ayarları", exact: true })
+              .count(),
+            0,
+          );
+          await manager.page
+            .getByRole("tab", { name: "Senaryo Uyarıları", exact: true })
+            .click();
+          await manager.page
+            .getByRole("table", { name: "Senaryo uyarı listesi", exact: true })
+            .waitFor();
+        } finally {
+          await manager.context.close();
+        }
       },
     );
   } finally {

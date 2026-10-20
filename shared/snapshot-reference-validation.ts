@@ -54,6 +54,26 @@ export function validateSnapshotRisks(
   for (const item of progress)
     if (!projectsById.has(item.projectId))
       throw bad("İlerleme kaydının projesi bulunamadı.");
+  for (const collection of [
+    d.warningConfigs || [],
+    d.warningAssessments || [],
+    d.scenarioWarnings || [],
+  ])
+    if (new Set(collection.map((item) => item.id)).size !== collection.length)
+      throw bad("Tekrarlanan uyarı kaydı kimliği.");
+  for (const w of d.scenarioWarnings || []) {
+    if (
+      w.id !== `${w.projectId}|${w.ruleKey}|${w.month}` ||
+      w.assessment.id !== w.projectId ||
+      w.assessment.month !== w.month
+    )
+      throw bad("Uyarı kaydının proje, ay ve kural bilgileri eşleşmiyor.");
+    if (
+      w.status === "acted" &&
+      !w.history.some((e) => e.status === "acted" && e.explanation.trim())
+    )
+      throw bad("Aksiyon açıklaması gerekli.");
+  }
   const locks = d.progressLocks || [];
   if (new Set(locks.map((item) => item.id)).size !== locks.length)
     throw bad("Tekrarlanan ay kilidi.");

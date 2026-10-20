@@ -68,6 +68,9 @@ export function auditEntries(
     if (kind === "workedHours" || kind === "personDay")
       return [ownValue(resources, owner) || owner, projectOrDate].join(" · ");
     if (kind === "progressLock") return id;
+    if (kind === "warningConfig") return "Genel uyarı ayarları";
+    if (kind === "warningAssessment" || kind === "scenarioWarning")
+      return ownValue(projects, owner) || owner;
     return fallback;
   };
   const collect = (kind, records) => {

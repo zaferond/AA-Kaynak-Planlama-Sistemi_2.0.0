@@ -73,6 +73,14 @@ export async function readSnapshotMetadata(c, { batch = false, report } = {}) {
   const lockRows = (await metadata("progressLocks")).rows;
   if (lockRows.length)
     d.progressLocks = lockRows.map((row) => JSON.parse(row.payload));
+  for (const key of [
+    "warningConfigs",
+    "warningAssessments",
+    "scenarioWarnings",
+  ]) {
+    const rows = (await metadata(key)).rows;
+    if (rows.length) d[key] = rows.map((row) => JSON.parse(row.payload));
+  }
   for (const r of (await metadata("phases")).rows) {
     const p = pm.get(r.project_id);
     if (r.label !== null) p.phases[r.month] = r.label;

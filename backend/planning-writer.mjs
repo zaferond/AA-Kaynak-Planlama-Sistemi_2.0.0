@@ -112,6 +112,9 @@ export async function persistPlanningSnapshot(
   for (const [kind, table] of [
     ["progress", "project_progress"],
     ["progressLock", "progress_locks"],
+    ["warningConfig", "warning_configs"],
+    ["warningAssessment", "warning_assessments"],
+    ["scenarioWarning", "scenario_warnings"],
   ]) {
     await c.upsert(
       table,
@@ -333,6 +336,12 @@ export async function persistPlanningSnapshot(
             revision,
           };
         const i = k.indexOf(":");
+        if (
+          ["warningConfig", "warningAssessment", "scenarioWarning"].includes(
+            k.slice(0, i),
+          )
+        )
+          return { kind: "allocation", record_id: "@" + k, revision };
         return k.startsWith("riskSystem:")
           ? {
               kind: "allocation",

@@ -77,6 +77,13 @@ export type ProgressBaseline = {
   reason?: string;
   approvedByName: string;
   approvedAt: string;
+  /** Frozen at approval; later resource edits must not change this rate. */
+  resourceReference?: {
+    resourceTotal: number;
+    workPct: number;
+    capturedAt: string;
+    source: "approval" | "migration";
+  };
 };
 export type ProgressProposal = {
   openingMonth: string;

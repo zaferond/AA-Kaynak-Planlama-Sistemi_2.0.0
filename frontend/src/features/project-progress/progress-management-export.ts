@@ -31,15 +31,26 @@ function sheet(
 
 /** The compact sheet and matrix use the same scope and complete data rule. */
 export function managementExportRows(projects: ManagedProject[]) {
-  return projects.map(({ row, assessment, leaders }) => ({
+  return projects.map(({ row, assessment, leaders, scenario }) => ({
     ...row,
-    target: assessment.point.target,
-    actual: assessment.point.actual,
+    target: scenario ? scenario.planned : assessment.point.target,
+    actual: scenario ? scenario.actual : assessment.point.actual,
     performance: assessment.point.performance,
     spent: assessment.point.spent,
-    assessmentText:
-      evaluationLabel(assessment.point) + " · " + assessment.resourceTitle,
-    reasonText: [assessment.action, ...assessment.reasons].join(" · "),
+    assessmentText: scenario
+      ? scenario.warning1 + (scenario.warning2 ? " · " + scenario.warning2 : "")
+      : evaluationLabel(assessment.point) + " · " + assessment.resourceTitle,
+    reasonText: scenario
+      ? [
+          scenario.month
+            ? "Son kilitli ay: " + scenario.month
+            : "Kilitli ay yok",
+          scenario.reason,
+          scenario.warning2,
+        ]
+          .filter(Boolean)
+          .join(" · ")
+      : [assessment.action, ...assessment.reasons].join(" · "),
     leaders: leaders.map((l) => ({
       ...l.row,
       target: l.assessment.point.target,
@@ -47,10 +58,8 @@ export function managementExportRows(projects: ManagedProject[]) {
       spent: l.assessment.point.spent,
       performance: l.assessment.point.performance,
       assessmentText:
-        evaluationLabel(l.assessment.point) +
-        " · " +
-        l.assessment.resourceTitle,
-      reasonText: [l.assessment.action, ...l.assessment.reasons].join(" · "),
+        "Liderlik verisi · Senaryo değerlendirmesi proje genelinde",
+      reasonText: l.row.note || "",
     })),
   }));
 }
@@ -73,19 +82,29 @@ export function managementSheets(
       })),
     ]) {
       const a = entity.value;
+      const scenario = entity.name === "Proje geneli" ? p.scenario : undefined;
       summary.push([
         p.row.project.name,
         p.row.project.responsibleName?.trim() || "—",
         entity.name,
-        month,
-        a.point.target,
-        a.point.actual,
-        a.point.gap,
-        evaluationLabel(a.point),
-        a.remaining,
-        a.resourceTitle,
-        a.action,
-        a.reasons.join(" · "),
+        scenario?.month || month,
+        scenario ? scenario.planned : a.point.target,
+        scenario ? scenario.actual : a.point.actual,
+        scenario ? scenario.deviation : a.point.gap,
+        scenario ? scenario.warning1 : evaluationLabel(a.point),
+        scenario ? scenario.remaining : a.remaining,
+        scenario
+          ? scenario.resourceState
+            ? {
+                unplanned: "Planlanmamış",
+                insufficient: "Yetersiz",
+                sufficient: "Yeterli",
+                excess: "Fazla",
+              }[scenario.resourceState]
+            : "—"
+          : "Proje genelinde değerlendirilir",
+        scenario?.warning2 || "—",
+        scenario?.reason || "",
         `${a.point.entered}/${a.point.total}`,
         a.plannedMonth,
         a.actualMonth,
@@ -95,7 +114,18 @@ export function managementSheets(
             (m) => `${m.month}: ${m.planned.toLocaleString("tr-TR")} kişi-ay`,
           )
           .join(" · "),
-        a.resourceReview === "unassessed" ? STATE_LABELS[a.point.state] : "—",
+        scenario
+          ? scenario.status === "missing"
+            ? scenario.reason
+            : "—"
+          : a.resourceReview === "unassessed"
+            ? STATE_LABELS[a.point.state]
+            : "—",
+        scenario?.futurePlanned ?? null,
+        scenario?.coverage === null || scenario?.coverage === undefined
+          ? null
+          : scenario.coverage * 100,
+        scenario?.code || "—",
       ]);
       for (const m of months) {
         const point = managementPoint(ctx, p.row.project, entity.leaders, m);
@@ -141,6 +171,9 @@ export function managementSheets(
           "Sonraki 3 ay planı (kişi-ay)",
           "Aylara göre kaynak planı",
           "Değerlendirme bekleme nedeni",
+          "Gelecek Planlı %",
+          "Karşılama %",
+          "Senaryo kodu",
         ],
         summary,
       ),

@@ -1,8 +1,11 @@
+import { assessProjectWarning } from "../../../../shared/scenario-warnings.ts";
+import type { WarningAssessment } from "../../../../shared/scenario-warnings.ts";
 import {
   currentBaseline,
   leaderProgress,
   projectRollup,
   nextMonth,
+  monthsAfter,
   progressSignals,
   type RiskLevel,
   type RiskSignal,
@@ -173,7 +176,7 @@ export const evaluationLabel = (point: ReportPoint) =>
     ? STATE_LABELS[point.state]
     : "Değerlendirme bekliyor";
 
-function explainSignal(reason: string) {
+export function explainSignal(reason: string) {
   if (reason.startsWith("Perf. ")) {
     const ratio = Number(reason.slice(6).replace(",", "."));
     if (Number.isFinite(ratio))
@@ -360,6 +363,7 @@ export function assessManagement(
 }
 
 export type ManagedProject = {
+  scenario?: WarningAssessment;
   row: ProjectRow;
   assessment: ManagementAssessment;
   leaders: { row: LeaderRow; assessment: ManagementAssessment }[];
@@ -441,6 +445,10 @@ export function manageProject(
         : base.action,
   };
   return {
+    scenario: ctx.data
+      ? ctx.data.warningAssessments?.find((a) => a.id === row.project.id) ||
+        assessProjectWarning(ctx.data, row.project)
+      : undefined,
     row,
     leaders,
     assessment,
@@ -448,7 +456,10 @@ export function manageProject(
 }
 
 /** A shared leadership is necessary; no transfer quantity is inferred. */
-export function transferComparisons(projects: ManagedProject[]) {
+export function transferComparisons(
+  projects: ManagedProject[],
+  ctx?: ProgressContext,
+) {
   const pairs: {
     from: ManagedProject;
     to: ManagedProject;
@@ -456,26 +467,54 @@ export function transferComparisons(projects: ManagedProject[]) {
     planned: number;
     fromGap: number;
     toGap: number;
+    horizonMonths: number;
   }[] = [];
   for (const from of projects) {
-    if (!from.assessment.donor) continue;
-    for (const source of from.leaders.filter((l) => l.assessment.donor)) {
+    if (
+      from.scenario
+        ? !["S-07", "S-08"].includes(from.scenario.code || "")
+        : !from.assessment.donor
+    )
+      continue;
+    const horizonMonths = from.scenario?.horizonMonths || 3;
+    const sourceAmount = (l: ManagedProject["leaders"][number]) =>
+      ctx && from.scenario?.month
+        ? monthsAfter(from.scenario.month, from.row.project.end)
+            .slice(0, horizonMonths)
+            .reduce(
+              (sum, m) =>
+                sum +
+                (ctx.planned(from.row.project.id).get(l.row.record.leader)?.[
+                  m
+                ] || 0),
+              0,
+            )
+        : l.assessment.upcoming;
+    for (const source of from.leaders.filter((l) =>
+      from.scenario ? sourceAmount(l) > 0 : l.assessment.donor,
+    )) {
       for (const to of projects) {
-        if (from.row.project.id === to.row.project.id || !to.assessment.support)
+        if (
+          from.row.project.id === to.row.project.id ||
+          (to.scenario
+            ? !["S-01", "S-02", "S-06"].includes(to.scenario.code || "")
+            : !to.assessment.support)
+        )
           continue;
         const destination = to.leaders.find(
           (l) =>
             l.row.record.leader === source.row.record.leader &&
-            l.assessment.support,
+            (to.scenario ? true : l.assessment.support),
         );
         if (destination)
           pairs.push({
             from,
             to,
             leader: source.row.record.leader,
-            planned: source.assessment.upcoming,
-            fromGap: source.assessment.point.gap!,
-            toGap: destination.assessment.point.gap!,
+            planned: sourceAmount(source),
+            horizonMonths,
+            fromGap: from.scenario?.deviation ?? source.assessment.point.gap!,
+            toGap: to.scenario?.deviation ?? destination.assessment.point.gap!,
           });
       }
     }

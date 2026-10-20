@@ -1,0 +1,74 @@
+[
+  {
+    "kod": "S-01",
+    "ilerleme": ["behind", "critical"],
+    "kaynak": "unplanned",
+    "uyari1": "Planın Gerisinde",
+    "uyari2": "Kaynak Planlama Durumu Değerlendirilmeli",
+    "aktif": true
+  },
+  {
+    "kod": "S-02",
+    "ilerleme": ["behind", "critical"],
+    "kaynak": "insufficient",
+    "uyari1": "Planın Gerisinde",
+    "uyari2": "Ek kaynak gerekli veya bitiş tarihi revize edilmeli",
+    "aktif": true
+  },
+  {
+    "kod": "S-03",
+    "ilerleme": ["behind", "critical"],
+    "kaynak": "sufficient",
+    "uyari1": "Planın Gerisinde",
+    "uyari2": "Kaynak var ama ilerleme yok, verimlilik/engel analizi yapılmalı",
+    "aktif": true
+  },
+  {
+    "kod": "S-04",
+    "ilerleme": ["behind"],
+    "kaynak": "excess",
+    "uyari1": "Planın Gerisinde",
+    "uyari2": "Kaynak dağılımı öne çekilmeli",
+    "aktif": true
+  },
+  {
+    "kod": "S-05",
+    "ilerleme": ["onTrack"],
+    "kaynak": "unplanned",
+    "uyari1": "Planda",
+    "uyari2": "Gelecek ay kaynak planı eksik",
+    "aktif": true
+  },
+  {
+    "kod": "S-06",
+    "ilerleme": ["onTrack"],
+    "kaynak": "insufficient",
+    "uyari1": "Planda",
+    "uyari2": "Mevcut kaynakla hedefe ulaşılamayacak, risk",
+    "aktif": true
+  },
+  {
+    "kod": "S-07",
+    "ilerleme": ["onTrack"],
+    "kaynak": "excess",
+    "uyari1": "Planda",
+    "uyari2": "Fazla kaynak başka projeye aktarılabilir",
+    "aktif": true
+  },
+  {
+    "kod": "S-08",
+    "ilerleme": ["ahead"],
+    "kaynak": "excess",
+    "uyari1": "Planın İlerisinde",
+    "uyari2": "Kaynak serbest bırakılabilir",
+    "aktif": true
+  },
+  {
+    "kod": "S-09",
+    "ilerleme": ["ahead"],
+    "kaynak": "insufficient",
+    "uyari1": "Planın İlerisinde",
+    "uyari2": "Bilgi amaçlı, plan güncellenebilir",
+    "aktif": true
+  }
+]

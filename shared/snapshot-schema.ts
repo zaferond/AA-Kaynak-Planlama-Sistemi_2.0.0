@@ -1,3 +1,8 @@
+import {
+  warningAssessmentSchema,
+  warningConfigSchema,
+  scenarioWarningSchema,
+} from "./scenario-warning-schema.ts";
 import { z } from "zod";
 import { numericRecordSchema } from "./numeric-record-schema.ts";
 import { riskCategories, riskStatuses, riskStrategies } from "./risk-policy.ts";
@@ -283,6 +288,15 @@ export const projectProgressSchema = z
             reason: z.string().trim().max(500).optional(),
             approvedByName: z.string().max(200),
             approvedAt: z.string().max(40),
+            resourceReference: z
+              .object({
+                resourceTotal: z.number().finite().min(0),
+                workPct: z.number().finite().min(0).max(100),
+                capturedAt: z.string().max(40),
+                source: z.enum(["approval", "migration"]),
+              })
+              .strict()
+              .optional(),
           })
           .strict(),
       )
@@ -334,6 +348,9 @@ export const snapshotSchema = z.object({
   scheduleScenarios: z.array(scheduleScenarioSchema).max(1000).optional(),
   projectProgress: z.array(projectProgressSchema).max(20000).optional(),
   progressLocks: z.array(progressLockSchema).max(1000).optional(),
+  warningConfigs: z.array(warningConfigSchema).max(1).optional(),
+  warningAssessments: z.array(warningAssessmentSchema).max(100000).optional(),
+  scenarioWarnings: z.array(scenarioWarningSchema).max(100000).optional(),
   riskSystems: z
     .array(riskSystemSchema)
     .max(5000)

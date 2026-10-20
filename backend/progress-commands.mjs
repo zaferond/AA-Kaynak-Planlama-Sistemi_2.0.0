@@ -128,6 +128,23 @@ export function stageProgressChange(
         ...(proposal.reason?.trim() ? { reason: proposal.reason.trim() } : {}),
         approvedByName: name,
         approvedAt: at,
+        resourceReference: {
+          resourceTotal: Object.entries(
+            leaderResourceByMonth(d.teams, d.allocations || {}, project.id).get(
+              next.leader,
+            ) || {},
+          ).reduce(
+            (total, [month, value]) =>
+              total +
+              (month > proposal.openingMonth && month <= project.end
+                ? value
+                : 0),
+            0,
+          ),
+          workPct: 100 - proposal.openingPct,
+          capturedAt: at,
+          source: "approval",
+        },
       });
       proposal = undefined;
     } else {

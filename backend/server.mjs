@@ -60,18 +60,25 @@ try {
     });
   }
   const { synchronizeProgressStarts } = await import("./progress-commands.mjs");
+  const { captureLegacyResourceReferences, synchronizeScenarioWarnings } =
+    await import("./scenario-warning-engine.mjs");
   const progressSnapshot = (await store.read()).data;
   const preview = {
     ...progressSnapshot,
     revisions: { ...progressSnapshot.revisions },
   };
-  if (synchronizeProgressStarts(preview)) {
+  const progressChanges = synchronizeProgressStarts(preview);
+  const referenceChanges = captureLegacyResourceReferences(preview);
+  const warningChanges = synchronizeScenarioWarnings(preview);
+  if (progressChanges || referenceChanges || warningChanges) {
     const actor = await store.findUser({ id: ROOT_ADMIN_ID });
-    const count = await store.mutate(actor, (data) =>
-      synchronizeProgressStarts(data),
-    );
+    const count = await store.mutate(actor, (data) => {
+      const starts = synchronizeProgressStarts(data);
+      const references = captureLegacyResourceReferences(data);
+      return starts + references;
+    });
     console.log(
-      "Kaynak dağılımına göre başlangıcı güncellenen ilerleme kaydı:",
+      "İlerleme başlangıcı / kaynak referansı güncellendi; senaryo motoru çalıştırıldı:",
       count,
     );
   }

@@ -243,6 +243,30 @@ test("transfer comparisons require a shared leadership and exclude unassessed re
   assert.equal(pairs[0].to.row.project.id, "Geri proje");
 });
 
+test("scenario transfer reviews keep the last locked month and configured horizon when the monthly view changes", () => {
+  const ctx = context();
+  const source = manageProject(ctx, row("İleri proje", 70), "2026-10");
+  const destination = manageProject(ctx, row("Geri proje", 30), "2026-10");
+  source.scenario = {
+    code: "S-08",
+    month: "2026-09",
+    horizonMonths: 2,
+    deviation: 20,
+  };
+  destination.scenario = {
+    code: "S-02",
+    month: "2026-09",
+    horizonMonths: 2,
+    deviation: -20,
+  };
+  const pairs = transferComparisons([source, destination], ctx);
+  assert.equal(pairs.length, 1);
+  assert.equal(pairs[0].planned, 8);
+  assert.equal(pairs[0].horizonMonths, 2);
+  assert.equal(pairs[0].fromGap, 20);
+  assert.equal(pairs[0].toGap, -20);
+});
+
 test("a transfer comparison uses the shared leadership gap when another leadership has not submitted", () => {
   const destination = row("Kısmi proje", 30);
   destination.leaders.push(leader("Liderlik B", null));

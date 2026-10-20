@@ -1,3 +1,7 @@
+import {
+  stageWarningConfigChange,
+  stageScenarioWarningChange,
+} from "./scenario-warning-commands.mjs";
 import { ownValue } from "../shared/records.ts";
 import { PERSONAL_DAYS_PER_REQUEST } from "../shared/snapshot-calendar-validation.ts";
 import { parseAllocationKey } from "../shared/allocation-key.ts";
@@ -45,6 +49,8 @@ const changesSchema = z
         "scenario",
         "progress",
         "progressLock",
+        "warningConfig",
+        "scenarioWarning",
         "resource",
         "allocation",
         "actual",
@@ -176,6 +182,7 @@ function stageParsedChanges(d, u, changes) {
       kind === "scenario" && (u.role === "admin" || u.role === "manager");
     // Project progress: leaders write their own leadership; checked in the handler.
     const canProgress = kind === "progress" && u.role === "manager";
+    const canWarning = kind === "scenarioWarning" && u.role === "manager";
     if (
       u.role !== "admin" &&
       !managerPlan &&
@@ -185,7 +192,8 @@ function stageParsedChanges(d, u, changes) {
       !projectEditor &&
       !canRisk &&
       !canScenario &&
-      !canProgress
+      !canProgress &&
+      !canWarning
     )
       fail(403, "Bu işlem için yetkiniz yok.");
     if (
@@ -229,6 +237,10 @@ function stageParsedChanges(d, u, changes) {
         d.projectProgress?.find((item) => item.id === id),
         canSeeProject,
       );
+    } else if (kind === "warningConfig") {
+      stageWarningConfigChange(d, u, ch);
+    } else if (kind === "scenarioWarning") {
+      stageScenarioWarningChange(d, u, ch, canSeeProject);
     } else if (kind === "progressLock") {
       stageProgressLockChange(d, u, ch);
     } else if (kind === "scenario") {

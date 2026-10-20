@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 import { milestoneRanges } from "../../shared/milestone-ranges.ts";
@@ -145,9 +146,7 @@ export async function checkMilestoneReportMenu(f) {
         assert.equal(point.diamondStyle, "outline");
         assert.equal(point.notes[0].completed, true);
         await page.keyboard.press("Escape");
-        await page
-          .getByRole("tab", { name: "Haftalık Kritik Konular", exact: true })
-          .click();
+        await selectWorkspaceTab(page, "Haftalık Kritik Konular");
         await page.getByText("QA Excluded Bullet", { exact: true }).waitFor();
         assert.equal(
           await page.getByText("QA Milestone", { exact: true }).count(),
@@ -170,9 +169,7 @@ export async function checkMilestoneReportMenu(f) {
         assert.equal(saved.ranges[0].notes[0].includeInReport, false);
         assert.equal(saved.ranges[0].notes[1].includeInReport, true);
         assert.equal(saved.ranges[1].notes[0].includeInReport, true);
-        await page
-          .getByRole("tab", { name: "Haftalık Kritik Konular", exact: true })
-          .click();
+        await selectWorkspaceTab(page, "Haftalık Kritik Konular");
         await page.getByText("QA Milestone", { exact: true }).waitFor();
         assert.equal(
           await page.getByText("QA Included Bullet", { exact: true }).count(),

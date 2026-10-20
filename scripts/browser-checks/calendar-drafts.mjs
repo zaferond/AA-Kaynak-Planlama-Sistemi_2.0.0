@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -10,8 +11,7 @@ export async function checkCalendarDrafts(f) {
     original.projects.find((item) => item.id === "p-a"),
   );
   const dialog = () => page.locator(".work-calendar-dialog");
-  const actual = () =>
-    page.getByRole("tab", { name: "Aktivite Girişi", exact: true }).click();
+  const actual = () => selectWorkspaceTab(page, "Aktivite Girişi");
   const open = () =>
     page
       .getByRole("button", { name: "Çalışma Takvimi'ni aç", exact: true })

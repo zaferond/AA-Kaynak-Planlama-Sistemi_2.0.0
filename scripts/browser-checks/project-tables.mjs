@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -160,12 +161,7 @@ export async function checkProjectTables(f) {
   );
   const { page } = await f.client("root-admin");
   try {
-    await page
-      .getByRole("tab", {
-        name: "Projeler",
-        exact: true,
-      })
-      .click();
+    await selectWorkspaceTab(page, "Projeler");
     await page
       .getByRole("switch", { name: "Detayları Göster", exact: true })
       .check();
@@ -180,12 +176,7 @@ export async function checkProjectTables(f) {
     await f.check(
       "planning: project headings replace each other while labels remain fixed horizontally",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Kaynak Planlama",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         await checkFreeze(page, ".project-team-view", () =>
           f.capture(page, "planning-project-freeze"),
         );
@@ -194,12 +185,7 @@ export async function checkProjectTables(f) {
     await f.check(
       "actual: project headings replace each other while labels remain fixed horizontally",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Aktivite Girişi",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Aktivite Girişi");
         // One row per person keeps this synthetic table short; a lower
         // viewport still lets the next project heading reach the top.
         await page
@@ -216,12 +202,7 @@ export async function checkProjectTables(f) {
     await f.check(
       "projects: pointer reorder saves, preserves phases/notes/allocations and survives reload; Alt+arrow also reorders",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Projeler",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Projeler");
         // With details open the first project can be taller than the virtual
         // window; reorder needs both headings mounted at the same time.
         await page
@@ -250,12 +231,7 @@ export async function checkProjectTables(f) {
         assert.deepEqual(after.allocations, before.allocations);
         assert.deepEqual(after.actualAllocations, before.actualAllocations);
         await page.reload();
-        await page
-          .getByRole("tab", {
-            name: "Projeler",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Projeler");
         assert.deepEqual(
           await page
             .locator(".projectmatrix [data-project-heading]")

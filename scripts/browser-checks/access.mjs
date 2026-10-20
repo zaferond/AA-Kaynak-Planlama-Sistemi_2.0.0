@@ -1,20 +1,17 @@
 import assert from "node:assert/strict";
-import { openUserMenu } from "./fixture.mjs";
+import { selectWorkspaceTab, openUserMenu } from "./fixture.mjs";
 import { applyChanges } from "../../backend/operations.mjs";
 
 export async function loginUI(page, id, password) {
   await page.getByLabel("Kullanıcı Adı", { exact: true }).fill("qa." + id);
   await page.getByLabel("Şifre", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Giriş Yap", exact: true }).click();
-  await page.getByRole("tab", { name: "Risk Yönetimi", exact: true }).waitFor();
+  await page
+    .getByRole("button", { name: "Ana menüyü aç", exact: true })
+    .waitFor();
 }
 const openAccess = (page) =>
-  page
-    .getByRole("tab", {
-      name: "Organizasyon & Çalışan & Yetki",
-      exact: true,
-    })
-    .click();
+  selectWorkspaceTab(page, "Organizasyon & Çalışan & Yetki");
 async function editAccount(page, id) {
   await page
     .getByRole("textbox", { name: "Kaynak ara", exact: true })
@@ -62,7 +59,7 @@ export async function checkAccess(f) {
         await loginUI(p, "employee", f.password);
         await p.reload();
         await p
-          .getByRole("tab", { name: "Risk Yönetimi", exact: true })
+          .getByRole("button", { name: "Ana menüyü aç", exact: true })
           .waitFor();
         const cookies = await c.context.cookies();
         assert(cookies.some((cookie) => cookie.httpOnly));
@@ -376,12 +373,7 @@ export async function checkAccess(f) {
         );
         await edit.getByRole("button", { name: "Vazgeç", exact: true }).click();
         const manager = await f.client("new-manager");
-        await manager.page
-          .getByRole("tab", {
-            name: "Aktivite Girişi",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(manager.page, "Aktivite Girişi");
         await f.capture(manager.page, "access-manager-own-actual");
         await manager.page
           .locator(".person-allocation tbody tr")

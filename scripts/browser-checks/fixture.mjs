@@ -182,8 +182,8 @@ export async function fixture({ mutationLimits } = {}) {
       await page.goto(origin);
       if (login)
         await page
-          .getByRole("tab", {
-            name: "Projeler",
+          .getByRole("button", {
+            name: "Ana menüyü aç",
             exact: true,
           })
           .waitFor();
@@ -249,6 +249,21 @@ export async function fixture({ mutationLimits } = {}) {
 }
 
 export async function selectWorkspaceTab(page, name) {
+  const menu = page.locator("#workspace-main-menu");
+  const mainTab = menu.getByText(name, { exact: true });
+  if (
+    (await mainTab.count()) ||
+    [
+      "Çalışan & Yetki Tanımlama",
+      "Liderlik ve Takımlar",
+      "Organizasyon Yapısı",
+    ].includes(name)
+  ) {
+    if ((await menu.getAttribute("data-open")) !== "true")
+      await page
+        .getByRole("button", { name: "Ana menüyü aç", exact: true })
+        .click();
+  }
   const employee = name === "Çalışan & Yetki Tanımlama";
   const directory =
     name === "Liderlik ve Takımlar" || name === "Organizasyon Yapısı";

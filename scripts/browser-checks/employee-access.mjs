@@ -44,6 +44,9 @@ export async function checkEmployeeAccess(f) {
           ),
         );
         await page.reload();
+        await page
+          .getByRole("button", { name: "Ana menüyü aç", exact: true })
+          .click();
         const tab = page.getByRole("tab", {
           name: "Organizasyon & Çalışan & Yetki",
           exact: true,
@@ -74,14 +77,13 @@ export async function checkEmployeeAccess(f) {
           ),
         );
         await page.reload();
-        const main = page.getByRole("tablist", {
-          name: "Ana sekmeler",
-          exact: true,
-        });
-        const combined = main.getByRole("tab", {
-          name: "Organizasyon & Çalışan & Yetki",
-          exact: true,
-        });
+        await page
+          .getByRole("button", { name: "Ana menüyü aç", exact: true })
+          .click();
+        const main = page.locator('#workspace-main-menu [role="tablist"]');
+        const combined = main
+          .locator('[role="tab"]')
+          .filter({ hasText: "Organizasyon & Çalışan & Yetki" });
         await combined.waitFor();
         assert.equal(await combined.getAttribute("aria-selected"), "true");
         assert.equal(

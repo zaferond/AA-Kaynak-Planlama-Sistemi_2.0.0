@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -122,9 +123,7 @@ export async function checkActivityReport(f) {
       .waitFor({ state: "hidden" });
   }
   try {
-    await page
-      .getByRole("tab", { name: "Aktivite Raporu", exact: true })
-      .click();
+    await selectWorkspaceTab(page, "Aktivite Raporu");
     await page
       .locator('.planning-filterbar input[type="month"]')
       .fill("2026-01");
@@ -397,12 +396,7 @@ export async function checkActivityReport(f) {
         for (const role of ["manager", "employee", "unmapped"]) {
           const client = await f.client(role);
           try {
-            await client.page
-              .getByRole("tab", {
-                name: "Aktivite Raporu",
-                exact: true,
-              })
-              .click();
+            await selectWorkspaceTab(client.page, "Aktivite Raporu");
             await client.page.locator(".monthly-activity-report").waitFor();
             await client.page
               .getByRole("status")

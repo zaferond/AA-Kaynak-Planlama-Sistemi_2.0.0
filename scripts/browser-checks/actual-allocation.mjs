@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 
 export async function checkActualAllocation(f) {
@@ -22,9 +23,7 @@ export async function checkActualAllocation(f) {
       "actual input settled: " + value,
     );
   try {
-    await page
-      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
-      .click();
+    await selectWorkspaceTab(page, "Aktivite Girişi");
     await f.check(
       "actual: cell/total selection, outside click and Escape; units and manual/automatic hours remain consistent",
       async () => {

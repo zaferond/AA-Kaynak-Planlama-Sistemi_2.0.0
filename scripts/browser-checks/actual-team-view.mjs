@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges, applyLeaderChange } from "../../backend/operations.mjs";
 import { directoryRevision } from "../../shared/directory-policy.ts";
@@ -99,7 +100,7 @@ export async function checkActualTeamView(f) {
   const c = await f.client("employee");
   const { page } = c;
   const open = async (p) => {
-    await p.getByRole("tab", { name: "Aktivite Girişi", exact: true }).click();
+    await selectWorkspaceTab(p, "Aktivite Girişi");
     await p.locator('input[type="month"]').fill("2026-09");
     await p.locator("#actual-entry-unit").selectOption("hours");
   };

@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -23,9 +24,7 @@ export async function checkActualPersonLayout(f) {
       exact: true,
     });
   try {
-    await page
-      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
-      .click();
+    await selectWorkspaceTab(page, "Aktivite Girişi");
     await f.check(
       "actual person layout: default view opens all visible projects under each person",
       async () => {
@@ -93,12 +92,7 @@ export async function checkActualPersonLayout(f) {
           .click();
         await page.locator('[data-project-group="p-a"]').first().waitFor();
         await page.reload();
-        await page
-          .getByRole("tab", {
-            name: "Aktivite Girişi",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Aktivite Girişi");
         await page.locator('[data-project-group="p-a"]').first().waitFor();
         assert.equal(
           await page

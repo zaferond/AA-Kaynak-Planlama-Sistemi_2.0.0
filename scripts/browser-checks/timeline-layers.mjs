@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -113,12 +114,7 @@ export async function checkTimelineLayers(f) {
   );
   const { page } = await f.client("root-admin");
   try {
-    await page
-      .getByRole("tab", {
-        name: "Projeler",
-        exact: true,
-      })
-      .click();
+    await selectWorkspaceTab(page, "Projeler");
     await f.check(
       "projects: selected and keyboard-focused phases stay behind frozen labels in monthly and weekly views",
       async () => {

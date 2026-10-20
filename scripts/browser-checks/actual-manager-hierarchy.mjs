@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges, applyLeaderChange } from "../../backend/operations.mjs";
 import { directoryRevision } from "../../shared/directory-policy.ts";
@@ -96,9 +97,7 @@ export async function checkActualManagerHierarchy(f) {
       exact: true,
     });
   try {
-    await page
-      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
-      .click();
+    await selectWorkspaceTab(page, "Aktivite Girişi");
     await page.locator("#actual-entry-unit").selectOption("hours");
     for (const url of ["/api/data", "/api/actual-view?start=2026-01&count=1"]) {
       const response = await context.request.get(f.origin + url);
@@ -164,12 +163,7 @@ export async function checkActualManagerHierarchy(f) {
           "descendant existing hours updated",
         );
         await page.reload();
-        await page
-          .getByRole("tab", {
-            name: "Aktivite Girişi",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Aktivite Girişi");
         await page.locator("#actual-entry-unit").selectOption("hours");
         await f.wait(
           async () => (await amount("QA Grand Member").inputValue()) === "18",
@@ -238,12 +232,7 @@ export async function checkActualManagerHierarchy(f) {
         assert.deepEqual(after.personCalendar, before.personCalendar);
         const admin = await f.client("root-admin");
         try {
-          await admin.page
-            .getByRole("tab", {
-              name: "Aktivite Girişi",
-              exact: true,
-            })
-            .click();
+          await selectWorkspaceTab(admin.page, "Aktivite Girişi");
           assert(
             (await admin.page
               .getByRole("button", {

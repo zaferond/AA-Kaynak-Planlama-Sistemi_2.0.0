@@ -59,12 +59,7 @@ export async function checkWorkspaceActions(f) {
     await f.check(
       "workspace actions: four tab exports use current filters; normal actual export includes only the own resource",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Kaynak Planlama",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         await choose(page, "Takım", [f.teamA.name]);
         await choose(page, "Proje", ["Browser Project A"]);
         let xml = await exportSheet(
@@ -76,12 +71,7 @@ export async function checkWorkspaceActions(f) {
         assert(xml.includes(f.teamA.name));
         assert(!xml.includes(f.teamB.name));
         assert(xml.includes("<v>0.25</v>"));
-        await page
-          .getByRole("tab", {
-            name: "Projeler",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Projeler");
         xml = await exportSheet(
           page.getByRole("button", {
             name: "Proje Raporunu İndir",
@@ -93,12 +83,7 @@ export async function checkWorkspaceActions(f) {
           xml.includes("Browser Project A") &&
             !xml.includes("Browser Project B"),
         );
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         xml = await exportSheet(
           page.getByRole("button", {
             name: "Kaynak Raporu İndir",
@@ -108,12 +93,7 @@ export async function checkWorkspaceActions(f) {
         );
         assert(xml.includes(f.teamA.name) && !xml.includes(f.teamB.name));
         assert(xml.includes("Liderlik: Tümü · Takım: 1 seçili"));
-        await page
-          .getByRole("tab", {
-            name: "Aktivite Girişi",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Aktivite Girişi");
         await choose(page, "Takım", []);
         await choose(page, "Kişi", ["Browser Employee"]);
         xml = await exportSheet(
@@ -149,22 +129,12 @@ export async function checkWorkspaceActions(f) {
     await f.check(
       "workspace actions: global reset ignores display filters; cancel/503 preserve data and retry clears only planned allocations",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Kaynak Planlama",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         await choose(page, "Takım", [f.teamA.name]);
         await choose(page, "Proje", ["Browser Project A"]);
         await seedPlan();
         await page.reload();
-        await page
-          .getByRole("tab", {
-            name: "Kaynak Planlama",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         await choose(page, "Takım", [f.teamA.name]);
         await choose(page, "Proje", ["Browser Project A"]);
         await page

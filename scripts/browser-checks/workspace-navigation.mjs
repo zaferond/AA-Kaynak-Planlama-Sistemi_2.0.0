@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 import { openRisks, acceptRiskSaveConfirmations } from "./risk.mjs";
@@ -84,19 +85,9 @@ export async function checkWorkspaceNavigation(f) {
           .getAttribute("data-risk-id");
         const before = await f.state();
         await page.route("**/api/changes", hold, { times: 1 });
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await f.wait(() => writes === 1, "draft save held");
-        await page
-          .getByRole("tab", {
-            name: "Projeler",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Projeler");
         assert.equal(
           await field().inputValue(),
           "Synthetic held navigation draft",

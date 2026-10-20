@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -23,9 +24,7 @@ export async function checkPlannedTeamFreeze(f) {
   );
   const { page } = await f.client("root-admin");
   try {
-    await page
-      .getByRole("tab", { name: "Kaynak Planlama", exact: true })
-      .click();
+    await selectWorkspaceTab(page, "Kaynak Planlama");
     await page
       .getByRole("tab", { name: "Takım → Projeler", exact: true })
       .click();

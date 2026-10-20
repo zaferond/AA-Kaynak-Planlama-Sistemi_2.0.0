@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -56,9 +57,7 @@ export async function checkCriticalProjectFilter(f) {
     await f.check(
       "critical topics: the project filter keeps its choice and shows only that project",
       async () => {
-        await page
-          .getByRole("tab", { name: "Haftalık Kritik Konular", exact: true })
-          .click();
+        await selectWorkspaceTab(page, "Haftalık Kritik Konular");
         await page.getByText("QA Topic Alpha", { exact: true }).waitFor();
         assert.equal(await groups.count(), 2);
         assert.deepEqual(await picker.locator("option").allTextContents(), [

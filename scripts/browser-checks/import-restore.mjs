@@ -285,7 +285,7 @@ export async function checkImportRestore(f) {
         const users = await f.store.users();
         await page.reload();
         await page
-          .getByRole("tab", { name: "Risk Yönetimi", exact: true })
+          .getByRole("button", { name: "Ana menüyü aç", exact: true })
           .waitFor();
         page.once("dialog", (d) => d.accept());
         await restore(bytes);

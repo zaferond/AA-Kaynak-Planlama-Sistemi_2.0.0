@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import { applyChanges } from "../../backend/operations.mjs";
 import { download, zipEntries, validateXml } from "./files.mjs";
+import { selectWorkspaceTab } from "./fixture.mjs";
 
 export async function checkProgressManagement(f) {
   const extra = {
@@ -108,9 +109,7 @@ export async function checkProgressManagement(f) {
   );
   const { page, context } = await f.client("root-admin");
   const open = async () => {
-    await page
-      .getByRole("tab", { name: "Proje İlerlemesi", exact: true })
-      .click();
+    await selectWorkspaceTab(page, "Proje İlerlemesi");
     await page
       .getByRole("combobox", { name: "Ay", exact: true })
       .selectOption("2026-09");
@@ -445,9 +444,7 @@ export async function checkProgressManagement(f) {
         await f.capture(page, "scenario-warning-settings");
         const manager = await f.client("manager");
         try {
-          await manager.page
-            .getByRole("tab", { name: "Proje İlerlemesi", exact: true })
-            .click();
+          await selectWorkspaceTab(manager.page, "Proje İlerlemesi");
           assert.equal(
             await manager.page
               .getByRole("tab", { name: "Uyarı Ayarları", exact: true })

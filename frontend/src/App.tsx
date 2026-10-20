@@ -13,6 +13,7 @@ import WriteRecoveryNotice from "./features/WriteRecoveryNotice";
 import { usePortalRefresh } from "./features/usePortalRefresh";
 import { usePortalEditor } from "./features/usePortalEditor";
 import { useWorkspaceNavigation } from "./features/workspace/useWorkspaceNavigation";
+import { useWorkspaceMenu } from "./features/workspace/useWorkspaceMenu";
 import WorkspaceHeader, { FullPlanHeader } from "./features/WorkspaceHeader";
 import WorkspaceNavigation, {
   type ReportView,
@@ -31,7 +32,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { TabsContent } from "@/components/ui/tabs";
+import { Tabs as TabsPrimitive } from "radix-ui";
 import { ClipboardPaste, Copy } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AbsenceReport from "./AbsenceReport";
@@ -299,22 +301,6 @@ export default function Portal() {
     if (!canEditProjects) setEditor(null);
   }, [canEditProjects, user?.role]);
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      const list = mainTabsRef.current;
-      const active = list?.querySelector<HTMLElement>(
-        '[role="tab"][data-state="active"]',
-      );
-      if (!list || !active) return;
-      const listBox = list.getBoundingClientRect(),
-        tabBox = active.getBoundingClientRect();
-      if (tabBox.left < listBox.left)
-        list.scrollLeft -= listBox.left - tabBox.left + 6;
-      else if (tabBox.right > listBox.right)
-        list.scrollLeft += tabBox.right - listBox.right + 6;
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [tab]);
-  useEffect(() => {
     if (!fullPlan) return;
     const sync = () => setBrowserFullScreen(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", sync);
@@ -529,6 +515,7 @@ export default function Portal() {
       showPeriodFilters={tab !== "overview" || reportView !== "headcount"}
     />
   );
+  const workspaceMenu = useWorkspaceMenu(tab);
   return (
     <div
       className={
@@ -550,6 +537,7 @@ export default function Portal() {
       }
     >
       <WorkspaceHeader
+        menu={workspaceMenu}
         user={user}
         defaultTab={defaultTab}
         setOpeningTab={setOpeningTab}
@@ -576,8 +564,16 @@ export default function Portal() {
             <button onClick={() => setError("")}>Kapat</button>
           </div>
         )}
-        <Tabs value={tab} onValueChange={changeTab}>
+        <TabsPrimitive.Root
+          data-slot="tabs"
+          className="workspace-tabs"
+          orientation="vertical"
+          activationMode="manual"
+          value={tab}
+          onValueChange={changeTab}
+        >
           <WorkspaceNavigation
+            menu={workspaceMenu}
             user={user}
             tab={tab}
             mainTabsRef={mainTabsRef}
@@ -1078,7 +1074,7 @@ export default function Portal() {
               )}
             </ErrorBoundary>
           )}
-        </Tabs>
+        </TabsPrimitive.Root>
       </main>
       <ProjectContextMenus
         menus={projectMenus}

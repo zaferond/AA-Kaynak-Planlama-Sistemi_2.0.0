@@ -8,6 +8,7 @@ import {
   Download,
   Upload,
   KeyRound,
+  Menu,
 } from "lucide-react";
 import {
   Popover,
@@ -25,8 +26,10 @@ import PasswordChangeForm from "../PasswordChangeForm";
 import type { Principal } from "../access";
 import { allowedDefaultTabs } from "../navigation";
 import { SYSTEM_NAME, TAB_LABELS } from "../settings";
+import type { WorkspaceMenu } from "./workspace/useWorkspaceMenu";
 
 type Props = {
+  menu: WorkspaceMenu;
   user: Principal | null;
   defaultTab: string;
   setOpeningTab: (tab: string) => void;
@@ -35,6 +38,7 @@ type Props = {
   onLogout: () => Promise<void>;
 };
 export default function WorkspaceHeader({
+  menu,
   user,
   defaultTab,
   setOpeningTab,
@@ -55,8 +59,20 @@ export default function WorkspaceHeader({
   const [passwordOpen, setPasswordOpen] = useState(false);
   const restoreInput = useRef<HTMLInputElement>(null);
   return (
-    <header className="mast">
+    <header className="mast" ref={menu.headerRef}>
       <div className="mastbrandrow">
+        <button
+          ref={menu.triggerRef}
+          type="button"
+          className="iconbutton workspace-menu-toggle"
+          data-workspace-menu-trigger
+          aria-label={menu.open ? "Ana menüyü kapat" : "Ana menüyü aç"}
+          aria-controls="workspace-main-menu"
+          aria-expanded={menu.open}
+          onClick={(event) => menu.toggle(event.detail === 0)}
+        >
+          <Menu size={19} aria-hidden="true" />
+        </button>
         <div className="brand">
           <div className="mark">
             <Layers3 size={20} />

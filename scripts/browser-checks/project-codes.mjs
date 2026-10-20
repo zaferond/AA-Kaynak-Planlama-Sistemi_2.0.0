@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import path from "node:path";
 import { download, zipEntries, validateXml } from "./files.mjs";
@@ -31,12 +32,7 @@ export async function checkProjectCodes(f) {
   );
   const { page } = await f.client("root-admin");
   try {
-    await page
-      .getByRole("tab", {
-        name: "Projeler",
-        exact: true,
-      })
-      .click();
+    await selectWorkspaceTab(page, "Projeler");
     const toggle = page.getByRole("switch", {
       name: "Proje Kodlarını Göster",
       exact: true,
@@ -73,12 +69,7 @@ export async function checkProjectCodes(f) {
           .click();
         await page.getByRole("dialog").waitFor({ state: "hidden" });
         await page.reload();
-        await page
-          .getByRole("tab", {
-            name: "Projeler",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Projeler");
         assert.equal(
           (await f.state()).projects.find(
             (p) => p.name === "Synthetic code project",
@@ -202,12 +193,7 @@ export async function checkProjectCodes(f) {
     await f.check(
       "report graphs: Turkish short month and full year labels",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await page
           .locator('.planning-filterbar input[type="month"]')
           .fill("2026-01");

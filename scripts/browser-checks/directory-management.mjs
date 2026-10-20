@@ -569,12 +569,7 @@ export async function checkDirectoryManagement(f) {
           (resource) => resource.name === "QA Direct Leader Employee",
         );
         assert.equal(worker.versions.at(-1).team, unit);
-        await page
-          .getByRole("tab", {
-            name: "Kaynak Planlama",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         await page.getByRole("button", { name: "Proje", exact: true }).click();
         await picker()
           .getByRole("button", { name: "Seçimleri Kaldır", exact: true })
@@ -607,12 +602,7 @@ export async function checkDirectoryManagement(f) {
             (await f.state()).allocations[unit + "|p-a|2026-01"] === 0.5,
           "direct leader allocation saved",
         );
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         const labels = await page
           .locator(".leader-report tbody tr .report-unit-title")
           .allTextContents();

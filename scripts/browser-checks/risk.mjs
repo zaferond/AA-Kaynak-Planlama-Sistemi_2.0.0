@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { openUserMenu } from "./fixture.mjs";
+import { selectWorkspaceTab, openUserMenu } from "./fixture.mjs";
 import path from "node:path";
 import { download, zipEntries, validateXml } from "./files.mjs";
 
@@ -20,7 +20,7 @@ export function acceptRiskSaveConfirmations(page) {
 }
 
 export async function openRisks(page, project = "Browser Project A") {
-  await page.getByRole("tab", { name: "Risk Yönetimi", exact: true }).click();
+  await selectWorkspaceTab(page, "Risk Yönetimi");
   await page
     .getByRole("button", { name: "Risk projeleri", exact: true })
     .click();
@@ -219,12 +219,7 @@ export async function checkRisks(f) {
             }),
           { times: 1 },
         );
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await page
           .locator(".risk-inline-error")
           .filter({ hasText: "Synthetic risk save failure" })
@@ -243,12 +238,7 @@ export async function checkRisks(f) {
           (await f.state()).risks.find((r) => r.id === first).description,
           "Risk preserved after failure",
         );
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await page
           .getByRole("heading", {
             name: "Aylık Eksik Kaynak Grafiği",
@@ -342,18 +332,8 @@ export async function checkRisks(f) {
           await f.wait(() => held, "risk request held");
           assert(await field(page, "description").isDisabled());
           assert(await field(page, "impact").isDisabled());
-          await page
-            .getByRole("tab", {
-              name: "Raporlar",
-              exact: true,
-            })
-            .click();
-          await page
-            .getByRole("tab", {
-              name: "Projeler",
-              exact: true,
-            })
-            .click();
+          await selectWorkspaceTab(page, "Raporlar");
+          await selectWorkspaceTab(page, "Projeler");
           release();
           await page.locator(".project-main-row").first().waitFor();
           assert.equal(requests, 1);

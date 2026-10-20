@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { selectWorkspaceTab } from "./fixture.mjs";
 import { applyChanges } from "../../backend/operations.mjs";
 
 // Drive only the application's 15-second interval; transport deadlines and DOM timers stay native.
@@ -15,7 +16,7 @@ async function pollingClient(f) {
     };
   });
   await c.page.reload();
-  await c.page.getByRole("tab", { name: /Projeler/ }).click();
+  await selectWorkspaceTab(c.page, "Projeler");
   await c.page.locator('[data-project-heading="p-a"]').waitFor();
   return c;
 }

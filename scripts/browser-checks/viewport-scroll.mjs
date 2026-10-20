@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -364,12 +365,7 @@ export async function checkViewportScroll(f) {
     }
     const actual = await f.client("employee");
     try {
-      await actual.page
-        .getByRole("tab", {
-          name: "Aktivite Girişi",
-          exact: true,
-        })
-        .click();
+      await selectWorkspaceTab(actual.page, "Aktivite Girişi");
       await f.check(
         "actual: upward wheel at table top continues on the page",
         async () => {

@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 
 export async function checkRiskVisibility(f) {
@@ -18,12 +19,7 @@ export async function checkRiskVisibility(f) {
             await page.locator('select option[value="risk"]').count(),
             0,
           );
-          await page
-            .getByRole("tab", {
-              name: "Projeler",
-              exact: true,
-            })
-            .click();
+          await selectWorkspaceTab(page, "Projeler");
           assert.equal(await page.locator(".risk-register").count(), 0);
           assert.equal(
             await page

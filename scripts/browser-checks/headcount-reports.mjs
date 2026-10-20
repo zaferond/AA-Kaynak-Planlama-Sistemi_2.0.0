@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -193,9 +194,7 @@ export async function checkHeadcountReports(f) {
     async () => {
       const manager = await f.client("manager"),
         normal = await f.client("employee");
-      await manager.page
-        .getByRole("tab", { name: "Raporlar", exact: true })
-        .click();
+      await selectWorkspaceTab(manager.page, "Raporlar");
       await manager.page
         .getByRole("tab", { name: "Head Count", exact: true })
         .click();

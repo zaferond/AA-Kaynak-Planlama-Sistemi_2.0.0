@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 import { openRisks, acceptRiskSaveConfirmations } from "./risk.mjs";
@@ -153,12 +154,7 @@ export async function checkRiskConcurrency(f) {
           (await f.state()).risks.find((r) => r.id === id).description,
           initial.description,
         );
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         assert.equal(
           await page
             .getByRole("tab", { name: "Risk Yönetimi", exact: true })

@@ -1,4 +1,4 @@
-import type { RefObject } from "react";
+import { useEffect, type RefObject } from "react";
 import {
   ArrowDownToLine,
   CalendarClock,
@@ -9,14 +9,21 @@ import {
   ShieldAlert,
   TrendingUp,
   Users,
+  Pin,
+  PinOff,
+  X,
+  Menu,
+  ChevronsRight,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Principal } from "../access";
 import { RISK_MANAGEMENT_ENABLED, TAB_LABELS } from "../settings";
 import { isProjectEditor } from "../../../shared/project-access.ts";
+import type { WorkspaceMenu } from "./workspace/useWorkspaceMenu";
 export type WorkspaceDensity = "detail" | "compact" | "overview";
 export type ReportView = "resources" | "headcount";
 type Props = {
+  menu: WorkspaceMenu;
   user: Principal | null;
   tab: string;
   mainTabsRef: RefObject<HTMLDivElement | null>;
@@ -40,6 +47,7 @@ type Props = {
   setReportView: (view: ReportView) => void;
 };
 export default function WorkspaceNavigation({
+  menu,
   user,
   tab,
   mainTabsRef,
@@ -61,6 +69,22 @@ export default function WorkspaceNavigation({
   reportView,
   setReportView,
 }: Props) {
+  useEffect(() => {
+    if (!menu.open) return;
+    const list = mainTabsRef.current;
+    const active = list?.querySelector<HTMLElement>(
+      '[role="tab"][data-state="active"]',
+    );
+    if (list && active) {
+      if (active.offsetTop < list.scrollTop) list.scrollTop = active.offsetTop;
+      else if (
+        active.offsetTop + active.offsetHeight >
+        list.scrollTop + list.clientHeight
+      )
+        list.scrollTop =
+          active.offsetTop + active.offsetHeight - list.clientHeight;
+    }
+  }, [menu.open, tab, mainTabsRef]);
   const isAdmin = user?.role === "admin",
     isManager = user?.role === "manager",
     projectEditor = isProjectEditor(user);
@@ -113,29 +137,94 @@ export default function WorkspaceNavigation({
   ).filter((item) => item.show);
   return (
     <div className="workspace-nav">
-      <TabsList
-        ref={mainTabsRef}
-        className="navtabs"
-        variant="line"
-        aria-label="Ana sekmeler"
+      <button
+        type="button"
+        className="workspace-menu-edge"
+        data-workspace-menu-trigger
+        aria-label="Sol menüyü aç"
+        aria-controls="workspace-main-menu"
+        aria-expanded={menu.open}
+        style={{ top: menu.top }}
+        onPointerEnter={(event) =>
+          event.pointerType === "mouse" && menu.enter()
+        }
+        onPointerLeave={menu.leave}
+        onClick={(event) => !menu.open && menu.toggle(event.detail === 0)}
       >
-        {mainTabs.map((item, index) => (
-          <TabsTrigger
-            key={item.value}
-            value={item.value}
-            data-tab-group={item.group}
-            // A thin divider marks where a new group of tabs begins.
-            data-group-start={
-              index > 0 && mainTabs[index - 1].group !== item.group
-                ? ""
-                : undefined
-            }
+        <Menu
+          className="workspace-menu-edge-icon"
+          size={16}
+          aria-hidden="true"
+        />
+        <span className="workspace-menu-edge-caption" aria-hidden="true">
+          Menü
+          <ChevronsRight size={14} />
+        </span>
+      </button>
+      <aside
+        id="workspace-main-menu"
+        className="workspace-menu-panel"
+        ref={menu.panelRef}
+        data-open={menu.open}
+        data-pinned={menu.pinned}
+        aria-label="Ana menü"
+        aria-hidden={!menu.open}
+        inert={!menu.open}
+        style={{ top: menu.top }}
+        onPointerEnter={(event) =>
+          event.pointerType === "mouse" && menu.enter()
+        }
+        onPointerLeave={menu.leave}
+        onFocusCapture={menu.focus}
+        onBlurCapture={menu.leave}
+      >
+        <div className="workspace-menu-heading">
+          <strong>Çalışma alanı</strong>
+          <button
+            type="button"
+            className="iconbutton"
+            onClick={menu.pin}
+            aria-label={menu.pinned ? "Menüyü serbest bırak" : "Menüyü sabitle"}
+            aria-pressed={menu.pinned}
           >
-            <item.Icon />
-            {TAB_LABELS[item.value]}
-          </TabsTrigger>
-        ))}
-      </TabsList>
+            {menu.pinned ? <PinOff size={17} /> : <Pin size={17} />}
+          </button>
+          <button
+            type="button"
+            className="iconbutton"
+            aria-label="Sol menüyü kapat"
+            onClick={() => menu.close(true)}
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <TabsList
+          ref={mainTabsRef}
+          className="navtabs"
+          variant="line"
+          aria-label="Ana sekmeler"
+        >
+          {mainTabs.map((item, index) => (
+            <TabsTrigger
+              key={item.value}
+              value={item.value}
+              onClick={() => {
+                if (item.value === tab && !menu.pinned) menu.close(true);
+              }}
+              data-tab-group={item.group}
+              // A thin divider marks where a new group of tabs begins.
+              data-group-start={
+                index > 0 && mainTabs[index - 1].group !== item.group
+                  ? ""
+                  : undefined
+              }
+            >
+              <item.Icon />
+              <span>{TAB_LABELS[item.value]}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </aside>
       {![
         "access",
         "teams",

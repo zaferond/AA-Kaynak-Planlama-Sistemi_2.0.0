@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
@@ -6,7 +7,7 @@ export async function checkEntityEditors(f) {
     page = client.page;
   const original = (await f.state()).projects.find((p) => p.id === "p-a");
   try {
-    await page.getByRole("tab", { name: /Projeler/ }).click();
+    await selectWorkspaceTab(page, "Projeler");
     const heading = page.locator('[data-project-heading="p-a"]');
     await heading.waitFor();
     const field = () => page.getByLabel("Proje Adı", { exact: true });
@@ -213,12 +214,7 @@ export async function checkEntityEditors(f) {
           ]),
         );
         c = await f.client("employee");
-        await c.page
-          .getByRole("tab", {
-            name: "Aktivite Girişi",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(c.page, "Aktivite Girişi");
         await c.page
           .getByRole("textbox", {
             name: "Browser Employee / Browser Project A / 2026-01 / %",

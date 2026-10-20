@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
-import { openUserMenu, revealTableItem } from "./fixture.mjs";
+import {
+  selectWorkspaceTab,
+  openUserMenu,
+  revealTableItem,
+} from "./fixture.mjs";
 import { applyChanges } from "../../backend/operations.mjs";
 import { buildCapacityIndex } from "../../shared/metrics.ts";
 import { fmt } from "../../frontend/src/format.ts";
@@ -209,12 +213,7 @@ export async function checkWorkspaceFilters(f) {
         );
         assert.equal(await summaryValue(2), fmt(0.5));
         await page.goto(f.origin);
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await choose(page, "Liderlik", [f.teamA.lead]);
         await choose(page, "Takım", [f.teamA.name]);
         const reports = page.locator(".remaining-report");
@@ -248,23 +247,13 @@ export async function checkWorkspaceFilters(f) {
         await periodInput(page).selectOption("24");
         await assertScrollPair(f, page, pair());
         await page.goto(f.origin);
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await assertScrollPair(
           f,
           page,
           await page.locator(".remaining-report").all(),
         );
-        await page
-          .getByRole("tab", {
-            name: "Projeler",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Projeler");
         await page
           .getByRole("switch", { name: "Haftalık proje görünümü", exact: true })
           .check();
@@ -279,12 +268,7 @@ export async function checkWorkspaceFilters(f) {
             })
             .isChecked()),
         );
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await assertScrollPair(
           f,
           page,

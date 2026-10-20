@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 import { openRisks, riskSaveConfirmation } from "./risk.mjs";
@@ -161,16 +162,7 @@ export async function checkRiskSaveConfirmation(f) {
         await respond(otherRow, false);
         assert.equal(dialogs, prompts + 1);
         assert.equal(await editing().getAttribute("data-risk-id"), ids[0]);
-        await respond(
-          () =>
-            page
-              .getByRole("tab", {
-                name: "Raporlar",
-                exact: true,
-              })
-              .click(),
-          false,
-        );
+        await respond(() => selectWorkspaceTab(page, "Raporlar"), false);
         assert.equal(dialogs, prompts + 2);
         assert.equal(
           await page

@@ -1,10 +1,11 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 export async function checkMemberBadges(f) {
   const { page, context } = await f.client("root-admin");
   const created = [];
   try {
-    await page.getByRole("tab", { name: "Raporlar", exact: true }).click();
+    await selectWorkspaceTab(page, "Raporlar");
     const lastLead = await page
       .locator(".leader-report tbody tr")
       .last()
@@ -55,7 +56,7 @@ export async function checkMemberBadges(f) {
       ),
     );
     await page.reload();
-    await page.getByRole("tab", { name: "Raporlar", exact: true }).click();
+    await selectWorkspaceTab(page, "Raporlar");
     await page.setViewportSize({ width: 1000, height: 700 });
     for (const selector of [".leader-report", ".team-report"]) {
       await f.check(
@@ -108,9 +109,7 @@ export async function checkMemberBadges(f) {
       );
     }
     await page.setViewportSize({ width: 1800, height: 1050 });
-    await page
-      .getByRole("tab", { name: "Kaynak Planlama", exact: true })
-      .click();
+    await selectWorkspaceTab(page, "Kaynak Planlama");
     const badge = page.locator(".allocation-grid .team-member-badge").first();
     await badge.click();
     await page.locator('.team-member-floating[data-state="open"]').waitFor();

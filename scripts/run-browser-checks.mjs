@@ -1,4 +1,5 @@
 import { checkTabTransitions } from "./browser-checks/tab-transitions.mjs";
+import { checkWorkspaceMenu } from "./browser-checks/workspace-menu.mjs";
 import { checkHeadcountReports } from "./browser-checks/headcount-reports.mjs";
 import { checkTodayLineVisibility } from "./browser-checks/today-line-visibility.mjs";
 import { checkHorizontalScroll } from "./browser-checks/horizontal-scroll.mjs";
@@ -69,6 +70,7 @@ import { checkProjectProgress } from "./browser-checks/project-progress.mjs";
 import { checkProgressManagement } from "./browser-checks/progress-management.mjs";
 
 for (const check of [
+  checkWorkspaceMenu,
   checkHeadcountReports,
   checkTodayLineVisibility,
   checkTabTransitions,

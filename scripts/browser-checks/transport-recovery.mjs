@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { fixture } from "./fixture.mjs";
+import { selectWorkspaceTab, fixture } from "./fixture.mjs";
 import { applyChanges } from "../../backend/operations.mjs";
 import { REQUEST_DEADLINES } from "../../frontend/src/http-transport.ts";
 import { openRisks, acceptRiskSaveConfirmations } from "./risk.mjs";
@@ -316,12 +316,7 @@ export async function checkTransportRecovery(report) {
       ]),
     );
     const actual = await f.client("employee");
-    await actual.page
-      .getByRole("tab", {
-        name: "Aktivite Girişi",
-        exact: true,
-      })
-      .click();
+    await selectWorkspaceTab(actual.page, "Aktivite Girişi");
     const actualInput = actual.page.getByRole("textbox", {
       name: "Browser Employee / Browser Project A / 2026-01 / %",
       exact: true,
@@ -405,12 +400,7 @@ export async function checkTransportRecovery(report) {
       },
     );
     await actual.page.reload();
-    await actual.page
-      .getByRole("tab", {
-        name: "Aktivite Girişi",
-        exact: true,
-      })
-      .click();
+    await selectWorkspaceTab(actual.page, "Aktivite Girişi");
     await actualInput.click();
     const hoursInput = actual.page.getByRole("textbox", {
       name: "Browser Employee / 2026-01 çalışılan saat",

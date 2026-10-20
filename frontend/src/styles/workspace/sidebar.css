@@ -1,0 +1,184 @@
+/* Ana gezinme çalışma alanının üzerine açılır; raporlar yatayda kaymaz. */
+.app .workspace-tabs {
+  display: block;
+}
+html[data-theme] .app .workspace-nav {
+  display: block;
+  margin: 0;
+  border: 0;
+}
+html[data-theme] .app .workspace-nav-actions {
+  margin-bottom: 6px;
+}
+.app .workspace-menu-toggle {
+  flex: none;
+}
+.app:not(.full-plan) > main {
+  margin-left: 28px;
+  width: calc(100% - 28px);
+}
+.app .workspace-menu-edge {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 39;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 28px;
+  padding: 15px 0;
+  border: 0;
+  border-right: 1px solid var(--brand-border, #ccd6c5);
+  background: var(--brand-surface, #edf1e8);
+  color: var(--brand-muted, #60715e);
+  cursor: pointer;
+}
+.app .workspace-menu-edge-icon {
+  flex: none;
+}
+.app .workspace-menu-edge-caption {
+  position: absolute;
+  top: 45%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  writing-mode: vertical-rl;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+.app .workspace-menu-edge:hover,
+.app .workspace-menu-edge:focus-visible {
+  background: var(--brand-selected, #e0e9d8);
+  color: var(--brand-primary, #405341);
+}
+.app .workspace-menu-panel {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: min(292px, calc(100vw - 20px));
+  padding: 0 10px 12px;
+  border-right: 1px solid var(--brand-border, #ccd6c5);
+  background: var(--brand-surface, #edf1e8);
+  color: var(--brand-text, #293a2d);
+  box-shadow: 10px 0 28px #1b281f26;
+  transform: translateX(-102%);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform 180ms ease,
+    visibility 180ms;
+}
+.app .workspace-menu-panel[data-open="true"] {
+  transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+.app .workspace-menu-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 58px;
+  flex: none;
+  padding: 8px 2px 8px 8px;
+}
+.app .workspace-menu-heading strong {
+  flex: 1;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.app .workspace-menu-heading .iconbutton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 5px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 6px;
+  background: var(--brand-surface-soft, #f6f8f2);
+  color: var(--brand-text, #293a2d);
+}
+.app .workspace-menu-heading [aria-pressed="true"] {
+  background: var(--brand-selected, #e0e9d8);
+  border-color: var(--brand-border-strong, #96a889);
+}
+html[data-theme] .app .workspace-menu-panel .navtabs {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start !important;
+  flex: 1 1 auto;
+  gap: 4px !important;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 2px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: auto;
+  white-space: normal;
+  scroll-snap-type: none;
+  scrollbar-width: thin;
+}
+html[data-theme] .app .workspace-menu-panel .navtabs [role="tab"] {
+  justify-content: flex-start;
+  flex: none;
+  width: 100%;
+  height: auto;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 12px;
+  gap: 12px;
+  white-space: normal;
+  text-align: left;
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  box-shadow: none;
+}
+html[data-theme] .app .workspace-menu-panel .navtabs [role="tab"] svg {
+  width: 18px;
+  height: 18px;
+}
+html[data-theme] .app .workspace-menu-panel .navtabs [data-group-start] {
+  margin-top: 9px;
+}
+html[data-theme]
+  .app
+  .workspace-menu-panel
+  .navtabs
+  [data-group-start]::before {
+  top: -7px;
+  left: 8px;
+  right: 8px;
+  bottom: auto;
+  width: auto;
+  height: 1px;
+}
+/* Tam ekran planlama görünümünün kendi gezinme düzeni korunur. */
+.app.full-plan .workspace-menu-panel,
+.app.full-plan .workspace-menu-edge {
+  display: none;
+}
+@media (pointer: coarse) {
+  .app .workspace-menu-heading .iconbutton,
+  .app .workspace-menu-toggle {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app .workspace-menu-panel,
+  .app .workspace-menu-edge {
+    transition: none;
+  }
+}

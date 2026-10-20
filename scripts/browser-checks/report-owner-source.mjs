@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 export async function checkReportOwnerSource(f) {
@@ -53,12 +54,7 @@ export async function checkReportOwnerSource(f) {
     await f.check(
       "workspace filters: employee responsibility labels use smaller text, search by owner and preserve IDs",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Kaynak Planlama",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         const panel = () => page.locator('.pickerpanel[data-state="open"]');
         for (const [label, name, owner] of [
           ["Liderlik", f.teamA.lead, owners[0].name],
@@ -200,12 +196,7 @@ export async function checkReportOwnerSource(f) {
     await f.check(
       "resource report: manager cells follow Leader and Product Owner employee assignments",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await page
           .locator(".leader-report")
           .getByText("QA Assigned Leader", { exact: true })
@@ -247,12 +238,7 @@ export async function checkReportOwnerSource(f) {
           ),
         );
         await page.reload();
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         assert.equal(
           await page
             .locator(".remaining-report")
@@ -260,12 +246,7 @@ export async function checkReportOwnerSource(f) {
             .count(),
           0,
         );
-        await page
-          .getByRole("tab", {
-            name: "Kaynak Planlama",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Kaynak Planlama");
         assert.equal(await page.locator(".leadership-unit-label").count(), 0);
         assert.equal(
           await page

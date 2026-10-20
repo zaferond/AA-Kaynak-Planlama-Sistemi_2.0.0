@@ -309,12 +309,7 @@ export async function checkLeadershipFilterRoots(f) {
     await f.check(
       "root reports: independent units remain distinct, descendants aggregate once and requested headings render",
       async () => {
-        await page
-          .getByRole("tab", {
-            name: "Raporlar",
-            exact: true,
-          })
-          .click();
+        await selectWorkspaceTab(page, "Raporlar");
         await select("Takım", []);
         await select("Liderlik", []);
         const report = page.locator(".leader-report");

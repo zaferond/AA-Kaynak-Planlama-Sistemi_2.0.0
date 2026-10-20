@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 
 // After a save the actual view refreshes in the background. Cells must stay
@@ -11,9 +12,7 @@ export async function checkActualSaveFocus(f) {
       exact: true,
     });
   try {
-    await page
-      .getByRole("tab", { name: "Aktivite Girişi", exact: true })
-      .click();
+    await selectWorkspaceTab(page, "Aktivite Girişi");
     await f.check(
       "actual: Tab after a save keeps focus on the next cell and the saved value stays",
       async () => {

@@ -214,8 +214,8 @@ html[data-theme="military"]
   .navtabs
   [role="tab"][data-state="active"],
 html[data-theme="military"]
-  .app:is(.tab-plan, .tab-resources, .tab-overview)
-  .workspace-nav-actions
+  .app:is(.tab-plan, .tab-resources, .tab-overview, .tab-progress)
+  :is(.workspace-nav-actions, .progress-head-actions)
   :is(.plan-view-switch, .organization-view-switch)
   [role="tab"][data-state="active"] {
   color: #fff;
@@ -232,8 +232,8 @@ html[data-theme="military"]
 }
 html[data-theme="military"] .app .workspace-nav-actions [role="tablist"],
 html[data-theme="military"]
-  .app:is(.tab-plan, .tab-resources, .tab-overview)
-  .workspace-nav-actions
+  .app:is(.tab-plan, .tab-resources, .tab-overview, .tab-progress)
+  :is(.workspace-nav-actions, .progress-head-actions)
   :is(.plan-view-switch, .organization-view-switch) {
   background: var(--brand-surface);
   border-color: var(--brand-border-strong);
@@ -243,15 +243,15 @@ html[data-theme="military"] .app .workspace-nav-actions [role="tab"] {
   color: var(--brand-primary);
 }
 html[data-theme="military"]
-  .app:is(.tab-plan, .tab-resources, .tab-overview)
-  .workspace-nav-actions
+  .app:is(.tab-plan, .tab-resources, .tab-overview, .tab-progress)
+  :is(.workspace-nav-actions, .progress-head-actions)
   :is(.plan-view-switch, .organization-view-switch)
   [role="tab"] {
   color: var(--brand-primary);
 }
 html[data-theme="military"]
   .app
-  .workspace-nav-actions
+  :is(.workspace-nav-actions, .progress-head-actions)
   [role="tab"]:hover:not([data-state="active"]) {
   color: var(--brand-dark);
   background: var(--brand-surface-soft);

@@ -99,11 +99,10 @@ export default function ProjectProgressPanel({
   return (
     <section className="panel project-progress">
       <div className="panelhead">
-        <h2>Proje İlerlemesi</h2>
         <div className="progress-head-actions">
           <Tabs value={view} onValueChange={(value) => setView(value as View)}>
             <TabsList
-              className="organization-view-switch"
+              className="plan-view-switch"
               aria-label="İlerleme görünümü"
             >
               <TabsTrigger value="plan">

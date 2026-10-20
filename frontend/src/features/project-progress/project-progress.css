@@ -21,9 +21,29 @@
 }
 .project-progress .progress-head-actions {
   display: flex;
+  width: 100%;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+}
+.project-progress .progress-head-actions > [data-slot="tabs"] {
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 650px) {
+  .app.tab-progress .progress-head-actions .plan-view-switch {
+    height: auto;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .app.tab-progress .progress-head-actions .plan-view-switch [role="tab"] {
+    min-width: 0;
+    max-width: 100%;
+    height: auto;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 .project-progress label.progress-month,
 .project-progress label.progress-responsible-filter,

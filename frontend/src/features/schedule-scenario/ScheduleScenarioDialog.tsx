@@ -1,4 +1,10 @@
-import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import {
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+  type ReactNode,
+} from "react";
 import {
   ArrowDownToLine,
   ChartColumn,
@@ -39,6 +45,7 @@ import {
 import { downloadScenarioWorkbook } from "./scenario-export";
 
 type Props = {
+  embedded?: boolean;
   open: boolean;
   onClose: () => void;
   data: Data;
@@ -57,6 +64,7 @@ type Props = {
 const MAX_SCENARIOS = 3;
 
 export default function ScheduleScenarioDialog({
+  embedded = false,
   open,
   onClose,
   data,
@@ -244,141 +252,167 @@ export default function ScheduleScenarioDialog({
     comparison.columns[shown + 1]?.key || comparison.columns[1]?.key;
 
   return (
+    <ScenarioContainer embedded={embedded} open={open} onClose={onClose}>
+      <div className="schedule-scenario-body">
+        <section className="schedule-scenario-cards" aria-label="Senaryolar">
+          {scenarios.map((scenario, index) => (
+            <ScenarioCard
+              key={scenario.id}
+              data={data}
+              scenario={scenario}
+              problems={comparison.results[index]?.problems || []}
+              saved={savedOf(scenario.id)}
+              saving={saving}
+              onSave={() => saveCard(scenario)}
+              canRemove={scenarios.length > 1}
+              canCopy={scenarios.length < MAX_SCENARIOS}
+              onChange={(next) => update(index, next)}
+              onRemove={() =>
+                setScenarios((all) => all.filter((_, i) => i !== index))
+              }
+              onCopy={() =>
+                setScenarios((all) => [
+                  ...all,
+                  {
+                    ...structuredClone(scenario),
+                    id: crypto.randomUUID(),
+                    name: nextScenarioName([...all, ...saved]),
+                    shifts: scenario.shifts.map((s) => ({
+                      ...s,
+                      months: s.months + 2,
+                    })),
+                  },
+                ])
+              }
+            />
+          ))}
+          {scenarios.length < MAX_SCENARIOS && (
+            <button
+              type="button"
+              className="schedule-scenario-add"
+              onClick={() =>
+                setScenarios((all) => [
+                  ...all,
+                  newScenario(
+                    nextScenarioName([...all, ...saved]),
+                    currentMonth,
+                    3,
+                  ),
+                ])
+              }
+            >
+              <Plus size={16} aria-hidden="true" />
+              Senaryo Ekle
+            </button>
+          )}
+        </section>
+        <SavedScenarioList
+          data={data}
+          openIds={scenarios.map((s) => s.id)}
+          scenarios={saved}
+          isAdmin={isAdmin}
+          userId={userId}
+          busy={saving}
+          onAction={act}
+          onDeleteClosed={() => {
+            const closed = saved.filter((s) => s.status === "closed");
+            if (
+              !closed.length ||
+              !confirm(`${closed.length} kapatılmış senaryo silinsin mi?`)
+            )
+              return;
+            void run(
+              closed.map((s) => ({
+                kind: "scenario",
+                id: s.id,
+                value: null,
+                operation: "delete" as const,
+                revision: data.revisions["scenario:" + s.id] || 0,
+              })),
+              `${closed.length} kapatılmış senaryo silindi.`,
+              () => dropCards(closed.map((s) => s.id)),
+            );
+          }}
+        />
+        <ComparisonView
+          comparison={comparison}
+          data={data}
+          shown={shown}
+          onShow={setFocus}
+        />
+      </div>
+      <div className="schedule-scenario-actions">
+        {message ? (
+          <small
+            className={message.error ? "negative" : "scenario-message"}
+            role={message.error ? "alert" : "status"}
+          >
+            {message.text}
+          </small>
+        ) : (
+          <small>
+            Kaydedilen senaryoyu admin onaylar ve takvime aktarır; geri
+            alınabilir.
+          </small>
+        )}
+        <button
+          type="button"
+          className="button"
+          disabled={!comparison.ready}
+          onClick={() => downloadScenarioWorkbook(data, comparison)}
+        >
+          <ArrowDownToLine size={16} aria-hidden="true" />
+          Excel'e Aktar
+        </button>
+        <button
+          type="button"
+          className="button"
+          disabled={!reportTarget}
+          title="Liderlik ve Takım Bazında Eksik raporlarını bu senaryoyla açar"
+          onClick={() => reportTarget && onShowInReports(reportTarget)}
+        >
+          <ChartColumn size={16} aria-hidden="true" />
+          Raporlarda Göster
+        </button>
+        <button type="button" className="button primary" onClick={onClose}>
+          {embedded ? "Projelere Dön" : "Kapat"}
+        </button>
+      </div>
+    </ScenarioContainer>
+  );
+}
+
+function ScenarioContainer({
+  embedded,
+  open,
+  onClose,
+  children,
+}: {
+  embedded: boolean;
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}) {
+  const description =
+    "Projeleri ileri veya geri kaydırıp etkisini görün. Karşılaştırma planı değiştirmez; takvime aktarma işlemi admin onayıyla ayrıca yapılır.";
+  if (embedded)
+    return (
+      <section
+        className="panel schedule-scenario-dialog schedule-scenario-page"
+        aria-label="Erteleme Senaryosu"
+      >
+        <p className="schedule-scenario-intro">{description}</p>
+        {children}
+      </section>
+    );
+  return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
       <DialogContent className="editor schedule-scenario-dialog">
         <DialogHeader>
           <DialogTitle>Erteleme Senaryosu</DialogTitle>
-          <DialogDescription>
-            Projeleri ileri veya geri kaydırıp etkisini görün. Bu ekran
-            kayıtları değiştirmez; geçmiş aylar ve gerçekleşen girişler yerinde
-            kalır.
-          </DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className="schedule-scenario-body">
-          <section className="schedule-scenario-cards" aria-label="Senaryolar">
-            {scenarios.map((scenario, index) => (
-              <ScenarioCard
-                key={scenario.id}
-                data={data}
-                scenario={scenario}
-                problems={comparison.results[index]?.problems || []}
-                saved={savedOf(scenario.id)}
-                saving={saving}
-                onSave={() => saveCard(scenario)}
-                canRemove={scenarios.length > 1}
-                canCopy={scenarios.length < MAX_SCENARIOS}
-                onChange={(next) => update(index, next)}
-                onRemove={() =>
-                  setScenarios((all) => all.filter((_, i) => i !== index))
-                }
-                onCopy={() =>
-                  setScenarios((all) => [
-                    ...all,
-                    {
-                      ...structuredClone(scenario),
-                      id: crypto.randomUUID(),
-                      name: nextScenarioName([...all, ...saved]),
-                      shifts: scenario.shifts.map((s) => ({
-                        ...s,
-                        months: s.months + 2,
-                      })),
-                    },
-                  ])
-                }
-              />
-            ))}
-            {scenarios.length < MAX_SCENARIOS && (
-              <button
-                type="button"
-                className="schedule-scenario-add"
-                onClick={() =>
-                  setScenarios((all) => [
-                    ...all,
-                    newScenario(
-                      nextScenarioName([...all, ...saved]),
-                      currentMonth,
-                      3,
-                    ),
-                  ])
-                }
-              >
-                <Plus size={16} aria-hidden="true" />
-                Senaryo Ekle
-              </button>
-            )}
-          </section>
-          <SavedScenarioList
-            data={data}
-            openIds={scenarios.map((s) => s.id)}
-            scenarios={saved}
-            isAdmin={isAdmin}
-            userId={userId}
-            busy={saving}
-            onAction={act}
-            onDeleteClosed={() => {
-              const closed = saved.filter((s) => s.status === "closed");
-              if (
-                !closed.length ||
-                !confirm(`${closed.length} kapatılmış senaryo silinsin mi?`)
-              )
-                return;
-              void run(
-                closed.map((s) => ({
-                  kind: "scenario",
-                  id: s.id,
-                  value: null,
-                  operation: "delete" as const,
-                  revision: data.revisions["scenario:" + s.id] || 0,
-                })),
-                `${closed.length} kapatılmış senaryo silindi.`,
-                () => dropCards(closed.map((s) => s.id)),
-              );
-            }}
-          />
-          <ComparisonView
-            comparison={comparison}
-            data={data}
-            shown={shown}
-            onShow={setFocus}
-          />
-        </div>
-        <div className="schedule-scenario-actions">
-          {message ? (
-            <small
-              className={message.error ? "negative" : "scenario-message"}
-              role={message.error ? "alert" : "status"}
-            >
-              {message.text}
-            </small>
-          ) : (
-            <small>
-              Kaydedilen senaryoyu admin onaylar ve takvime aktarır; geri
-              alınabilir.
-            </small>
-          )}
-          <button
-            type="button"
-            className="button"
-            disabled={!comparison.ready}
-            onClick={() => downloadScenarioWorkbook(data, comparison)}
-          >
-            <ArrowDownToLine size={16} aria-hidden="true" />
-            Excel'e Aktar
-          </button>
-          <button
-            type="button"
-            className="button"
-            disabled={!reportTarget}
-            title="Liderlik ve Takım Bazında Eksik raporlarını bu senaryoyla açar"
-            onClick={() => reportTarget && onShowInReports(reportTarget)}
-          >
-            <ChartColumn size={16} aria-hidden="true" />
-            Raporlarda Göster
-          </button>
-          <button type="button" className="button primary" onClick={onClose}>
-            Kapat
-          </button>
-        </div>
+        {children}
       </DialogContent>
     </Dialog>
   );

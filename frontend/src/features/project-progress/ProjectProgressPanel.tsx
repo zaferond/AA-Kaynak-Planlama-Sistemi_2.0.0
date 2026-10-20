@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Data } from "../../model";
 import type { Principal } from "../../access";
 import type { Change } from "../../../../shared/commands";
@@ -17,13 +16,14 @@ import "./project-progress.css";
 import ScenarioWarningsPanel from "./ScenarioWarningsPanel";
 import WarningSettingsPanel from "./WarningSettingsPanel";
 
-type View = "plan" | "report" | "warnings" | "settings";
+export type ProgressView = "plan" | "report" | "warnings" | "settings";
 
 /** Proje İlerlemesi: plan and monthly entry on one screen, and the report. */
 export default function ProjectProgressPanel({
   data,
   user,
   saving,
+  view,
   onSave,
   focusProjectId = "",
   onFocusHandled,
@@ -31,6 +31,7 @@ export default function ProjectProgressPanel({
   data: Data;
   user: Principal | null;
   saving: boolean;
+  view: ProgressView;
   onSave: (changes: Change[]) => Promise<void>;
   /** Opens the report on this project (from a badge on another screen). */
   focusProjectId?: string;
@@ -39,7 +40,6 @@ export default function ProjectProgressPanel({
   const currentMonth = currentPlanningMonth().slice(0, 7);
   const months = entryMonths(currentMonth, data.projectProgress);
   const [focus] = useState(focusProjectId);
-  const [view, setView] = useState<View>(focus ? "report" : "plan");
   useEffect(() => {
     if (focus) onFocusHandled?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,75 +71,47 @@ export default function ProjectProgressPanel({
     [data, responsible],
   );
   const ctx = useMemo(() => progressContext(progressData), [progressData]);
-  const pendingApprovals = (data.projectProgress || []).filter(
-    (record) => record.proposal?.status === "pending",
-  ).length;
   // Entry runs from the earliest plan start; with no month to pick yet the
   // report shows the current month.
   const reportMonth = month || currentMonth;
 
   const responsibleFilter = (
-    <label className="progress-responsible-filter">
-      Proje sorumlusu
-      <select
-        value={responsible === null ? "all" : "name:" + responsible}
-        onChange={(e) =>
-          setResponsible(
-            e.target.value === "all" ? null : e.target.value.slice(5),
-          )
-        }
-      >
-        <option value="all">Tümü</option>
-        {responsibleNames.map((name) => (
-          <option key={name} value={"name:" + name}>
-            {name || "Atanmamış"}
-          </option>
-        ))}
-      </select>
-    </label>
+    <>
+      <label className="progress-responsible-filter">
+        Proje sorumlusu
+        <select
+          value={responsible === null ? "all" : "name:" + responsible}
+          onChange={(e) =>
+            setResponsible(
+              e.target.value === "all" ? null : e.target.value.slice(5),
+            )
+          }
+        >
+          <option value="all">Tümü</option>
+          {responsibleNames.map((name) => (
+            <option key={name} value={"name:" + name}>
+              {name || "Atanmamış"}
+            </option>
+          ))}
+        </select>
+      </label>
+      {months.length > 0 && (
+        <label className="progress-month">
+          Ay
+          <select value={month} onChange={(e) => setMonth(e.target.value)}>
+            {[...months].reverse().map((m) => (
+              <option key={m} value={m}>
+                {monthLabel(m)}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+    </>
   );
 
   return (
     <section className="panel project-progress">
-      <div className="panelhead">
-        <div className="progress-head-actions">
-          <Tabs value={view} onValueChange={(value) => setView(value as View)}>
-            <TabsList
-              className="plan-view-switch"
-              aria-label="İlerleme görünümü"
-            >
-              <TabsTrigger value="plan">
-                Hedef Plan / Gerçekleşen Plan Giriş
-                {user?.role === "admin" && pendingApprovals > 0 && (
-                  <span
-                    className="progress-badge"
-                    aria-label={pendingApprovals + " onay bekliyor"}
-                  >
-                    {pendingApprovals}
-                  </span>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="report">Proje İlerleme Raporu</TabsTrigger>
-              <TabsTrigger value="warnings">Senaryo Uyarıları</TabsTrigger>
-              {user?.role === "admin" && (
-                <TabsTrigger value="settings">Uyarı Ayarları</TabsTrigger>
-              )}
-            </TabsList>
-          </Tabs>
-          {(view === "plan" || view === "report") && months.length > 0 && (
-            <label className="progress-month">
-              Ay
-              <select value={month} onChange={(e) => setMonth(e.target.value)}>
-                {[...months].reverse().map((m) => (
-                  <option key={m} value={m}>
-                    {monthLabel(m)}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-        </div>
-      </div>
       {view === "warnings" && (
         <ScenarioWarningsPanel
           data={progressData}

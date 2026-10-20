@@ -2,6 +2,7 @@ import type { Data, Project, Resource, Team } from "../../model";
 import type { ActualEntry } from "../actual-allocation-commands";
 
 export type PersonAllocationPanelProps = {
+  layout: import("./useActualAllocationView").ActualLayout;
   data: Data;
   loading?: boolean;
   user: import("../../access").Principal;

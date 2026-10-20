@@ -11,14 +11,10 @@ import {
 } from "./features/actual-allocation-commands";
 import Pager from "./Pager";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ActualAllocationControls from "./features/actual-allocation/ActualAllocationControls";
 import ActualAllocationTable from "./features/actual-allocation/ActualAllocationTable";
 import ActualAllocationDialogs from "./features/actual-allocation/ActualAllocationDialogs";
-import {
-  useActualAllocationView,
-  type ActualLayout,
-} from "./features/actual-allocation/useActualAllocationView";
+import { useActualAllocationView } from "./features/actual-allocation/useActualAllocationView";
 import { useActualCellSelection } from "./features/actual-allocation/useActualCellSelection";
 import { useActualCapacityDialog } from "./features/actual-allocation/useActualCapacityDialog";
 import type {
@@ -26,18 +22,6 @@ import type {
   ActualCalendarMode,
   ActualPhaseDetail,
 } from "./features/actual-allocation/types";
-
-const LAYOUT_KEY = "aa.actualLayout";
-/** "Kişi → Proje" is the default; a chosen layout is remembered here. */
-function initialLayout(): ActualLayout {
-  try {
-    return localStorage.getItem(LAYOUT_KEY) === "project"
-      ? "project"
-      : "person";
-  } catch {
-    return "person";
-  }
-}
 
 export default function PersonAllocationPanel(
   props: PersonAllocationPanelProps,
@@ -54,6 +38,7 @@ export default function PersonAllocationPanel(
     onSharedCalendarClose,
     ownResourceId,
     onSaved,
+    layout,
   } = props;
   const [unit, setUnit] = useState<ActualUnit>("percent");
   const [page, setPage] = useState(0);
@@ -62,21 +47,12 @@ export default function PersonAllocationPanel(
   );
   const [calendarPerson, setCalendarPerson] = useState<Resource | null>(null);
   const [calendarMode, setCalendarMode] = useState<ActualCalendarMode>(null);
-  const [layout, setLayoutState] = useState<ActualLayout>(initialLayout);
   const [query, setQuery] = useState("");
   // Session-only: rows opened with "+ Proje" and people folded shut.
   const [added, setAdded] = useState<ReadonlySet<string>>(() => new Set());
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
-  const setLayout = (next: ActualLayout) => {
-    setLayoutState(next);
-    try {
-      localStorage.setItem(LAYOUT_KEY, next);
-    } catch {
-      // The choice still applies for this session.
-    }
-  };
   const toggleIn =
     (
       set: (
@@ -183,18 +159,6 @@ export default function PersonAllocationPanel(
         canEditPersonMonth={canEditPersonMonth}
       />
       <div className="actual-view-bar">
-        <Tabs
-          value={layout}
-          onValueChange={(value) => setLayout(value as ActualLayout)}
-        >
-          <TabsList
-            className="plan-view-switch actual-layout-switch"
-            aria-label="Gerçekleşen görünümü"
-          >
-            <TabsTrigger value="person">Kişi → Proje</TabsTrigger>
-            <TabsTrigger value="project">Proje → Kişi</TabsTrigger>
-          </TabsList>
-        </Tabs>
         {layout === "person" && (
           <input
             type="search"

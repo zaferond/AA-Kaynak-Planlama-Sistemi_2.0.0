@@ -15,13 +15,19 @@ import {
   Menu,
   ChevronsRight,
 } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Principal } from "../access";
 import { RISK_MANAGEMENT_ENABLED, TAB_LABELS } from "../settings";
 import { isProjectEditor } from "../../../shared/project-access.ts";
 import type { WorkspaceMenu } from "./workspace/useWorkspaceMenu";
+import WorkspaceSectionHeader, {
+  type WorkspaceSectionTab,
+} from "./workspace/WorkspaceSectionHeader";
+import type { ActualLayout } from "./actual-allocation/useActualAllocationView";
+import type { ProgressView } from "./project-progress/ProjectProgressPanel";
 export type WorkspaceDensity = "detail" | "compact" | "overview";
 export type ReportView = "resources" | "headcount";
+export type ProjectView = "projects" | "scenario";
 type Props = {
   menu: WorkspaceMenu;
   user: Principal | null;
@@ -45,6 +51,13 @@ type Props = {
   setOrganizationView: (view: string) => void;
   reportView: ReportView;
   setReportView: (view: ReportView) => void;
+  actualLayout: ActualLayout;
+  setActualLayout: (view: ActualLayout) => void;
+  progressView: ProgressView;
+  setProgressView: (view: ProgressView) => void;
+  projectView: ProjectView;
+  setProjectView: (view: ProjectView) => void;
+  pendingProgressApprovals: number;
 };
 export default function WorkspaceNavigation({
   menu,
@@ -68,6 +81,13 @@ export default function WorkspaceNavigation({
   setOrganizationView,
   reportView,
   setReportView,
+  actualLayout,
+  setActualLayout,
+  progressView,
+  setProgressView,
+  projectView,
+  setProjectView,
+  pendingProgressApprovals,
 }: Props) {
   useEffect(() => {
     if (!menu.open) return;
@@ -135,6 +155,82 @@ export default function WorkspaceNavigation({
       { value: "resources", Icon: Users, group: "admin", show: isAdmin },
     ] as const
   ).filter((item) => item.show);
+  let sectionTabs: WorkspaceSectionTab[] = [],
+    sectionValue = tab;
+  let changeSection: (value: string) => void = () => {};
+  let sectionLabel = "Ekran görünümleri";
+  if (tab === "actual") {
+    sectionTabs = [
+      { value: "person", label: "Kişi → Proje" },
+      { value: "project", label: "Proje → Kişi" },
+    ];
+    sectionValue = actualLayout;
+    changeSection = (value) => setActualLayout(value as ActualLayout);
+    sectionLabel = "Gerçekleşen görünümü";
+  } else if (tab === "projects") {
+    sectionTabs = [
+      { value: "projects", label: "Projeler" },
+      ...(isAdmin || isManager
+        ? [
+            {
+              value: "scenario",
+              label: "Erteleme Senaryosu",
+              badge: isAdmin ? pendingScenarios : 0,
+            },
+          ]
+        : []),
+    ];
+    sectionValue = projectView;
+    changeSection = (value) => setProjectView(value as ProjectView);
+    sectionLabel = "Proje görünümü";
+  } else if (tab === "progress") {
+    sectionTabs = [
+      {
+        value: "plan",
+        label: "Hedef Plan / Gerçekleşen Plan Giriş",
+        badge: isAdmin ? pendingProgressApprovals : 0,
+      },
+      { value: "report", label: "Proje İlerleme Raporu" },
+      { value: "warnings", label: "Senaryo Uyarıları" },
+      ...(isAdmin ? [{ value: "settings", label: "Uyarı Ayarları" }] : []),
+    ];
+    sectionValue = progressView;
+    changeSection = (value) => setProgressView(value as ProgressView);
+    sectionLabel = "İlerleme görünümü";
+  } else if (tab === "plan") {
+    sectionTabs = [
+      { value: "team", label: "Takım → Projeler" },
+      { value: "project", label: "Proje → Takımlar" },
+    ];
+    sectionValue = view;
+    changeSection = setView;
+    sectionLabel = "Dağılım görünümü";
+  } else if (tab === "overview") {
+    sectionTabs = [
+      { value: "resources", label: "Kaynak Raporları" },
+      { value: "headcount", label: "Head Count" },
+    ];
+    sectionValue = reportView;
+    changeSection = (value) => setReportView(value as ReportView);
+    sectionLabel = "Kaynak raporu görünümü";
+  } else if (tab === "resources") {
+    sectionTabs = [
+      { value: "employees", label: "Çalışan & Yetki Tanımlama" },
+      { value: "teams", label: "Organizasyon Yapısı" },
+    ];
+    sectionValue = organizationView;
+    changeSection = setOrganizationView;
+    sectionLabel = "Organizasyon görünümü";
+  }
+  const sectionTitle = [
+    "progress",
+    "resources",
+    "overview",
+    "projects",
+  ].includes(tab)
+    ? sectionTabs.find((item) => item.value === sectionValue)?.label ||
+      TAB_LABELS[tab as keyof typeof TAB_LABELS]
+    : TAB_LABELS[tab as keyof typeof TAB_LABELS];
   return (
     <div className="workspace-nav">
       <button
@@ -225,139 +321,114 @@ export default function WorkspaceNavigation({
           ))}
         </TabsList>
       </aside>
-      {![
-        "access",
-        "teams",
-        "critical",
-        "risk",
-        "activity",
-        "progress",
-      ].includes(tab) && (
-        <div className="workspace-nav-actions">
-          {tab === "overview" && (
-            <Tabs
-              value={reportView}
-              onValueChange={(value) => setReportView(value as ReportView)}
-            >
-              <TabsList
-                className="organization-view-switch"
-                aria-label="Kaynak raporu görünümü"
-              >
-                <TabsTrigger value="resources">Kaynak Raporları</TabsTrigger>
-                <TabsTrigger value="headcount">Head Count</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          )}
-          {tab === "resources" && (
-            <Tabs value={organizationView} onValueChange={setOrganizationView}>
-              <TabsList
-                className="organization-view-switch"
-                aria-label="Organizasyon görünümü"
-              >
-                <TabsTrigger value="employees">
-                  Çalışan & Yetki Tanımlama
-                </TabsTrigger>
-                <TabsTrigger value="teams">Organizasyon Yapısı</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          )}
-          {["plan", "actual", "projects", "overview"].includes(tab) &&
-            !(tab === "overview" && reportView === "headcount") && (
-              <label className="densitycontrol">
-                Görünüm
-                <select
-                  aria-label="Takvim yoğunluğu"
-                  value={density}
-                  onChange={(e) => {
-                    const mode = e.target.value as typeof density;
-                    setDensity(mode);
-                    if (mode === "overview") setCount(60);
-                  }}
-                >
-                  <option value="detail">Ayrıntılı</option>
-                  <option value="compact">Kompakt</option>
-                  <option value="overview">5 Yıllık Genel Bakış</option>
-                </select>
-              </label>
-            )}
-          {tab === "plan" && (
-            <Tabs value={view} onValueChange={setView}>
-              <TabsList
-                className="plan-view-switch"
-                aria-label="Dağılım görünümü"
-              >
-                <TabsTrigger value="team">Takım → Projeler</TabsTrigger>
-                <TabsTrigger value="project">Proje → Takımlar</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          )}
-          {(["plan", "projects"].includes(tab) ||
-            (tab === "overview" && reportView === "resources")) &&
-            (isAdmin || isManager) && (
-              <button
-                type="button"
-                className="button"
-                title={
-                  isAdmin && pendingScenarios > 0
-                    ? pendingScenarios + " senaryo onay bekliyor"
-                    : undefined
-                }
-                onClick={onOpenScenario}
-                disabled={!dataLoaded || !hasProjects}
-              >
-                <CalendarClock size={17} />
-                Erteleme Senaryosu
-                {isAdmin && pendingScenarios > 0 && (
-                  // The button title carries the meaning; its name stays fixed.
-                  <span className="scenario-pending-badge" aria-hidden="true">
-                    {pendingScenarios}
-                  </span>
+      <WorkspaceSectionHeader
+        title={sectionTitle}
+        label={sectionLabel}
+        tabs={sectionTabs}
+        value={sectionValue}
+        onChange={changeSection}
+        actions={
+          ![
+            "access",
+            "teams",
+            "critical",
+            "risk",
+            "activity",
+            "progress",
+          ].includes(tab) &&
+          !(tab === "projects" && projectView === "scenario") && (
+            <div className="workspace-nav-actions">
+              {["plan", "actual", "projects", "overview"].includes(tab) &&
+                !(tab === "overview" && reportView === "headcount") && (
+                  <label className="densitycontrol">
+                    Görünüm
+                    <select
+                      aria-label="Takvim yoğunluğu"
+                      value={density}
+                      onChange={(e) => {
+                        const mode = e.target.value as typeof density;
+                        setDensity(mode);
+                        if (mode === "overview") setCount(60);
+                      }}
+                    >
+                      <option value="detail">Ayrıntılı</option>
+                      <option value="compact">Kompakt</option>
+                      <option value="overview">5 Yıllık Genel Bakış</option>
+                    </select>
+                  </label>
                 )}
-              </button>
-            )}
-          {tab === "projects" && (isAdmin || projectEditor) && (
-            <button
-              className="button project-create"
-              onClick={() => openProject()}
-            >
-              <Plus size={17} />
-              Yeni Proje Ekle
-            </button>
-          )}
-          {tab === "actual" && isAdmin && (
-            <button
-              type="button"
-              className="button"
-              aria-label="Çalışma Takvimi'ni aç"
-              onClick={onOpenSharedCalendar}
-              disabled={!dataLoaded}
-            >
-              <CalendarDays size={17} />
-              Çalışma Takvimi
-            </button>
-          )}
-          {tab !== "resources" && (
-            <button
-              className="button"
-              onClick={onExport}
-              disabled={
-                !dataLoaded ||
-                (tab === "overview" && !hasTeams) ||
-                (tab === "projects" && !hasProjects)
-              }
-            >
-              <ArrowDownToLine size={17} />
-              {tab === "projects"
-                ? "Proje Raporunu İndir"
-                : tab === "overview"
-                  ? reportView === "headcount"
-                    ? "Head Count Excel'e Aktar"
-                    : "Kaynak Raporu İndir"
-                  : "Excel'e Aktar"}
-            </button>
-          )}
-        </div>
-      )}
+              {(tab === "plan" ||
+                (tab === "overview" && reportView === "resources")) &&
+                (isAdmin || isManager) && (
+                  <button
+                    type="button"
+                    className="button"
+                    title={
+                      isAdmin && pendingScenarios > 0
+                        ? pendingScenarios + " senaryo onay bekliyor"
+                        : undefined
+                    }
+                    onClick={onOpenScenario}
+                    disabled={!dataLoaded || !hasProjects}
+                  >
+                    <CalendarClock size={17} />
+                    Erteleme Senaryosu
+                    {isAdmin && pendingScenarios > 0 && (
+                      // The button title carries the meaning; its name stays fixed.
+                      <span
+                        className="scenario-pending-badge"
+                        aria-hidden="true"
+                      >
+                        {pendingScenarios}
+                      </span>
+                    )}
+                  </button>
+                )}
+              {tab === "projects" && (isAdmin || projectEditor) && (
+                <button
+                  className="button project-create"
+                  onClick={() => openProject()}
+                >
+                  <Plus size={17} />
+                  Yeni Proje Ekle
+                </button>
+              )}
+              {tab === "actual" && isAdmin && (
+                <button
+                  type="button"
+                  className="button"
+                  aria-label="Çalışma Takvimi'ni aç"
+                  onClick={onOpenSharedCalendar}
+                  disabled={!dataLoaded}
+                >
+                  <CalendarDays size={17} />
+                  Çalışma Takvimi
+                </button>
+              )}
+              {tab !== "resources" && (
+                <button
+                  className="button"
+                  onClick={onExport}
+                  disabled={
+                    !dataLoaded ||
+                    (tab === "overview" && !hasTeams) ||
+                    (tab === "projects" && !hasProjects)
+                  }
+                >
+                  <ArrowDownToLine size={17} />
+                  {tab === "projects"
+                    ? "Proje Raporunu İndir"
+                    : tab === "overview"
+                      ? reportView === "headcount"
+                        ? "Head Count Excel'e Aktar"
+                        : "Kaynak Raporu İndir"
+                      : "Excel'e Aktar"}
+                </button>
+              )}
+            </div>
+          )
+        }
+      />
     </div>
   );
 }

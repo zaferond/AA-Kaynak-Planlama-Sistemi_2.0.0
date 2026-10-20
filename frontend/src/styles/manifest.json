@@ -41,5 +41,6 @@
   "allocation/empty-cells.css",
   "reports/critical-topics.css",
   "allocation/actual-person-layout.css",
-  "workspace/sidebar.css"
+  "workspace/sidebar.css",
+  "workspace/section-header.css"
 ]

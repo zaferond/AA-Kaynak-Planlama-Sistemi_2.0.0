@@ -17,6 +17,7 @@ import { useWorkspaceMenu } from "./features/workspace/useWorkspaceMenu";
 import WorkspaceHeader, { FullPlanHeader } from "./features/WorkspaceHeader";
 import WorkspaceNavigation, {
   type ReportView,
+  type ProjectView,
 } from "./features/WorkspaceNavigation";
 import WorkspaceFilters from "./features/WorkspaceFilters";
 import PlannedAllocationPanel from "./features/PlannedAllocationPanel";
@@ -58,7 +59,10 @@ import PersonAllocationPanel from "./PersonAllocationPanel";
 import ErrorBoundary from "./ErrorBoundary";
 import { mergeNewerActuals } from "./features/actual-allocation/merge-actual-view";
 import ProjectInfoReport from "./ProjectInfoReport";
-import ProjectProgressPanel from "./features/project-progress/ProjectProgressPanel";
+import ProjectProgressPanel, {
+  type ProgressView,
+} from "./features/project-progress/ProjectProgressPanel";
+import { useActualLayout } from "./features/actual-allocation/useActualLayout";
 import ProgressBadge, {
   progressBadgeIndex,
 } from "./features/project-progress/ProgressBadge";
@@ -81,6 +85,9 @@ export default function Portal() {
   const [accountEditing, setAccountEditing] = useState(false);
   const [organizationView, setOrganizationView] = useState("employees");
   const [reportView, setReportView] = useState<ReportView>("resources");
+  const [projectView, setProjectView] = useState<ProjectView>("projects");
+  const [progressView, setProgressView] = useState<ProgressView>("plan");
+  const [actualLayout, setActualLayout] = useActualLayout();
   const [sharedCalendarOpen, setSharedCalendarOpen] = useState(false);
   const [scenarioOpen, setScenarioOpen] = useState(false);
   const mainTabsRef = useRef<HTMLDivElement>(null),
@@ -137,6 +144,12 @@ export default function Portal() {
     setNotice,
   });
   useEffect(() => {
+    if (tab !== "progress" || (!isAdmin && progressView === "settings"))
+      setProgressView("plan");
+    if (tab !== "projects" || (!isAdmin && !isManager))
+      setProjectView("projects");
+  }, [tab, isAdmin, isManager]);
+  useEffect(() => {
     if (tab !== "actual" || !isAdmin) setSharedCalendarOpen(false);
   }, [tab, isAdmin]);
   // Proje İlerlemesi badges on the project screens; a click opens the report.
@@ -154,6 +167,7 @@ export default function Portal() {
             badge={progressBadges.get(projectId)}
             onOpen={() => {
               setProgressFocus(projectId);
+              setProgressView("report");
               changeTab("progress");
             }}
           />
@@ -601,6 +615,17 @@ export default function Portal() {
             setOrganizationView={setOrganizationView}
             reportView={reportView}
             setReportView={setReportView}
+            actualLayout={actualLayout}
+            setActualLayout={setActualLayout}
+            progressView={progressView}
+            setProgressView={setProgressView}
+            projectView={projectView}
+            setProjectView={setProjectView}
+            pendingProgressApprovals={
+              data?.projectProgress?.filter(
+                (record) => record.proposal?.status === "pending",
+              ).length || 0
+            }
           />
           {!data ? (
             <div className="loading">
@@ -688,7 +713,9 @@ export default function Portal() {
                     </WorkspaceFilterSummary>
                   </div>
                 </>
-              ) : tab !== "resources" && tab !== "progress" ? (
+              ) : tab !== "resources" &&
+                tab !== "progress" &&
+                !(tab === "projects" && projectView === "scenario") ? (
                 workspaceFilters
               ) : null}
               {(isAdmin || isManager) && tab === "plan" && (
@@ -743,65 +770,86 @@ export default function Portal() {
               )}
               {tab === "projects" && (
                 <TabsContent value="projects">
-                  <ProjectTimelinePanel
-                    filters={[
-                      ...capacityFilters.filter(
-                        (filter) =>
-                          filter.label === "Proje" ||
-                          filter.label === "Başlangıç Ayı",
-                      ),
-                      {
-                        label: "Bitiş Ayı",
-                        values: [monthLabel(months.at(-1)!)],
-                        active: true,
-                      },
-                      {
-                        label: "Dönem",
-                        values: [months.length + " ay"],
-                        active: true,
-                      },
-                      {
-                        label: "Görünüm",
-                        values: [timelineWeekly ? "Haftalık" : "Aylık"],
-                        active: true,
-                      },
-                    ]}
-                    selection={projectMenus.phaseGrid}
-                    progressBadge={progressBadge(true)}
-                    projects={projects}
-                    revisions={data.revisions}
-                    months={months}
-                    weekly={timelineWeekly}
-                    showCodes={showProjectCodes}
-                    onCodesChange={setShowProjectCodes}
-                    todayDate={todayDate}
-                    labelWidth={projectLabelWidth}
-                    monthWidth={monthWidth}
-                    density={density}
-                    expandAllDetails={showProjectDetails}
-                    onDetailsChange={setShowProjectDetails}
-                    onWeeklyChange={setProjectWeekly}
-                    isAdmin={canEditProjects}
-                    saving={saving}
-                    page={effectiveProjectPage}
-                    onPageChange={setProjectPage}
-                    actions={{
-                      onReorderProject: reorderProject,
-                      onProjectInfo: openProject,
-                      onPhaseClick: (project, month) =>
-                        canEditProjects
-                          ? openProject(project, month)
-                          : setPhaseDetail({ project, month }),
-                      onPhaseContextMenu: openPhaseMenu,
-                      onAddMilestone: openMilestone,
-                      onEditMilestone: openMilestone,
-                      onDeleteMilestone: deleteMilestone,
-                      onReorderMilestone: reorderMilestone,
-                      onMilestoneContextMenu: openMilestoneMenu,
-                      onChangeMilestoneRange: changeMilestoneRange,
-                      onChangeMilestoneNote: changeMilestoneNote,
-                    }}
-                  />
+                  {projectView === "scenario" && (isAdmin || isManager) ? (
+                    <ScheduleScenarioDialog
+                      embedded
+                      open
+                      onClose={() => setProjectView("projects")}
+                      data={data}
+                      currentMonth={currentMonth}
+                      scenarios={scenarioState.scenarios}
+                      setScenarios={scenarioState.setScenarios}
+                      isAdmin={!!isAdmin}
+                      userId={user?.id || ""}
+                      saving={saving}
+                      onSaveChanges={batch}
+                      onShowInReports={(id) => {
+                        scenarioState.setReportScenarioId(id);
+                        setReportView("resources");
+                        changeTab("overview");
+                      }}
+                    />
+                  ) : (
+                    <ProjectTimelinePanel
+                      filters={[
+                        ...capacityFilters.filter(
+                          (filter) =>
+                            filter.label === "Proje" ||
+                            filter.label === "Başlangıç Ayı",
+                        ),
+                        {
+                          label: "Bitiş Ayı",
+                          values: [monthLabel(months.at(-1)!)],
+                          active: true,
+                        },
+                        {
+                          label: "Dönem",
+                          values: [months.length + " ay"],
+                          active: true,
+                        },
+                        {
+                          label: "Görünüm",
+                          values: [timelineWeekly ? "Haftalık" : "Aylık"],
+                          active: true,
+                        },
+                      ]}
+                      selection={projectMenus.phaseGrid}
+                      progressBadge={progressBadge(true)}
+                      projects={projects}
+                      revisions={data.revisions}
+                      months={months}
+                      weekly={timelineWeekly}
+                      showCodes={showProjectCodes}
+                      onCodesChange={setShowProjectCodes}
+                      todayDate={todayDate}
+                      labelWidth={projectLabelWidth}
+                      monthWidth={monthWidth}
+                      density={density}
+                      expandAllDetails={showProjectDetails}
+                      onDetailsChange={setShowProjectDetails}
+                      onWeeklyChange={setProjectWeekly}
+                      isAdmin={canEditProjects}
+                      saving={saving}
+                      page={effectiveProjectPage}
+                      onPageChange={setProjectPage}
+                      actions={{
+                        onReorderProject: reorderProject,
+                        onProjectInfo: openProject,
+                        onPhaseClick: (project, month) =>
+                          canEditProjects
+                            ? openProject(project, month)
+                            : setPhaseDetail({ project, month }),
+                        onPhaseContextMenu: openPhaseMenu,
+                        onAddMilestone: openMilestone,
+                        onEditMilestone: openMilestone,
+                        onDeleteMilestone: deleteMilestone,
+                        onReorderMilestone: reorderMilestone,
+                        onMilestoneContextMenu: openMilestoneMenu,
+                        onChangeMilestoneRange: changeMilestoneRange,
+                        onChangeMilestoneNote: changeMilestoneNote,
+                      }}
+                    />
+                  )}
                 </TabsContent>
               )}
               {RISK_MANAGEMENT_ENABLED && tab === "risk" && (
@@ -856,6 +904,7 @@ export default function Portal() {
                   (isManager && !!user?.leaders.length) ||
                   user?.resourceId ? (
                     <PersonAllocationPanel
+                      layout={actualLayout}
                       // The refresh that follows the user's own save keeps
                       // cells editable (its values are merged in already);
                       // any other refresh, e.g. after a remote change, locks
@@ -1019,6 +1068,7 @@ export default function Portal() {
               {(isAdmin || isManager) && tab === "progress" && (
                 <TabsContent value="progress">
                   <ProjectProgressPanel
+                    view={progressView}
                     data={data}
                     user={user}
                     saving={saving}
@@ -1156,26 +1206,28 @@ export default function Portal() {
           )}
         </DialogContent>
       </Dialog>
-      {data && (isAdmin || user?.role === "manager") && (
-        <ScheduleScenarioDialog
-          open={scenarioOpen}
-          onClose={() => setScenarioOpen(false)}
-          data={data}
-          currentMonth={currentMonth}
-          scenarios={scenarioState.scenarios}
-          setScenarios={scenarioState.setScenarios}
-          isAdmin={!!isAdmin}
-          userId={user?.id || ""}
-          saving={saving}
-          onSaveChanges={batch}
-          onShowInReports={(id) => {
-            scenarioState.setReportScenarioId(id);
-            setReportView("resources");
-            changeTab("overview");
-            setScenarioOpen(false);
-          }}
-        />
-      )}
+      {data &&
+        (isAdmin || user?.role === "manager") &&
+        !(tab === "projects" && projectView === "scenario") && (
+          <ScheduleScenarioDialog
+            open={scenarioOpen}
+            onClose={() => setScenarioOpen(false)}
+            data={data}
+            currentMonth={currentMonth}
+            scenarios={scenarioState.scenarios}
+            setScenarios={scenarioState.setScenarios}
+            isAdmin={!!isAdmin}
+            userId={user?.id || ""}
+            saving={saving}
+            onSaveChanges={batch}
+            onShowInReports={(id) => {
+              scenarioState.setReportScenarioId(id);
+              setReportView("resources");
+              changeTab("overview");
+              setScenarioOpen(false);
+            }}
+          />
+        )}
       <PortalEditorDialog
         editor={editor}
         setEditor={setEditor}

@@ -1,0 +1,159 @@
+/* Shared page heading and horizontal view tabs, above filters and content. */
+.app .workspace-section-header {
+  min-width: 0;
+  margin: 8px 0 14px;
+}
+.app .workspace-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.app .workspace-section-heading h2 {
+  margin: 0;
+  color: var(--brand-text, #293a2d);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+html[data-theme] .app .workspace-section-heading .workspace-nav-actions {
+  flex: 0 1 auto;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.app .workspace-section-header > [data-slot="tabs"] {
+  display: block;
+  min-width: 0;
+}
+html[data-theme] .app .workspace-section-tabs {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
+  height: auto;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html[data-theme] .app .workspace-section-tabs [role="tab"] {
+  display: inline-flex;
+  justify-content: flex-start;
+  flex: 0 1 auto;
+  gap: 7px;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  color: var(--brand-muted, #60715e);
+  background: transparent;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+  box-shadow: none;
+}
+html[data-theme] .app .workspace-section-tabs [role="tab"]::after {
+  display: none;
+}
+html[data-theme] .app .workspace-section-tabs [role="tab"]:hover {
+  background: var(--brand-surface, #edf1e8);
+  color: var(--brand-primary, #405341);
+}
+html[data-theme]
+  .app
+  .workspace-section-tabs
+  [role="tab"][data-state="active"] {
+  background: transparent;
+  border-bottom-color: var(--brand-primary, #405341);
+  color: var(--brand-primary, #405341);
+  font-weight: 650;
+  box-shadow: none;
+}
+html[data-theme] .app .workspace-section-tabs [role="tab"]:focus-visible {
+  outline: 2px solid var(--brand-focus, #6d855e);
+  outline-offset: -2px;
+}
+.app .workspace-section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 19px;
+  min-height: 19px;
+  padding: 1px 5px;
+  border-radius: 10px;
+  color: #fff;
+  background: #8c661b;
+  font-size: var(--fs-xs);
+}
+.app.tab-resources .panelhead > div > h2,
+.app.tab-resources .panelhead > h2 {
+  display: none;
+}
+.app.full-plan .workspace-section-heading {
+  justify-content: flex-end;
+}
+.app.full-plan .workspace-section-heading h2 {
+  display: none;
+}
+.app .schedule-scenario-page {
+  padding: 16px;
+  min-width: 0;
+}
+.app .schedule-scenario-page .schedule-scenario-intro {
+  margin: 0 0 16px;
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+.app .schedule-scenario-page .schedule-scenario-body {
+  overflow-y: visible;
+}
+.app .schedule-scenario-page .schedule-scenario-cards {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+}
+.app .schedule-scenario-page .schedule-comparison {
+  min-width: 0;
+  overflow-x: auto;
+}
+.app .schedule-scenario-page .schedule-scenario-actions {
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+@media (max-width: 650px) {
+  .app .workspace-section-heading {
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .app .workspace-section-heading h2 {
+    font-size: 18px;
+  }
+  html[data-theme] .app .workspace-section-heading .workspace-nav-actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  html[data-theme] .app .workspace-section-tabs [role="tab"] {
+    padding: 9px 10px;
+  }
+  .app .schedule-scenario-page {
+    padding: 10px;
+  }
+}

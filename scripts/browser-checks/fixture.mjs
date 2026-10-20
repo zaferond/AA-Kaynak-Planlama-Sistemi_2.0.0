@@ -281,7 +281,11 @@ export async function selectWorkspaceTab(page, name) {
       })
       .click();
   } else {
-    await page.getByRole("tab", { name, exact: true }).click();
+    await (
+      (await mainTab.count())
+        ? menu.getByRole("tab", { name, exact: true })
+        : page.getByRole("tab", { name, exact: true })
+    ).click();
   }
 }
 

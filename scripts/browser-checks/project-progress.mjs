@@ -394,7 +394,7 @@ export async function checkProjectProgress(f) {
           })
           .waitFor();
         assert.equal(await actualField.count(), 0);
-        assert(await noteField.isDisabled());
+        assert.equal(await noteField.count(), 0);
         assert.equal(await saveActual.count(), 0);
         await reviseActual.waitFor();
         assert.equal(
@@ -412,6 +412,10 @@ export async function checkProjectProgress(f) {
           ),
         );
         assert(!(await noteField.isDisabled()));
+        assert.equal(
+          await noteField.inputValue(),
+          "Eylül sonu tamamlanma durumu",
+        );
         await actualField.fill("101");
         await saveActual.click();
         await otherCard
@@ -440,6 +444,7 @@ export async function checkProjectProgress(f) {
         );
         await reviseActual.waitFor();
         assert.equal(await actualField.count(), 0);
+        assert.equal(await noteField.count(), 0);
         assert.equal(await saveActual.count(), 0);
         assert.deepEqual(
           (await f.state()).projectProgress.find((r) => r.projectId === "p-b")
@@ -448,6 +453,10 @@ export async function checkProjectProgress(f) {
         );
         // The explanation may be revised without changing the percentage.
         await reviseActual.click();
+        assert.equal(
+          await noteField.inputValue(),
+          "Eylül gerçekleşen oranı revize edildi",
+        );
         await noteField.fill("Yalnız açıklama revize edildi");
         await saveActual.click();
         await f.wait(
@@ -457,16 +466,13 @@ export async function checkProjectProgress(f) {
           "Note-only revision saved",
         );
         await reviseActual.waitFor();
+        assert.equal(await noteField.count(), 0);
         await reviseActual.click();
         await actualField.fill("55");
         await noteField.fill("İptal edilecek değişiklik");
         await cancelActual.click();
         assert.equal(await actualField.count(), 0);
-        assert.equal(
-          await noteField.inputValue(),
-          "Yalnız açıklama revize edildi",
-        );
-        assert(await noteField.isDisabled());
+        assert.equal(await noteField.count(), 0);
         assert.equal(
           (await f.state()).projectProgress.find((r) => r.projectId === "p-b")
             .actuals["2026-09"].pct,
@@ -474,6 +480,10 @@ export async function checkProjectProgress(f) {
         );
         // Switching months closes the saved entry's revision without copying its draft.
         await reviseActual.click();
+        assert.equal(
+          await noteField.inputValue(),
+          "Yalnız açıklama revize edildi",
+        );
         await actualField.fill("60");
         await noteField.fill("Kaydedilmemiş aylık revizyon");
         await entryFilter.selectOption("");
@@ -493,10 +503,7 @@ export async function checkProjectProgress(f) {
         await entryFilter.selectOption("entered");
         await reviseActual.waitFor();
         assert.equal(await actualField.count(), 0);
-        assert.equal(
-          await noteField.inputValue(),
-          "Yalnız açıklama revize edildi",
-        );
+        assert.equal(await noteField.count(), 0);
         await page
           .getByRole("tab", { name: "İlerleme Raporu", exact: true })
           .click();
@@ -527,9 +534,7 @@ export async function checkProjectProgress(f) {
             .count(),
           0,
         );
-        assert(
-          await otherCard.getByLabel(`${otherName} · açıklama`).isDisabled(),
-        );
+        assert.equal(await noteField.count(), 0);
         assert.equal(
           await otherCard
             .getByRole("button", { name: "Gerçekleşeni Kaydet", exact: true })
@@ -623,6 +628,10 @@ export async function checkProjectProgress(f) {
         assert.equal(await actualField.count(), 0);
         await reviseActual.click();
         assert.equal(await actualField.inputValue(), "40");
+        assert.equal(
+          await noteField.inputValue(),
+          "Yalnız açıklama revize edildi",
+        );
         await cancelActual.click();
       },
     );

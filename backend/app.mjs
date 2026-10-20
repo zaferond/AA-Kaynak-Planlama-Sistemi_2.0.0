@@ -51,6 +51,7 @@ export function createApp(
   {
     origin = "http://localhost:3000",
     trustedProxies = [],
+    sessionCookieName = "kp_session",
     directory = disabledDirectory,
     mutationLimits,
     // API requests slower than this are logged (method, path, status, time).
@@ -72,6 +73,11 @@ export function createApp(
     ),
   } = {},
 ) {
+  if (
+    typeof sessionCookieName !== "string" ||
+    !/^[a-zA-Z0-9_-]{1,64}$/.test(sessionCookieName)
+  )
+    throw Error("Geçersiz oturum çerezi adı.");
   const address = applicationAddress(origin);
   origin = address.origin;
   const secure = address.secure;
@@ -155,10 +161,12 @@ export function createApp(
   // This opaque marker is not the cookie/session ID and cannot authenticate.
   const sessionIdentity = (id) => digest("aa-session-view-v1:" + id);
   const cookie = (req) => {
-    const m = (req.headers.cookie || "").match(
-      /(?:^|;\s*)kp_session=([a-zA-Z0-9_-]+)/,
-    );
-    return m?.[1];
+    const part = (req.headers.cookie || "")
+      .split(";")
+      .map((s) => s.trim())
+      .find((s) => s.startsWith(sessionCookieName + "="));
+    const raw = part?.slice(sessionCookieName.length + 1);
+    return raw && /^[a-zA-Z0-9_-]+$/.test(raw) ? raw : undefined;
   };
   // For IT monitoring and service restarts: no session, no details. 503 when
   // the database does not answer within 5 seconds.
@@ -248,7 +256,7 @@ export function createApp(
       csrf,
       expiresAt: new Date(Date.now() + age),
     });
-    res.cookie("kp_session", raw, {
+    res.cookie(sessionCookieName, raw, {
       ...cookieOptions,
       ...(remember ? { maxAge: age } : {}),
     });
@@ -272,7 +280,7 @@ export function createApp(
         // alone would allow another session to resume after AD reactivation.
         if (error.status === 401) {
           await store.transaction((c) => store.revokeUser(u._id, c));
-          res.clearCookie("kp_session", cookieOptions);
+          res.clearCookie(sessionCookieName, cookieOptions);
         }
         throw error;
       }
@@ -388,7 +396,7 @@ export function createApp(
   );
   app.post("/api/auth/logout", async (req, res) => {
     await store.deleteSession(req.session._id);
-    res.clearCookie("kp_session", cookieOptions);
+    res.clearCookie(sessionCookieName, cookieOptions);
     res.json({ ok: true });
   });
   app.get("/api/data", async (req, res) => {

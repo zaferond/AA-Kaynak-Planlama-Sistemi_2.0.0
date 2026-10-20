@@ -87,6 +87,7 @@ try {
     throw Error("SLOW_REQUEST_MS 0 veya pozitif bir sayı olmalıdır.");
   const app = createApp(store, {
     origin,
+    sessionCookieName: env.SESSION_COOKIE_NAME || "kp_session",
     slowRequestMs,
     trustedProxies,
     mutationLimits,

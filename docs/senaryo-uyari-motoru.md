@@ -52,3 +52,7 @@ Motor sunucu açılışında ve kaynak dağılımı, ay kilidi, hedef/gerçekle�
 ## Doğrulama
 
 13 kabul örneği, eşik sınırları, trend kesintileri, değiştirilebilir eşikler, birden fazla liderlik, sabit kaynak referansı, tekrar önleme, yaşam döngüsü, yetkiler, kalıcılık ve eski yedek uyumluluğu otomatik testlerle doğrulanmıştır. Excel/CSV çıktıları ve ilgili ekranlar tarayıcı testlerine dahildir. Yerel veritabanı SQL.js üzerinde test edilmiştir; harici canlı SQL Server bağlantısıyla çalışma testi yapılmamıştır. SQL Server için 44 numaralı geçiş dosyası eklenmiştir.
+
+## Aynı localhost üzerinde normal ve test ortamı
+
+Normal ortam `http://localhost:3000`, test ortamı `http://localhost:3001` adresiyle çalıştırılabilir. Test sürecinde `APP_ORIGIN=http://localhost:3001`, `PORT=3001`, ayrı bir `SQLJS_FILE` ve `SESSION_COOKIE_NAME=kp_test_session` kullanılır. Normal ortamın varsayılan çerezi `kp_session` olarak kalır; iki ortamın giriş ve çıkış işlemleri birbirinden bağımsızdır.

@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "d63a8db2706cfebd6f963b6ac0fc0df0e751a5ed",
+  "commit": "1c46ccbda165f7c9250f93bfb6404d8c3f19a023",
   "sources": {
     "backend/active-directory.mjs": "3664ad7f8903dab2e832c09ae9553f2008510f34470f76ef3886d5e780cdf08f",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -12,7 +12,7 @@
     "backend/adapters/sqljs.mjs": "26d1e23372ba2224e598153e9e84a02a86d4be277ce04fa399e708a29ddc5f1e",
     "backend/admin-credentials.mjs": "10e301ae2afb9426996f1eb50c0fa75cefd9c18142eba43934b2e6e188afd91c",
     "backend/admin-password.mjs": "8a32c1aa47d6450af8d14ccfec830dc5ef73c0f11fb0ca243d31249efa5407bf",
-    "backend/app.mjs": "a52ecd05728b72e45a9b0578ee1580af6ba84fe46503d4957f1c1ab32a4f2fb0",
+    "backend/app.mjs": "96fc3cda298174643fb3e53964b71bc79fffb9115a1563af139413c5d1f013e4",
     "backend/audit.mjs": "6884105130fc9181c990b03b958a54a545d4ca1143da4dd401772cf68dee844b",
     "backend/auth.mjs": "f34323d94ba8d91c79af1a18160adb7715d5b004fb9ce225598dafd48dea6f66",
     "backend/bulk-data-commands.mjs": "c7775195d6d406962185ee68e769067ebfdb346d8c2695d01b3f7a300c52f34f",
@@ -134,7 +134,7 @@
     "backend/scenario-warning-commands.mjs": "2164e6ad52d5d644cd40aa5f8531febea8b9c0d9b3868462b50f608b3b10b22b",
     "backend/scenario-warning-engine.mjs": "6a1b7ea78e4422029bc119352277baa19c3c87a48751ba46842371b26b380b6a",
     "backend/schema-migrations.mjs": "9ba99b9b566b456638d9826896a44b8713106fe38a2b12acfddf62fd1f156e24",
-    "backend/server.mjs": "401e35b9fb3ee505666669bddd21dcea62fd4b9ba57684391b4fcc64ea786e24",
+    "backend/server.mjs": "4c4d436725a8010615b9b46bd2d18e2a0c1d228fde9bfa71342151d1e693ec43",
     "backend/setup.mjs": "6f38e6958545d209279bc49da1879090d69796e10b596de4d15bf526d629cb65",
     "backend/snapshot-metadata-model.mjs": "5ad8a180ba834e47f3fa9760a58315fed9ebbbd0d2923e119e7e96e6fdb6f656",
     "backend/snapshot-metadata.mjs": "ce4c31efb798facbcd72fcc3842a6486f0d967b97cfa534313db04c1255150bf",

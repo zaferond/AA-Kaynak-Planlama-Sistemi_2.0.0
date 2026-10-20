@@ -1,0 +1,111 @@
+/* Technical drawing theme: graphite ink, steel blue and cool paper.
+   Reuses the shared rules in military-theme.css; only the variables differ.
+   The olive tints there rotate to steel blue through --brand-hue-shift and
+   lose some chroma so surfaces read as paper rather than tinted glass. */
+html[data-theme="technical"] {
+  --brand-hue-shift: 117;
+  --brand-chroma: 0.8;
+  --brand-dark: #1d2632;
+  --brand-primary: #234f7a;
+  --brand-hover: #1a3d5f;
+  --brand-mid: #4a6a8c;
+  --brand-text: #18212c;
+  --brand-muted: #576473;
+  --brand-surface: #eef2f6;
+  --brand-surface-soft: #f6f8fa;
+  --brand-selected: #e2ebf4;
+  --brand-border: #d3dae3;
+  --brand-border-strong: #9aa8b8;
+  --brand-focus: #2f6fb0;
+  --brand-focus-shadow: #2f6fb026;
+  /* The bar is a flat ink band, like a drawing sheet's title strip. */
+  --brand-gradient: linear-gradient(#1d2632, #1d2632);
+  --report-current-color: #087f6a;
+  --report-planned-color: #3e6a8a;
+  --report-shortage-color: #b5562e;
+  --report-forecast-color: #9a6a12;
+  --report-effectiveness-color: #6b5b95;
+  --report-grid-color: #dce3e9;
+  --report-label-color: #475569;
+  --background: #f5f7f9;
+  --foreground: var(--brand-text);
+  --card-foreground: var(--brand-text);
+  --popover-foreground: var(--brand-text);
+  --primary: var(--brand-primary);
+  --primary-foreground: #fff;
+  --secondary: var(--brand-surface-soft);
+  --secondary-foreground: var(--brand-text);
+  --muted: var(--brand-surface);
+  --muted-foreground: var(--brand-muted);
+  --accent: var(--brand-surface);
+  --accent-foreground: var(--brand-text);
+  --border: var(--brand-border);
+  --input: var(--brand-border);
+  --ring: var(--brand-focus);
+}
+
+html[data-theme="technical"] .app {
+  --active-nav-blue: var(--brand-primary);
+  --table-grid-border: #d3dae3;
+  --table-label-border: #c2ccd7;
+  --table-year-divider: #9aa8b8;
+  --table-header-background: #f8fafc;
+  --table-year-label-background: #eef2f6;
+  --table-project-background: #eef2f6;
+  --table-summary-background: #f6f8fa;
+  --table-frozen-shadow: 7px 0 8px -9px #1d2632;
+  --table-today-color: #234f7a;
+  --table-planned-entry-background: #e2ebf4;
+  --table-planned-entry-border: #b5c6d8;
+  --table-planned-entry-color: #1f3d5c;
+  --plan-density-1-background: #eef3f8;
+  --plan-density-1-border: #cfdae6;
+  --plan-density-2-background: #dce7f1;
+  --plan-density-2-border: #b5c6d8;
+  --plan-density-3-background: #c2d4e6;
+  --plan-density-3-border: #95afc9;
+  --plan-density-4-background: #9fbad6;
+  --plan-density-4-border: #7393b5;
+  --plan-density-ink: #14283d;
+}
+/* Year bands stay distinguishable but muted, like coloured drawing revisions. */
+html[data-theme="technical"] .app .year-band-0 {
+  --table-year-background: #e8eef5;
+  --table-year-color: #2f5175;
+  --table-year-border: #bfcddc;
+}
+html[data-theme="technical"] .app .year-band-1 {
+  --table-year-background: #e6efee;
+  --table-year-color: #2f5d58;
+  --table-year-border: #b8cfcc;
+}
+html[data-theme="technical"] .app .year-band-2 {
+  --table-year-background: #f1ede3;
+  --table-year-color: #6b5a35;
+  --table-year-border: #d8ceb6;
+}
+html[data-theme="technical"] .app .year-band-3 {
+  --table-year-background: #eceef1;
+  --table-year-color: #4f5966;
+  --table-year-border: #c9ced6;
+}
+html[data-theme="technical"] .app .year-band-4 {
+  --table-year-background: #e9ecf6;
+  --table-year-color: #414f80;
+  --table-year-border: #c3c9e0;
+}
+html[data-theme="technical"] .app .year-band-5 {
+  --table-year-background: #f2eae4;
+  --table-year-color: #6e5040;
+  --table-year-border: #d9c7bb;
+}
+
+/* login.css keeps the olive panel for the older themes. */
+html[data-theme="technical"] .auth-brand {
+  background: linear-gradient(
+    147deg,
+    #1d2632e6 0%,
+    #234f7ad9 65%,
+    #4a6a8ccc 100%
+  );
+}

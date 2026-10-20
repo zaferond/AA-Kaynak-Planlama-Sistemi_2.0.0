@@ -25,6 +25,8 @@ const jsonFiles = new Set([
   "shared/data-retention-policy.json",
   "frontend/src/styles/manifest.json",
 ]);
+// Packaged when present: the OFL must travel with the bundled font files.
+const licenseFiles = new Set(["frontend/assets/fonts/OFL.txt"]);
 const directories = [
   "backend",
   "shared",
@@ -35,9 +37,9 @@ const directories = [
   "frontend/assets",
 ];
 const excluded = new Set(["node_modules", "data", ".compiled", ".git"]);
-const codeExtensions = /\.(?:mjs|ts|tsx|css|sql|svg|png)$/;
+const codeExtensions = /\.(?:mjs|ts|tsx|css|sql|svg|png|woff2)$/;
 const artifactExtensions =
-  /\.(?:html|js|css|svg|png|ico|jpg|jpeg|webp)(?:\.gz)?$/;
+  /\.(?:html|js|css|svg|png|ico|jpg|jpeg|webp|woff2)(?:\.gz)?$/;
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const ordered = (entries) =>
@@ -47,6 +49,7 @@ function selectedSource(file) {
   return (
     rootFiles.has(file) ||
     jsonFiles.has(file) ||
+    licenseFiles.has(file) ||
     (directories.some((directory) => file.startsWith(directory + "/")) &&
       codeExtensions.test(file))
   );

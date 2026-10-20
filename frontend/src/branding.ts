@@ -1,4 +1,5 @@
 export const SYSTEM_NAME = "Askeri Araçlar Kaynak Yönetimi Sistemi";
 
-// Set to "classic" and rebuild to restore the original blue workspace palette.
-export const UI_THEME: "military" | "classic" = "military";
+// "technical" is the current design. Set to "military" for the previous olive
+// workspace or "classic" for the original blue one, then rebuild.
+export const UI_THEME: "technical" | "military" | "classic" = "technical";

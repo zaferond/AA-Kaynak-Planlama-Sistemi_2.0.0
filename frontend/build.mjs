@@ -46,7 +46,7 @@ const hash = (b) =>
 async function asset(label, ext, bytes) {
   const name = label + "." + hash(bytes) + "." + ext;
   await fs.writeFile(path.join(site, "assets", name), bytes);
-  if (ext !== "png")
+  if (ext !== "png" && ext !== "woff2")
     await fs.writeFile(
       path.join(site, "assets", name + ".gz"),
       gzipSync(bytes),
@@ -63,12 +63,25 @@ const loginBackgroundName = await asset(
   "png",
   await fs.readFile(path.join(root, "assets/login-background.png")),
 );
+// Fonts are already compressed; each gets a content hash like the other assets.
+const fontNames = {};
+for (const font of ["ibm-plex-sans-latin", "ibm-plex-sans-latin-ext"])
+  fontNames[font] = await asset(
+    font,
+    "woff2",
+    await fs.readFile(path.join(root, "assets/fonts", font + ".woff2")),
+  );
+const withFontUrls = (css) =>
+  css.replace(/\/assets\/fonts\/([a-z0-9-]+)\.woff2/g, (url, font) => {
+    if (!fontNames[font]) throw Error("Bilinmeyen yazı tipi: " + url);
+    return "/assets/" + fontNames[font];
+  });
 const bundledCss = (await fs.readdir(path.join(root, ".compiled")))
   .filter((file) => file.endsWith(".css"))
   .sort();
 const css = [
   await fs.readFile(path.join(root, "assets/base.css"), "utf8"),
-  await readWorkspaceStyles(),
+  withFontUrls(await readWorkspaceStyles()),
   (await fs.readFile(path.join(root, "src/login.css"), "utf8")).replaceAll(
     "/assets/login-background.png",
     "/assets/" + loginBackgroundName,
@@ -90,6 +103,7 @@ await writeDeploymentManifest(packageRoot, sourceHashes, {
     "site/index.html.gz",
     "site/assets/otokar-logo.svg",
     "site/assets/" + loginBackgroundName,
+    ...Object.values(fontNames).map((name) => "site/assets/" + name),
     ...[jsName, cssName].flatMap((name) => [
       "site/assets/" + name,
       "site/assets/" + name + ".gz",

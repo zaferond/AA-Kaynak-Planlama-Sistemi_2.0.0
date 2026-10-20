@@ -55,8 +55,20 @@ try {
     "site/index.html",
     ...references.map((url) => "site" + url),
   ];
+  // Assets referenced from CSS rather than HTML: already compressed, no .gz copy.
+  const cssAssets = Object.keys(manifest.artifacts).filter((file) =>
+    /^site\/assets\/(?:login-background|ibm-plex-sans-latin(?:-ext)?)\.[a-f0-9]{12}\.(?:png|woff2)$/.test(
+      file,
+    ),
+  );
+  assert.equal(
+    cssAssets.length,
+    3,
+    "Review package acceptance when CSS assets change",
+  );
   const expected = [
     ...plainFiles.flatMap((file) => [file, file + ".gz"]),
+    ...cssAssets,
     "site/assets/otokar-logo.svg",
   ];
   assert.deepEqual(Object.keys(manifest.artifacts).sort(), expected.sort());

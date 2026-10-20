@@ -1,4 +1,5 @@
 [
+  "shared/fonts.css",
   "shared/design-tokens.css",
   "shared/table-tokens.css",
   "shared/controls.css",
@@ -35,6 +36,7 @@
   "calendar/work-calendar.css",
   "shared/project-groups.css",
   "workspace/military-theme.css",
+  "workspace/technical-theme.css",
   "shared/phase-chips.css",
   "workspace/viewport-tables.css",
   "workspace/compact-chrome.css",

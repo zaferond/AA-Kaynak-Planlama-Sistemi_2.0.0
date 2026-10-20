@@ -107,7 +107,7 @@ export default function ProjectProgressPanel({
               aria-label="İlerleme görünümü"
             >
               <TabsTrigger value="plan">
-                Plan ve Giriş
+                Hedef Plan / Gerçekleşen Plan Giriş
                 {user?.role === "admin" && pendingApprovals > 0 && (
                   <span
                     className="progress-badge"
@@ -117,7 +117,7 @@ export default function ProjectProgressPanel({
                   </span>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="report">İlerleme Raporu</TabsTrigger>
+              <TabsTrigger value="report">Proje İlerleme Raporu</TabsTrigger>
             </TabsList>
           </Tabs>
           {months.length > 0 && (

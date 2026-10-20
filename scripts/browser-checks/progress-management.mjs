@@ -115,7 +115,7 @@ export async function checkProgressManagement(f) {
       .getByRole("combobox", { name: "Ay", exact: true })
       .selectOption("2026-09");
     await page
-      .getByRole("tab", { name: "İlerleme Raporu", exact: true })
+      .getByRole("tab", { name: "Proje İlerleme Raporu", exact: true })
       .click();
   };
   const showDetails = async (cell, section, open = true) => {
@@ -380,7 +380,10 @@ export async function checkProgressManagement(f) {
         await tooltip.getByText("21.09.2026", { exact: true }).waitFor();
         await f.capture(page, "management-critical-topics-tooltip");
         await page
-          .getByRole("tab", { name: "Plan ve Giriş", exact: true })
+          .getByRole("tab", {
+            name: "Hedef Plan / Gerçekleşen Plan Giriş",
+            exact: true,
+          })
           .click();
         const planTopicCell = page
           .getByRole("region", {
@@ -399,7 +402,7 @@ export async function checkProgressManagement(f) {
           .getByText("Tasarım dokümanları kontrol edilecek", { exact: true })
           .waitFor();
         await page
-          .getByRole("tab", { name: "İlerleme Raporu", exact: true })
+          .getByRole("tab", { name: "Proje İlerleme Raporu", exact: true })
           .click();
         await f.capture(page, "management-progress-collapsed");
         await matrix

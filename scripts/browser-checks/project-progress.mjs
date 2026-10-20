@@ -527,7 +527,7 @@ export async function checkProjectProgress(f) {
           .waitFor();
         await otherCard
           .getByText(
-            "Ay kilidi: Eylül 2026 Ayı itibarıyla değişikliğe kapalı",
+            "Ay kilidi: Eylül 2026 ve öncesi değişikliğe kapalı",
             { exact: true },
           )
           .waitFor();

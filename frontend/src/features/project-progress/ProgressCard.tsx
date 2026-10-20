@@ -491,7 +491,7 @@ export default function ProgressCard({
               label="Ay kilidi"
               value={
                 locked
-                  ? `${lockMonthFormat.format(new Date(month + "-01T12:00:00"))} Ayı itibarıyla değişikliğe kapalı`
+                  ? `${lockMonthFormat.format(new Date(month + "-01T12:00:00"))} ve öncesi değişikliğe kapalı`
                   : "Değişikliğe açık"
               }
               status={locked ? "locked" : "unlocked"}

@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "275e89df8d6865545f712734c5cb4bae0b168b27",
+  "commit": "d3fe4a525a8959ca4cd2e568dab345e1b0cba4b6",
   "sources": {
     "backend/active-directory.mjs": "3664ad7f8903dab2e832c09ae9553f2008510f34470f76ef3886d5e780cdf08f",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -230,7 +230,7 @@
     "frontend/src/features/project-progress/progress-management-export.ts": "7d8a75c873ced276b7bb7ecbee37a4dbf67ed01b0c666d893a11a7dfec80ee71",
     "frontend/src/features/project-progress/progress-management.ts": "83676de4d20327ae42a9e69b4089d84338b45ab11238b344fc25e5c9777f40c1",
     "frontend/src/features/project-progress/progress-scope.ts": "eb35146cb6937a20b9975840f0904f8af4f6361933c489204a33da9d3d9434e6",
-    "frontend/src/features/project-progress/progress-status.ts": "af614fe258c90a71c07ebf2d663154be68fae9f471262d70a59192e9fbc15df4",
+    "frontend/src/features/project-progress/progress-status.ts": "694e223be35f0efc8b1c0ad2f22479e1334a9f193b523ebea718f538e42363a4",
     "frontend/src/features/project-progress/progress-topics.ts": "9197b1432e85044120bcf20dfcfa31db8f13e3bd31434e56663ddc71b457c5e3",
     "frontend/src/features/project-progress/progress-view.ts": "ae7d70599540c61887357c8a18c3d110960bab3f405e858ae067855ada691aef",
     "frontend/src/features/project-progress/ProgressBadge.tsx": "4d67d73e71f770ea1c4a28fa1be532724b7d16bf7b51a237e1fc203c7ca0925f",
@@ -468,7 +468,7 @@
     "scripts/browser-checks/portal-refresh.mjs": "39a189fdd564d5c9eee06cda0b8422dfa622160cfe23cc6df0e38e6a53cd50f0",
     "scripts/browser-checks/progress-management.mjs": "e1d8c3f6fc5ee22d0e173ab28223614f19bbf0fa07912be68513def24470d8f8",
     "scripts/browser-checks/project-codes.mjs": "559b99a5d01cd1ce25fb65f560ab14de5eaac0215dba2cadbde65e49f83887e2",
-    "scripts/browser-checks/project-progress.mjs": "4f35c9edcb30f23f68a5b40588e22d535b6c3605231aee58ffa1cdced2b2ef04",
+    "scripts/browser-checks/project-progress.mjs": "c7050d8dbb7792b3bf286443180cecf6043b84c347549c32c679feb4aefcccdb",
     "scripts/browser-checks/project-tables.mjs": "19acb35987379ae24c25b6c2ae60fdd7a2186f6ebb2a1ccb3e2a21292654b15a",
     "scripts/browser-checks/remaining-report-totals.mjs": "80a41d51a8b184cdddd66d982e4926724c1e457b24f721a82340387922c0547c",
     "scripts/browser-checks/report-owner-source.mjs": "b76ac4e1db5ce67efe5b3b943a231154651f6a6c758fbeb6e9542fea968b2ece",
@@ -1042,6 +1042,8 @@
     "site/assets/app.59a2da15d0b6.js.gz": "c2ae1dc1d89da92ad3ef157906e129483f8b5859a58784388a18733404eb0998",
     "site/assets/app.5a1274018cf1.js": "5a1274018cf1388d0c6b095b1596534f0d174b8ce4a0e60ccff2ad50b9c92a8b",
     "site/assets/app.5a1274018cf1.js.gz": "78c5884a18754c16fe6520bae211ba2189fafc583d27cd0158d3e9ee5235076d",
+    "site/assets/app.5a17dd71be7a.js": "5a17dd71be7a3d8012c0067d99a2a4e6a0a344b963aa5adf1c5a57dac7e4b044",
+    "site/assets/app.5a17dd71be7a.js.gz": "adb7139b0562d5ba8559255e6e3dbd9b15b20e0408bdfb2be6ed220ae9f0df60",
     "site/assets/app.5ad8c9cdef68.js": "5ad8c9cdef68e5c9581339b9e93d3c6292d6922be6ecc2bc7258fc8c8df1fb91",
     "site/assets/app.5ad8c9cdef68.js.gz": "8c593e544a6f5e90ebafe795946a2714f11ae5191d6f5e3e029a2528efe9a7e0",
     "site/assets/app.5bea3945f129.css": "5bea3945f1291ff3e37d7f1e0706c70a88be1f44497aa1ef3f587de51431b975",
@@ -1849,17 +1851,17 @@
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/login-background.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "b4c5215d1d11be4ba28cdc410699a0ce73540911ea8c72ab624ab7c402f30a8d",
-    "site/index.html.gz": "cb2ddad30bdd4d88b5f79cd9dc205366430800a298d5ded314796e1c266e8644"
+    "site/index.html": "11b50c9dcd641bbe33c0f81ea49b9cd5fe6e94e1cb3b1e4df834d10a9085a843",
+    "site/index.html.gz": "05216674623f65a5f444798bb806847035caa8ff324c9fcbdb8d1af6d95669f9"
   },
   "releaseArtifacts": {
+    "site/assets/app.5a17dd71be7a.js": "5a17dd71be7a3d8012c0067d99a2a4e6a0a344b963aa5adf1c5a57dac7e4b044",
+    "site/assets/app.5a17dd71be7a.js.gz": "adb7139b0562d5ba8559255e6e3dbd9b15b20e0408bdfb2be6ed220ae9f0df60",
     "site/assets/app.72666d7ac815.css": "72666d7ac8158450470c1af66e95de5708c0b9bd37239352adc9f51f804ce5f0",
     "site/assets/app.72666d7ac815.css.gz": "1ad5769c3f259ab1113a13acf24c453364e74b8cb2ebcaf111f65c6b15f2f477",
-    "site/assets/app.8afe84f9994e.js": "8afe84f9994e9109829e26e729a6f25222c7d6dca503f0642c66b8ac183e473f",
-    "site/assets/app.8afe84f9994e.js.gz": "1fe741d25a6b8aa4cd6e16adf7f0fec1fc5c6a49a9412574a2e616ba301f3680",
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "b4c5215d1d11be4ba28cdc410699a0ce73540911ea8c72ab624ab7c402f30a8d",
-    "site/index.html.gz": "cb2ddad30bdd4d88b5f79cd9dc205366430800a298d5ded314796e1c266e8644"
+    "site/index.html": "11b50c9dcd641bbe33c0f81ea49b9cd5fe6e94e1cb3b1e4df834d10a9085a843",
+    "site/index.html.gz": "05216674623f65a5f444798bb806847035caa8ff324c9fcbdb8d1af6d95669f9"
   }
 }

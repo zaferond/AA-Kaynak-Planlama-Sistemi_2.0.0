@@ -41,7 +41,7 @@ export function entryPresentation(status: EntryStatus, locked: boolean) {
   const tracked = status === "waiting" || status === "entered";
   const suffix =
     status === "entered"
-      ? ` · değişikliğe ${locked ? "kapalı" : "açık"}`
+      ? ` - Değişikliğe ${locked ? "Kapalı" : "Açık"}`
       : status === "waiting" && locked
         ? " · değişikliğe kapalı"
         : "";

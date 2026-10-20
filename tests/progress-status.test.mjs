@@ -48,9 +48,9 @@ test("actual status becomes visible after approval for the selected tracking mon
 test("saved entry presentation includes edit availability and follows lock changes", () => {
   const open = entryPresentation("entered", false);
   const locked = entryPresentation("entered", true);
-  assert.equal(open.label, "Kaydedildi · değişikliğe açık");
+  assert.equal(open.label, "Kaydedildi - Değişikliğe Açık");
   assert.equal(open.status, "entered");
-  assert.equal(locked.label, "Kaydedildi · değişikliğe kapalı");
+  assert.equal(locked.label, "Kaydedildi - Değişikliğe Kapalı");
   assert.equal(locked.status, "locked");
   assert.match(locked.help, /giriş veya revizyon yapılamaz/);
   assert.doesNotMatch(locked.help, /düzenlenebilir/);

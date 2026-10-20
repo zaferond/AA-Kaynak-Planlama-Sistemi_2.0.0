@@ -270,7 +270,7 @@ export async function checkProjectProgress(f) {
         });
         assert.equal(
           await entryFilter.locator('option[value="entered"]').textContent(),
-          "Kaydedildi - Değişikliğe Açık (0)",
+          "Tamamlandı - Değişikliğe Açık (0)",
         );
         // Approved: the targets are fixed and the actual row appears.
         await card.getByRole("rowheader", { name: "Gerçekleşen %" }).waitFor();
@@ -349,7 +349,7 @@ export async function checkProjectProgress(f) {
         assert.equal(await page.locator(".progress-card").count(), 1);
         await otherCard
           .getByText(
-            "Gerçekleşen Plan Durumu (Eyl 2026): Gerçekleşen Durum Girişi Bekleniyor",
+            "Gerçekleşen Plan Durumu (Eyl 2026): Yönetici Girişi Bekleniyor",
             {
               exact: true,
             },
@@ -373,7 +373,7 @@ export async function checkProjectProgress(f) {
         await entryFilter.selectOption("entered");
         await otherCard
           .getByText(
-            "Gerçekleşen Plan Durumu (Eyl 2026): Kaydedildi - Değişikliğe Açık",
+            "Gerçekleşen Plan Durumu (Eyl 2026): Tamamlandı - Değişikliğe Açık",
             {
               exact: true,
             },
@@ -540,7 +540,7 @@ export async function checkProjectProgress(f) {
         await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
         await otherCard
           .getByText(
-            "Gerçekleşen Plan Durumu (Eyl 2026): Kaydedildi - Değişikliğe Kapalı",
+            "Gerçekleşen Plan Durumu (Eyl 2026): Tamamlandı - Değişikliğe Kapalı",
             {
               exact: true,
             },
@@ -556,7 +556,7 @@ export async function checkProjectProgress(f) {
         );
         assert.equal(
           await entryFilter.locator('option[value="entered"]').textContent(),
-          "Kaydedildi - Değişikliğe Kapalı (1)",
+          "Tamamlandı - Değişikliğe Kapalı (1)",
         );
         assert.equal(
           await otherCard.locator(".progress-card-entry").count(),
@@ -625,7 +625,7 @@ export async function checkProjectProgress(f) {
           .waitFor();
         await otherCard
           .getByText(
-            "Gerçekleşen Plan Durumu (Eyl 2026): Kaydedildi - Değişikliğe Kapalı",
+            "Gerçekleşen Plan Durumu (Eyl 2026): Tamamlandı - Değişikliğe Kapalı",
             {
               exact: true,
             },
@@ -663,7 +663,7 @@ export async function checkProjectProgress(f) {
         await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
         await otherCard
           .getByText(
-            "Gerçekleşen Plan Durumu (Eyl 2026): Kaydedildi - Değişikliğe Açık",
+            "Gerçekleşen Plan Durumu (Eyl 2026): Tamamlandı - Değişikliğe Açık",
             { exact: true },
           )
           .waitFor();
@@ -683,7 +683,7 @@ export async function checkProjectProgress(f) {
           .selectOption("2026-10");
         await otherCard
           .getByText(
-            "Gerçekleşen Plan Durumu (Eki 2026): Gerçekleşen Durum Girişi Bekleniyor",
+            "Gerçekleşen Plan Durumu (Eki 2026): Yönetici Girişi Bekleniyor",
             { exact: true },
           )
           .waitFor();
@@ -705,7 +705,7 @@ export async function checkProjectProgress(f) {
         await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
         await otherCard
           .getByText(
-            "Gerçekleşen Plan Durumu (Eki 2026): Gerçekleşen Durum Girişi Bekleniyor · değişikliğe kapalı",
+            "Gerçekleşen Plan Durumu (Eki 2026): Yönetici Girişi Bekleniyor - Değişikliğe Kapalı",
             { exact: true },
           )
           .waitFor();
@@ -736,7 +736,7 @@ export async function checkProjectProgress(f) {
         await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
         await otherCard
           .getByText(
-            "Gerçekleşen Plan Durumu (Eki 2026): Gerçekleşen Durum Girişi Bekleniyor",
+            "Gerçekleşen Plan Durumu (Eki 2026): Yönetici Girişi Bekleniyor",
             { exact: true },
           )
           .waitFor();

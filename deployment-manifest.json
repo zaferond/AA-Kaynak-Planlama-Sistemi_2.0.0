@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "d3fe4a525a8959ca4cd2e568dab345e1b0cba4b6",
+  "commit": "d20e34fefc64d61e8c6342d04527426e93f261c5",
   "sources": {
     "backend/active-directory.mjs": "3664ad7f8903dab2e832c09ae9553f2008510f34470f76ef3886d5e780cdf08f",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -230,14 +230,14 @@
     "frontend/src/features/project-progress/progress-management-export.ts": "7d8a75c873ced276b7bb7ecbee37a4dbf67ed01b0c666d893a11a7dfec80ee71",
     "frontend/src/features/project-progress/progress-management.ts": "83676de4d20327ae42a9e69b4089d84338b45ab11238b344fc25e5c9777f40c1",
     "frontend/src/features/project-progress/progress-scope.ts": "eb35146cb6937a20b9975840f0904f8af4f6361933c489204a33da9d3d9434e6",
-    "frontend/src/features/project-progress/progress-status.ts": "694e223be35f0efc8b1c0ad2f22479e1334a9f193b523ebea718f538e42363a4",
+    "frontend/src/features/project-progress/progress-status.ts": "5c5c2c70d8df2855d0c9b1157c118ccb1355d69113ab7505a80cfb2f0a4e28e4",
     "frontend/src/features/project-progress/progress-topics.ts": "9197b1432e85044120bcf20dfcfa31db8f13e3bd31434e56663ddc71b457c5e3",
     "frontend/src/features/project-progress/progress-view.ts": "ae7d70599540c61887357c8a18c3d110960bab3f405e858ae067855ada691aef",
     "frontend/src/features/project-progress/ProgressBadge.tsx": "4d67d73e71f770ea1c4a28fa1be532724b7d16bf7b51a237e1fc203c7ca0925f",
     "frontend/src/features/project-progress/ProgressCard.tsx": "d26be5e5f738c33052a64c21e84604bd89fe74af8d79ab7161464b1a3e9ddbb3",
     "frontend/src/features/project-progress/ProgressChart.tsx": "6967010c1e4d09e256d84db752a4406f7d1118e5fc886873824143d6ef36e86b",
     "frontend/src/features/project-progress/ProgressManagementMatrix.tsx": "b84bd562d1202e37eedc77343fe296a062b0c4a48321542663f375e51731f97a",
-    "frontend/src/features/project-progress/ProgressProcessHelp.tsx": "3c6fb10bba9c4904bf3a4e6d1fa1ba71d65ba04b51c7aefd098f5d523a82ba05",
+    "frontend/src/features/project-progress/ProgressProcessHelp.tsx": "5c74c13a9165bf04870fc7838cd8fa475387aba0f13d7f776f9379aa3656a5a9",
     "frontend/src/features/project-progress/ProgressReport.tsx": "1b7bdabeddf27317aaf3de4757716bd6b0464a65cbbbd80e79eb3182261e14de",
     "frontend/src/features/project-progress/ProgressTopicCells.tsx": "e0b1a48efed376d10ec95deeda9f5b5f66a514059271957d22ba6ae4961a4104",
     "frontend/src/features/project-progress/project-progress.css": "ab56f48a5ad54babab2c7f073c5b1d75930477a19daaede0242b8d0249ca94a4",
@@ -468,7 +468,7 @@
     "scripts/browser-checks/portal-refresh.mjs": "39a189fdd564d5c9eee06cda0b8422dfa622160cfe23cc6df0e38e6a53cd50f0",
     "scripts/browser-checks/progress-management.mjs": "e1d8c3f6fc5ee22d0e173ab28223614f19bbf0fa07912be68513def24470d8f8",
     "scripts/browser-checks/project-codes.mjs": "559b99a5d01cd1ce25fb65f560ab14de5eaac0215dba2cadbde65e49f83887e2",
-    "scripts/browser-checks/project-progress.mjs": "c7050d8dbb7792b3bf286443180cecf6043b84c347549c32c679feb4aefcccdb",
+    "scripts/browser-checks/project-progress.mjs": "56c7c21015ebe7d06565f02c16ea8aa7de0cb7f15a5ce0ab954a5a647d7d4141",
     "scripts/browser-checks/project-tables.mjs": "19acb35987379ae24c25b6c2ae60fdd7a2186f6ebb2a1ccb3e2a21292654b15a",
     "scripts/browser-checks/remaining-report-totals.mjs": "80a41d51a8b184cdddd66d982e4926724c1e457b24f721a82340387922c0547c",
     "scripts/browser-checks/report-owner-source.mjs": "b76ac4e1db5ce67efe5b3b943a231154651f6a6c758fbeb6e9542fea968b2ece",
@@ -916,6 +916,8 @@
     "site/assets/app.438b5aabf3af.css.gz": "4e38b5abcffa4bce375225a0b3b1532d495d7ad130f0c39a08ddf5188e6bf2c3",
     "site/assets/app.439f6234aa10.js": "439f6234aa100bb6e3be4d91e32775c492d9a72d58cb061e85e6006a518b749f",
     "site/assets/app.439f6234aa10.js.gz": "53cd081e3974090faf44fedb382c11b2852729c043e338e4e26a6eb3a37ecada",
+    "site/assets/app.44c8e8dfe410.js": "44c8e8dfe41072a2a5de3db8dcd47bf9c7450e1b23fa0e246d224df6ac459a2b",
+    "site/assets/app.44c8e8dfe410.js.gz": "14ce8df6a9fa6579ba579bc7e2322042e046ac13d37fd1093c6f4cc21f3aaad9",
     "site/assets/app.4544d87e6923.css": "4544d87e6923e15a4fc0fb33da19eb805d53976310ebd2c64ec6e1e64cfb94b4",
     "site/assets/app.4544d87e6923.css.gz": "934a308d085e657ac96d42bfcfc654b273dbf3d6c3c363130e8afb47d189a3f8",
     "site/assets/app.45856562dcc1.css": "45856562dcc19a00e900b6d869b035ccecb4100954d9baab027e0c941ebc8654",
@@ -1851,17 +1853,17 @@
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/login-background.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "11b50c9dcd641bbe33c0f81ea49b9cd5fe6e94e1cb3b1e4df834d10a9085a843",
-    "site/index.html.gz": "05216674623f65a5f444798bb806847035caa8ff324c9fcbdb8d1af6d95669f9"
+    "site/index.html": "2bab6277a09f7f36bf197eaa8898e0159411d2c61f3c1669359dd7a9a227e1df",
+    "site/index.html.gz": "353e9ad1a27a3a18e74925b605fffbb3df716959571a82c1981918dae259d9cb"
   },
   "releaseArtifacts": {
-    "site/assets/app.5a17dd71be7a.js": "5a17dd71be7a3d8012c0067d99a2a4e6a0a344b963aa5adf1c5a57dac7e4b044",
-    "site/assets/app.5a17dd71be7a.js.gz": "adb7139b0562d5ba8559255e6e3dbd9b15b20e0408bdfb2be6ed220ae9f0df60",
+    "site/assets/app.44c8e8dfe410.js": "44c8e8dfe41072a2a5de3db8dcd47bf9c7450e1b23fa0e246d224df6ac459a2b",
+    "site/assets/app.44c8e8dfe410.js.gz": "14ce8df6a9fa6579ba579bc7e2322042e046ac13d37fd1093c6f4cc21f3aaad9",
     "site/assets/app.72666d7ac815.css": "72666d7ac8158450470c1af66e95de5708c0b9bd37239352adc9f51f804ce5f0",
     "site/assets/app.72666d7ac815.css.gz": "1ad5769c3f259ab1113a13acf24c453364e74b8cb2ebcaf111f65c6b15f2f477",
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "11b50c9dcd641bbe33c0f81ea49b9cd5fe6e94e1cb3b1e4df834d10a9085a843",
-    "site/index.html.gz": "05216674623f65a5f444798bb806847035caa8ff324c9fcbdb8d1af6d95669f9"
+    "site/index.html": "2bab6277a09f7f36bf197eaa8898e0159411d2c61f3c1669359dd7a9a227e1df",
+    "site/index.html.gz": "353e9ad1a27a3a18e74925b605fffbb3df716959571a82c1981918dae259d9cb"
   }
 }

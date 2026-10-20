@@ -23,8 +23,8 @@ export const PLAN_HELP: Record<PlanStatus, string> = {
 };
 export const ENTRY_LABELS: Record<Exclude<EntryStatus, "needsPlan">, string> = {
   closed: "Henüz girişe açık değil",
-  waiting: "Gerçekleşen Durum Girişi Bekleniyor",
-  entered: "Kaydedildi",
+  waiting: "Yönetici Girişi Bekleniyor",
+  entered: "Tamamlandı",
 };
 const ENTRY_HELP: Record<Exclude<EntryStatus, "needsPlan">, string> = {
   closed:
@@ -43,7 +43,7 @@ export function entryPresentation(status: EntryStatus, locked: boolean) {
     status === "entered"
       ? ` - Değişikliğe ${locked ? "Kapalı" : "Açık"}`
       : status === "waiting" && locked
-        ? " · değişikliğe kapalı"
+        ? " - Değişikliğe Kapalı"
         : "";
   return {
     label: ENTRY_LABELS[status] + suffix,

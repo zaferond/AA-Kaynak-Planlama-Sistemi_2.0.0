@@ -42,15 +42,15 @@ test("actual status becomes visible after approval for the selected tracking mon
     entryStatus(approved, "2026-09", "2026-10"),
     false,
   );
-  assert.equal(state.label, "Gerçekleşen Durum Girişi Bekleniyor");
+  assert.equal(state.label, "Yönetici Girişi Bekleniyor");
 });
 
 test("saved entry presentation includes edit availability and follows lock changes", () => {
   const open = entryPresentation("entered", false);
   const locked = entryPresentation("entered", true);
-  assert.equal(open.label, "Kaydedildi - Değişikliğe Açık");
+  assert.equal(open.label, "Tamamlandı - Değişikliğe Açık");
   assert.equal(open.status, "entered");
-  assert.equal(locked.label, "Kaydedildi - Değişikliğe Kapalı");
+  assert.equal(locked.label, "Tamamlandı - Değişikliğe Kapalı");
   assert.equal(locked.status, "locked");
   assert.match(locked.help, /giriş veya revizyon yapılamaz/);
   assert.doesNotMatch(locked.help, /düzenlenebilir/);
@@ -59,10 +59,7 @@ test("saved entry presentation includes edit availability and follows lock chang
 
 test("locking an empty month preserves its missing entry status", () => {
   const locked = entryPresentation("waiting", true);
-  assert.equal(
-    locked.label,
-    "Gerçekleşen Durum Girişi Bekleniyor · değişikliğe kapalı",
-  );
+  assert.equal(locked.label, "Yönetici Girişi Bekleniyor - Değişikliğe Kapalı");
   assert.equal(locked.status, "locked");
   assert.match(locked.help, /henüz kaydedilmedi/);
   assert.equal(entryPresentation("needsPlan", true), null);

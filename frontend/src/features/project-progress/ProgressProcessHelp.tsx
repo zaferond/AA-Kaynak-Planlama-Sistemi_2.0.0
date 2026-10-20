@@ -29,8 +29,8 @@ export default function ProgressProcessHelp() {
         “Yönetici Girişi Bekleniyor” → “Taslak” → “Proje Ekibi Onayında” →
         “Proje Ekibi Onayladı” sırası hedef planına aittir. Gerçekleşen plan
         durumu, hedef plan onaylandıktan sonra gösterilir. Seçili ay takip
-        dönemindeyse ve henüz kayıt yoksa “Gerçekleşen Durum Girişi Bekleniyor”
-        görünür. Gelecek aylara ve takip öncesindeki aylara giriş açılamaz.
+        dönemindeyse ve henüz kayıt yoksa “Yönetici Girişi Bekleniyor” görünür.
+        Gelecek aylara ve takip öncesindeki aylara giriş açılamaz.
       </p>
       <p>
         Yüzdeler, ilgili liderliğin bu projedeki işinin ay sonuna kadar
@@ -38,6 +38,7 @@ export default function ProgressProcessHelp() {
         %45’inin tamamlandığı anlamına gelir.
       </p>
       <p>
+        “Tamamlandı”, seçili ayın gerçekleşen girişinin kaydedildiğini belirtir.
         Kaydettikten sonra gerçekleşen oranı salt okunur gösterilir, açıklama
         alanı gizlenir. Kayıtlı açıklama korunur. Ay değişikliğe açıkken
         “Gerçekleşen Oran Revize Et” düğmesiyle ikisini de düzenleyip

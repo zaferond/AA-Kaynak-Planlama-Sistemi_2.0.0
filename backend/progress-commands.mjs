@@ -4,7 +4,13 @@ import {
   projectProgressSchema,
   progressLockSchema,
 } from "../shared/snapshot-schema.ts";
-import { proposalProblems } from "../shared/project-progress.ts";
+import {
+  proposalProblems,
+  resourcePlanStart,
+  previousMonth,
+  alignPlanStart,
+  leaderResourceByMonth,
+} from "../shared/project-progress.ts";
 import { currentPlanningDate } from "../shared/resource-dates.ts";
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -82,7 +88,21 @@ export function stageProgressChange(
   const baselines = [...(existing?.baselines || [])];
   // Proposal: edited while a draft, frozen while pending, approved by an admin.
   const before = existing?.proposal;
+  const start = resourcePlanStart(
+    project,
+    leaderResourceByMonth(d.teams, d.allocations || {}, project.id).get(
+      next.leader,
+    ),
+  );
   let proposal = next.proposal;
+  if (proposal && !same(proposal, before)) {
+    if (
+      !start &&
+      !(before?.status === "pending" && proposal.status === "draft")
+    )
+      fail(400, "Hedef planı için önce bu liderliğe kaynak dağılımı girin.");
+    if (start) proposal = alignPlanStart(proposal, previousMonth(start));
+  }
   if (proposal && !same(proposal, before)) {
     const from = before?.status || "";
     const to = proposal.status;
@@ -92,13 +112,6 @@ export function stageProgressChange(
       fail(409, "Onay bekleyen öneri değiştirilemez; önce geri çekin.");
     if (to === "approved" && !admin)
       fail(403, "Temel planı yalnız admin onaylar.");
-    // A new baseline cannot start before the approved one it replaces.
-    const opening = baselines.at(-1)?.openingMonth;
-    if (opening && proposal.openingMonth < opening)
-      fail(
-        400,
-        "Yeni plan önceki temel planın başlangıcından önce başlayamaz.",
-      );
     if (to !== "draft") {
       const problems = proposalProblems(proposal, project.end);
       if (problems.length) fail(400, problems[0]);
@@ -188,6 +201,49 @@ export function stageProgressChange(
     ...d.projectProgress.filter((item) => item.id !== id),
     stamped,
   ];
+}
+
+/** Automatic, audited alignment after resource changes; never mutates shared records. */
+export function synchronizeProgressStarts(d) {
+  if (!d.projectProgress?.length) return 0;
+  const projects = new Map(d.projects.map((project) => [project.id, project]));
+  const leaders = new Map(d.teams.map((team) => [team.id, team.lead]));
+  const starts = new Map();
+  for (const [key, amount] of Object.entries(d.allocations || {})) {
+    if (!Number.isFinite(amount) || amount <= 0) continue;
+    const [team, projectId, month] = key.split("|");
+    const project = projects.get(projectId);
+    const leader = leaders.get(team);
+    if (!project || !leader || month < project.start || month > project.end)
+      continue;
+    const group = projectId + "\u0000" + leader;
+    if (!starts.has(group) || month < starts.get(group))
+      starts.set(group, month);
+  }
+  let changed = 0;
+  const records = d.projectProgress.map((record) => {
+    const project = projects.get(record.projectId);
+    if (!project) return record;
+    const start = starts.get(project.id + "\u0000" + record.leader);
+    if (!start) return record;
+    const opening = previousMonth(start);
+    const baselines = record.baselines.map((baseline) =>
+      alignPlanStart(baseline, opening),
+    );
+    const proposal =
+      record.proposal && alignPlanStart(record.proposal, opening);
+    if (
+      baselines.every((baseline, i) => baseline === record.baselines[i]) &&
+      proposal === record.proposal
+    )
+      return record;
+    changed++;
+    const key = "progress:" + record.id;
+    d.revisions[key] = (d.revisions[key] || 0) + 1;
+    return { ...record, baselines, ...(proposal ? { proposal } : {}) };
+  });
+  if (changed) d.projectProgress = records;
+  return changed;
 }
 
 /** Closing a month to actual entry (admin only, checked by the orchestrator). */

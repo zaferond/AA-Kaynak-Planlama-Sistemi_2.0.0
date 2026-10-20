@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { Project } from "../../model";
 import { phaseChipStyle, phaseRunKey, phaseRunSpans } from "../../phase-chip";
 import ProgressTopicCells from "./ProgressTopicCells";
-import { monthsAfter } from "../../../../shared/project-progress.ts";
+import { progressDisplayMonths } from "../../../../shared/project-progress.ts";
 import { pctLabel } from "./progress-view";
 
 const MONTHS = [
@@ -27,7 +27,6 @@ export type GridRow = {
   label: string;
   /** Read-only rows sit on a grey ground; the row to fill stays white. */
   editable?: boolean;
-  opening: ReactNode;
   cell: (month: string) => ReactNode;
 };
 
@@ -39,7 +38,6 @@ export type GridRow = {
 export default function MonthGrid({
   project,
   label,
-  openingMonth,
   currentMonth,
   selectedMonth,
   planned,
@@ -48,14 +46,13 @@ export default function MonthGrid({
   project: Project;
   /** "<project> · <leadership>": names the table and its inputs. */
   label: string;
-  openingMonth: string;
   currentMonth: string;
   /** The month being entered, outlined. */
   selectedMonth?: string;
   planned: Record<string, number> | undefined;
   rows: GridRow[];
 }) {
-  const months = monthsAfter(openingMonth, project.end);
+  const months = progressDisplayMonths(currentMonth, project.end);
   const keys = months.map((m) => phaseRunKey(project, m));
   const spans = phaseRunSpans(keys);
   const mark = (m: string) => ({
@@ -68,14 +65,6 @@ export default function MonthGrid({
         <thead>
           <tr>
             <th scope="col">Ay</th>
-            <th
-              scope="col"
-              className="opening"
-              title={`Başlangıç: ${short(openingMonth)} sonunda tamamlanmış olan`}
-            >
-              {short(openingMonth)}
-              <small>başlangıç</small>
-            </th>
             {months.map((m) => (
               <th key={m} scope="col" {...mark(m)}>
                 {short(m)}
@@ -86,7 +75,6 @@ export default function MonthGrid({
         <tbody>
           <tr className="readonly">
             <th scope="row">Aşama</th>
-            <td className="opening" />
             {months.map((m, i) => {
               if (keys[i] && keys[i - 1] === keys[i]) return null;
               return keys[i] ? (
@@ -106,7 +94,6 @@ export default function MonthGrid({
           </tr>
           <tr className="readonly progress-grid-topics">
             <th scope="row">Kritik konular</th>
-            <td className="opening" />
             <ProgressTopicCells
               project={project}
               months={months}
@@ -116,9 +103,6 @@ export default function MonthGrid({
           </tr>
           <tr className="readonly">
             <th scope="row">Planlanan kaynak (kişi-ay)</th>
-            <td className="opening">
-              {planned?.[openingMonth] ? pctLabel(planned[openingMonth]) : "—"}
-            </td>
             {months.map((m) => (
               <td key={m} {...mark(m)}>
                 {planned?.[m] ? pctLabel(planned[m]) : "—"}
@@ -131,7 +115,6 @@ export default function MonthGrid({
               className={row.editable ? "editable" : "readonly"}
             >
               <th scope="row">{row.label}</th>
-              <td className="opening">{row.opening}</td>
               {months.map((m) => (
                 <td key={m} {...mark(m)}>
                   {row.cell(m)}

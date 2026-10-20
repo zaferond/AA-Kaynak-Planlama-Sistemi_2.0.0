@@ -48,9 +48,9 @@ export function cloneMutationSnapshot(data) {
   return { ...structuredClone(nested), ...maps };
 }
 
-// The owned planning command changes only these two numeric maps. Other fresh
-// SQL snapshot values are shared read-only; full validation clones/normalizes
-// them before persistence. Never use this draft for arbitrary mutation callbacks.
+// The owned planning command changes these numeric maps. Progress start alignment
+// replaces records immutably; other fresh SQL snapshot values stay read-only.
+// Never use this draft for arbitrary mutation callbacks.
 export function clonePlanningMutationDraft(data) {
   const maps = copyNumericMaps(data, ["allocations", "revisions"]);
   return maps ? { ...data, ...maps } : structuredClone(data);

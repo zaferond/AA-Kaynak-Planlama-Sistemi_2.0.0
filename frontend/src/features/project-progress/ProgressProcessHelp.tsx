@@ -22,6 +22,14 @@ export default function ProgressProcessHelp() {
     <details className="progress-process-help">
       <summary>Durumlar ve süreç nasıl işler?</summary>
       <p>
+        Başlangıç ayı otomatik belirlenir: ilgili liderliğin projeye pozitif
+        kaynak ayırdığı ilk ay esas alınır. Kaynak dağılımı değiştiğinde mevcut
+        planların başlangıcı da güncellenir. Başlangıç yüzdesi, bu ilk ayın
+        öncesindeki tamamlanma oranıdır. Karttaki aylık tablo her zaman içinde
+        bulunduğumuz yılın Ocak ayından başlar; plan başlangıcından önceki
+        aylarda hedef girişi açılmaz.
+      </p>
+      <p>
         Hedefleri hazırlayın → Taslağı kaydedin → Proje ekibi onayına gönderin →
         Onaydan sonra her ay gerçekleşen yüzdeyi ve açıklamasını kaydedin.
       </p>

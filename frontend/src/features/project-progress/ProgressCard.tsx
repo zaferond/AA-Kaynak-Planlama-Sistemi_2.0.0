@@ -6,7 +6,8 @@ import type { Change } from "../../../../shared/commands";
 import {
   PROGRESS_NOTE_MAX,
   currentBaseline,
-  defaultPlanStart,
+  resourcePlanStart,
+  alignPlanStart,
   monthsAfter,
   nextMonth,
   previousMonth,
@@ -87,6 +88,10 @@ export default function ProgressCard({
   const baseline = record && currentBaseline(record);
   const status = baselineStatus(record);
   const planned = ctx.planned(project.id).get(leader);
+  const resourceStart = resourcePlanStart(project, planned);
+  const resourceOpening = resourceStart
+    ? previousMonth(resourceStart)
+    : undefined;
   const [rebaseline, setRebaseline] = useState(false);
   const [form, setForm] = useState<Form | null>(null);
   const [message, setMessage] = useState<{ text: string; error?: boolean }>();
@@ -118,7 +123,11 @@ export default function ProgressCard({
   // start empty: the leader fills them or applies the suggestion.
   useEffect(() => {
     setRebaseline(false);
-    const p = record?.proposal;
+    const savedProposal = record?.proposal;
+    const p =
+      savedProposal && resourceOpening
+        ? alignPlanStart(savedProposal, resourceOpening)
+        : savedProposal;
     if (p)
       return setForm({
         openingMonth: p.openingMonth,
@@ -127,26 +136,53 @@ export default function ProgressCard({
         reason: p.reason || "",
       });
     if (baseline) return setForm(null);
+    if (!resourceOpening) return setForm(null);
     setForm({
-      openingMonth: previousMonth(defaultPlanStart(project, currentMonth)),
+      openingMonth: resourceOpening,
       openingPct: "",
       targets: {},
       reason: "",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [revision]);
+  }, [revision, !!resourceStart]);
+
+  useEffect(() => {
+    if (!resourceOpening) return;
+    setForm((current) => {
+      if (!current || current.openingMonth === resourceOpening) return current;
+      const numericTargets = Object.fromEntries(
+        Object.entries(current.targets)
+          .filter(([, value]) => value.trim() && Number.isFinite(num(value)))
+          .map(([month, value]) => [month, num(value)]),
+      );
+      const aligned = alignPlanStart(
+        {
+          openingMonth: current.openingMonth,
+          openingPct: num(current.openingPct),
+          targets: numericTargets,
+        },
+        resourceOpening,
+      );
+      return {
+        ...current,
+        openingMonth: resourceOpening,
+        openingPct: current.openingPct.trim() ? text(aligned.openingPct) : "",
+        targets: Object.fromEntries(
+          Object.entries(current.targets).filter(
+            ([month]) => month > resourceOpening,
+          ),
+        ),
+        adjustedSuggestion: undefined,
+      };
+    });
+  }, [resourceOpening]);
 
   function startRebaseline() {
-    if (!record || !baseline) return;
-    const opening =
-      previousMonth(currentMonth) > baseline.openingMonth
-        ? previousMonth(currentMonth)
-        : baseline.openingMonth;
-    const openingPct =
-      record.actuals[opening]?.pct ?? targetAt(baseline, opening) ?? 0;
+    if (!record || !baseline || !resourceOpening) return;
+    const aligned = alignPlanStart(baseline, resourceOpening);
     setForm({
-      openingMonth: opening,
-      openingPct: text(openingPct),
+      openingMonth: resourceOpening,
+      openingPct: text(aligned.openingPct),
       targets: {},
       reason: "",
     });
@@ -192,6 +228,7 @@ export default function ProgressCard({
   const pending = status === "pending";
   const editable =
     !!form &&
+    !!resourceStart &&
     !pending &&
     canLead(user, leader) &&
     (!baseline || rebaseline || !!record?.proposal);
@@ -292,22 +329,6 @@ export default function ProgressCard({
       setMessage({ text: (error as Error).message, error: true });
     }
   }
-  // The start month is free within the project; a new baseline cannot start
-  // before the approved one it replaces. Stored as the month before it.
-  const firstStart = baseline
-    ? nextMonth(baseline.openingMonth)
-    : project.start;
-  const startOptions = [firstStart, ...monthsAfter(firstStart, project.end)];
-  if (form && !startOptions.includes(nextMonth(form.openingMonth)))
-    startOptions.unshift(nextMonth(form.openingMonth));
-  // With an approved plan the grid starts at its opening, so a new plan's
-  // later opening still shows the history before it.
-  const gridOpening =
-    baseline?.openingMonth ||
-    form?.openingMonth ||
-    previousMonth(defaultPlanStart(project, currentMonth));
-
-  const openingCell = pctLabel(openingValid ? opening : null);
   const targets = form ? form.targets : {};
   function editTarget(month: string, input: string) {
     setForm((current) => {
@@ -355,13 +376,7 @@ export default function ProgressCard({
   }
   // Months up to a new plan's opening carry no new target.
   const proposalCell = (m: string, input: () => React.ReactNode) =>
-    !form || m < form.openingMonth ? (
-      ""
-    ) : m === form.openingMonth ? (
-      <strong>{openingCell}</strong>
-    ) : (
-      input()
-    );
+    !form || m <= form.openingMonth ? "—" : input();
   const past = (m: string) => m <= currentMonth;
   const planRows: GridRow[] = form
     ? [
@@ -369,7 +384,6 @@ export default function ProgressCard({
           ? [
               {
                 label: baseline ? "Önerilen yeni hedef %" : "Önerilen hedef %",
-                opening: baseline ? "" : openingCell,
                 cell: (m: string) =>
                   proposalCell(m, () =>
                     suggested ? pctLabel(suggested[m]) : "—",
@@ -380,7 +394,6 @@ export default function ProgressCard({
         {
           label: baseline ? "Yeni hedef %" : "Hedef % (kümülatif)",
           editable,
-          opening: baseline ? "" : <strong>{openingCell}</strong>,
           cell: (m: string) =>
             proposalCell(m, () =>
               editable ? (
@@ -408,22 +421,18 @@ export default function ProgressCard({
     ? [
         {
           label: "Gerçekleşen kaynak (kişi-ay)",
-          opening: actualFte?.[baseline.openingMonth]
-            ? pctLabel(actualFte[baseline.openingMonth])
-            : "—",
           cell: (m) =>
             past(m) && actualFte?.[m] ? pctLabel(actualFte[m]) : "—",
         },
         {
           label: form ? "Onaylı hedef %" : "Hedef % (kümülatif)",
-          opening: pctLabel(baseline.openingPct),
-          cell: (m) => pctLabel(targetAt(baseline, m)),
+          cell: (m) =>
+            m > baseline.openingMonth ? pctLabel(targetAt(baseline, m)) : "—",
         },
         ...planRows,
         {
           label: "Gerçekleşen %",
           editable: canEditEntry,
-          opening: <strong>{pctLabel(baseline.openingPct)}</strong>,
           cell: (m) =>
             m === month && canEditEntry ? (
               <input
@@ -485,29 +494,18 @@ export default function ProgressCard({
             />
           )}
         </div>
-        {form && (
+        {resourceStart && (
+          <span className="progress-card-hint">
+            Başlangıç: {monthLabel(resourceStart)} · ilk kaynak planlanan ay
+          </span>
+        )}
+        {baseline && !form && (
+          <span className="progress-card-hint">
+            Başlangıç %: {pctLabel(baseline.openingPct)}
+          </span>
+        )}
+        {form && resourceStart && (
           <div className="progress-card-fields">
-            <label>
-              Başlangıç ayı
-              <select
-                aria-label={label + " · başlangıç ayı"}
-                value={nextMonth(form.openingMonth)}
-                disabled={!editable}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    openingMonth: previousMonth(e.target.value),
-                    adjustedSuggestion: undefined,
-                  })
-                }
-              >
-                {startOptions.map((m) => (
-                  <option key={m} value={m}>
-                    {monthLabel(m)}
-                  </option>
-                ))}
-              </select>
-            </label>
             <label>
               Başlangıç %
               <input
@@ -549,10 +547,15 @@ export default function ProgressCard({
             ` · onay ${baseline.approvedByName}, ${new Date(baseline.approvedAt).toLocaleDateString("tr-TR")}`}
         </small>
       </header>
+      {!resourceStart && (
+        <p className="progress-card-hint">
+          Kaynak planlaması bekleniyor. Başlangıç, bu liderliğin projeye ilk
+          kaynak ayırdığı aydan otomatik belirlenecek.
+        </p>
+      )}
       <MonthGrid
         project={project}
         label={label}
-        openingMonth={gridOpening}
         currentMonth={currentMonth}
         selectedMonth={baseline && month ? month : undefined}
         planned={planned}
@@ -706,7 +709,7 @@ export default function ProgressCard({
               <button
                 type="button"
                 className="button primary"
-                disabled={saving}
+                disabled={saving || !resourceStart}
                 onClick={() => void send("approved", "Hedef planı onaylandı.")}
               >
                 Hedef Planı Onayla
@@ -715,7 +718,12 @@ export default function ProgressCard({
           </>
         )}
         {baseline && !form && canLead(user, leader) && (
-          <button type="button" className="button" onClick={startRebaseline}>
+          <button
+            type="button"
+            className="button"
+            disabled={!resourceStart}
+            onClick={startRebaseline}
+          >
             Hedef Planını Revize Et
           </button>
         )}

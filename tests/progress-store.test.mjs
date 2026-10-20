@@ -5,7 +5,12 @@ import os from "node:os";
 import path from "node:path";
 import { Store } from "../backend/store.mjs";
 import { hashPassword } from "../backend/auth.mjs";
-import { applyChanges, applyLeaderChange } from "../backend/operations.mjs";
+import {
+  applyChanges,
+  applyLeaderChange,
+  planningCommand,
+} from "../backend/operations.mjs";
+import { synchronizeProgressStarts } from "../backend/progress-commands.mjs";
 
 const password = hashPassword("Progress-store-test-only-284!");
 const project = {
@@ -66,6 +71,12 @@ async function setup(t) {
   await store.mutate(users.admin, (d, u) =>
     applyChanges(d, u, [
       { kind: "project", id: project.id, value: project, revision: 0 },
+      ...["2026-11", "2026-12", "2027-01"].map((month) => ({
+        kind: "allocation",
+        id: `${data.teams.find((team) => team.lead === lead).id}|${project.id}|${month}`,
+        value: 1,
+        revision: 0,
+      })),
     ]),
   );
   const state = async () => (await store.read()).data;
@@ -135,6 +146,108 @@ const draft = (lead, over = {}) => ({
   ...over,
 });
 const status = (code) => (error) => error.status === code;
+
+test("resource writes automatically align approved plans without losing targets or actuals", async (t) => {
+  const f = await setup(t);
+  await f.save(f.users.admin, {
+    ...draft(f.lead),
+    proposal: { ...draft(f.lead).proposal, status: "approved" },
+  });
+  let saved = await f.record();
+  await f.save(f.users.lead, {
+    ...saved,
+    actuals: { "2026-11": { pct: 45, note: "Korunacak gerçekleşen" } },
+  });
+  const before = await f.state();
+  const team = before.teams.find((team) => team.lead === f.lead);
+  const id = `${team.id}|${project.id}|2026-09`;
+  const response = await f.store.mutate(
+    f.users.lead,
+    planningCommand([{ kind: "allocation", id, value: 0.5, revision: 0 }]),
+    { returnView: true, planningDelta: true },
+  );
+  saved = await f.record();
+  assert.equal(saved.baselines[0].openingMonth, "2026-08");
+  assert.deepEqual(saved.baselines[0].targets, targets);
+  assert.deepEqual(saved.actuals, before.projectProgress[0].actuals);
+  assert.equal(
+    response.data.projectProgress[0].baselines[0].openingMonth,
+    "2026-08",
+  );
+  assert(
+    (await f.state()).revisions["progress:prg-1"] >
+      before.revisions["progress:prg-1"],
+  );
+  assert.equal(before.projectProgress[0].baselines[0].openingMonth, "2026-10");
+  await f.store.mutate(
+    f.users.lead,
+    planningCommand([
+      {
+        kind: "allocation",
+        id,
+        operation: "delete",
+        revision: (await f.state()).revisions["allocation:" + id],
+      },
+    ]),
+  );
+  saved = await f.record();
+  assert.equal(saved.baselines[0].openingMonth, "2026-10");
+  assert.deepEqual(saved.actuals, before.projectProgress[0].actuals);
+  const audit = await f.store.auditLog(f.users.admin, { kind: "progress" });
+  assert(
+    audit.entries.some((event) =>
+      event.changes.some(
+        (change) => change.path.join(".") === "baselines.0.openingMonth",
+      ),
+    ),
+  );
+});
+
+test("legacy alignment is immutable, preserves entry history and does nothing without resources", () => {
+  const record = {
+    ...draft("A"),
+    baselines: [
+      {
+        version: 1,
+        openingMonth: "2026-10",
+        openingPct: 40,
+        targets,
+        approvedByName: "A",
+        approvedAt: "2026-10-01",
+      },
+    ],
+    actuals: { "2026-11": { pct: 60, note: "Geçmiş" } },
+  };
+  const d = {
+    projects: [project],
+    teams: [
+      { id: "t", lead: "A" },
+      { id: "other", lead: "B" },
+    ],
+    allocations: { "t|kartal|2026-01": 1, "other|kartal|2025-01": 2 },
+    revisions: {},
+    projectProgress: [record],
+  };
+  assert.equal(synchronizeProgressStarts(d), 1);
+  assert.equal(d.projectProgress[0].baselines[0].openingMonth, "2025-12");
+  assert.equal(d.projectProgress[0].proposal.openingMonth, "2025-12");
+  assert.deepEqual(d.projectProgress[0].actuals, record.actuals);
+  assert.equal(record.baselines[0].openingMonth, "2026-10");
+  assert.equal(synchronizeProgressStarts(d), 0);
+  assert.equal(synchronizeProgressStarts({ ...d, allocations: {} }), 0);
+});
+
+test("a plan cannot be created before its leadership has positive planned resource", async (t) => {
+  const f = await setup(t);
+  await f.store.mutate(f.users.admin, (d) => {
+    d.allocations = {};
+  });
+  await assert.rejects(
+    f.save(f.users.lead, draft(f.lead)),
+    (error) => error.status === 400 && /kaynak dağılımı/.test(error.message),
+  );
+  assert.equal(await f.record(), undefined);
+});
 
 test("a leader proposes, an admin approves, and the baseline is frozen", async (t) => {
   const f = await setup(t);

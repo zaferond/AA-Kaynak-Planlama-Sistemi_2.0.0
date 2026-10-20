@@ -10,20 +10,50 @@ import { ownValue } from "./records.ts";
 
 export const PROGRESS_NOTE_MAX = 500;
 
-/**
- * A plan starts by default in January of the current year, or when the
- * project starts if that is later; the leader may pick another month. The
- * stored opening is the month before the start: its value is the share done
- * when the plan begins.
- */
-export function defaultPlanStart(
-  project: { start: string; end: string },
+/** Cards show the current year's calendar independently of the plan's start. */
+export function progressDisplayMonths(
   currentMonth: string,
+  projectEnd: string,
 ) {
   const january = currentMonth.slice(0, 4) + "-01";
-  // A project that ended before this year is planned from its own start.
-  if (project.end < january) return project.start;
-  return project.start > january ? project.start : january;
+  return monthsAfter(
+    previousMonth(january),
+    projectEnd < january ? currentMonth.slice(0, 4) + "-12" : projectEnd,
+  );
+}
+
+/** First positive planned resource month for this project × leadership. */
+export function resourcePlanStart(
+  project: { start: string; end: string },
+  planned: Record<string, number> | undefined,
+): string | undefined {
+  return Object.keys(planned || {})
+    .filter(
+      (month) =>
+        month >= project.start &&
+        month <= project.end &&
+        Number.isFinite(planned![month]) &&
+        planned![month] > 0,
+    )
+    .sort()[0];
+}
+
+/** Move the reference month while keeping cumulative targets in the overlap. */
+export function alignPlanStart<
+  T extends Pick<ProgressBaseline, "openingMonth" | "openingPct" | "targets">,
+>(plan: T, openingMonth: string): T {
+  if (plan.openingMonth === openingMonth) return plan;
+  return {
+    ...plan,
+    openingMonth,
+    openingPct:
+      openingMonth > plan.openingMonth
+        ? targetAt(plan, openingMonth)!
+        : plan.openingPct,
+    targets: Object.fromEntries(
+      Object.entries(plan.targets).filter(([month]) => month > openingMonth),
+    ),
+  };
 }
 
 /** The earliest opening among records, else the one before this January. */
@@ -230,7 +260,9 @@ export function recalculateTargetsAfterEdit(
 
 /** Cumulative target of the approved baseline at the end of `month`. */
 export function targetAt(
-  baseline: ProgressBaseline | undefined,
+  baseline:
+    | Pick<ProgressBaseline, "openingMonth" | "openingPct" | "targets">
+    | undefined,
   month: string,
 ) {
   if (!baseline) return null;

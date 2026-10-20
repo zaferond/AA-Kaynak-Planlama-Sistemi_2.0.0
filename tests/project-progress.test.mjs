@@ -11,6 +11,9 @@ import {
   suggestTargets,
   recalculateTargetsAfterEdit,
   targetAt,
+  resourcePlanStart,
+  alignPlanStart,
+  progressDisplayMonths,
 } from "../shared/project-progress.ts";
 
 const record = (over = {}) => ({
@@ -32,6 +35,65 @@ const record = (over = {}) => ({
   createdByName: "U",
   createdAt: "2026-10-20T00:00:00.000Z",
   ...over,
+});
+
+test("card calendars start in January of the current year independently of source allocation dates", () => {
+  const months = progressDisplayMonths("2026-10", "2027-03");
+  assert.equal(months[0], "2026-01");
+  assert.equal(months.at(-1), "2027-03");
+  assert.equal(months.length, 15);
+  assert.deepEqual(progressDisplayMonths("2027-02", "2027-03"), [
+    "2027-01",
+    "2027-02",
+    "2027-03",
+  ]);
+  assert.equal(progressDisplayMonths("2026-10", "2025-12")[0], "2026-01");
+});
+
+test("progress starts in the first positive resource month of its own leadership and project", () => {
+  const project = { start: "2025-01", end: "2027-06" };
+  const byLeader = leaderResourceByMonth(
+    [
+      { id: "a", lead: "A" },
+      { id: "b", lead: "A" },
+      { id: "c", lead: "B" },
+    ],
+    {
+      "a|p|2026-04": 0,
+      "a|p|2026-09": 2,
+      "b|p|2025-12": 0.5,
+      "c|p|2025-02": 3,
+      "a|other|2025-01": 4,
+    },
+    "p",
+  );
+  assert.equal(resourcePlanStart(project, byLeader.get("A")), "2025-12");
+  assert.equal(resourcePlanStart(project, byLeader.get("B")), "2025-02");
+  assert.equal(resourcePlanStart(project, undefined), undefined);
+  assert.equal(
+    resourcePlanStart(project, {
+      "2024-12": 1,
+      "2027-07": 1,
+      "2026-02": 0,
+      "2026-03": -1,
+      "2026-04": NaN,
+    }),
+    undefined,
+  );
+});
+
+test("resource alignment preserves cumulative targets, actual history and idempotence", () => {
+  const plan = record().baselines[0];
+  const earlier = alignPlanStart(plan, "2025-12");
+  assert.equal(earlier.openingPct, 40);
+  assert.deepEqual(earlier.targets, plan.targets);
+  for (const month of ["2026-10", "2026-11", "2026-12", "2027-01"])
+    assert.equal(targetAt(earlier, month), targetAt(plan, month));
+  const later = alignPlanStart(plan, "2026-11");
+  assert.equal(later.openingPct, 50);
+  assert.deepEqual(later.targets, { "2026-12": 70, "2027-01": 100 });
+  assert.equal(alignPlanStart(later, "2026-11"), later);
+  assert.equal(plan.openingMonth, "2026-10");
 });
 
 test("months after the opening run up to the project end", () => {

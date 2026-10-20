@@ -19,6 +19,7 @@ import { stageScenarioChange } from "./scenario-commands.mjs";
 import {
   stageProgressChange,
   stageProgressLockChange,
+  synchronizeProgressStarts,
 } from "./progress-commands.mjs";
 import { stageTeamChange } from "./directory-commands.mjs";
 import { stageProjectResourceChange } from "./project-resource-commands.mjs";
@@ -266,5 +267,11 @@ function stageParsedChanges(d, u, changes) {
   finalizeActualChanges(d, affectedActualMonths);
   if (changes.some((change) => change.kind === "project"))
     d.projects = orderedProjects(d.projects);
+  if (
+    changes.some((change) =>
+      ["allocation", "progress", "project", "team"].includes(change.kind),
+    )
+  )
+    synchronizeProgressStarts(d);
   return d;
 }

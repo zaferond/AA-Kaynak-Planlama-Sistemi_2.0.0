@@ -14,7 +14,7 @@ export async function checkProjectProgress(f) {
   const otherProject = (await f.state()).projects.find((p) => p.id === "p-b");
   // Two projects in one leadership exercise named and unassigned owners.
   const planned = ["p-a", "p-b"].flatMap((id) =>
-    ["2026-11", "2026-12"].map((month) => ({
+    ["2026-09", "2026-11", "2026-12"].map((month) => ({
       kind: "allocation",
       id: `${f.teamA.id}|${id}|${month}`,
       value: 1,
@@ -111,9 +111,24 @@ export async function checkProjectProgress(f) {
           0,
         );
         const target = (month) => card.getByLabel(`${name} · ${month} hedef %`);
+        assert.equal(
+          await card.getByLabel(`${name} · başlangıç ayı`).count(),
+          0,
+        );
         await card
-          .getByLabel(`${name} · başlangıç ayı`)
-          .selectOption("2026-09");
+          .getByText("Başlangıç: Eyl 2026 · ilk kaynak planlanan ay", {
+            exact: true,
+          })
+          .waitFor();
+        assert.equal(
+          await card.locator(".progress-grid thead th").nth(1).textContent(),
+          "Oca 26",
+        );
+        assert.equal(
+          await card.getByLabel(`${name} · Oca 2026 hedef %`).count(),
+          0,
+        );
+        assert.equal(await card.locator(".progress-grid .opening").count(), 0);
         // Targets start empty; the suggestion needs the opening value first.
         assert.equal(await target("Kas 2026").inputValue(), "");
         const apply = card.getByRole("button", { name: "Önerileni Uygula" });
@@ -148,11 +163,11 @@ export async function checkProjectProgress(f) {
         );
         await apply.click();
         // Opening 0 %, the remainder follows the planned resource (1 + 1).
-        assert.equal(await target("Kas 2026").inputValue(), "50");
+        assert.equal(await target("Kas 2026").inputValue(), "66,7");
         assert.equal(await target("Ara 2026").inputValue(), "100");
         // Editing October above November rebuilds the remaining curve and preview.
         await target("Eki 2026").fill("80");
-        assert.equal(await target("Eyl 2026").inputValue(), "0");
+        assert.equal(await target("Eyl 2026").inputValue(), "33,3");
         assert.equal(await target("Eki 2026").inputValue(), "80");
         assert.equal(await target("Kas 2026").inputValue(), "90");
         assert.equal(await target("Ara 2026").inputValue(), "100");
@@ -164,10 +179,30 @@ export async function checkProjectProgress(f) {
         assert.equal(await target("Eki 2026").inputValue(), "80");
         assert.equal(await target("Kas 2026").inputValue(), "90");
         await f.capture(page, "progress-recalculated-targets");
-        // Restart the suggestion from November for the approval flow below.
+        // Removing the earliest allocation moves the automatic start to November.
+        await f.store.mutate(f.actor, (d, u) =>
+          applyChanges(d, u, [
+            {
+              kind: "allocation",
+              id: `${f.teamA.id}|p-a|2026-09`,
+              operation: "delete",
+              revision: d.revisions[`allocation:${f.teamA.id}|p-a|2026-09`],
+            },
+          ]),
+        );
+        await page.reload();
+        await tab(page).click();
         await card
-          .getByLabel(`${name} · başlangıç ayı`)
-          .selectOption("2026-11");
+          .getByText("Başlangıç: Kas 2026 · ilk kaynak planlanan ay", {
+            exact: true,
+          })
+          .waitFor();
+        assert.equal(
+          await card.locator(".progress-grid thead th").nth(1).textContent(),
+          "Oca 26",
+        );
+        assert.equal(await target("Eki 2026").count(), 0);
+        await card.getByLabel(`${name} · başlangıç %`).fill("0");
         await apply.click();
         assert.equal(await target("Kas 2026").inputValue(), "50");
         // Done early: 100 % in November clears December, and the curve can

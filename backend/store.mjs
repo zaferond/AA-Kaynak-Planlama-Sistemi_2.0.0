@@ -9,6 +9,7 @@ import { prepareMutationSettings } from "./mutation-settings.mjs";
 import { auditEntries } from "./audit.mjs";
 import { isPlanningCommand, preparePlanningCommand } from "./operations.mjs";
 import { readPlanningPreflight } from "./planning-preflight.mjs";
+import { synchronizeProgressStarts } from "./progress-commands.mjs";
 import { planningDeltaView } from "./planning-response.mjs";
 import {
   cloneMutationSnapshot,
@@ -375,6 +376,7 @@ export class Store {
         generation = snapshot.generation;
       const beforeUsers = auditUsers ? await this.users(c) : [];
       const result = await (prepared?.stage || fn)(data, active, c, generation);
+      synchronizeProgressStarts(data);
       const valid = this.validateSnapshot(data, {
         previousResources: before.resources,
       });

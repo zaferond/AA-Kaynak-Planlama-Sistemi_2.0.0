@@ -59,6 +59,22 @@ try {
       version: 1,
     });
   }
+  const { synchronizeProgressStarts } = await import("./progress-commands.mjs");
+  const progressSnapshot = (await store.read()).data;
+  const preview = {
+    ...progressSnapshot,
+    revisions: { ...progressSnapshot.revisions },
+  };
+  if (synchronizeProgressStarts(preview)) {
+    const actor = await store.findUser({ id: ROOT_ADMIN_ID });
+    const count = await store.mutate(actor, (data) =>
+      synchronizeProgressStarts(data),
+    );
+    console.log(
+      "Kaynak dağılımına göre başlangıcı güncellenen ilerleme kaydı:",
+      count,
+    );
+  }
   const slowRequestMs = Number(env.SLOW_REQUEST_MS ?? 2000);
   if (!Number.isFinite(slowRequestMs) || slowRequestMs < 0)
     throw Error("SLOW_REQUEST_MS 0 veya pozitif bir sayı olmalıdır.");

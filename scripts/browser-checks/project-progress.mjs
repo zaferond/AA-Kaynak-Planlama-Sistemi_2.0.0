@@ -194,7 +194,7 @@ export async function checkProjectProgress(f) {
         // Only an admin approves.
         assert.equal(
           await card
-            .getByRole("button", { name: "Hedef Planını Onayla" })
+            .getByRole("button", { name: "Hedef Plan Onayla" })
             .count(),
           0,
         );
@@ -229,7 +229,7 @@ export async function checkProjectProgress(f) {
         );
         const card = group.getByRole("region", { name, exact: true });
         await card
-          .getByRole("button", { name: "Hedef Planını Onayla" })
+          .getByRole("button", { name: "Hedef Plan Onayla" })
           .click();
         await card.getByText("Hedef planı onaylandı.").waitFor();
         const record = (await f.state()).projectProgress.find(
@@ -309,7 +309,7 @@ export async function checkProjectProgress(f) {
           .getByLabel(`${otherName} · Ara 2026 hedef %`)
           .fill("100");
         await otherCard
-          .getByRole("button", { name: "Hedef Planını Onayla", exact: true })
+          .getByRole("button", { name: "Hedef Plan Onayla", exact: true })
           .click();
         await otherCard
           .getByText("Hedef planı onaylandı.", { exact: true })

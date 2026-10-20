@@ -679,7 +679,7 @@ export default function ProgressCard({
                 disabled={saving || problems.length > 0}
                 onClick={() => void send("approved", "Hedef planı onaylandı.")}
               >
-                Hedef Planını Onayla
+                Hedef Plan Onayla
               </button>
             )}
             {rebaseline && (
@@ -722,7 +722,7 @@ export default function ProgressCard({
                 disabled={saving}
                 onClick={() => void send("approved", "Hedef planı onaylandı.")}
               >
-                Hedef Planını Onayla
+                Hedef Plan Onayla
               </button>
             )}
           </>

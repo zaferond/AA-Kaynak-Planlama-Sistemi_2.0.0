@@ -35,7 +35,7 @@ export const ENTRY_HELP: Record<EntryStatus, string> = {
   waiting:
     "Seçili ayın kümülatif gerçekleşen yüzdesi ve açıklaması henüz kaydedilmedi.",
   entered:
-    "Seçili ayın gerçekleşen yüzdesi ve açıklaması kaydedildi. Gerçekleşen için ayrıca onay süreci yoktur.",
+    "Seçili ayın gerçekleşen yüzdesi ve açıklaması kaydedildi. Ay kilitlenene kadar Gerçekleşen Oran Revize Et düğmesiyle düzenlenebilir. Gerçekleşen için ayrıca onay süreci yoktur.",
 };
 
 /** An existing approved plan stays valid while its revision is prepared. */

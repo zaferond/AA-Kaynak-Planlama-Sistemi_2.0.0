@@ -361,6 +361,142 @@ export async function checkProjectProgress(f) {
             exact: true,
           })
           .waitFor();
+        const actualField = otherCard.getByLabel(
+          `${otherName} · Eyl 2026 gerçekleşen %`,
+        );
+        const noteField = otherCard.getByLabel(`${otherName} · açıklama`);
+        const reviseActual = otherCard.getByRole("button", {
+          name: "Gerçekleşen Oran Revize Et",
+          exact: true,
+        });
+        const saveActual = otherCard.getByRole("button", {
+          name: "Gerçekleşeni Kaydet",
+          exact: true,
+        });
+        const cancelActual = otherCard.getByRole("button", {
+          name: "Gerçekleşen Revizyonunu İptal Et",
+          exact: true,
+        });
+        const savedRecord = (await f.state()).projectProgress.find(
+          (r) => r.projectId === "p-b",
+        );
+        const originalBaselines = structuredClone(savedRecord.baselines);
+        assert.equal(
+          await otherCard
+            .getByRole("rowheader", { name: "Harcanan kaynak %", exact: true })
+            .count(),
+          0,
+        );
+        await otherCard
+          .getByRole("rowheader", {
+            name: "Gerçekleşen kaynak (kişi-ay)",
+            exact: true,
+          })
+          .waitFor();
+        assert.equal(await actualField.count(), 0);
+        assert(await noteField.isDisabled());
+        assert.equal(await saveActual.count(), 0);
+        await reviseActual.waitFor();
+        assert.equal(
+          await reviseActual.evaluate((button) =>
+            button.previousElementSibling?.textContent.trim(),
+          ),
+          "Hedef Planını Revize Et",
+        );
+        await f.capture(page, "progress-saved-actual-readonly");
+        await reviseActual.click();
+        assert.equal(await actualField.inputValue(), "35");
+        assert(
+          await actualField.evaluate(
+            (input) => input === document.activeElement,
+          ),
+        );
+        assert(!(await noteField.isDisabled()));
+        await actualField.fill("101");
+        await saveActual.click();
+        await otherCard
+          .getByText("0 ile 100 arasında bir yüzde girin.", { exact: true })
+          .waitFor();
+        assert.equal(
+          (await f.state()).projectProgress.find((r) => r.projectId === "p-b")
+            .actuals["2026-09"].pct,
+          35,
+        );
+        await actualField.fill("40");
+        assert.equal(
+          await otherCard
+            .getByText("0 ile 100 arasında bir yüzde girin.", { exact: true })
+            .count(),
+          0,
+        );
+        await noteField.fill("Eylül gerçekleşen oranı revize edildi");
+        await f.capture(page, "progress-actual-revision-editing");
+        await saveActual.click();
+        await f.wait(
+          async () =>
+            (await f.state()).projectProgress.find((r) => r.projectId === "p-b")
+              .actuals["2026-09"].pct === 40,
+          "Actual revision saved",
+        );
+        await reviseActual.waitFor();
+        assert.equal(await actualField.count(), 0);
+        assert.equal(await saveActual.count(), 0);
+        assert.deepEqual(
+          (await f.state()).projectProgress.find((r) => r.projectId === "p-b")
+            .baselines,
+          originalBaselines,
+        );
+        // The explanation may be revised without changing the percentage.
+        await reviseActual.click();
+        await noteField.fill("Yalnız açıklama revize edildi");
+        await saveActual.click();
+        await f.wait(
+          async () =>
+            (await f.state()).projectProgress.find((r) => r.projectId === "p-b")
+              .actuals["2026-09"].note === "Yalnız açıklama revize edildi",
+          "Note-only revision saved",
+        );
+        await reviseActual.waitFor();
+        await reviseActual.click();
+        await actualField.fill("55");
+        await noteField.fill("İptal edilecek değişiklik");
+        await cancelActual.click();
+        assert.equal(await actualField.count(), 0);
+        assert.equal(
+          await noteField.inputValue(),
+          "Yalnız açıklama revize edildi",
+        );
+        assert(await noteField.isDisabled());
+        assert.equal(
+          (await f.state()).projectProgress.find((r) => r.projectId === "p-b")
+            .actuals["2026-09"].pct,
+          40,
+        );
+        // Switching months closes the saved entry's revision without copying its draft.
+        await reviseActual.click();
+        await actualField.fill("60");
+        await noteField.fill("Kaydedilmemiş aylık revizyon");
+        await entryFilter.selectOption("");
+        await page
+          .getByRole("combobox", { name: "Ay", exact: true })
+          .selectOption("2026-10");
+        assert.equal(
+          await otherCard
+            .getByLabel(`${otherName} · Eki 2026 gerçekleşen %`)
+            .inputValue(),
+          "",
+        );
+        assert.equal(await noteField.inputValue(), "");
+        await page
+          .getByRole("combobox", { name: "Ay", exact: true })
+          .selectOption("2026-09");
+        await entryFilter.selectOption("entered");
+        await reviseActual.waitFor();
+        assert.equal(await actualField.count(), 0);
+        assert.equal(
+          await noteField.inputValue(),
+          "Yalnız açıklama revize edildi",
+        );
         await page
           .getByRole("tab", { name: "İlerleme Raporu", exact: true })
           .click();
@@ -400,6 +536,8 @@ export async function checkProjectProgress(f) {
             .count(),
           0,
         );
+        assert.equal(await reviseActual.count(), 0);
+        assert.equal(await cancelActual.count(), 0);
         await otherCard
           .getByRole("button", { name: "Hedef Planını Revize Et", exact: true })
           .click();
@@ -455,7 +593,11 @@ export async function checkProjectProgress(f) {
           (r) => r.projectId === "p-b",
         );
         assert.equal(record.baselines.length, 1);
-        assert.equal(record.actuals["2026-09"].pct, 35);
+        assert.equal(record.actuals["2026-09"].pct, 40);
+        assert.equal(
+          record.actuals["2026-09"].note,
+          "Yalnız açıklama revize edildi",
+        );
         await f.capture(page, "progress-independent-statuses");
         await page
           .getByText("Durumlar ve süreç nasıl işler?", { exact: true })
@@ -476,6 +618,12 @@ export async function checkProjectProgress(f) {
             exact: true,
           })
           .waitFor();
+        await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
+        await reviseActual.waitFor();
+        assert.equal(await actualField.count(), 0);
+        await reviseActual.click();
+        assert.equal(await actualField.inputValue(), "40");
+        await cancelActual.click();
       },
     );
     await f.check("progress: ordinary users do not see the tab", async () => {

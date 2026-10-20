@@ -307,6 +307,8 @@ Head Count görünümünde dönem/yoğunluk ve aktif ilanları planlamaya dahil 
 
 ## Proje ilerleme yönetici raporu
 
+Plan ve Giriş ekranında harcanan kaynak yüzdesi gösterilmez; gerçekleşen kaynak kişi-ay olarak korunur. Gerçekleşen oranı ve açıklaması ilk kayıttan sonra salt okunurdur. Yetkili kullanıcı seçili ay kilitli değilken “Gerçekleşen Oran Revize Et” ile düzenleme açar, kaydeder veya son kayıtlı değerlere döner. Ay/kayıt revision/ay kilidi değişimi revizyonu kapatır; sunucu yetki ve kilit denetimi korunur.
+
 `project-progress/ProgressReport.tsx`, liderlik raporunun yıl/ay başlıklarını kullanan proje → liderlik matrisini oluşturur. `ProgressManagementMatrix.tsx` aylık aşama, kritik konular, planlanan %, gerçekleşen % ve fark (yüzde puan) satırlarını, solda seçili ayın değerlendirme durumunu, aç/kapat ve yatay kaydırmayı gösterir. Liderlik detayları başlangıçta kapalıdır. `ProgressTopicCells.tsx`, Plan ve Giriş ile raporda aynı aylık kritik tarih aralıklarını, milestone işaretlerini ve açıklama balonlarını gösterir. Durumlar satır içi açıklamalar ve durum rehberiyle açıklanır; risk gerekçesi açılarak görülebilir. Proje ayrıntısında yalnız açıklama geçmişi gösterilir, grafik gösterilmez. Görünüm 10 proje ile sayfalanır; özet ve Excel dışa aktarımı tüm filtrelenmiş projeleri içerir.
 
 `progress-management.ts` değerlendirme modelidir. Her ayda o ay için geçerli onaylı hedef planı kullanılır. Plan veya gerçekleşen liderlik kapsamı eksikse proje gerçekleşeni ve farkı boş bırakılır; bilinen bir liderlik riski proje özetinde korunur. Gelecek, takip öncesi ve proje bitişi sonrası aylar gerçekleşmiş sayılmaz. Kaynak tahsisi olup ilerleme kaydı olmayan liderlikler rapora salt okunur olarak eklenir.

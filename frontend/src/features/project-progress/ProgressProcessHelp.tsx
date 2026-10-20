@@ -22,6 +22,13 @@ export default function ProgressProcessHelp() {
         tamamlanan toplam payıdır. Örneğin %45, o ay sonuna kadar toplam işin
         %45’inin tamamlandığı anlamına gelir.
       </p>
+      <p>
+        Gerçekleşen oranı ve açıklaması kaydedildikten sonra salt okunur
+        gösterilir. Ay değişikliğe açıkken “Gerçekleşen Oran Revize Et”
+        düğmesiyle ikisini de düzenleyip “Gerçekleşeni Kaydet” ile yeniden
+        kaydedebilirsiniz. “Gerçekleşen Revizyonunu İptal Et” son kaydedilen
+        değerleri geri getirir. Ay kilitlendiğinde revizyon yapılamaz.
+      </p>
       <div className="progress-process-columns">
         <div>
           <strong>{PLAN_STATUS_TITLE}</strong>

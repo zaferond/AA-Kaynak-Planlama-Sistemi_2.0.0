@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Principal } from "../../access";
 import type { Project } from "../../model";
 import ProjectResponsible from "../../ProjectResponsible";
@@ -7,7 +7,6 @@ import {
   PROGRESS_NOTE_MAX,
   currentBaseline,
   defaultPlanStart,
-  leaderProgress,
   monthsAfter,
   nextMonth,
   previousMonth,
@@ -99,6 +98,10 @@ export default function ProgressCard({
   const saved = month ? record?.actuals[month] : undefined;
   const [pct, setPct] = useState("");
   const [note, setNote] = useState("");
+  const [entryRevisionMonth, setEntryRevisionMonth] = useState<string | null>(
+    null,
+  );
+  const actualInput = useRef<HTMLInputElement>(null);
   const [entryMessage, setEntryMessage] = useState<{
     text: string;
     error?: boolean;
@@ -107,8 +110,9 @@ export default function ProgressCard({
     setPct(saved ? decimal(saved.pct) : "");
     setNote(saved?.note || "");
     setEntryMessage(undefined);
+    setEntryRevisionMonth(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month, revision]);
+  }, [month, revision, locked]);
 
   // Fresh values whenever the saved record changes. Targets of a new plan
   // start empty: the leader fills them or applies the suggestion.
@@ -196,6 +200,24 @@ export default function ProgressCard({
   const actualFte = ctx.actual(project.id).get(leader);
   const canEnter =
     !!baseline && canLead(user, leader) && entryIsEditable(entry, locked);
+  const revisingEntry = entryRevisionMonth === month;
+  const canEditEntry = canEnter && (!saved || revisingEntry);
+  useEffect(() => {
+    if (revisingEntry) actualInput.current?.focus();
+  }, [revisingEntry]);
+  function startEntryRevision() {
+    if (!saved || !canEnter || saving) return;
+    setPct(decimal(saved.pct));
+    setNote(saved.note);
+    setEntryMessage(undefined);
+    setEntryRevisionMonth(month);
+  }
+  function cancelEntryRevision() {
+    setPct(saved ? decimal(saved.pct) : "");
+    setNote(saved?.note || "");
+    setEntryRevisionMonth(null);
+    setEntryMessage(undefined);
+  }
   const entryChanged =
     pct !== (saved ? decimal(saved.pct) : "") || note !== (saved?.note || "");
   const value = num(pct);
@@ -207,7 +229,7 @@ export default function ProgressCard({
         ? "Kısa bir açıklama yazın."
         : "";
   async function submitEntry() {
-    if (!record || !canEnter || saving) return;
+    if (!record || !canEditEntry || saving || !entryChanged) return;
     if (entryProblem)
       return setEntryMessage({ text: entryProblem, error: true });
     setEntryMessage(undefined);
@@ -221,7 +243,12 @@ export default function ProgressCard({
           },
         }),
       ]);
-      setEntryMessage({ text: "Kaydedildi." });
+      setEntryRevisionMonth(null);
+      setEntryMessage({
+        text: saved
+          ? "Gerçekleşen oran ve açıklama güncellendi."
+          : "Kaydedildi.",
+      });
     } catch (error) {
       setEntryMessage({ text: (error as Error).message, error: true });
     }
@@ -395,16 +422,20 @@ export default function ProgressCard({
         ...planRows,
         {
           label: "Gerçekleşen %",
-          editable: canEnter,
+          editable: canEditEntry,
           opening: <strong>{pctLabel(baseline.openingPct)}</strong>,
           cell: (m) =>
-            m === month && canEnter ? (
+            m === month && canEditEntry ? (
               <input
+                ref={actualInput}
                 aria-label={`${label} · ${fullMonth(m)} gerçekleşen %`}
                 inputMode="decimal"
                 value={pct}
                 disabled={saving}
-                onChange={(e) => setPct(e.target.value)}
+                onChange={(e) => {
+                  setPct(e.target.value);
+                  setEntryMessage(undefined);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") void submitEntry();
                 }}
@@ -416,17 +447,6 @@ export default function ProgressCard({
             ) : (
               "—"
             ),
-        },
-        {
-          label: "Harcanan kaynak %",
-          opening: pctLabel(baseline.openingPct),
-          cell: (m) =>
-            past(m)
-              ? pctLabel(
-                  leaderProgress(record!, m, planned, actualFte, project.end)
-                    .spent,
-                )
-              : "—",
         },
       ]
     : planRows;
@@ -558,9 +578,12 @@ export default function ProgressCard({
                   aria-label={`${label} · açıklama`}
                   maxLength={PROGRESS_NOTE_MAX}
                   value={note}
-                  disabled={!canEnter || saving}
-                  placeholder={canEnter ? "Bu ayın kısa açıklaması" : ""}
-                  onChange={(e) => setNote(e.target.value)}
+                  disabled={!canEditEntry || saving}
+                  placeholder={canEditEntry ? "Bu ayın kısa açıklaması" : ""}
+                  onChange={(e) => {
+                    setNote(e.target.value);
+                    setEntryMessage(undefined);
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") void submitEntry();
                   }}
@@ -572,7 +595,7 @@ export default function ProgressCard({
                   ayın kilidini açmalı.
                 </span>
               )}
-              {canEnter && (
+              {canEditEntry && (
                 <button
                   type="button"
                   className="button primary"
@@ -705,6 +728,28 @@ export default function ProgressCard({
             Hedef Planını Revize Et
           </button>
         )}
+        {canEnter &&
+          saved &&
+          (revisingEntry ? (
+            <button
+              type="button"
+              className="button"
+              disabled={saving}
+              onClick={cancelEntryRevision}
+            >
+              Gerçekleşen Revizyonunu İptal Et
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="button"
+              disabled={saving}
+              onClick={startEntryRevision}
+              title={`${monthLabel(month)} gerçekleşen oranını ve açıklamasını revize et`}
+            >
+              Gerçekleşen Oran Revize Et
+            </button>
+          ))}
         {record?.proposal && !pending && baseline && (
           <button
             type="button"

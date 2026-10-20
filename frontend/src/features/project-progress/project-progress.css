@@ -384,6 +384,8 @@
 /* Month grid laid out like the project timeline. */
 .project-progress .progress-grid-scroll {
   overflow-x: auto;
+  /* Keep the last row clear of overlay scrollbars as well as native ones. */
+  padding-bottom: var(--table-scrollbar-clearance, 24px);
 }
 .project-progress .progress-grid {
   border-collapse: separate;
@@ -394,8 +396,8 @@
 .project-progress .progress-grid th,
 .project-progress .progress-grid td {
   min-width: 62px;
-  height: 30px;
-  padding: 2px 4px;
+  height: 36px;
+  padding: 4px;
   border-bottom: 1px solid #e6ebe1;
   border-right: 1px solid #edf0e9;
   text-align: center;
@@ -403,7 +405,7 @@
   white-space: nowrap;
 }
 .project-progress .progress-grid thead th {
-  height: 28px;
+  height: 32px;
   background: var(--table-header-background, #f1f4ec);
   color: var(--brand-text, #293a2d);
   font-weight: 650;
@@ -422,7 +424,7 @@
   left: 0;
   z-index: 2;
   min-width: 168px;
-  padding: 2px 10px;
+  padding: 4px 10px;
   background: var(--table-header-background, #f1f4ec);
   text-align: left;
   font-weight: 650;

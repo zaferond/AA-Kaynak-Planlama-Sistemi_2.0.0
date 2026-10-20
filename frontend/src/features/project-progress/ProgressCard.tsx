@@ -37,8 +37,7 @@ import {
   PLAN_STATUS_TITLE,
   ENTRY_STATUS_TITLE,
   PLAN_HELP,
-  ENTRY_LABELS,
-  ENTRY_HELP,
+  entryPresentation,
 } from "./progress-status";
 
 type Form = {
@@ -49,10 +48,6 @@ type Form = {
   adjustedSuggestion?: ProgressTargets;
 };
 const decimal = (value: number) => String(value).replace(".", ",");
-const lockMonthFormat = new Intl.DateTimeFormat("tr-TR", {
-  month: "long",
-  year: "numeric",
-});
 const num = (value: string) =>
   value.trim() === "" ? Number.NaN : Number(value.replace(",", "."));
 const text = (value: number) => String(value).replace(".", ",");
@@ -99,6 +94,7 @@ export default function ProgressCard({
   // Monthly actual of the chosen month.
   const locked = (data.progressLocks || []).some((lock) => lock.id === month);
   const entry = entryStatus(record, month, currentMonth);
+  const entryState = entryPresentation(entry, locked);
   const saved = month ? record?.actuals[month] : undefined;
   const [pct, setPct] = useState("");
   const [note, setNote] = useState("");
@@ -478,23 +474,14 @@ export default function ProgressCard({
               help={PLAN_HELP[status]}
             />
           )}
-          <ProgressStatusCard
-            label={
-              ENTRY_STATUS_TITLE + (month ? ` (${monthLabel(month)})` : "")
-            }
-            value={ENTRY_LABELS[entry]}
-            status={entry}
-            help={ENTRY_HELP[entry]}
-          />
-          {month && (
+          {entryState && (
             <ProgressStatusCard
-              label="Ay kilidi"
-              value={
-                locked
-                  ? `${lockMonthFormat.format(new Date(month + "-01T12:00:00"))} ve öncesi değişikliğe kapalı`
-                  : "Değişikliğe açık"
+              label={
+                ENTRY_STATUS_TITLE + (month ? ` (${monthLabel(month)})` : "")
               }
-              status={locked ? "locked" : "unlocked"}
+              value={entryState.label}
+              status={entryState.status}
+              help={entryState.help}
             />
           )}
         </div>
@@ -679,7 +666,7 @@ export default function ProgressCard({
                 disabled={saving || problems.length > 0}
                 onClick={() => void send("approved", "Hedef planı onaylandı.")}
               >
-                Hedef Plan Onayla
+                Hedef Planı Onayla
               </button>
             )}
             {rebaseline && (
@@ -722,7 +709,7 @@ export default function ProgressCard({
                 disabled={saving}
                 onClick={() => void send("approved", "Hedef planı onaylandı.")}
               >
-                Hedef Plan Onayla
+                Hedef Planı Onayla
               </button>
             )}
           </>

@@ -3,11 +3,19 @@ import {
   PLAN_STATUS_TITLE,
   ENTRY_STATUS_TITLE,
   PLAN_HELP,
-  ENTRY_LABELS,
-  ENTRY_HELP,
+  entryPresentation,
   type PlanStatus,
-  type EntryStatus,
 } from "./progress-status";
+
+const entryStates = (
+  [
+    ["closed", false],
+    ["waiting", false],
+    ["entered", false],
+    ["entered", true],
+    ["waiting", true],
+  ] as const
+).map(([status, locked]) => entryPresentation(status, locked)!);
 
 export default function ProgressProcessHelp() {
   return (
@@ -16,6 +24,13 @@ export default function ProgressProcessHelp() {
       <p>
         Hedefleri hazırlayın → Taslağı kaydedin → Proje ekibi onayına gönderin →
         Onaydan sonra her ay gerçekleşen yüzdeyi ve açıklamasını kaydedin.
+      </p>
+      <p>
+        “Yönetici Girişi Bekleniyor” → “Taslak” → “Proje Ekibi Onayında” →
+        “Proje Ekibi Onayladı” sırası hedef planına aittir. Gerçekleşen plan
+        durumu, hedef plan onaylandıktan sonra gösterilir. Seçili ay takip
+        dönemindeyse ve henüz kayıt yoksa “Gerçekleşen Durum Girişi Bekleniyor”
+        görünür. Gelecek aylara ve takip öncesindeki aylara giriş açılamaz.
       </p>
       <p>
         Yüzdeler, ilgili liderliğin bu projedeki işinin ay sonuna kadar
@@ -45,31 +60,12 @@ export default function ProgressProcessHelp() {
         <div>
           <strong>{ENTRY_STATUS_TITLE}</strong>
           <dl>
-            {(Object.keys(ENTRY_LABELS) as EntryStatus[]).map((status) => (
-              <div key={status}>
-                <dt>{ENTRY_LABELS[status]}</dt>
-                <dd>{ENTRY_HELP[status]}</dd>
+            {entryStates.map((state) => (
+              <div key={state.label}>
+                <dt>{state.label}</dt>
+                <dd>{state.help}</dd>
               </div>
             ))}
-          </dl>
-        </div>
-        <div>
-          <strong>Ay kilidi</strong>
-          <dl>
-            <div>
-              <dt>Değişikliğe açık</dt>
-              <dd>
-                Onaylı planın takip dönemindeki mevcut ve geçmiş aylara giriş
-                yapılabilir, kayıtlar düzenlenebilir.
-              </dd>
-            </div>
-            <div>
-              <dt>Değişikliğe kapalı</dt>
-              <dd>
-                Giriş yapılmış olsa da olmasa da bu ay değiştirilemez. Kilidi
-                yalnız sistem yöneticisi açabilir.
-              </dd>
-            </div>
           </dl>
         </div>
       </div>

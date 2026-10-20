@@ -91,15 +91,25 @@ export async function checkProjectProgress(f) {
         await otherCard.waitFor();
         await ownerFilter.selectOption({ label: "Tümü" });
         await card
-          .getByText("Hedef Plan Giriş Durumu: Hedef Plan Girişi Bekliyor", {
+          .getByText("Hedef Plan Durumu: Yönetici Girişi Bekleniyor", {
             exact: true,
           })
           .waitFor();
-        await card
-          .getByText(
-            /Geçekleşme Giriş Durumu.*Hedef Plan Proje Onayı Bekleniyor/,
-          )
-          .waitFor();
+        assert.equal(
+          await card.getByText(/^Gerçekleşen Plan Durumu/).count(),
+          0,
+        );
+        assert.equal(await card.getByText(/^Ay kilidi/).count(), 0);
+        assert.equal(
+          await page
+            .getByRole("combobox", {
+              name: "Gerçekleşen Plan Durumu",
+              exact: true,
+            })
+            .locator('option[value="needsPlan"]')
+            .count(),
+          0,
+        );
         const target = (month) => card.getByLabel(`${name} · ${month} hedef %`);
         await card
           .getByLabel(`${name} · başlangıç ayı`)
@@ -192,9 +202,16 @@ export async function checkProjectProgress(f) {
           "proposal pending",
         );
         // Only an admin approves.
+        await card
+          .getByText("Hedef Plan Durumu: Proje Ekibi Onayında", { exact: true })
+          .waitFor();
+        assert.equal(
+          await card.getByText(/^Gerçekleşen Plan Durumu/).count(),
+          0,
+        );
         assert.equal(
           await card
-            .getByRole("button", { name: "Hedef Plan Onayla" })
+            .getByRole("button", { name: "Hedef Planı Onayla" })
             .count(),
           0,
         );
@@ -228,9 +245,7 @@ export async function checkProjectProgress(f) {
           name,
         );
         const card = group.getByRole("region", { name, exact: true });
-        await card
-          .getByRole("button", { name: "Hedef Plan Onayla" })
-          .click();
+        await card.getByRole("button", { name: "Hedef Planı Onayla" }).click();
         await card.getByText("Hedef planı onaylandı.").waitFor();
         const record = (await f.state()).projectProgress.find(
           (r) => r.projectId === "p-a" && r.leader === f.teamA.lead,
@@ -242,20 +257,20 @@ export async function checkProjectProgress(f) {
           "2026-12": 100,
         });
         await card
-          .getByText("Hedef Plan Giriş Durumu: Onaylandı", { exact: true })
+          .getByText("Hedef Plan Durumu: Proje Ekibi Onayladı", { exact: true })
           .waitFor();
         await card
-          .getByText("Geçekleşme Giriş Durumu: Henüz girişe açık değil", {
+          .getByText("Gerçekleşen Plan Durumu: Henüz girişe açık değil", {
             exact: true,
           })
           .waitFor();
         const entryFilter = page.getByRole("combobox", {
-          name: "Geçekleşme Giriş Durumu",
+          name: "Gerçekleşen Plan Durumu",
           exact: true,
         });
         assert.equal(
           await entryFilter.locator('option[value="entered"]').textContent(),
-          "Kaydedildi (0)",
+          "Kaydedildi · değişikliğe açık (0)",
         );
         // Approved: the targets are fixed and the actual row appears.
         await card.getByRole("rowheader", { name: "Gerçekleşen %" }).waitFor();
@@ -309,7 +324,7 @@ export async function checkProjectProgress(f) {
           .getByLabel(`${otherName} · Ara 2026 hedef %`)
           .fill("100");
         await otherCard
-          .getByRole("button", { name: "Hedef Plan Onayla", exact: true })
+          .getByRole("button", { name: "Hedef Planı Onayla", exact: true })
           .click();
         await otherCard
           .getByText("Hedef planı onaylandı.", { exact: true })
@@ -318,11 +333,11 @@ export async function checkProjectProgress(f) {
           .getByRole("combobox", { name: "Ay", exact: true })
           .selectOption("2026-09");
         const entryFilter = page.getByRole("combobox", {
-          name: "Geçekleşme Giriş Durumu",
+          name: "Gerçekleşen Plan Durumu",
           exact: true,
         });
         const planFilter = page.getByRole("combobox", {
-          name: "Hedef Plan Giriş Durumu",
+          name: "Hedef Plan Durumu",
           exact: true,
         });
         await entryFilter.selectOption("closed");
@@ -334,7 +349,7 @@ export async function checkProjectProgress(f) {
         assert.equal(await page.locator(".progress-card").count(), 1);
         await otherCard
           .getByText(
-            "Geçekleşme Giriş Durumu (Eyl 2026): Gerçekleşen Durum Girişi Bekleniyor",
+            "Gerçekleşen Plan Durumu (Eyl 2026): Gerçekleşen Durum Girişi Bekleniyor",
             {
               exact: true,
             },
@@ -357,9 +372,12 @@ export async function checkProjectProgress(f) {
         );
         await entryFilter.selectOption("entered");
         await otherCard
-          .getByText("Geçekleşme Giriş Durumu (Eyl 2026): Kaydedildi", {
-            exact: true,
-          })
+          .getByText(
+            "Gerçekleşen Plan Durumu (Eyl 2026): Kaydedildi · değişikliğe açık",
+            {
+              exact: true,
+            },
+          )
           .waitFor();
         const actualField = otherCard.getByLabel(
           `${otherName} · Eyl 2026 gerçekleşen %`,
@@ -521,16 +539,25 @@ export async function checkProjectProgress(f) {
           .waitFor();
         await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
         await otherCard
-          .getByText("Geçekleşme Giriş Durumu (Eyl 2026): Kaydedildi", {
-            exact: true,
-          })
-          .waitFor();
-        await otherCard
           .getByText(
-            "Ay kilidi: Eylül 2026 ve öncesi değişikliğe kapalı",
-            { exact: true },
+            "Gerçekleşen Plan Durumu (Eyl 2026): Kaydedildi · değişikliğe kapalı",
+            {
+              exact: true,
+            },
           )
           .waitFor();
+        assert.equal(await otherCard.getByText(/^Ay kilidi/).count(), 0);
+        assert.equal(
+          await page
+            .locator(".progress-entry-summary")
+            .getByText(/Ay kilidi/)
+            .count(),
+          0,
+        );
+        assert.equal(
+          await entryFilter.locator('option[value="entered"]').textContent(),
+          "Kaydedildi · değişikliğe kapalı (1)",
+        );
         assert.equal(
           await otherCard.locator(".progress-card-entry").count(),
           0,
@@ -566,7 +593,7 @@ export async function checkProjectProgress(f) {
           .getByText("Hedef planı taslağı kaydedildi.", { exact: true })
           .waitFor();
         await otherCard
-          .getByText("Hedef Plan Giriş Durumu: Onaylandı", { exact: true })
+          .getByText("Hedef Plan Durumu: Proje Ekibi Onayladı", { exact: true })
           .waitFor();
         await otherCard
           .getByText("Revizyon Giriş Durumu: Taslak", { exact: true })
@@ -597,9 +624,12 @@ export async function checkProjectProgress(f) {
           .getByText("Revizyon Giriş Durumu: Taslak", { exact: true })
           .waitFor();
         await otherCard
-          .getByText("Geçekleşme Giriş Durumu (Eyl 2026): Kaydedildi", {
-            exact: true,
-          })
+          .getByText(
+            "Gerçekleşen Plan Durumu (Eyl 2026): Kaydedildi · değişikliğe kapalı",
+            {
+              exact: true,
+            },
+          )
           .waitFor();
         const record = (await f.state()).projectProgress.find(
           (r) => r.projectId === "p-b",
@@ -631,6 +661,12 @@ export async function checkProjectProgress(f) {
           })
           .waitFor();
         await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
+        await otherCard
+          .getByText(
+            "Gerçekleşen Plan Durumu (Eyl 2026): Kaydedildi · değişikliğe açık",
+            { exact: true },
+          )
+          .waitFor();
         await reviseActual.waitFor();
         assert.equal(await actualField.count(), 0);
         await reviseActual.click();
@@ -640,6 +676,73 @@ export async function checkProjectProgress(f) {
           "Yalnız açıklama revize edildi",
         );
         await cancelActual.click();
+        // Locking a missing entry must not describe it as saved.
+        await entryFilter.selectOption("");
+        await page
+          .getByRole("combobox", { name: "Ay", exact: true })
+          .selectOption("2026-10");
+        await otherCard
+          .getByText(
+            "Gerçekleşen Plan Durumu (Eki 2026): Gerçekleşen Durum Girişi Bekleniyor",
+            { exact: true },
+          )
+          .waitFor();
+        await page
+          .getByRole("tab", { name: "İlerleme Raporu", exact: true })
+          .click();
+        await page
+          .getByRole("button", {
+            name: "Eki 2026 Ayını Değişikliğe Kapat",
+            exact: true,
+          })
+          .click();
+        await page
+          .getByRole("button", {
+            name: "Eki 2026 Ayını Değişikliğe Aç",
+            exact: true,
+          })
+          .waitFor();
+        await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
+        await otherCard
+          .getByText(
+            "Gerçekleşen Plan Durumu (Eki 2026): Gerçekleşen Durum Girişi Bekleniyor · değişikliğe kapalı",
+            { exact: true },
+          )
+          .waitFor();
+        assert.equal(
+          await otherCard
+            .getByLabel(`${otherName} · Eki 2026 gerçekleşen %`)
+            .count(),
+          0,
+        );
+        assert.equal(await noteField.count(), 0);
+        assert.equal(await saveActual.count(), 0);
+        assert.equal(await reviseActual.count(), 0);
+        await page
+          .getByRole("tab", { name: "İlerleme Raporu", exact: true })
+          .click();
+        await page
+          .getByRole("button", {
+            name: "Eki 2026 Ayını Değişikliğe Aç",
+            exact: true,
+          })
+          .click();
+        await page
+          .getByRole("button", {
+            name: "Eki 2026 Ayını Değişikliğe Kapat",
+            exact: true,
+          })
+          .waitFor();
+        await page.getByRole("tab", { name: /Plan ve Giriş/ }).click();
+        await otherCard
+          .getByText(
+            "Gerçekleşen Plan Durumu (Eki 2026): Gerçekleşen Durum Girişi Bekleniyor",
+            { exact: true },
+          )
+          .waitFor();
+        await otherCard
+          .getByLabel(`${otherName} · Eki 2026 gerçekleşen %`)
+          .waitFor();
       },
     );
     await f.check("progress: ordinary users do not see the tab", async () => {

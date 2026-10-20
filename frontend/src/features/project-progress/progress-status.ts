@@ -3,33 +3,30 @@ import type { ProjectProgress } from "../../../../shared/project-progress.ts";
 export type PlanStatus = "pending" | "draft" | "new" | "approved";
 export type EntryStatus = "needsPlan" | "closed" | "waiting" | "entered";
 
-export const PLAN_STATUS_TITLE = "Hedef Plan Giriş Durumu";
-export const ENTRY_STATUS_TITLE = "Geçekleşme Giriş Durumu";
+export const PLAN_STATUS_TITLE = "Hedef Plan Durumu";
+export const ENTRY_STATUS_TITLE = "Gerçekleşen Plan Durumu";
 
 export const PLAN_LABELS: Record<PlanStatus, string> = {
   pending: "Proje Ekibi Onayında",
   draft: "Taslak",
-  new: "Hedef Plan Girişi Bekliyor",
-  approved: "Onaylandı",
+  new: "Yönetici Girişi Bekleniyor",
+  approved: "Proje Ekibi Onayladı",
 };
 export const PLAN_HELP: Record<PlanStatus, string> = {
   pending:
     "Hedefler proje ekibi onayına gönderildi. Düzenlemek için önce onay talebini geri çekin.",
   draft:
     "Taslak kaydedildi; hedefler düzenlenebilir. Tamamlandığında proje ekibi onayına gönderin.",
-  new: "Henüz kaydedilmiş bir hedef planı yok. Başlangıç yüzdesini ve aylık hedefleri hazırlayın.",
+  new: "Yönetici henüz hedef planını kaydetmedi. Başlangıç yüzdesini ve aylık hedefleri hazırlayıp proje ekibi onayına gönderin.",
   approved:
-    "Hedefler onaylandı ve gerçekleşen ilerlemenin karşılaştırılacağı plan oldu.",
+    "Proje ekibi hedef planını onayladı. Takip dönemindeki mevcut ve geçmiş ayların gerçekleşen yüzdesi girilebilir.",
 };
-export const ENTRY_LABELS: Record<EntryStatus, string> = {
-  needsPlan: "Hedef Plan Proje Onayı Bekleniyor",
+export const ENTRY_LABELS: Record<Exclude<EntryStatus, "needsPlan">, string> = {
   closed: "Henüz girişe açık değil",
   waiting: "Gerçekleşen Durum Girişi Bekleniyor",
   entered: "Kaydedildi",
 };
-export const ENTRY_HELP: Record<EntryStatus, string> = {
-  needsPlan:
-    "Gerçekleşen girişi için önce hedef planının proje onayı tamamlanmalı.",
+const ENTRY_HELP: Record<Exclude<EntryStatus, "needsPlan">, string> = {
   closed:
     "Seçili ay planın takip döneminden önce veya gelecekte; bu aya gerçekleşen girilemez.",
   waiting:
@@ -37,6 +34,29 @@ export const ENTRY_HELP: Record<EntryStatus, string> = {
   entered:
     "Seçili ayın gerçekleşen yüzdesi ve açıklaması kaydedildi. Ay kilitlenene kadar Gerçekleşen Oran Revize Et düğmesiyle düzenlenebilir. Gerçekleşen için ayrıca onay süreci yoktur.",
 };
+
+/** Show actual progress only after plan approval; include editing availability. */
+export function entryPresentation(status: EntryStatus, locked: boolean) {
+  if (status === "needsPlan") return null;
+  const tracked = status === "waiting" || status === "entered";
+  const suffix =
+    status === "entered"
+      ? ` · değişikliğe ${locked ? "kapalı" : "açık"}`
+      : status === "waiting" && locked
+        ? " · değişikliğe kapalı"
+        : "";
+  return {
+    label: ENTRY_LABELS[status] + suffix,
+    status: locked && tracked ? "locked" : status,
+    help:
+      locked && tracked
+        ? (status === "entered"
+            ? "Seçili ayın gerçekleşen yüzdesi ve açıklaması kaydedildi."
+            : "Seçili ayın gerçekleşen yüzdesi ve açıklaması henüz kaydedilmedi.") +
+          " Seçili ay değişikliğe kapalı; giriş veya revizyon yapılamaz. Kilidi yalnız sistem yöneticisi açabilir."
+        : ENTRY_HELP[status],
+  };
+}
 
 /** An existing approved plan stays valid while its revision is prepared. */
 export function baselineStatus(record?: ProjectProgress): PlanStatus {

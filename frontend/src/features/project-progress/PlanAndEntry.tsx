@@ -2,7 +2,6 @@ import { useId, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import type { Principal } from "../../access";
 import type { Change } from "../../../../shared/commands";
-import { monthLabel } from "../../format";
 import ProgressCard from "./ProgressCard";
 import ProgressProcessHelp from "./ProgressProcessHelp";
 import {
@@ -12,6 +11,7 @@ import {
   PLAN_STATUS_TITLE,
   ENTRY_STATUS_TITLE,
   ENTRY_LABELS,
+  entryPresentation,
   type PlanStatus,
   type EntryStatus,
 } from "./progress-status";
@@ -134,11 +134,14 @@ export default function PlanAndEntry({
             onChange={(e) => setEntryFilter(e.target.value as "" | EntryStatus)}
           >
             <option value="">Tümü</option>
-            {(Object.keys(ENTRY_LABELS) as EntryStatus[]).map((status) => (
-              <option key={status} value={status}>
-                {ENTRY_LABELS[status]} ({entryCount(status)})
-              </option>
-            ))}
+            {(Object.keys(ENTRY_LABELS) as (keyof typeof ENTRY_LABELS)[]).map(
+              (status) => (
+                <option key={status} value={status}>
+                  {entryPresentation(status, locked)!.label} (
+                  {entryCount(status)})
+                </option>
+              ),
+            )}
           </select>
         </label>
         {groups.length > 0 && (
@@ -175,17 +178,9 @@ export default function PlanAndEntry({
       </div>
       <div className="progress-entry-summary">
         {month ? (
-          <>
-            <span
-              className={locked ? "progress-locked" : "progress-entry-count"}
-            >
-              Ay kilidi ({monthLabel(month)}):{" "}
-              {locked ? "Değişikliğe kapalı" : "Değişikliğe açık"}
-            </span>
-            <span className="progress-entry-count">
-              Gerçekleşeni girilmeyen: {entryCount("waiting")}
-            </span>
-          </>
+          <span className="progress-entry-count">
+            Gerçekleşeni girilmeyen: {entryCount("waiting")}
+          </span>
         ) : (
           <span className="progress-entry-count">
             Gerçekleşen girişi için henüz takip ayı yok.

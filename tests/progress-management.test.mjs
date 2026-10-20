@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   managementPoint,
+  plannedResourceAt,
   assessManagement,
   manageProject,
   transferComparisons,
@@ -86,6 +87,33 @@ const row = (id, actual = 70, name = "Liderlik A") => ({
   spent: 10,
   performance: actual / 50,
   missing: 0,
+});
+
+test("monthly planned resource sums leadership amounts without needing approved targets and exports matching numbers", () => {
+  const ctx = context();
+  ctx.planned = () =>
+    new Map([
+      ["Liderlik A", { "2026-09": 1.25, "2026-10": 0.5 }],
+      ["Liderlik B", { "2026-09": 0.75, "2026-10": 1.4 }],
+    ]);
+  const scope = row("p");
+  scope.leaders.push(leader("Liderlik B", null, { baselines: [] }));
+  assert.equal(plannedResourceAt(ctx, "p", scope.leaders, "2026-09"), 2);
+  assert.equal(
+    plannedResourceAt(ctx, "p", [scope.leaders[0]], "2026-09"),
+    1.25,
+  );
+  assert.equal(plannedResourceAt(ctx, "p", scope.leaders, "2026-12"), 0);
+  const sheets = managementSheets(
+    ctx,
+    [manageProject(ctx, scope, "2026-09")],
+    "2026-09",
+    ["2026-09", "2026-10"],
+  );
+  assert.match(sheets[1].xml, /Planlanan kaynak \(kişi-ay\)/);
+  assert.match(sheets[1].xml, /<c r="J3" s="8"><v>2<\/v><\/c>/);
+  assert.match(sheets[1].xml, /<c r="J5" s="8"><v>1.25<\/v><\/c>/);
+  assert.match(sheets[1].xml, /<c r="J7" s="8"><v>0.75<\/v><\/c>/);
 });
 
 test("project percentages compare the same complete leadership scope", () => {

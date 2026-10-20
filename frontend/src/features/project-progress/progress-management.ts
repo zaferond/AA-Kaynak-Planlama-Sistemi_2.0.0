@@ -73,6 +73,20 @@ export type ReportPoint = {
 };
 const round = (n: number) => Math.round(n * 10) / 10;
 
+/** Monthly resource amounts are summed, independently of progress plan approval. */
+export function plannedResourceAt(
+  ctx: ProgressContext,
+  projectId: string,
+  leaders: readonly LeaderRow[],
+  month: string,
+) {
+  const planned = ctx.planned(projectId);
+  return leaders.reduce(
+    (sum, leader) => sum + (planned.get(leader.record.leader)?.[month] || 0),
+    0,
+  );
+}
+
 /** Full-scope actuals only: partial submissions cannot look ahead of plan. */
 export function managementPoint(
   ctx: ProgressContext,

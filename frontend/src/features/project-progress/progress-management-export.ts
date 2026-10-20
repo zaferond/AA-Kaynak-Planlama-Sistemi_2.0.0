@@ -3,6 +3,7 @@ import type { ProgressContext } from "./progress-view.ts";
 import { topicsIn } from "./progress-topics.ts";
 import {
   managementPoint,
+  plannedResourceAt,
   STATE_LABELS,
   evaluationLabel,
   type ManagedProject,
@@ -14,6 +15,7 @@ function sheet(
   title: string,
   headers: string[],
   rows: (string | number | null)[][],
+  numberStyles: Record<number, number> = {},
 ) {
   if (rows.length + 2 > EXCEL_MAX_ROWS)
     throw Error(
@@ -23,7 +25,7 @@ function sheet(
   const data = rows
     .map(
       (values, index) =>
-        `<row r="${index + 3}">${values.map((value, col) => (typeof value === "number" ? `<c r="${columnName(col)}${index + 3}" s="7"><v>${value}</v></c>` : text(index + 3, col, value ?? "—"))).join("")}</row>`,
+        `<row r="${index + 3}">${values.map((value, col) => (typeof value === "number" ? `<c r="${columnName(col)}${index + 3}" s="${numberStyles[col] ?? 7}"><v>${value}</v></c>` : text(index + 3, col, value ?? "—"))).join("")}</row>`,
     )
     .join("");
   return `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${last}${rows.length + 2}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="2" topLeftCell="A3" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="${headers.length}" width="24" customWidth="1"/></cols><sheetData><row r="1">${text(1, 0, title, 1)}</row><row r="2">${headers.map((h, i) => text(2, i, h, 3)).join("")}</row>${data}</sheetData><autoFilter ref="A2:${last}${rows.length + 2}"/><mergeCells count="1"><mergeCell ref="A1:${last}1"/></mergeCells></worksheet>`;
@@ -143,6 +145,7 @@ export function managementSheets(
           topicsIn(p.row.project, m)
             .map((topic) => topic.name)
             .join(" · ") || "—",
+          plannedResourceAt(ctx, p.row.project.id, entity.leaders, m),
         ]);
       }
     }
@@ -176,6 +179,7 @@ export function managementSheets(
           "Senaryo kodu",
         ],
         summary,
+        { 13: 8 },
       ),
     },
     {
@@ -192,8 +196,10 @@ export function managementSheets(
           "Veri / ilerleme durumu",
           "Aşama",
           "Kritik konular",
+          "Planlanan kaynak (kişi-ay)",
         ],
         monthly,
+        { 9: 8 },
       ),
     },
   ];

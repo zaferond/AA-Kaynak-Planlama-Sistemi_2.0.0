@@ -149,6 +149,38 @@ export async function checkProgressManagement(f) {
         assert.equal(await matrix.locator(".monthhead").count(), 12);
         assert.equal(await matrix.locator(".progress-project-row").count(), 3);
         assert.equal(await matrix.locator(".progress-leader-row").count(), 0);
+        assert.deepEqual(
+          await matrix
+            .locator('[data-project="p-a"]')
+            .evaluateAll((nodes) =>
+              nodes.map((node) => node.getAttribute("data-metric")),
+            ),
+          ["phase", "topics", "resource", "target", "actual", "gap"],
+        );
+        const plannedResource = matrix.locator(
+          '[data-project="p-a"][data-metric="resource"]',
+        );
+        await plannedResource
+          .getByRole("rowheader", {
+            name: "Planlanan kaynak (kişi-ay)",
+            exact: true,
+          })
+          .waitFor();
+        assert.equal(
+          await plannedResource.locator("td").nth(8).innerText(),
+          "0,2",
+        );
+        assert.equal(
+          await plannedResource.locator("td").nth(0).innerText(),
+          "0",
+        );
+        assert.equal(
+          await matrix
+            .locator(`[data-project="${extra.id}"][data-metric="resource"] td`)
+            .nth(8)
+            .innerText(),
+          "0,05",
+        );
         await projectA()
           .getByText("Planın İlerisinde", { exact: true })
           .first()
@@ -219,7 +251,14 @@ export async function checkProgressManagement(f) {
             exact: true,
           })
           .click();
-        assert.equal(await matrix.locator(".progress-leader-row").count(), 3);
+        assert.equal(await matrix.locator(".progress-leader-row").count(), 4);
+        assert.equal(
+          await matrix
+            .locator('.progress-leader-row[data-metric="resource"] td')
+            .nth(2 + 8)
+            .innerText(),
+          "0,2",
+        );
         await page
           .getByRole("button", { name: "Liderlikleri Kapat", exact: true })
           .click();
@@ -272,6 +311,14 @@ export async function checkProgressManagement(f) {
         );
         assert.match(entries["xl/worksheets/sheet2.xml"], /<v>250<\/v>/);
         assert.match(entries["xl/worksheets/sheet3.xml"], /Kritik konular/);
+        assert.match(
+          entries["xl/worksheets/sheet3.xml"],
+          /Planlanan kaynak \(kişi-ay\)/,
+        );
+        assert.match(
+          entries["xl/worksheets/sheet3.xml"],
+          /<c r="J11" s="8"><v>0.2<\/v><\/c>/,
+        );
         assert(
           !entries["xl/worksheets/sheet2.xml"].includes("Browser Project B"),
         );

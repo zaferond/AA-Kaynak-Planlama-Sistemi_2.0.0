@@ -13,9 +13,14 @@ import ProjectResponsible from "../../ProjectResponsible";
 import ProgressTopicCells from "./ProgressTopicCells";
 import { phaseChipStyle, phaseRunKey, phaseRunSpans } from "../../phase-chip";
 import { monthLabel, fmt } from "../../format";
-import { pctLabel, type ProgressContext } from "./progress-view";
+import {
+  pctLabel,
+  type ProgressContext,
+  type LeaderRow,
+} from "./progress-view";
 import {
   managementPoint,
+  plannedResourceAt,
   STATE_LABELS,
   type ManagedProject,
   type ReportPoint,
@@ -66,13 +71,21 @@ export default function ProgressManagementMatrix({
     [ctx, projects, months],
   );
   const metrics = [
+    { key: "resource", label: "Planlanan kaynak (kişi-ay)" },
     { key: "target", label: "Planlanan %" },
     { key: "actual", label: "Gerçekleşen %" },
     { key: "gap", label: "Fark %" },
   ] as const;
-  const cells = (points: ReportPoint[], key: "target" | "actual" | "gap") =>
+  const cells = (
+    points: ReportPoint[],
+    key: "resource" | "target" | "actual" | "gap",
+    projectId: string,
+    leaders: LeaderRow[],
+  ) =>
     months.map((m, index) => {
       const point = points[index];
+      const resource =
+        key === "resource" ? plannedResourceAt(ctx, projectId, leaders, m) : 0;
       return (
         <td
           key={m}
@@ -86,9 +99,17 @@ export default function ProgressManagementMatrix({
                   : "equal"
               : undefined
           }
-          title={`${monthLabel(m)} · ${STATE_LABELS[point.state]}${point.gap === null ? "" : ` · fark ${gapLabel(point.gap)} puan`}`}
+          title={
+            key === "resource"
+              ? `${monthLabel(m)} · Planlanan kaynak: ${fmt(resource)} kişi-ay`
+              : `${monthLabel(m)} · ${STATE_LABELS[point.state]}${point.gap === null ? "" : ` · fark ${gapLabel(point.gap)} puan`}`
+          }
         >
-          {key === "gap" ? gapLabel(point.gap) : pctLabel(point[key])}
+          {key === "resource"
+            ? fmt(resource)
+            : key === "gap"
+              ? gapLabel(point.gap)
+              : pctLabel(point[key])}
         </td>
       );
     });
@@ -169,7 +190,10 @@ export default function ProgressManagementMatrix({
                     data-selected={detail === row.project.id || undefined}
                   >
                     {index === 0 && (
-                      <td rowSpan={5} className="progress-matrix-assessment">
+                      <td
+                        rowSpan={metrics.length + 2}
+                        className="progress-matrix-assessment"
+                      >
                         <div className="progress-assessment">
                           <ScenarioWarningStatus
                             assessment={project.scenario}
@@ -194,7 +218,10 @@ export default function ProgressManagementMatrix({
                       </td>
                     )}
                     {index === 0 && (
-                      <td rowSpan={5} className="progress-matrix-name">
+                      <td
+                        rowSpan={metrics.length + 2}
+                        className="progress-matrix-name"
+                      >
                         <button
                           type="button"
                           className="progress-expand"
@@ -275,7 +302,7 @@ export default function ProgressManagementMatrix({
                         );
                       })
                     ) : (
-                      cells(points.project, key)
+                      cells(points.project, key, row.project.id, row.leaders)
                     )}
                   </tr>
                 ))}
@@ -291,7 +318,7 @@ export default function ProgressManagementMatrix({
                         >
                           {index === 0 && (
                             <td
-                              rowSpan={3}
+                              rowSpan={metrics.length}
                               className="progress-matrix-assessment"
                             >
                               <div className="progress-assessment">
@@ -305,7 +332,10 @@ export default function ProgressManagementMatrix({
                             </td>
                           )}
                           {index === 0 && (
-                            <td rowSpan={3} className="progress-matrix-name">
+                            <td
+                              rowSpan={metrics.length}
+                              className="progress-matrix-name"
+                            >
                               <strong>↳ {l.row.record.leader}</strong>
                               {l.row.note && (
                                 <small className="progress-note">
@@ -317,7 +347,12 @@ export default function ProgressManagementMatrix({
                           <th scope="row" className="progress-matrix-metric">
                             {label}
                           </th>
-                          {cells(points.leaders.get(l.row.record.id)!, key)}
+                          {cells(
+                            points.leaders.get(l.row.record.id)!,
+                            key,
+                            row.project.id,
+                            [l.row],
+                          )}
                         </tr>
                       ))}
                     </Fragment>

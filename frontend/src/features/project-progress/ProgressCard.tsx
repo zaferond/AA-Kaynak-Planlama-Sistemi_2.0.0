@@ -49,6 +49,10 @@ type Form = {
   adjustedSuggestion?: ProgressTargets;
 };
 const decimal = (value: number) => String(value).replace(".", ",");
+const lockMonthFormat = new Intl.DateTimeFormat("tr-TR", {
+  month: "long",
+  year: "numeric",
+});
 const num = (value: string) =>
   value.trim() === "" ? Number.NaN : Number(value.replace(",", "."));
 const text = (value: number) => String(value).replace(".", ",");
@@ -485,7 +489,11 @@ export default function ProgressCard({
           {month && (
             <ProgressStatusCard
               label="Ay kilidi"
-              value={locked ? "Değişikliğe kapalı" : "Değişikliğe açık"}
+              value={
+                locked
+                  ? `${lockMonthFormat.format(new Date(month + "-01T12:00:00"))} Ayı itibarıyla değişikliğe kapalı`
+                  : "Değişikliğe açık"
+              }
               status={locked ? "locked" : "unlocked"}
             />
           )}
@@ -563,65 +571,58 @@ export default function ProgressCard({
         planned={planned}
         rows={gridRows}
       />
-      {baseline &&
-        (entry === "closed" || canEditEntry || locked || entryMessage) && (
-          <footer className="progress-card-actions progress-card-entry">
-            {entry === "closed" ? (
-              <span className="progress-card-hint">
-                Gerçekleşen girişi henüz açık değil. Plan başlangıcı:{" "}
-                {monthLabel(nextMonth(record!.baselines[0].openingMonth))}.
-              </span>
-            ) : (
-              <>
-                {canEditEntry && (
-                  <label className="progress-card-noteinput">
-                    Açıklama ({monthLabel(month)})
-                    <input
-                      aria-label={`${label} · açıklama`}
-                      maxLength={PROGRESS_NOTE_MAX}
-                      value={note}
-                      disabled={saving}
-                      placeholder="Bu ayın kısa açıklaması"
-                      onChange={(e) => {
-                        setNote(e.target.value);
-                        setEntryMessage(undefined);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") void submitEntry();
-                      }}
-                    />
-                  </label>
-                )}
-                {locked && (
-                  <span className="progress-locked">
-                    Bu ay değişikliğe kapalı. Düzenlemek için sistem yöneticisi
-                    ayın kilidini açmalı.
-                  </span>
-                )}
-                {canEditEntry && (
-                  <button
-                    type="button"
-                    className="button primary"
-                    disabled={saving || !entryChanged}
-                    onClick={() => void submitEntry()}
-                  >
-                    Gerçekleşeni Kaydet
-                  </button>
-                )}
-                {entryMessage && (
-                  <span
-                    role={entryMessage.error ? "alert" : "status"}
-                    className={
-                      entryMessage.error ? "progress-error" : "progress-ok"
-                    }
-                  >
-                    {entryMessage.text}
-                  </span>
-                )}
-              </>
-            )}
-          </footer>
-        )}
+      {baseline && (entry === "closed" || canEditEntry || entryMessage) && (
+        <footer className="progress-card-actions progress-card-entry">
+          {entry === "closed" ? (
+            <span className="progress-card-hint">
+              Gerçekleşen girişi henüz açık değil. Plan başlangıcı:{" "}
+              {monthLabel(nextMonth(record!.baselines[0].openingMonth))}.
+            </span>
+          ) : (
+            <>
+              {canEditEntry && (
+                <label className="progress-card-noteinput">
+                  Açıklama ({monthLabel(month)})
+                  <input
+                    aria-label={`${label} · açıklama`}
+                    maxLength={PROGRESS_NOTE_MAX}
+                    value={note}
+                    disabled={saving}
+                    placeholder="Bu ayın kısa açıklaması"
+                    onChange={(e) => {
+                      setNote(e.target.value);
+                      setEntryMessage(undefined);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") void submitEntry();
+                    }}
+                  />
+                </label>
+              )}
+              {canEditEntry && (
+                <button
+                  type="button"
+                  className="button primary"
+                  disabled={saving || !entryChanged}
+                  onClick={() => void submitEntry()}
+                >
+                  Gerçekleşeni Kaydet
+                </button>
+              )}
+              {entryMessage && (
+                <span
+                  role={entryMessage.error ? "alert" : "status"}
+                  className={
+                    entryMessage.error ? "progress-error" : "progress-ok"
+                  }
+                >
+                  {entryMessage.text}
+                </span>
+              )}
+            </>
+          )}
+        </footer>
+      )}
       <footer className="progress-card-actions">
         {editable && (
           <>

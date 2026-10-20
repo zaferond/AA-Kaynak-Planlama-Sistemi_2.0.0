@@ -526,8 +526,15 @@ export async function checkProjectProgress(f) {
           })
           .waitFor();
         await otherCard
-          .getByText("Ay kilidi: Değişikliğe kapalı", { exact: true })
+          .getByText(
+            "Ay kilidi: Eylül 2026 Ayı itibarıyla değişikliğe kapalı",
+            { exact: true },
+          )
           .waitFor();
+        assert.equal(
+          await otherCard.locator(".progress-card-entry").count(),
+          0,
+        );
         assert.equal(
           await otherCard
             .getByLabel(`${otherName} · Eyl 2026 gerçekleşen %`)

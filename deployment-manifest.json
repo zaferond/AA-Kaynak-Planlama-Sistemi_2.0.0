@@ -1,7 +1,7 @@
 {
   "format": "aa-deployment-v1",
   "version": "3.0.0",
-  "commit": "1c46ccbda165f7c9250f93bfb6404d8c3f19a023",
+  "commit": "f63eb0f68f14ba018185a087cceb86fcd1be5cce",
   "sources": {
     "backend/active-directory.mjs": "3664ad7f8903dab2e832c09ae9553f2008510f34470f76ef3886d5e780cdf08f",
     "backend/activity-report.mjs": "1a4cf74425980574afd5352e2e1a307590666e269295e76e7d94abde4444ef2f",
@@ -189,10 +189,10 @@
     "frontend/src/features/actual-allocation-commands.ts": "b99fff5278aa812bf29e6eb979c22007e73dfda4ae489ee0d231468d2e31c5ad",
     "frontend/src/features/actual-allocation/ActualAllocationControls.tsx": "122c83b0b8b122f58d7f861cf4d6f27759f65b5bb81254f747cdace9e8610732",
     "frontend/src/features/actual-allocation/ActualAllocationDialogs.tsx": "a5dcf44f760b9d936d5320e039986861199caafb79d04b1102d0c01fd0834157",
-    "frontend/src/features/actual-allocation/ActualAllocationTable.tsx": "bc673d966414666c0da65ba91d83bcc82b225ce57d22cb4fb75ec8cf03e9cbba",
+    "frontend/src/features/actual-allocation/ActualAllocationTable.tsx": "d761ef0c0054bdf4854ae50c125183ea57686df78a63702401ed4b9823c4adfb",
     "frontend/src/features/actual-allocation/format.ts": "e403731847673d8b3f21e67c383745a135036ca3724ac3c694b0606a9bd0eff6",
     "frontend/src/features/actual-allocation/merge-actual-view.ts": "eabc252e6ff83c2cb0c0e070042d93a9888e8c830cbfa8fc5ef85eb87e271524",
-    "frontend/src/features/actual-allocation/person-layout.ts": "b09adbe94e6852b26c4d44dd2b82deecf30d2aaa932f75245ff2c8c609bbeb72",
+    "frontend/src/features/actual-allocation/person-layout.ts": "14a78f9f54edefe32d191feeda41e3beee5f99c47a614821afbadd95938a8265",
     "frontend/src/features/actual-allocation/person-month-balance.ts": "9af978b8b631cf851ac642e84660db667076045c30f023ce3ed9edf56ed62b73",
     "frontend/src/features/actual-allocation/types.ts": "5fa5df5788b627768ffc6dd2a5e4a82a611ee0a4f2c4189454dc6df4e246d7da",
     "frontend/src/features/actual-allocation/useActualAllocationView.ts": "9db1c4df3b9d4822371b6853265d2d3c24261bd805f60f54eb83a0eadcec60d0",
@@ -441,7 +441,7 @@
     "scripts/browser-checks/activity-report.mjs": "bb9212ba9f7374d73eb7de19c80cfae3cc6378456d4cb0b611bb39484634a242",
     "scripts/browser-checks/actual-allocation.mjs": "46776d56e2fc11280dcf2a32bf7d885c28564d3d4f014157a8bb5c5c42cb7d10",
     "scripts/browser-checks/actual-manager-hierarchy.mjs": "6b38f2f5854ede65ce68d633942f35d8a883468e0b1ba43d3fdcaa032e0b454c",
-    "scripts/browser-checks/actual-person-layout.mjs": "f7517966c4c310225bc2f81c31f82ee548f5394d9818e7713c268489cc3ed87e",
+    "scripts/browser-checks/actual-person-layout.mjs": "3cd60b2cb7a57add426b8de14c7b7aca80dad1ccbb5d39bc741e19bf55567beb",
     "scripts/browser-checks/actual-remaining-hours.mjs": "13562bc4cc5f5667cbf0672fc0e2be4fd8f697d476452b6a7bcd0a8c1529f004",
     "scripts/browser-checks/actual-save-focus.mjs": "6937bd050801f8f5c8eb2d9eb67f6e4d73564fbf767b9993295e21760328b387",
     "scripts/browser-checks/actual-team-view.mjs": "ffb8d8ee7245c849ad62878d1d4148b86abcdef772adf13d3064589b16760443",
@@ -640,6 +640,8 @@
     "site/assets/app.08a5a7fe488f.js.gz": "55467b9561ed5c11b7ee3d6ab1bd5ba10040cc70b6ba7e69c7681b5b5010a17d",
     "site/assets/app.092843c93c2d.css": "092843c93c2dc7abcc9ab78dbc5cdf65bffbbf972edfc6ba35301fa695a5afcd",
     "site/assets/app.092843c93c2d.css.gz": "7abedac81fdbe2c9e40f9bb1a884f5cf2338be116bb44589d6539fcc157d2630",
+    "site/assets/app.09685df29e57.js": "09685df29e57b5216cb8792a62ab1925f83b0159a01b675888b3fda5c459523f",
+    "site/assets/app.09685df29e57.js.gz": "b8fb9e55003790b4328ac65a12973248a2a95789137a9f99912dddbf65df4cc9",
     "site/assets/app.0985cbff5cbe.css": "0985cbff5cbedc27c5970db8f29c2e8be95ef5aa20f49875114b6f43141cd155",
     "site/assets/app.0985cbff5cbe.css.gz": "22efdba84d6281a3321b06328e89e5ffdcb50b6b035e853b14431e8b6fc6ac32",
     "site/assets/app.099f758a876d.css": "099f758a876dabc44c78dd2502df066b25672275abc303793e9b7cca4f9c277b",
@@ -1885,17 +1887,17 @@
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/login-background.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "e49dd9c48be16f60990f0926f9f40ecf3038a20cec6a70674b43b6c470f25a82",
-    "site/index.html.gz": "9850ef550eb769f6967bbdd9b85f3f189cf8b9f9b8f1dbf5a9135d1f669648fc"
+    "site/index.html": "f5a1d8916760b1cf8f0ca4d6135fffa5985fa7876977da3506f6ff9f54600bc9",
+    "site/index.html.gz": "cee94358f3ffec9ab7e820a23040267eb940298dbb15a5df73e21872ea8c900e"
   },
   "releaseArtifacts": {
+    "site/assets/app.09685df29e57.js": "09685df29e57b5216cb8792a62ab1925f83b0159a01b675888b3fda5c459523f",
+    "site/assets/app.09685df29e57.js.gz": "b8fb9e55003790b4328ac65a12973248a2a95789137a9f99912dddbf65df4cc9",
     "site/assets/app.4e4c4327c7fe.css": "4e4c4327c7fe0d3f05b1bcc0b35d6b181a07511fd4e00f381958c7cc3ddf4fb6",
     "site/assets/app.4e4c4327c7fe.css.gz": "26873721311f7d01fcad979d57fda55352ec44977702542d9aecae7d8b07f76a",
-    "site/assets/app.edffb8c11544.js": "edffb8c11544200b7f70c34edfee60829a404678ec8d54e4645110fc611e578a",
-    "site/assets/app.edffb8c11544.js.gz": "be80a4fe8719ace24d61e0499c4e2338e83674925aebce87dee260d7bb6dc5d6",
     "site/assets/login-background.2eaf093270a8.png": "2eaf093270a89c095cb84dc7c2458b3b7d8fe068ac6fa470484ff27c66675fa5",
     "site/assets/otokar-logo.svg": "486de40ba4120bd86b887036af3920b218cad55899f686f5f6b70c6c6feb3b38",
-    "site/index.html": "e49dd9c48be16f60990f0926f9f40ecf3038a20cec6a70674b43b6c470f25a82",
-    "site/index.html.gz": "9850ef550eb769f6967bbdd9b85f3f189cf8b9f9b8f1dbf5a9135d1f669648fc"
+    "site/index.html": "f5a1d8916760b1cf8f0ca4d6135fffa5985fa7876977da3506f6ff9f54600bc9",
+    "site/index.html.gz": "cee94358f3ffec9ab7e820a23040267eb940298dbb15a5df73e21872ea8c900e"
   }
 }

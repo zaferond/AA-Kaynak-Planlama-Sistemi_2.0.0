@@ -298,8 +298,8 @@ export default function ActualAllocationTable({
       </TableCell>
     );
   }
-  // "Kişi → Proje": a sticky person row, then the projects they have entries
-  // for; "+ Proje" opens an empty row for a new entry.
+  // "Kişi → Proje": a sticky person row with all visible projects by default.
+  // Data-only mode keeps "+ Proje" for opening a new entry row.
   const personSections: WindowedSection[] = view.personPage.map((group) => {
     const resource = group.person;
     const open = !personControls.collapsed.has(resource.id);

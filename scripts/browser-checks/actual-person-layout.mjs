@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 
 // "Kişi → Proje" (the default actual layout): a person row with month totals,
-// then only the projects that person has entries for.
+// then all visible projects, including empty rows for new entries.
 export async function checkActualPersonLayout(f) {
   await f.store.mutate(f.actor, (data, actor) =>
     applyChanges(data, actor, [
@@ -27,7 +27,7 @@ export async function checkActualPersonLayout(f) {
       .getByRole("tab", { name: "Aktivite Girişi", exact: true })
       .click();
     await f.check(
-      "actual person layout: default view lists only projects with entries under each person",
+      "actual person layout: default view opens all visible projects under each person",
       async () => {
         assert.equal(
           await page
@@ -38,7 +38,7 @@ export async function checkActualPersonLayout(f) {
         await page.getByLabel("Kişi ara").fill("browser employee");
         await heading().waitFor();
         assert.equal(await projectRow("p-a").count(), 1);
-        assert.equal(await projectRow("p-b").count(), 0);
+        assert.equal(await projectRow("p-b").count(), 1);
         const total = heading().locator(
           '[data-person-month="r-own|2026-01"] strong',
         );
@@ -54,6 +54,10 @@ export async function checkActualPersonLayout(f) {
     await f.check(
       "actual person layout: + opens a project row that saves; rows fold and search narrows",
       async () => {
+        await page
+          .getByRole("switch", { name: "Sadece veri olanlar", exact: true })
+          .click();
+        assert.equal(await projectRow("p-b").count(), 0);
         await heading()
           .getByRole("combobox", { name: "Browser Employee için proje ekle" })
           .selectOption({ label: "Browser Project B" });

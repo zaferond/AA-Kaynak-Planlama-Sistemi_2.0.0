@@ -19,23 +19,27 @@ const base = {
   onlyDataRows: false,
 };
 
-test("each person lists only projects with entries in the visible months", () => {
+test("each person lists every visible project by default, including empty rows", () => {
   const groups = personGroups(base);
   assert.deepEqual(
     groups.map((g) => [g.person.id, g.projects.map((p) => p.id), g.hasData]),
     [
-      ["a", ["p2"], true],
-      ["b", [], false],
+      ["a", ["p1", "p2", "p3"], true],
+      ["b", ["p1", "p2", "p3"], false],
     ],
   );
   assert.deepEqual(
     addableProjects(groups[0], projects).map((p) => p.id),
-    ["p1", "p3"],
+    [],
   );
 });
 
 test("added rows, search and the data-only switch", () => {
-  const added = personGroups({ ...base, added: new Set(["b|p1", "a|p1"]) });
+  const added = personGroups({
+    ...base,
+    onlyDataRows: true,
+    added: new Set(["b|p1", "a|p1"]),
+  });
   // Report order is kept; an added project joins without data.
   assert.deepEqual(
     added.map((g) => g.projects.map((p) => p.id)),

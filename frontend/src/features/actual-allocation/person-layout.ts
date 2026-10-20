@@ -1,8 +1,8 @@
 import type { Project, Resource } from "../../../../shared/model.ts";
 import { ownValue } from "../../../../shared/records.ts";
 
-/** "Kişi → Proje": each person lists only the projects they have entries for
- * in the visible months, plus projects added in this session for new entries. */
+/** "Kişi → Proje": all projects in the visible scope are listed by default.
+ * Data-only mode keeps entered projects and rows explicitly added for entry. */
 export type PersonGroup = {
   person: Resource;
   projects: Project[];
@@ -43,10 +43,13 @@ export function personGroups({
               0) !== 0,
         ),
       );
-      const listed = projects.filter(
-        (project) =>
-          withData.includes(project) || added.has(person.id + "|" + project.id),
-      );
+      const listed = onlyDataRows
+        ? projects.filter(
+            (project) =>
+              withData.includes(project) ||
+              added.has(person.id + "|" + project.id),
+          )
+        : projects;
       return { person, projects: listed, hasData: withData.length > 0 };
     })
     .filter((group) => !onlyDataRows || group.projects.length > 0);

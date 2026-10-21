@@ -26,9 +26,32 @@ html[data-theme] .app .workspace-section-heading .workspace-nav-actions {
   padding: 0;
   min-width: 0;
 }
-.app .workspace-section-header > [data-slot="tabs"] {
+.app .workspace-section-navigation > [data-slot="tabs"] {
   display: block;
   min-width: 0;
+}
+.app .workspace-section-navigation.with-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  border-bottom: 1px solid var(--brand-border, #ccd6c5);
+}
+.app .workspace-section-navigation.with-actions > [data-slot="tabs"] {
+  flex: 0 1 auto;
+}
+html[data-theme]
+  .app
+  .workspace-section-navigation.with-actions
+  .workspace-section-tabs {
+  border-bottom: 0;
+}
+html[data-theme] .app .workspace-section-navigation .workspace-nav-actions {
+  flex: 0 1 auto;
+  width: auto;
+  margin: 0;
+  padding: 0;
 }
 html[data-theme] .app .workspace-section-tabs {
   display: flex;

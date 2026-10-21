@@ -314,6 +314,7 @@ export default function WorkspaceNavigation({
         tabs={sectionTabs}
         value={sectionValue}
         onChange={changeSection}
+        actionsPlacement={tab === "actual" ? "tabs" : "heading"}
         actions={
           ![
             "access",

@@ -66,12 +66,19 @@ export async function checkViewportScroll(f) {
     const table = panel.locator(':scope > [data-slot="table-container"]');
     await page.evaluate(() => window.scrollTo(0, 1e8));
     await f.wait(async () => {
+      await page.evaluate(() => window.scrollTo(0, 1e8));
       const top = await panel
         .locator(".capacitystrip")
         .first()
         .evaluate((el) => el.getBoundingClientRect().top);
-      return top >= -3 && top <= 4;
-    }, "page ends at filter summary");
+      const mast = await page.locator("header.mast").boundingBox();
+      const offset = (await page
+        .locator(".app")
+        .evaluate((el) => el.classList.contains("full-plan")))
+        ? 0
+        : mast.y + mast.height;
+      return top >= offset - 3 && top <= offset + 4;
+    }, "page ends at filter summary below the fixed mast");
     const placement = await panel.evaluate((el) => {
       const summary = el
         .querySelector(":scope > .capacitystrip")
@@ -357,7 +364,12 @@ export async function checkViewportScroll(f) {
             await page.evaluate(() => window.scrollTo(0, 1e8));
             await f.wait(async () => {
               await page.evaluate(() => window.scrollTo(0, 1e8));
-              return Math.abs((await summary.boundingBox()).y) <= 4;
+              const mast = await page.locator("header.mast").boundingBox();
+              return (
+                Math.abs(
+                  (await summary.boundingBox()).y - mast.y - mast.height,
+                ) <= 4
+              );
             }, "filtered summary remains the page boundary after layout settles");
           },
         );
@@ -374,10 +386,14 @@ export async function checkViewportScroll(f) {
           );
           await table.waitFor();
           // An employee sees only their own rows, which fit the viewport.
-          // Force both scroll axes, as in the small-window case.
+          // Force both scroll axes and place the table below the fold. Short
+          // pages now start at the top instead of receiving an automatic gap.
           await table.evaluate((el) => {
             el.style.maxHeight = "200px";
             document.body.style.paddingBottom = "100vh";
+            const space = document.createElement("div");
+            space.style.height = "100vh";
+            el.closest(".person-allocation").before(space);
           });
           await actual.page.evaluate(() => window.scrollTo(0, 1e8));
           await table.hover();

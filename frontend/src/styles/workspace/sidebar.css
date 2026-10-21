@@ -1,31 +1,34 @@
-/* The sidebar keeps its own column while the main content scrolls. */
+/* Fixed application chrome reserves space without affecting content height. */
 .app {
   --workspace-menu-width: 244px;
+  --workspace-sidebar-width: 28px;
 }
 .app:not(.full-plan) {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
+  grid-template-columns: var(--workspace-sidebar-width) minmax(0, 1fr);
+  grid-template-rows: var(--workspace-mast-height, 58px) 1fr;
   min-height: calc(100dvh / var(--app-page-scale, 1));
   align-items: start;
 }
 .app.menu-pinned:not(.full-plan) {
-  grid-template-columns: var(--workspace-menu-width) minmax(0, 1fr);
+  --workspace-sidebar-width: var(--workspace-menu-width);
 }
 .app > .workspace-sidebar-host {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  z-index: 50;
   display: flex;
-  grid-column: 1;
-  grid-row: 1 / span 2;
-  align-self: start;
+  width: var(--workspace-sidebar-width);
   height: calc(100dvh / var(--app-page-scale, 1));
   min-width: 0;
 }
 .app:not(.full-plan) > .mast {
-  grid-column: 2;
-  grid-row: 1;
-  position: static;
+  position: fixed;
+  top: 0;
+  left: var(--workspace-sidebar-width);
+  right: 0;
+  z-index: 40;
   min-width: 0;
 }
 .app .workspace-tabs {
@@ -42,9 +45,13 @@ html[data-theme] .app .workspace-nav-actions {
 html[data-theme] .app:not(.full-plan) > main {
   grid-column: 2;
   grid-row: 2;
-  margin-left: 0;
+  align-self: start;
+  margin: 0;
   width: 100%;
   min-width: 0;
+}
+.app:not(.full-plan):is(.tab-activity, .tab-overview) .reports-filter-dock {
+  top: var(--workspace-mast-height, 58px);
 }
 .app .workspace-menu-edge {
   position: relative;
@@ -124,9 +131,11 @@ html[data-theme] .app:not(.full-plan) > main {
 .app .workspace-menu-brand h1 {
   margin: 0;
   color: var(--brand-text, #293a2d);
-  font-size: var(--fs-md);
-  font-weight: 650;
-  line-height: 1.45;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  font-stretch: normal;
+  letter-spacing: normal;
+  line-height: 1.4;
   overflow-wrap: anywhere;
 }
 .app .workspace-menu-heading .iconbutton {
@@ -221,26 +230,10 @@ html[data-theme]
 }
 @media (max-width: 700px) {
   .app.menu-pinned:not(.full-plan) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto 1fr;
-  }
-  .app.menu-pinned:not(.full-plan) > .mast {
-    grid-column: 1;
-    grid-row: 1;
+    --workspace-sidebar-width: 28px;
   }
   .app.menu-pinned > .workspace-sidebar-host {
-    position: static;
-    height: auto;
-    grid-column: 1;
-    grid-row: 2;
-  }
-  html[data-theme] .app.menu-pinned:not(.full-plan) > main {
-    grid-column: 1;
-    grid-row: 3;
-  }
-  html[data-theme] .app.menu-pinned .workspace-menu-panel .navtabs {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(var(--workspace-menu-width), calc(100vw - 28px));
   }
   html[data-theme] .app .workspace-menu-panel .navtabs [data-group-start] {
     margin-top: 0;

@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent } from "react";
+import { useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
 import {
   Users,
   Minimize2,
@@ -53,8 +53,29 @@ export default function WorkspaceHeader({
   const [menuOpen, setMenuOpen] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
   const restoreInput = useRef<HTMLInputElement>(null);
+  const mastRef = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const mast = mastRef.current;
+    const app = mast?.parentElement;
+    if (!mast || !app) return;
+    const update = () => {
+      const scale =
+        Number.parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
+      app.style.setProperty(
+        "--workspace-mast-height",
+        mast.getBoundingClientRect().height / scale + "px",
+      );
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(mast);
+    return () => {
+      observer.disconnect();
+      app.style.removeProperty("--workspace-mast-height");
+    };
+  }, []);
   return (
-    <header className="mast">
+    <header className="mast" ref={mastRef}>
       <div className="mastbrandrow">
         <img
           className="mast-company-logo"

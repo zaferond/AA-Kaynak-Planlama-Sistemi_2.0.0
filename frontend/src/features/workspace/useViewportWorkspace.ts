@@ -18,7 +18,11 @@ export function useViewportWorkspace() {
         app.getBoundingClientRect().bottom -
           panel.getBoundingClientRect().bottom,
       );
-      const height = Math.max(1, (window.innerHeight - tail) / zoom);
+      const mast = app.classList.contains("full-plan")
+        ? 0
+        : app.querySelector(":scope > .mast")?.getBoundingClientRect().height ||
+          0;
+      const height = Math.max(1, (window.innerHeight - tail - mast) / zoom);
       const value = height.toFixed(2) + "px";
       if (panel.style.getPropertyValue("--workspace-height") !== value)
         panel.style.setProperty("--workspace-height", value);
@@ -31,6 +35,8 @@ export function useViewportWorkspace() {
     const observer = new ResizeObserver(schedule);
     observer.observe(panel);
     observer.observe(app);
+    const mast = app.querySelector(":scope > .mast");
+    if (mast) observer.observe(mast);
     window.addEventListener("resize", schedule);
     return () => {
       cancelAnimationFrame(frame);

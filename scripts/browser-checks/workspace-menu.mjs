@@ -72,7 +72,7 @@ export async function checkWorkspaceMenu(f) {
       },
     );
     await f.check(
-      "sol menü: içerik kayarken yerinde kalır ve üst barla çakışmaz",
+      "sol menü ve üst bar: sayfanın en altında da sabit kalır, içerikle çakışmaz",
       async () => {
         const beforeHeader = await page.locator("header.mast").boundingBox();
         const beforeMenu = await menu.boundingBox();
@@ -80,13 +80,13 @@ export async function checkWorkspaceMenu(f) {
           const space = document.createElement("div");
           space.dataset.menuScrollFixture = "true";
           space.style.height = "1200px";
-          document.querySelector(".app > main").append(space);
+          document.body.append(space);
           window.scrollTo(0, 300);
         });
         await page.waitForTimeout(100);
         const header = await page.locator("header.mast").boundingBox();
         const panel = await menu.boundingBox();
-        assert(header.y < beforeHeader.y - 50);
+        assert(Math.abs(header.y - beforeHeader.y) < 2);
         assert(Math.abs(panel.y - beforeMenu.y) < 2);
         assert(panel.y >= -1);
         assert(panel.y + panel.height <= page.viewportSize().height + 2);
@@ -95,7 +95,17 @@ export async function checkWorkspaceMenu(f) {
           await page
             .locator(".workspace-sidebar-host")
             .evaluate((el) => getComputedStyle(el).position),
-          "sticky",
+          "fixed",
+        );
+        await page.evaluate(() =>
+          window.scrollTo(0, document.body.scrollHeight),
+        );
+        assert(Math.abs((await menu.boundingBox()).y - beforeMenu.y) < 2);
+        assert(
+          Math.abs(
+            (await page.locator("header.mast").boundingBox()).y -
+              beforeHeader.y,
+          ) < 2,
         );
         await page.evaluate(() => {
           document.querySelector("[data-menu-scroll-fixture]").remove();
@@ -114,6 +124,51 @@ export async function checkWorkspaceMenu(f) {
           .boundingBox();
         assert(close.y >= 0 && close.y + close.height <= 321);
         await page.setViewportSize(viewport);
+      },
+    );
+    await f.check(
+      "aktivite ekranları: üst boşluk projelerle aynı, giriş araçları kişi/proje satırında",
+      async () => {
+        const positions = [];
+        for (const name of ["Projeler", "Aktivite Girişi", "Aktivite Raporu"]) {
+          await selectWorkspaceTab(page, name);
+          await page.evaluate(() => window.scrollTo(0, 0));
+          await f.wait(async () => {
+            const mast = await page.locator("header.mast").boundingBox();
+            const main = await page.locator(".app > main").boundingBox();
+            return Math.abs(main.y - mast.y - mast.height) < 2;
+          }, "content starts immediately after mast: " + name);
+          positions.push(
+            (await page.locator(".workspace-section-heading").boundingBox()).y,
+          );
+          if (name === "Aktivite Girişi") {
+            const tabs = await page
+              .locator(".workspace-section-tabs")
+              .boundingBox();
+            const actions = await page
+              .locator(".workspace-nav-actions")
+              .boundingBox();
+            assert(
+              actions.y >= tabs.y - 2 &&
+                actions.y + actions.height <= tabs.y + tabs.height + 2,
+            );
+            assert.equal(
+              await page
+                .locator(".workspace-section-heading .workspace-nav-actions")
+                .count(),
+              0,
+            );
+          }
+          await f.capture(
+            page,
+            name === "Aktivite Girişi"
+              ? "aktivite-giris-ust-alan"
+              : name === "Aktivite Raporu"
+                ? "aktivite-raporu-ust-alan"
+                : "projeler-ust-alan",
+          );
+        }
+        assert(Math.max(...positions) - Math.min(...positions) < 2);
       },
     );
     await f.check(

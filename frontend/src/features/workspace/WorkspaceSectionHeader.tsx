@@ -15,6 +15,7 @@ export default function WorkspaceSectionHeader({
   value,
   onChange,
   actions,
+  actionsPlacement = "heading",
 }: {
   title: string;
   label: string;
@@ -22,35 +23,44 @@ export default function WorkspaceSectionHeader({
   value: string;
   onChange: (value: string) => void;
   actions?: ReactNode;
+  actionsPlacement?: "heading" | "tabs";
 }) {
   return (
     <header className="workspace-section-header">
       <div className="workspace-section-heading">
         <h2>{title}</h2>
-        {actions}
+        {actionsPlacement === "heading" && actions}
       </div>
       {tabs.length > 1 && (
-        <Tabs value={value} onValueChange={onChange}>
-          <TabsList
-            className="workspace-section-tabs"
-            variant="line"
-            aria-label={label}
-          >
-            {tabs.map((item) => (
-              <TabsTrigger key={item.value} value={item.value}>
-                {item.label}
-                {!!item.badge && (
-                  <span
-                    className="workspace-section-badge"
-                    aria-label={item.badge + " onay bekliyor"}
-                  >
-                    {item.badge}
-                  </span>
-                )}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        <div
+          className={
+            "workspace-section-navigation" +
+            (actionsPlacement === "tabs" ? " with-actions" : "")
+          }
+        >
+          <Tabs value={value} onValueChange={onChange}>
+            <TabsList
+              className="workspace-section-tabs"
+              variant="line"
+              aria-label={label}
+            >
+              {tabs.map((item) => (
+                <TabsTrigger key={item.value} value={item.value}>
+                  {item.label}
+                  {!!item.badge && (
+                    <span
+                      className="workspace-section-badge"
+                      aria-label={item.badge + " onay bekliyor"}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+          {actionsPlacement === "tabs" && actions}
+        </div>
       )}
     </header>
   );

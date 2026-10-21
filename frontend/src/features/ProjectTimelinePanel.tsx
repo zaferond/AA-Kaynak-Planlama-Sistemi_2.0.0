@@ -19,9 +19,6 @@ import { projectTimelinePeriods } from "../timeline-periods";
 import type { usePhaseGrid } from "./usePhaseGrid";
 import { useProjectRowOrder } from "./useProjectRowOrder";
 import type { ProjectTimelineRowProps } from "./project-timeline-types";
-import WorkspaceFilterSummary, {
-  type SummaryFilter,
-} from "./workspace/WorkspaceFilterSummary";
 import { useWindowedSections } from "./workspace/useWindowedSections";
 import { useViewportWorkspace } from "./workspace/useViewportWorkspace";
 export type ProjectTimelineActions = {
@@ -57,7 +54,6 @@ export type ProjectTimelineActions = {
   onChangeMilestoneNote: ProjectTimelineRowProps["onChangeMilestoneNote"];
 };
 type Props = {
-  filters: SummaryFilter[];
   projects: Project[];
   revisions: Record<string, number>;
   months: string[];
@@ -81,7 +77,6 @@ type Props = {
 };
 
 export default function ProjectTimelinePanel({
-  filters,
   projects,
   revisions,
   months,
@@ -179,7 +174,6 @@ export default function ProjectTimelinePanel({
   );
   return (
     <section className="panel workspace-dock" ref={viewportRef}>
-      <WorkspaceFilterSummary filters={filters} />
       <div
         className="workspace-view-options"
         role="group"

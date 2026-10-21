@@ -124,91 +124,53 @@ export async function checkResourceReports(f) {
     await page.locator(".planning-filterbar .period select").selectOption("6");
     await choose([team.name]);
     await f.check(
-      "resource reports: applied filter summary and vacancy option stay above reports while filter inputs scroll away",
+      "resource reports: filter summaries and section shortcuts are removed, vacancy control remains at the right",
       async () => {
-        const summary = page.getByRole("region", {
-          name: "Raporlarda uygulanan filtreler",
-          exact: true,
-        });
-        const dock = page.locator(".reports-filter-dock");
-        const controls = page.getByRole("group", {
-          name: "Planlama filtreleri",
-          exact: true,
-        });
-        assert.equal(await dock.locator(".planning-filterbar").count(), 0);
         assert.equal(
-          await summary.locator(".capacitystrip-copy > strong").innerText(),
-          "Uygulanan Filtreler",
+          await page
+            .locator(
+              ".reports-filter-summary, .reports-filter-dock, .report-sections",
+            )
+            .count(),
+          0,
         );
-        const chips = () =>
-          summary.locator(".capacity-filter-chip").allTextContents();
-        const text = await chips();
-        assert(
-          text.some(
-            (value) => value.includes("Takım") && value.includes(team.name),
-          ),
+        assert.equal(await page.locator(".report-summary-card").count(), 4);
+        const actions = page.locator(".report-summary-actions");
+        const control = actions.getByRole("switch", {
+          name: "Aktif İlanları Dahil Et",
+          exact: true,
+        });
+        assert.equal(await control.count(), 1);
+        assert.match(
+          await page
+            .getByRole("button", { name: "Takım", exact: true })
+            .textContent(),
+          new RegExp(team.name),
         );
-        assert(
-          text.some(
-            (value) =>
-              value.includes("Başlangıç Ayı") && value.includes("Eki 2026"),
-          ),
-        );
-        assert(
-          text.some(
-            (value) =>
-              value.includes("Bitiş Ayı") && value.includes("Mar 2027"),
-          ),
-        );
-        assert(
-          text.some(
-            (value) => value.includes("Dönem") && value.includes("6 ay"),
-          ),
-        );
-        assert(!text.some((value) => value.startsWith("Proje")));
         await choose([noCapacity.name]);
-        assert((await summary.innerText()).includes(noCapacity.name));
+        assert.match(
+          await page
+            .getByRole("button", { name: "Takım", exact: true })
+            .textContent(),
+          new RegExp(noCapacity.name),
+        );
         await choose([team.name]);
         for (const size of [
           { width: 1800, height: 1050 },
           { width: 900, height: 900 },
         ]) {
           await page.setViewportSize(size);
-          for (const position of [800, 1900, 3000]) {
-            await f.wait(async () => {
-              await page.evaluate(
-                (top) => window.scrollTo({ top, behavior: "instant" }),
-                position,
-              );
-              return Math.abs((await dock.boundingBox()).y) <= 2;
-            }, "report summary sticks to viewport top");
-            const filterRect = await controls.boundingBox();
-            const summaryRect = await summary.boundingBox();
-            assert(filterRect.y + filterRect.height <= 2);
-            assert(Math.abs(summaryRect.y) <= 2);
-            for (const region of [
-              summary,
-              dock.locator(".report-posting-options"),
-            ])
-              assert(
-                await region.evaluate((el) => {
-                  const rect = el.getBoundingClientRect();
-                  const hit = document.elementFromPoint(
-                    rect.left + rect.width / 2,
-                    rect.top + rect.height / 2,
-                  );
-                  return el === hit || el.contains(hit);
-                }),
-                "sticky summary and vacancy option paint above report content",
-              );
-          }
+          await control.scrollIntoViewIfNeeded();
+          const option = await actions
+            .locator(".report-posting-options")
+            .boundingBox();
+          const row = await actions.boundingBox();
+          assert(Math.abs(option.x + option.width - row.x - row.width) < 2);
+          assert(option.x >= row.x - 1);
         }
-        await f.capture(page, "reports-sticky-filter-summary");
-        await choose([noCapacity.name]);
-        assert((await summary.innerText()).includes(noCapacity.name));
-        await choose([team.name]);
         await page.setViewportSize({ width: 1800, height: 1050 });
         await page.evaluate(() => window.scrollTo(0, 0));
+        await f.capture(page, "reports-compact-toolbar");
         assert.deepEqual(await f.state(), before);
       },
     );

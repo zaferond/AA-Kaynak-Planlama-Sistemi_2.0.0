@@ -104,9 +104,9 @@ export async function checkHeadcountReports(f) {
         0,
       );
       assert(
-        (await page.locator(".reports-filter-summary").innerText()).includes(
-          "02.10.2026",
-        ),
+        (
+          await page.locator(".headcount-report-date").first().innerText()
+        ).includes("02.10.2026"),
       );
       for (const [key, value] of [
         ["active", "3"],

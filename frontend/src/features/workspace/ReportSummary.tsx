@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import type { Data, Team } from "../../model";
 import type { Metric } from "../../metrics";
 import { fmt, monthLabel } from "../../format";
@@ -9,58 +9,8 @@ import {
 } from "../../../../shared/resource-planning-reports";
 import { buildMonthlyShortageTrend } from "../../../../shared/monthly-shortage-trend";
 
-const sections = [
-  ["rapor-liderlik-eksik", "Liderlik eksik"],
-  ["rapor-takim-eksik", "Takım eksik"],
-  ["rapor-aylik-eksik", "Aylık eksik"],
-  ["rapor-planlanan-gerceklesen", "Planlanan / gerçekleşen"],
-  ["rapor-proje", "Proje bazlı"],
-  ["rapor-etkinlik", "Etkinlik"],
-  ["rapor-takim-ihtiyac", "Takım ihtiyacı"],
-  ["rapor-calisan", "Çalışan öngörüsü"],
-] as const;
-
-const SECTION_GAP = 16;
-/** Glide a section heading to just below the sticky report filters. The page is drawn
- * with CSS zoom, which some browsers ignore in scroll positions and overshoot.
- * The exact target is found first with instant, unpainted test scrolls in the
- * same task (corrected by the observed scroll-to-pixel ratio); the page then
- * returns to where it was and scrolls smoothly to that target. */
-function scrollToSection(id: string) {
-  const target = document.getElementById(id);
-  if (!target) return;
-  // The report filters stick to the window top; land below them.
-  const dock = document.querySelector<HTMLElement>(".app .reports-filter-dock");
-  const cover = () =>
-    dock && getComputedStyle(dock).position === "sticky"
-      ? Math.max(0, dock.getBoundingClientRect().bottom)
-      : 0;
-  const offset = () =>
-    target.getBoundingClientRect().top - cover() - SECTION_GAP;
-  const origin = window.scrollY;
-  let ratio = 1;
-  for (let step = 0; step < 6; step++) {
-    const before = offset();
-    if (Math.abs(before) < 2) break;
-    const startY = window.scrollY;
-    window.scrollTo({ top: startY + before / ratio, behavior: "instant" });
-    const moved = before - offset();
-    if (Math.abs(moved) < 1) break;
-    ratio = moved / (window.scrollY - startY || 1);
-  }
-  const destination = window.scrollY;
-  window.scrollTo({ top: origin, behavior: "instant" });
-  const reduceMotion = window.matchMedia?.(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-  window.scrollTo({
-    top: destination,
-    behavior: reduceMotion ? "instant" : "smooth",
-  });
-}
-
 /** Headline figures for the selected scope, computed with the same functions
- * as the charts below, and links to each report section. */
+ * as the charts below. */
 export default function ReportSummary({
   data,
   teams,
@@ -68,6 +18,7 @@ export default function ReportSummary({
   actualTotals,
   teamIds,
   months,
+  actions,
 }: {
   data: Data;
   teams: Team[];
@@ -75,6 +26,7 @@ export default function ReportSummary({
   actualTotals: Record<string, number>;
   teamIds: string[];
   months: string[];
+  actions?: ReactNode;
 }) {
   const shortage = useMemo(
     () => buildMonthlyShortageTrend(capacity, teamIds, months),
@@ -150,14 +102,7 @@ export default function ReportSummary({
           </div>
         ))}
       </div>
-      <nav className="report-sections" aria-label="Rapor bölümleri">
-        <span>Bölümler:</span>
-        {sections.map(([id, label]) => (
-          <button key={id} type="button" onClick={() => scrollToSection(id)}>
-            {label}
-          </button>
-        ))}
-      </nav>
+      {actions && <div className="report-summary-actions">{actions}</div>}
     </section>
   );
 }

@@ -26,6 +26,7 @@ type Props = {
    * everything below the selector follows the chosen scenario. */
   summaryData?: Data;
   summaryCapacity?: Record<string, Metric>;
+  summaryActions?: ReactNode;
   leaderReportGroups: ReportGroup[];
   teamReportGroups: ReportGroup[];
   capacity: Record<string, Metric>;
@@ -50,6 +51,7 @@ export default function WorkspaceReports({
   scenarioBar,
   summaryData,
   summaryCapacity,
+  summaryActions,
   leaderReportGroups,
   teamReportGroups,
   capacity,
@@ -80,6 +82,7 @@ export default function WorkspaceReports({
   return (
     <>
       <ReportSummary
+        actions={summaryActions}
         data={summaryData || data}
         teams={teams.filter((team) => teamIds.includes(team.id))}
         capacity={summaryCapacity || capacity}

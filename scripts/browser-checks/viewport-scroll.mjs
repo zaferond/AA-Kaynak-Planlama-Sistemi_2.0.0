@@ -68,7 +68,7 @@ export async function checkViewportScroll(f) {
     await f.wait(async () => {
       await page.evaluate(() => window.scrollTo(0, 1e8));
       const top = await panel
-        .locator(".capacitystrip")
+        .locator(":scope > .capacitystrip, :scope > .workspace-view-options")
         .first()
         .evaluate((el) => el.getBoundingClientRect().top);
       const mast = await page.locator("header.mast").boundingBox();
@@ -82,7 +82,7 @@ export async function checkViewportScroll(f) {
     const placement = await panel.evaluate((el) => {
       const summary = el
         .querySelector(":scope > .capacitystrip")
-        .getBoundingClientRect();
+        ?.getBoundingClientRect();
       const options = el
         .querySelector(":scope > .workspace-view-options")
         .getBoundingClientRect();
@@ -90,7 +90,9 @@ export async function checkViewportScroll(f) {
         .querySelector(':scope > [data-slot="table-container"]')
         .getBoundingClientRect();
       return {
-        afterSummary: options.top >= summary.bottom - 1,
+        afterSummary:
+          options.top >=
+          (summary?.bottom ?? el.getBoundingClientRect().top) - 1,
         beforeGrid: options.bottom <= grid.top + 1,
         height: options.height,
       };
@@ -232,13 +234,11 @@ export async function checkViewportScroll(f) {
         );
       } else {
         await f.check(
-          "projects: compact detail controls and simplified filter summary heading",
+          "projects: compact detail controls without the removed filter summary",
           async () => {
             assert.equal(
-              await page
-                .locator(".project-filter-summary .capacitystrip-copy > strong")
-                .innerText(),
-              "Filtrelenen Projeler",
+              await page.locator(".project-filter-summary").count(),
+              0,
             );
             const toggle = page
               .locator(".workspace-view-options")
@@ -319,7 +319,7 @@ export async function checkViewportScroll(f) {
           },
         );
         await f.check(
-          "viewport: project filter labels reflect selection, dates and weekly view",
+          "viewport: project filters retain selection, dates and weekly view without a summary",
           async () => {
             await page.evaluate(() => window.scrollTo(0, 0));
             await page
@@ -328,9 +328,9 @@ export async function checkViewportScroll(f) {
                 exact: true,
               })
               .click();
-            assert.match(
-              await page.locator(".project-filter-summary").innerText(),
-              /Haftalık/,
+            assert.equal(
+              await page.locator(".weekly-projectmatrix").count(),
+              1,
             );
             await checkScroll();
             await page.evaluate(() => window.scrollTo(0, 0));
@@ -348,19 +348,24 @@ export async function checkViewportScroll(f) {
               })
               .check();
             await page.keyboard.press("Escape");
-            const summary = page.locator(".project-filter-summary");
             assert.match(
-              await summary.innerText(),
+              await page
+                .getByRole("button", { name: "Proje", exact: true })
+                .textContent(),
               /Synthetic viewport project 0/,
-            );
-            assert.equal(
-              await summary.getByText("Liderlik", { exact: true }).count(),
-              0,
             );
             await page
               .locator('.planning-filterbar input[type="month"]')
               .fill("2026-03");
-            assert.match(await summary.innerText(), /Mar 2026/);
+            assert.equal(
+              await page
+                .locator('.planning-filterbar input[type="month"]')
+                .inputValue(),
+              "2026-03",
+            );
+            const summary = page.locator(
+              ".workspace-dock > .workspace-view-options",
+            );
             await page.evaluate(() => window.scrollTo(0, 1e8));
             await f.wait(async () => {
               await page.evaluate(() => window.scrollTo(0, 1e8));
@@ -370,7 +375,7 @@ export async function checkViewportScroll(f) {
                   (await summary.boundingBox()).y - mast.y - mast.height,
                 ) <= 4
               );
-            }, "filtered summary remains the page boundary after layout settles");
+            }, "project view controls remain the page boundary after filtering");
           },
         );
       }

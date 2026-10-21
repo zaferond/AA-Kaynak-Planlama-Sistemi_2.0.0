@@ -347,6 +347,21 @@
   background: #fff;
   overflow: hidden;
 }
+.app .report-summary-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.app .report-summary-actions > .report-posting-options {
+  margin: 0;
+  padding: 4px 10px;
+}
+.app .report-posting-status {
+  color: var(--brand-muted, #60715e);
+  font-size: var(--fs-xs);
+}
 .app .report-summary-card {
   display: grid;
   gap: 1px;

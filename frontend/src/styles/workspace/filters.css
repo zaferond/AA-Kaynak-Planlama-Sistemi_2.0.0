@@ -55,6 +55,10 @@
   flex-basis: 215px;
   min-width: 215px;
 }
+.app.tab-projects .planning-filterbar .filters > .pick:first-child {
+  flex: 0 1 320px;
+  max-width: 320px;
+}
 .app .planning-filterbar .filters > .pick > span {
   color: #435f75;
   font-size: var(--fs-xs);
@@ -161,6 +165,9 @@
     min-width: 0;
     flex: none;
     grid-template-columns: 105px minmax(0, 1fr);
+  }
+  .app.tab-projects .planning-filterbar .filters > .pick:first-child {
+    max-width: none;
   }
   .app .planning-filterbar .filteractions {
     justify-content: flex-start;

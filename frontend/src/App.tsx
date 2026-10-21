@@ -21,7 +21,6 @@ import WorkspaceNavigation, {
 } from "./features/WorkspaceNavigation";
 import WorkspaceFilters from "./features/WorkspaceFilters";
 import PlannedAllocationPanel from "./features/PlannedAllocationPanel";
-import WorkspaceFilterSummary from "./features/workspace/WorkspaceFilterSummary";
 import { useOnlyDataRows } from "./features/workspace/useOnlyDataRows";
 import { isProjectEditor } from "../../shared/project-access.ts";
 import { useProjectMenus } from "./features/useProjectMenus";
@@ -52,7 +51,7 @@ import ScheduleScenarioDialog from "./features/schedule-scenario/ScheduleScenari
 import ScenarioReportBar from "./features/schedule-scenario/ScenarioReportBar";
 import { useScheduleScenarios } from "./features/schedule-scenario/useScheduleScenarios";
 import { usePlannedGrid } from "./features/usePlannedGrid";
-import { fmt, monthLabel, fullDateLabel } from "./format";
+import { fmt, monthLabel } from "./format";
 import { Project } from "./model";
 import { phaseChipStyle } from "./phase-chip";
 import PersonAllocationPanel from "./PersonAllocationPanel";
@@ -642,89 +641,10 @@ export default function Portal() {
           ) : (
             // Keyed by tab: one failing screen never blanks the others.
             <ErrorBoundary key={tab} scope="section">
-              {tab === "overview" || tab === "activity" ? (
-                <>
-                  {tab === "overview" && workspaceFilters}
-                  <div className="reports-filter-dock">
-                    {tab === "activity" && workspaceFilters}
-                    <WorkspaceFilterSummary
-                      title="Uygulanan Filtreler"
-                      ariaLabel={
-                        tab === "activity"
-                          ? "Aylık aktivite raporunda uygulanan filtreler"
-                          : "Raporlarda uygulanan filtreler"
-                      }
-                      className="reports-filter-summary"
-                      filters={
-                        tab === "overview" && reportView === "headcount"
-                          ? [
-                              ...capacityFilters.filter(
-                                (filter) =>
-                                  filter.label === "Liderlik" ||
-                                  filter.label === "Takım",
-                              ),
-                              {
-                                label: "Rapor Tarihi",
-                                values: [fullDateLabel(todayDate)],
-                                active: true,
-                              },
-                            ]
-                          : [
-                              ...capacityFilters.filter(
-                                (filter) =>
-                                  tab === "activity" ||
-                                  filter.label !== "Proje",
-                              ),
-                              {
-                                label: "Bitiş Ayı",
-                                values: [monthLabel(months.at(-1)!)],
-                                active: true,
-                              },
-                              {
-                                label: "Dönem",
-                                values: [months.length + " ay"],
-                                active: true,
-                              },
-                              // Read-only users see the posting setting here
-                              // instead of a disabled switch row.
-                              ...(tab === "overview" &&
-                              reportView === "resources" &&
-                              !isAdmin &&
-                              activePostingsIncluded(data) !== null
-                                ? [
-                                    {
-                                      label: "Aktif İlanlar",
-                                      values: [
-                                        activePostingsIncluded(data)
-                                          ? "Dahil"
-                                          : "Dahil değil",
-                                      ],
-                                      active: true,
-                                    },
-                                  ]
-                                : []),
-                            ]
-                      }
-                    >
-                      {tab === "overview" &&
-                        reportView === "resources" &&
-                        isAdmin && (
-                          <ActivePostingPlanningToggle
-                            data={data}
-                            canEdit={!!isAdmin}
-                            saving={saving}
-                            onSave={batch}
-                            onError={setError}
-                          />
-                        )}
-                    </WorkspaceFilterSummary>
-                  </div>
-                </>
-              ) : tab !== "resources" &&
+              {tab !== "resources" &&
                 tab !== "progress" &&
-                !(tab === "projects" && projectView === "scenario") ? (
-                workspaceFilters
-              ) : null}
+                !(tab === "projects" && projectView === "scenario") &&
+                workspaceFilters}
               {(isAdmin || isManager) && tab === "plan" && (
                 <TabsContent value="plan">
                   <PlannedAllocationPanel
@@ -798,28 +718,6 @@ export default function Portal() {
                     />
                   ) : (
                     <ProjectTimelinePanel
-                      filters={[
-                        ...capacityFilters.filter(
-                          (filter) =>
-                            filter.label === "Proje" ||
-                            filter.label === "Başlangıç Ayı",
-                        ),
-                        {
-                          label: "Bitiş Ayı",
-                          values: [monthLabel(months.at(-1)!)],
-                          active: true,
-                        },
-                        {
-                          label: "Dönem",
-                          values: [months.length + " ay"],
-                          active: true,
-                        },
-                        {
-                          label: "Görünüm",
-                          values: [timelineWeekly ? "Haftalık" : "Aylık"],
-                          active: true,
-                        },
-                      ]}
                       selection={projectMenus.phaseGrid}
                       progressBadge={progressBadge(true)}
                       projects={projects}
@@ -1097,6 +995,24 @@ export default function Portal() {
                   ) : (
                     <>
                       <WorkspaceReports
+                        summaryActions={
+                          isAdmin ? (
+                            <ActivePostingPlanningToggle
+                              data={data}
+                              canEdit={true}
+                              saving={saving}
+                              onSave={batch}
+                              onError={setError}
+                            />
+                          ) : activePostingsIncluded(data) !== null ? (
+                            <span className="report-posting-status">
+                              Aktif İlanlar:{" "}
+                              {activePostingsIncluded(data)
+                                ? "Dahil"
+                                : "Dahil değil"}
+                            </span>
+                          ) : null
+                        }
                         scenarioBar={
                           <ScenarioReportBar
                             data={data}

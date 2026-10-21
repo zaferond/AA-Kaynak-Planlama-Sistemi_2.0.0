@@ -53,10 +53,7 @@ export async function checkActivePostingPlanning(f) {
           .check();
         await page.keyboard.press("Escape");
         const summary = await page
-          .getByRole("region", {
-            name: "Raporlarda uygulanan filtreler",
-            exact: true,
-          })
+          .locator(".report-summary-actions")
           .boundingBox();
         const options = await page
           .locator(".report-posting-options")
@@ -67,7 +64,7 @@ export async function checkActivePostingPlanning(f) {
             exact: true,
           })
           .boundingBox();
-        // The switch sits inside the applied-filter strip, at its right end.
+        // The switch stays at the right end of the report summary actions.
         assert(options.y >= summary.y - 1);
         assert(options.y + options.height <= summary.y + summary.height + 1);
         assert(options.x + options.width > summary.x + summary.width / 2);
@@ -146,7 +143,7 @@ export async function checkActivePostingPlanning(f) {
   try {
     await selectWorkspaceTab(manager.page, "Raporlar");
     await f.check(
-      "report vacancies: manager sees the setting as a filter chip (no switch) and API rejects global resource changes",
+      "report vacancies: manager sees the setting as read-only status (no switch) and API rejects global resource changes",
       async () => {
         assert.equal(
           await manager.page
@@ -158,8 +155,8 @@ export async function checkActivePostingPlanning(f) {
           0,
         );
         assert.match(
-          await manager.page.locator(".reports-filter-summary").innerText(),
-          /Aktif İlanlar\s*Dahil( değil)?/,
+          await manager.page.locator(".report-posting-status").innerText(),
+          /Aktif İlanlar:\s*Dahil( değil)?/,
         );
         const before = await f.state();
         const response = await manager.context.request.post(

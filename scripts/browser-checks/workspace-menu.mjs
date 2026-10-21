@@ -72,7 +72,7 @@ export async function checkWorkspaceMenu(f) {
       },
     );
     await f.check(
-      "sol menü: üst barla aynı blokta kayar ve üst barla çakışmaz",
+      "sol menü: içerik kayarken yerinde kalır ve üst barla çakışmaz",
       async () => {
         const beforeHeader = await page.locator("header.mast").boundingBox();
         const beforeMenu = await menu.boundingBox();
@@ -80,25 +80,40 @@ export async function checkWorkspaceMenu(f) {
           const space = document.createElement("div");
           space.dataset.menuScrollFixture = "true";
           space.style.height = "1200px";
-          document.body.append(space);
+          document.querySelector(".app > main").append(space);
           window.scrollTo(0, 300);
         });
         await page.waitForTimeout(100);
         const header = await page.locator("header.mast").boundingBox();
         const panel = await menu.boundingBox();
         assert(header.y < beforeHeader.y - 50);
-        assert(
-          Math.abs(header.y - beforeHeader.y - (panel.y - beforeMenu.y)) < 2,
-        );
+        assert(Math.abs(panel.y - beforeMenu.y) < 2);
+        assert(panel.y >= -1);
+        assert(panel.y + panel.height <= page.viewportSize().height + 2);
         assert(panel.x + panel.width <= header.x + 1);
         assert.equal(
-          await menu.evaluate((el) => getComputedStyle(el).position),
-          "static",
+          await page
+            .locator(".workspace-sidebar-host")
+            .evaluate((el) => getComputedStyle(el).position),
+          "sticky",
         );
         await page.evaluate(() => {
           document.querySelector("[data-menu-scroll-fixture]").remove();
           window.scrollTo(0, 0);
         });
+        const viewport = page.viewportSize();
+        await page.setViewportSize({ width: 1280, height: 320 });
+        const list = menu.getByRole("tablist");
+        assert(await list.evaluate((el) => el.scrollHeight > el.clientHeight));
+        const lastTab = list.getByRole("tab").last();
+        await lastTab.scrollIntoViewIfNeeded();
+        const last = await lastTab.boundingBox();
+        assert(last.y >= 0 && last.y + last.height <= 321);
+        const close = await menu
+          .getByRole("button", { name: "Sol menüyü kapat", exact: true })
+          .boundingBox();
+        assert(close.y >= 0 && close.y + close.height <= 321);
+        await page.setViewportSize(viewport);
       },
     );
     await f.check(

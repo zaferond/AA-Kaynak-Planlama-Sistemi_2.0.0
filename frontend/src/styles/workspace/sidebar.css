@@ -1,4 +1,4 @@
-/* Sidebar, header and content share one document-flow grid. */
+/* The sidebar keeps its own column while the main content scrolls. */
 .app {
   --workspace-menu-width: 244px;
 }
@@ -13,10 +13,13 @@
   grid-template-columns: var(--workspace-menu-width) minmax(0, 1fr);
 }
 .app > .workspace-sidebar-host {
+  position: sticky;
+  top: 0;
   display: flex;
   grid-column: 1;
   grid-row: 1 / span 2;
-  align-self: stretch;
+  align-self: start;
+  height: calc(100dvh / var(--app-page-scale, 1));
   min-width: 0;
 }
 .app:not(.full-plan) > .mast {
@@ -82,6 +85,7 @@ html[data-theme] .app:not(.full-plan) > main {
   flex-direction: column;
   width: 100%;
   min-width: 0;
+  min-height: 0;
   padding: 0 10px 12px;
   border-right: 1px solid var(--brand-border, #ccd6c5);
   background: var(--brand-surface, #edf1e8);
@@ -142,9 +146,10 @@ html[data-theme] .app .workspace-menu-panel .navtabs {
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-wrap: nowrap;
   align-items: stretch;
   justify-content: flex-start !important;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   gap: 4px !important;
   width: 100%;
   min-height: 0;
@@ -154,7 +159,8 @@ html[data-theme] .app .workspace-menu-panel .navtabs {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  overflow: visible;
+  overflow: auto;
+  overscroll-behavior: contain;
   white-space: normal;
   scroll-snap-type: none;
   scrollbar-width: thin;
@@ -223,6 +229,8 @@ html[data-theme]
     grid-row: 1;
   }
   .app.menu-pinned > .workspace-sidebar-host {
+    position: static;
+    height: auto;
     grid-column: 1;
     grid-row: 2;
   }

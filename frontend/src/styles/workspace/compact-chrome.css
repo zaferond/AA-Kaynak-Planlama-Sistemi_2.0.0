@@ -33,7 +33,7 @@ html[data-theme] .app .planning-filterbar {
 }
 html[data-theme] .app .planning-filterbar label.pick,
 html[data-theme] .app .planning-filterbar .filters > label {
-  gap: 2px;
+  gap: 6px;
 }
 html[data-theme] .app .planning-filterbar :is(input, select, .pickerbutton),
 html[data-theme] .app .planning-filterbar .filteractions .button {

@@ -1,6 +1,6 @@
 /* Filter controls share the main navigation's calm blue surface and clear selection state. */
 .app .planning-filterbar {
-  align-items: flex-end;
+  align-items: center;
   flex-wrap: wrap;
   gap: 10px 12px;
   margin-bottom: 10px;
@@ -16,7 +16,7 @@
   align-self: center;
   flex: 0 0 auto;
   gap: 7px;
-  min-height: 34px;
+  min-height: 28px;
   padding-right: 12px;
   border-right: 1px solid #c8d8e4;
   color: #315f80;
@@ -30,19 +30,37 @@
 }
 .app .planning-filterbar .filters {
   flex: 1 1 620px;
+  align-items: center;
+  flex-wrap: wrap;
   max-width: none;
   gap: 9px;
   margin: 0;
 }
 .app .planning-filterbar .filters > .pick {
-  min-width: 0;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  min-width: 140px;
+  gap: 6px;
+}
+.app .planning-filterbar .filters > .pick:nth-child(-n + 3) {
+  flex: 1 1 150px;
+  min-width: 150px;
+}
+.app .planning-filterbar .filters > label.pick:nth-child(n) {
+  flex: 0 1 190px;
+  min-width: 190px;
+}
+.app .planning-filterbar .filters > label.pick.period {
+  flex-basis: 215px;
+  min-width: 215px;
 }
 .app .planning-filterbar .filters > .pick > span {
   color: #435f75;
   font-size: var(--fs-xs);
   font-weight: 700;
   line-height: 1.25;
+  white-space: nowrap;
 }
 .app .planning-filterbar .filters :is(.pickerbutton, input, select) {
   width: 100%;
@@ -83,9 +101,9 @@
   border-color: #397ba8;
 }
 .app .planning-filterbar .filteractions {
-  align-self: flex-end;
+  align-self: center;
   gap: 7px;
-  min-height: 34px;
+  min-height: 28px;
   padding: 0;
   margin-left: auto;
 }
@@ -113,11 +131,10 @@
     width: auto;
   }
   .app .planning-filterbar .filteractions {
-    flex: 1 1 100%;
+    flex: 0 1 auto;
     justify-content: flex-end;
     min-height: 0;
-    padding-top: 8px;
-    border-top: 1px solid #cbdbe7;
+    padding-top: 0;
   }
 }
 @media (max-width: 650px) {
@@ -134,14 +151,16 @@
   }
   .app .planning-filterbar .filters {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     width: 100%;
     gap: 9px;
   }
-  .app .planning-filterbar .filters > .pick:nth-child(n) {
+  .app .planning-filterbar .filters > .pick:nth-child(n),
+  .app .planning-filterbar .filters > label.pick:nth-child(n) {
     width: 100%;
     min-width: 0;
     flex: none;
+    grid-template-columns: 105px minmax(0, 1fr);
   }
   .app .planning-filterbar .filteractions {
     justify-content: flex-start;

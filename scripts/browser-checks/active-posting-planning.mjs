@@ -53,7 +53,7 @@ export async function checkActivePostingPlanning(f) {
           .check();
         await page.keyboard.press("Escape");
         const summary = await page
-          .locator(".report-summary-actions")
+          .locator(".workspace-section-navigation")
           .boundingBox();
         const options = await page
           .locator(".report-posting-options")
@@ -64,10 +64,15 @@ export async function checkActivePostingPlanning(f) {
             exact: true,
           })
           .boundingBox();
-        // The switch stays at the right end of the report summary actions.
+        // The switch shares the upper tab row with the density and export controls.
         assert(options.y >= summary.y - 1);
         assert(options.y + options.height <= summary.y + summary.height + 1);
-        assert(options.x + options.width > summary.x + summary.width / 2);
+        const density = await page.locator(".densitycontrol").boundingBox();
+        const exportButton = await page
+          .getByRole("button", { name: "Kaynak Raporu İndir", exact: true })
+          .boundingBox();
+        assert(options.x >= density.x + density.width);
+        assert(options.x + options.width <= exportButton.x);
         assert(options.y + options.height <= heading.y);
         assert(options.height <= 48);
         assert.equal(await control().getAttribute("aria-checked"), "false");

@@ -1,8 +1,7 @@
-import { useEffect, type RefObject } from "react";
+import { useEffect, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import {
   ArrowDownToLine,
-  CalendarClock,
   CalendarDays,
   FolderKanban,
   Layers3,
@@ -39,7 +38,7 @@ type Props = {
   setView: (view: string) => void;
   openProject: () => void;
   onOpenSharedCalendar: () => void;
-  onOpenScenario: () => void;
+  reportPostingControl?: ReactNode;
   /** Saved drafts waiting for an admin decision. */
   pendingScenarios?: number;
   onExport: () => void;
@@ -71,7 +70,7 @@ export default function WorkspaceNavigation({
   setView,
   openProject,
   onOpenSharedCalendar,
-  onOpenScenario,
+  reportPostingControl,
   pendingScenarios = 0,
   onExport,
   dataLoaded,
@@ -315,7 +314,9 @@ export default function WorkspaceNavigation({
         value={sectionValue}
         onChange={changeSection}
         actionsPlacement={
-          ["actual", "projects"].includes(tab) ? "tabs" : "heading"
+          ["actual", "projects", "plan", "overview"].includes(tab)
+            ? "tabs"
+            : "heading"
         }
         actions={
           ![
@@ -347,33 +348,9 @@ export default function WorkspaceNavigation({
                     </select>
                   </label>
                 )}
-              {(tab === "plan" ||
-                (tab === "overview" && reportView === "resources")) &&
-                (isAdmin || isManager) && (
-                  <button
-                    type="button"
-                    className="button"
-                    title={
-                      isAdmin && pendingScenarios > 0
-                        ? pendingScenarios + " senaryo onay bekliyor"
-                        : undefined
-                    }
-                    onClick={onOpenScenario}
-                    disabled={!dataLoaded || !hasProjects}
-                  >
-                    <CalendarClock size={17} />
-                    Erteleme Senaryosu
-                    {isAdmin && pendingScenarios > 0 && (
-                      // The button title carries the meaning; its name stays fixed.
-                      <span
-                        className="scenario-pending-badge"
-                        aria-hidden="true"
-                      >
-                        {pendingScenarios}
-                      </span>
-                    )}
-                  </button>
-                )}
+              {tab === "overview" &&
+                reportView === "resources" &&
+                reportPostingControl}
               {tab === "projects" && (isAdmin || projectEditor) && (
                 <button
                   className="button project-create"

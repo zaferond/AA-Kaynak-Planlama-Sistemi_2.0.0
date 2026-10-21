@@ -2,6 +2,11 @@ import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 import { selectWorkspaceTab } from "./fixture.mjs";
 
+async function openScenario(page) {
+  await selectWorkspaceTab(page, "Projeler");
+  await page.getByRole("tab", { name: /^Erteleme Senaryosu/ }).click();
+}
+
 export async function checkScheduleScenario(f) {
   const state = await f.state();
   const [pa, pb] = state.projects;
@@ -50,11 +55,10 @@ export async function checkScheduleScenario(f) {
     await f.check(
       "scenario: +3 and +5 month delays are compared without saving and export to Excel",
       async () => {
-        await selectWorkspaceTab(page, "Kaynak Planlama");
-        await page
-          .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
-          .click();
-        const dialog = page.locator(".schedule-scenario-dialog");
+        await openScenario(page);
+        const dialog = page.locator(
+          ".schedule-scenario-dialog, .schedule-scenario-page",
+        );
         await dialog.waitFor();
         await dialog
           .getByLabel("Proje", { exact: true })
@@ -123,7 +127,7 @@ export async function checkScheduleScenario(f) {
       "scenario: resource reports are drawn for a scenario with changed cells marked",
       async () => {
         await page
-          .locator(".schedule-scenario-dialog")
+          .locator(".schedule-scenario-dialog, .schedule-scenario-page")
           .getByRole("button", { name: "Raporlarda Göster" })
           .click();
         const bar = page.locator(".scenario-report-bar");
@@ -152,13 +156,17 @@ export async function checkScheduleScenario(f) {
         assert.equal(await page.locator("td[data-scenario-change]").count(), 0);
         assert.deepEqual((await f.state()).allocations, before.allocations);
         await bar.getByRole("button", { name: "Senaryoları Düzenle" }).click();
-        await page.locator(".schedule-scenario-dialog").waitFor();
+        await page
+          .locator(".schedule-scenario-dialog, .schedule-scenario-page")
+          .waitFor();
       },
     );
     await f.check(
       "scenario: pulling a project into months before the start month is refused",
       async () => {
-        const dialog = page.locator(".schedule-scenario-dialog");
+        const dialog = page.locator(
+          ".schedule-scenario-dialog, .schedule-scenario-page",
+        );
         await dialog
           .getByLabel("Kaydırılacak ay", { exact: true })
           .first()
@@ -181,7 +189,7 @@ export async function checkScheduleScenario(f) {
         await selectWorkspaceTab(employee.page, "Projeler");
         assert.equal(
           await employee.page
-            .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
+            .getByRole("tab", { name: "Erteleme Senaryosu", exact: true })
             .count(),
           0,
         );
@@ -229,11 +237,10 @@ export async function checkScheduleScenarioApproval(f) {
     await f.check(
       "scenario: a manager saves a draft but cannot approve",
       async () => {
-        await selectWorkspaceTab(manager.page, "Kaynak Planlama");
-        await manager.page
-          .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
-          .click();
-        const dialog = manager.page.locator(".schedule-scenario-dialog");
+        await openScenario(manager.page);
+        const dialog = manager.page.locator(
+          ".schedule-scenario-dialog, .schedule-scenario-page",
+        );
         await dialog
           .getByLabel("Proje", { exact: true })
           .first()
@@ -269,19 +276,15 @@ export async function checkScheduleScenarioApproval(f) {
             "",
           /is-active/,
         );
-        assert.equal(
-          await page.locator(".scenario-pending-badge").innerText(),
-          "1",
-        );
+        assert.equal(await page.locator(".scenario-pending-badge").count(), 0);
         await page
           .locator(".scenario-report-bar")
           .getByRole("button", { name: "Mevcut", exact: true })
           .click();
-        await selectWorkspaceTab(page, "Kaynak Planlama");
-        await page
-          .getByRole("button", { name: "Erteleme Senaryosu", exact: true })
-          .click();
-        const dialog = page.locator(".schedule-scenario-dialog");
+        await openScenario(page);
+        const dialog = page.locator(
+          ".schedule-scenario-dialog, .schedule-scenario-page",
+        );
         // The empty working card does not reuse the saved scenario's name.
         assert.equal(
           await dialog.getByLabel("Senaryo adı").first().inputValue(),

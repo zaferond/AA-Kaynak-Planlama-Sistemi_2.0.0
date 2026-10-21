@@ -124,7 +124,7 @@ export async function checkResourceReports(f) {
     await page.locator(".planning-filterbar .period select").selectOption("6");
     await choose([team.name]);
     await f.check(
-      "resource reports: filter summaries and section shortcuts are removed, vacancy control remains at the right",
+      "resource reports: filter summaries and section shortcuts are removed, vacancy control shares the tab row between density and export",
       async () => {
         assert.equal(
           await page
@@ -135,7 +135,7 @@ export async function checkResourceReports(f) {
           0,
         );
         assert.equal(await page.locator(".report-summary-card").count(), 4);
-        const actions = page.locator(".report-summary-actions");
+        const actions = page.locator(".workspace-nav-actions");
         const control = actions.getByRole("switch", {
           name: "Aktif İlanları Dahil Et",
           exact: true,
@@ -165,7 +165,14 @@ export async function checkResourceReports(f) {
             .locator(".report-posting-options")
             .boundingBox();
           const row = await actions.boundingBox();
-          assert(Math.abs(option.x + option.width - row.x - row.width) < 2);
+          if (size.width === 1800) {
+            const density = await page.locator(".densitycontrol").boundingBox();
+            const exportButton = await page
+              .getByRole("button", { name: "Kaynak Raporu İndir", exact: true })
+              .boundingBox();
+            assert(option.x >= density.x + density.width);
+            assert(option.x + option.width <= exportButton.x);
+          }
           assert(option.x >= row.x - 1);
         }
         await page.setViewportSize({ width: 1800, height: 1050 });

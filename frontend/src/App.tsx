@@ -596,7 +596,23 @@ export default function Portal() {
             onOpenSharedCalendar={() => {
               if (isAdmin && data) setSharedCalendarOpen(true);
             }}
-            onOpenScenario={() => data && setScenarioOpen(true)}
+            reportPostingControl={
+              data &&
+              (isAdmin ? (
+                <ActivePostingPlanningToggle
+                  data={data}
+                  canEdit={true}
+                  saving={saving}
+                  onSave={batch}
+                  onError={setError}
+                />
+              ) : activePostingsIncluded(data) !== null ? (
+                <span className="report-posting-status">
+                  Aktif İlanlar:{" "}
+                  {activePostingsIncluded(data) ? "Dahil" : "Dahil değil"}
+                </span>
+              ) : null)
+            }
             pendingScenarios={
               data?.scheduleScenarios?.filter((s) => s.status === "draft")
                 .length || 0
@@ -982,24 +998,6 @@ export default function Portal() {
                   ) : (
                     <>
                       <WorkspaceReports
-                        summaryActions={
-                          isAdmin ? (
-                            <ActivePostingPlanningToggle
-                              data={data}
-                              canEdit={true}
-                              saving={saving}
-                              onSave={batch}
-                              onError={setError}
-                            />
-                          ) : activePostingsIncluded(data) !== null ? (
-                            <span className="report-posting-status">
-                              Aktif İlanlar:{" "}
-                              {activePostingsIncluded(data)
-                                ? "Dahil"
-                                : "Dahil değil"}
-                            </span>
-                          ) : null
-                        }
                         scenarioBar={
                           <ScenarioReportBar
                             data={data}

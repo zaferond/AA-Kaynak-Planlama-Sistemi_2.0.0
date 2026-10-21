@@ -14,6 +14,33 @@
   }
 }
 
+/* Subtle grey grid follows each calendar column, including detail tracks. */
+.app.tab-projects .projectmatrix {
+  --project-month-grid: #d5d8dc;
+}
+.app.tab-projects
+  .projectmatrix
+  :is(td[data-phase-cell], th[data-month], th.weekhead) {
+  border-left: 1px solid var(--project-month-grid);
+}
+html[data-theme]
+  .app.tab-projects
+  .projectmatrix
+  .project-main-row
+  > td[data-phase-cell] {
+  border-left: 0;
+  border-bottom: 1px solid var(--project-month-grid);
+  box-shadow:
+    inset 1px 0 var(--project-month-grid),
+    inset 0 -1px var(--project-month-grid);
+}
+.app.tab-projects .projectmatrix .milestone-track {
+  background-image: linear-gradient(
+    to right,
+    var(--project-month-grid) 1px,
+    transparent 1px
+  );
+}
 /* Keep both calendar header rows visible while scrolling project rows. */
 .app.tab-projects .projectmatrix thead {
   position: static;

@@ -47,7 +47,7 @@ html[data-theme="technical"] .app .capacitystrip-copy > strong {
   display: flex;
   align-items: center;
   flex: none;
-  max-width: 11rem;
+  max-width: none;
   padding: 8px 14px;
   border-right: 1px solid var(--brand-border);
   background: var(--brand-surface-soft);
@@ -55,6 +55,7 @@ html[data-theme="technical"] .app .capacitystrip-copy > strong {
   font-size: var(--fs-xs);
   font-weight: 600;
   line-height: 1.3;
+  white-space: nowrap;
 }
 html[data-theme="technical"] .app .capacity-filter-list {
   flex-wrap: wrap;
@@ -63,10 +64,10 @@ html[data-theme="technical"] .app .capacity-filter-list {
 }
 html[data-theme="technical"] .app .capacity-filter-chip,
 html[data-theme="technical"] .app .capacity-filter-chip.is-active {
-  display: grid;
-  align-content: center;
-  gap: 1px;
-  min-width: 6.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
   padding: 6px 14px;
   border: 0;
   border-right: 1px solid var(--brand-border);
@@ -78,6 +79,7 @@ html[data-theme="technical"] .app .capacity-filter-chip.is-active > span {
   color: var(--brand-muted);
   font-size: var(--fs-xs);
   font-weight: 400;
+  white-space: nowrap;
 }
 html[data-theme="technical"] .app .capacity-filter-chip > strong {
   color: var(--brand-text);
@@ -87,6 +89,16 @@ html[data-theme="technical"] .app .capacity-filter-chip > strong {
 /* A filter narrowed by the user stands out from the "Tümü" defaults. */
 html[data-theme="technical"] .app .capacity-filter-chip.is-active > strong {
   color: var(--brand-primary);
+}
+@media (max-width: 650px) {
+  html[data-theme="technical"] .app .capacitystrip-copy {
+    flex-wrap: wrap;
+  }
+  html[data-theme="technical"] .app .capacitystrip-copy > strong {
+    flex: 0 1 auto;
+    max-width: 100%;
+    white-space: normal;
+  }
 }
 html[data-theme="technical"]
   .app

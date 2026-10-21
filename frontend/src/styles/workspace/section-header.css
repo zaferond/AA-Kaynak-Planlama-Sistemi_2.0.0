@@ -53,6 +53,15 @@ html[data-theme] .app .workspace-section-navigation .workspace-nav-actions {
   margin: 0;
   padding: 0;
 }
+.app .workspace-nav-actions > .report-posting-options {
+  flex: none;
+  min-height: 32px;
+  margin: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--brand-border, #ccd6c5);
+  border-radius: 5px;
+  gap: 8px;
+}
 html[data-theme] .app .workspace-section-tabs {
   display: flex;
   align-items: stretch;

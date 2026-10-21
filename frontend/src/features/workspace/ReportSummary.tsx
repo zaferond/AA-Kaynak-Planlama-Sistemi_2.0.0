@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from "react";
+import { useMemo } from "react";
 import type { Data, Team } from "../../model";
 import type { Metric } from "../../metrics";
 import { fmt, monthLabel } from "../../format";
@@ -18,7 +18,6 @@ export default function ReportSummary({
   actualTotals,
   teamIds,
   months,
-  actions,
 }: {
   data: Data;
   teams: Team[];
@@ -26,7 +25,6 @@ export default function ReportSummary({
   actualTotals: Record<string, number>;
   teamIds: string[];
   months: string[];
-  actions?: ReactNode;
 }) {
   const shortage = useMemo(
     () => buildMonthlyShortageTrend(capacity, teamIds, months),
@@ -102,7 +100,6 @@ export default function ReportSummary({
           </div>
         ))}
       </div>
-      {actions && <div className="report-summary-actions">{actions}</div>}
     </section>
   );
 }

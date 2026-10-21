@@ -60,7 +60,7 @@ export async function checkPasswordChange(f) {
         await page.getByRole("alert").filter({ hasText: /şifre/i }).waitFor();
         await fill(f.password, chosen);
         await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
+          .getByRole("button", { name: /^Ana menüyü (aç|kapat)$/ })
           .waitFor();
         assert.equal(
           (await f.store.findUser({ id: "first-login" })).mustChangePassword,
@@ -78,12 +78,12 @@ export async function checkPasswordChange(f) {
         await fill(chosen, again);
         await dialog.waitFor({ state: "hidden" });
         await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
+          .getByRole("button", { name: /^Ana menüyü (aç|kapat)$/ })
           .waitFor();
         // The page keeps working under the renewed session.
         await page.reload();
         await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
+          .getByRole("button", { name: /^Ana menüyü (aç|kapat)$/ })
           .waitFor();
         assert.equal(await page.getByLabel("Kullanıcı Adı").count(), 0);
       },

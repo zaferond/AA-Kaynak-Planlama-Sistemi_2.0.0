@@ -529,7 +529,7 @@ export default function Portal() {
       showPeriodFilters={tab !== "overview" || reportView !== "headcount"}
     />
   );
-  const workspaceMenu = useWorkspaceMenu(tab);
+  const workspaceMenu = useWorkspaceMenu();
   return (
     <div
       className={

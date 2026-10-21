@@ -5,88 +5,133 @@ export async function checkWorkspaceMenu(f) {
   const { page, context } = await f.client("root-admin");
   const menu = page.locator("#workspace-main-menu");
   const isOpen = async () => (await menu.getAttribute("data-open")) === "true";
-  const outside = () => page.mouse.move(900, 500);
   try {
     await f.check(
-      "sol menü: başlangıçta gizli; kenardan açılır, ayrılınca kapanır; çalışma alanı kaymaz",
+      "sol menü: dar ve sabit açık başlar, çalışma alanını örtmez, başlık metni kaldırılmıştır",
       async () => {
-        assert.equal(await isOpen(), false);
-        assert.equal(await menu.getAttribute("inert"), "");
-        assert.equal(await menu.getByRole("tab").count(), 0);
-        const before = await page.locator(".planning-filterbar").boundingBox();
-        const edge = page.getByRole("button", {
-          name: "Sol menüyü aç",
-          exact: true,
-        });
-        await edge.hover();
-        await f.wait(isOpen, "edge hover opens menu");
-        await menu
-          .getByRole("tab", { name: "Projeler", exact: true })
-          .waitFor();
-        const after = await page.locator(".planning-filterbar").boundingBox();
-        assert.equal(after.x, before.x);
-        assert.equal(after.width, before.width);
-        const header = await page.locator("header.mast").boundingBox();
-        const panel = await menu.boundingBox();
-        assert(Math.abs(panel.y - (header.y + header.height)) < 2);
-        await outside();
-        await f.wait(
-          async () => !(await isOpen()),
-          "pointer leave closes menu",
-        );
-      },
-    );
-    await f.check(
-      "sol menü: sabitleme açık tutar; serbest bırakma ve Escape kapatır",
-      async () => {
-        await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
-          .click();
-        await menu
-          .getByRole("button", { name: "Menüyü sabitle", exact: true })
-          .click();
-        await outside();
-        await page.waitForTimeout(350);
         assert.equal(await isOpen(), true);
+        assert.equal(
+          await menu.getByText("Çalışma alanı", { exact: true }).count(),
+          0,
+        );
+        assert.equal(
+          await menu
+            .getByRole("button", {
+              name: /Menüyü sabitle|Menüyü serbest bırak/,
+            })
+            .count(),
+          0,
+        );
+        assert(
+          Math.abs(
+            (await menu.evaluate((el) =>
+              parseFloat(getComputedStyle(el).width),
+            )) - 244,
+          ) < 1,
+        );
+        const panel = await menu.boundingBox();
+        const main = await page.locator(".app > main").boundingBox();
+        assert(
+          main.x >= panel.x + panel.width - 1,
+          "docked menu must not cover content",
+        );
+        const header = await page.locator("header.mast").boundingBox();
+        assert(Math.abs(panel.y - (header.y + header.height)) < 2);
+        await page.mouse.move(1000, 500);
+        await page.waitForTimeout(300);
+        assert.equal(
+          await isOpen(),
+          true,
+          "pointer leave does not close a fixed menu",
+        );
         await selectWorkspaceTab(page, "Projeler");
         await page.locator(".projectmatrix").waitFor();
-        assert.equal(await isOpen(), true);
-        await menu
-          .getByRole("button", { name: "Menüyü serbest bırak", exact: true })
-          .click();
-        await outside();
-        await f.wait(
-          async () => !(await isOpen()),
-          "unpinned menu closes on leave",
+        assert.equal(
+          await isOpen(),
+          true,
+          "section changes leave the menu open",
         );
-        await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
-          .click();
-        await page.keyboard.press("Escape");
-        await f.wait(async () => !(await isOpen()), "Escape closes");
-        await f.wait(
-          async () =>
-            await page
-              .getByRole("button", { name: "Ana menüyü aç", exact: true })
-              .evaluate((el) => document.activeElement === el),
-          "Escape restores menu trigger focus",
-        );
+        await f.capture(page, "sabit-dar-sol-menu");
       },
     );
     await f.check(
-      "sol menü: klavye ile açma, dikey oklarla gezinme ve seçim",
+      "sol menü: sayfa kaydırılırken ve fare üst çubuğa giderken mavi satırın altında kalır",
       async () => {
+        await page.evaluate(() => {
+          const space = document.createElement("div");
+          space.dataset.menuScrollFixture = "true";
+          space.style.height = "1200px";
+          document.querySelector(".app").append(space);
+          window.scrollTo(0, 300);
+        });
+        await page.waitForTimeout(100);
+        const header = await page.locator("header.mast").boundingBox();
+        const panel = await menu.boundingBox();
+        assert(Math.abs(header.y) < 1);
+        assert(panel.y >= header.y + header.height - 1);
+        await page.mouse.move(30, 5);
+        assert.equal(
+          await page.evaluate(
+            () => !!document.elementFromPoint(30, 5)?.closest("header.mast"),
+          ),
+          true,
+        );
+        await page.evaluate(() => {
+          document.querySelector("[data-menu-scroll-fixture]").remove();
+          window.scrollTo(0, 0);
+        });
+      },
+    );
+    await f.check(
+      "sol menü: açık/kapalı tercihi hatırlanır; kapalıyken fareyle kendiliğinden açılmaz",
+      async () => {
+        const before = await page.locator(".app > main").boundingBox();
+        await menu
+          .getByRole("button", { name: "Sol menüyü kapat", exact: true })
+          .click();
+        await f.wait(async () => !(await isOpen()), "explicit close");
+        assert.equal(await menu.getAttribute("inert"), "");
+        assert(
+          (await page.locator(".app > main").boundingBox()).width >
+            before.width,
+        );
+        await page.locator(".workspace-menu-edge").hover();
+        await page.waitForTimeout(300);
+        assert.equal(await isOpen(), false);
+        await page.reload();
+        await page
+          .getByRole("button", { name: "Ana menüyü aç", exact: true })
+          .waitFor();
+        assert.equal(await isOpen(), false);
+        await page
+          .getByRole("button", { name: "Sol menüyü aç", exact: true })
+          .click();
+        await f.wait(isOpen, "edge click reopens");
+        await page.reload();
+        await page
+          .getByRole("button", { name: "Ana menüyü kapat", exact: true })
+          .waitFor();
+        assert.equal(await isOpen(), true);
+      },
+    );
+    await f.check(
+      "sol menü: klavyeyle açma, dikey gezinme ve Escape ile kapatma",
+      async () => {
+        await selectWorkspaceTab(page, "Projeler");
+        await page.locator(".app.tab-projects").waitFor();
+        await page
+          .getByRole("button", { name: "Ana menüyü kapat", exact: true })
+          .click();
         const trigger = page.getByRole("button", {
           name: "Ana menüyü aç",
           exact: true,
         });
         await trigger.focus();
         await page.keyboard.press("Enter");
+        const current = menu.locator('[role="tab"][aria-selected="true"]');
         await f.wait(
           async () =>
-            await menu
-              .getByRole("tab", { name: "Projeler", exact: true })
-              .evaluate((el) => document.activeElement === el),
+            await current.evaluate((el) => document.activeElement === el),
           "active tab receives keyboard focus",
         );
         await page.keyboard.press("ArrowDown");
@@ -97,48 +142,40 @@ export async function checkWorkspaceMenu(f) {
         await f.wait(
           async () =>
             await progress.evaluate((el) => document.activeElement === el),
-          "ArrowDown focuses next item",
+          "vertical arrow navigation",
         );
-        assert.equal(await isOpen(), true);
         await page.keyboard.press("Enter");
         await page.locator(".app.tab-progress").waitFor();
+        assert.equal(await isOpen(), true);
+        await page.keyboard.press("Escape");
         await f.wait(
           async () => !(await isOpen()),
-          "successful selection closes unpinned menu",
+          "Escape closes focused navigation",
         );
-        await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
-          .click();
-        await outside();
-        // Explicitly opened menus also close on a click outside.
-        await page
-          .locator(".app > main")
-          .click({ position: { x: 700, y: 12 } });
-        assert.equal(await isOpen(), false);
+        await f.wait(
+          async () =>
+            await trigger.evaluate((el) => document.activeElement === el),
+          "focus restored to trigger",
+        );
       },
     );
     await f.check(
-      "sol menü: dar ekranda düğmeyle açılır, panel ekrana sığar ve kısa ekranda kaydırılabilir",
+      "sol menü: küçük ekranda panel ve kapatma düğmesi erişilebilir",
       async () => {
         await page.setViewportSize({ width: 320, height: 480 });
         await page
           .getByRole("button", { name: "Ana menüyü aç", exact: true })
           .click();
-        await menu
-          .getByRole("tab", { name: "Projeler", exact: true })
-          .waitFor();
         await f.wait(async () => {
           const b = await menu.boundingBox();
           return b.x >= 0 && b.x + b.width <= 320;
-        }, "narrow menu finishes opening within viewport");
-        const box = await menu.boundingBox();
-        assert(box.x >= 0 && box.x + box.width <= 320);
+        }, "narrow panel fits");
         const list = menu.getByRole("tablist");
-        const dimensions = await list.evaluate((el) => ({
+        const size = await list.evaluate((el) => ({
           scroll: el.scrollHeight,
           client: el.clientHeight,
         }));
-        assert(dimensions.scroll > dimensions.client);
+        assert(size.scroll > size.client);
         await menu
           .getByRole("tab", {
             name: "Organizasyon & Çalışan & Yetki",
@@ -149,12 +186,7 @@ export async function checkWorkspaceMenu(f) {
           .getByRole("button", { name: "Sol menüyü kapat", exact: true })
           .click();
         assert.equal(await isOpen(), false);
-        await f.capture(page, "gizlenen-sol-menu-mobile");
-        await page.setViewportSize({ width: 1800, height: 1050 });
-        await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
-          .click();
-        await f.capture(page, "gizlenen-sol-menu-desktop");
+        await f.capture(page, "sabit-dar-sol-menu-mobile");
       },
     );
   } finally {
@@ -164,13 +196,12 @@ export async function checkWorkspaceMenu(f) {
     const client = await f.client(role);
     try {
       await f.check(
-        `sol menü: ${role} rolünde yönetim bağlantıları gösterilmez`,
+        `sol menü: ${role} rolünde yetki sınırları korunur`,
         async () => {
-          await client.page
-            .getByRole("button", { name: "Ana menüyü aç", exact: true })
-            .click();
+          const navigation = client.page.locator("#workspace-main-menu");
+          assert.equal(await navigation.getAttribute("data-open"), "true");
           assert.equal(
-            await client.page
+            await navigation
               .getByRole("tab", {
                 name: "Organizasyon & Çalışan & Yetki",
                 exact: true,
@@ -180,7 +211,7 @@ export async function checkWorkspaceMenu(f) {
           );
           if (role === "employee")
             assert.equal(
-              await client.page
+              await navigation
                 .getByRole("tab", { name: "Proje İlerlemesi", exact: true })
                 .count(),
               0,

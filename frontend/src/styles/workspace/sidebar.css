@@ -1,4 +1,12 @@
-/* Ana gezinme çalışma alanının üzerine açılır; raporlar yatayda kaymaz. */
+/* Docked navigation starts below the sticky application header. */
+.app {
+  --workspace-menu-width: 244px;
+}
+.app:not(.full-plan) > .mast {
+  position: sticky;
+  top: 0;
+  z-index: 45;
+}
 .app .workspace-tabs {
   display: block;
 }
@@ -59,7 +67,7 @@ html[data-theme] .app .workspace-nav-actions {
   z-index: 40;
   display: flex;
   flex-direction: column;
-  width: min(292px, calc(100vw - 20px));
+  width: min(var(--workspace-menu-width), calc(100vw - 20px));
   padding: 0 10px 12px;
   border-right: 1px solid var(--brand-border, #ccd6c5);
   background: var(--brand-surface, #edf1e8);
@@ -81,14 +89,10 @@ html[data-theme] .app .workspace-nav-actions {
   display: flex;
   align-items: center;
   gap: 6px;
-  min-height: 58px;
+  justify-content: flex-end;
+  min-height: 42px;
   flex: none;
-  padding: 8px 2px 8px 8px;
-}
-.app .workspace-menu-heading strong {
-  flex: 1;
-  font-size: var(--fs-sm);
-  font-weight: 600;
+  padding: 5px 2px;
 }
 .app .workspace-menu-heading .iconbutton {
   display: inline-flex;
@@ -102,10 +106,6 @@ html[data-theme] .app .workspace-nav-actions {
   border-radius: 6px;
   background: var(--brand-surface-soft, #f6f8f2);
   color: var(--brand-text, #293a2d);
-}
-.app .workspace-menu-heading [aria-pressed="true"] {
-  background: var(--brand-selected, #e0e9d8);
-  border-color: var(--brand-border-strong, #96a889);
 }
 html[data-theme] .app .workspace-menu-panel .navtabs {
   position: relative;
@@ -162,12 +162,12 @@ html[data-theme]
   width: auto;
   height: 1px;
 }
-/* Sabitlenen menü içeriğin üzerine binmez: çalışma alanı menü kadar sağa
-   kayar. Dar ekranda tablolar sıkışmasın diye menü üstte açılmaya devam eder. */
-@media (min-width: 1100px) {
+/* On desktop, reserve the menu's width. Small screens use an overlay with an
+   explicit close button, while the application header remains above it. */
+@media (min-width: 800px) {
   .app.menu-pinned:not(.full-plan) > main {
-    margin-left: 292px;
-    width: calc(100% - 292px);
+    margin-left: var(--workspace-menu-width);
+    width: calc(100% - var(--workspace-menu-width));
   }
   .app.menu-pinned .workspace-menu-panel[data-pinned="true"] {
     box-shadow: none;

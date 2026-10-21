@@ -9,9 +9,7 @@ import {
   ShieldAlert,
   TrendingUp,
   Users,
-  Pin,
-  PinOff,
-  X,
+  PanelLeftClose,
   Menu,
   ChevronsRight,
 } from "lucide-react";
@@ -236,15 +234,13 @@ export default function WorkspaceNavigation({
       <button
         type="button"
         className="workspace-menu-edge"
+        inert={menu.open}
+        aria-hidden={menu.open}
         data-workspace-menu-trigger
         aria-label="Sol menüyü aç"
         aria-controls="workspace-main-menu"
         aria-expanded={menu.open}
         style={{ top: menu.top }}
-        onPointerEnter={(event) =>
-          event.pointerType === "mouse" && menu.enter()
-        }
-        onPointerLeave={menu.leave}
         onClick={(event) => !menu.open && menu.toggle(event.detail === 0)}
       >
         <Menu
@@ -267,31 +263,15 @@ export default function WorkspaceNavigation({
         aria-hidden={!menu.open}
         inert={!menu.open}
         style={{ top: menu.top }}
-        onPointerEnter={(event) =>
-          event.pointerType === "mouse" && menu.enter()
-        }
-        onPointerLeave={menu.leave}
-        onFocusCapture={menu.focus}
-        onBlurCapture={menu.leave}
       >
         <div className="workspace-menu-heading">
-          <strong>Çalışma alanı</strong>
-          <button
-            type="button"
-            className="iconbutton"
-            onClick={menu.pin}
-            aria-label={menu.pinned ? "Menüyü serbest bırak" : "Menüyü sabitle"}
-            aria-pressed={menu.pinned}
-          >
-            {menu.pinned ? <PinOff size={17} /> : <Pin size={17} />}
-          </button>
           <button
             type="button"
             className="iconbutton"
             aria-label="Sol menüyü kapat"
             onClick={() => menu.close(true)}
           >
-            <X size={18} />
+            <PanelLeftClose size={18} />
           </button>
         </div>
         <TabsList
@@ -304,9 +284,6 @@ export default function WorkspaceNavigation({
             <TabsTrigger
               key={item.value}
               value={item.value}
-              onClick={() => {
-                if (item.value === tab && !menu.pinned) menu.close(true);
-              }}
               data-tab-group={item.group}
               // A thin divider marks where a new group of tabs begins.
               data-group-start={

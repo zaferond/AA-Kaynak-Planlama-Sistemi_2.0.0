@@ -1,72 +1,30 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-const pinnedKey = "aa-kaynak-menu-sabit-v1";
-function readPinned() {
+const openKey = "aa-kaynak-menu-acik-v2";
+function readOpen() {
   try {
-    return localStorage.getItem(pinnedKey) === "1";
+    return localStorage.getItem(openKey) !== "0";
   } catch {
-    return false;
+    return true;
   }
 }
 
-/** Hover is temporary; keyboard focus and an explicit pin keep navigation open.
- *  The pin is remembered in this browser, so a pinned menu survives reloads. */
-export function useWorkspaceMenu(tab: string) {
-  const [pinned, setPinned] = useState(readPinned);
-  const [open, setOpen] = useState(pinned);
+/** Navigation stays docked until explicitly closed; remember that choice. */
+export function useWorkspaceMenu() {
+  const [open, setOpen] = useState(readOpen);
   const [top, setTop] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
-  const openTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
-  const keyboard = useRef(false);
-  const pointerInside = useRef(false);
-  function cancelTimers() {
-    clearTimeout(closeTimer.current);
-    clearTimeout(openTimer.current);
-  }
   function close(restoreFocus = false) {
-    cancelTimers();
     setOpen(false);
-    setPinned(false);
     if (restoreFocus || panelRef.current?.contains(document.activeElement))
-      // Wait for the triggering key's native click before moving focus. Moving
-      // during Enter's keydown can otherwise click the header and reopen it.
       requestAnimationFrame(() => {
         if (panelRef.current?.inert)
           triggerRef.current?.focus({ preventScroll: true });
       });
   }
-  function enter() {
-    pointerInside.current = true;
-    cancelTimers();
-    openTimer.current = setTimeout(() => setOpen(true), 100);
-  }
-  function leave() {
-    pointerInside.current = false;
-    cancelTimers();
-    closeTimer.current = setTimeout(() => {
-      if (
-        !pinned &&
-        !pointerInside.current &&
-        !(
-          keyboard.current && panelRef.current?.contains(document.activeElement)
-        )
-      )
-        close();
-    }, 220);
-  }
-  function focus() {
-    cancelTimers();
-    setOpen(true);
-  }
   function toggle(focusMenu = false) {
-    cancelTimers();
     if (open) close();
     else {
       setOpen(true);
@@ -81,45 +39,27 @@ export function useWorkspaceMenu(tab: string) {
     }
   }
   useEffect(() => {
-    // A declined/failed navigation keeps the menu and draft available.
-    if (!pinned) close();
-  }, [tab]);
+    try {
+      localStorage.setItem(openKey, open ? "1" : "0");
+    } catch {
+      // Storage-less sessions still allow opening and closing the menu.
+    }
+  }, [open]);
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
-      keyboard.current = true;
-      if (event.key === "Escape" && open) {
+      if (
+        event.key === "Escape" &&
+        open &&
+        (panelRef.current?.contains(document.activeElement) ||
+          document.activeElement === triggerRef.current)
+      ) {
         event.preventDefault();
         close(true);
       }
     };
-    const pointer = (event: PointerEvent) => {
-      keyboard.current = false;
-      const target = event.target;
-      if (
-        open &&
-        !pinned &&
-        target instanceof Element &&
-        !panelRef.current?.contains(target) &&
-        !target.closest("[data-workspace-menu-trigger]")
-      )
-        close();
-    };
     document.addEventListener("keydown", key);
-    document.addEventListener("pointerdown", pointer, true);
-    return () => {
-      document.removeEventListener("keydown", key);
-      document.removeEventListener("pointerdown", pointer, true);
-    };
-  }, [open, pinned]);
-  useEffect(() => {
-    try {
-      if (pinned) localStorage.setItem(pinnedKey, "1");
-      else localStorage.removeItem(pinnedKey);
-    } catch {
-      // Private mode or blocked storage: the pin lasts for this page only.
-    }
-  }, [pinned]);
-  useEffect(() => () => cancelTimers(), []);
+    return () => document.removeEventListener("keydown", key);
+  }, [open]);
   useLayoutEffect(() => {
     const header = headerRef.current;
     if (!header) return;
@@ -141,21 +81,14 @@ export function useWorkspaceMenu(tab: string) {
   }, []);
   return {
     open,
-    pinned,
+    // Existing layout uses this flag to reserve the menu's width.
+    pinned: open,
     top,
     headerRef,
     panelRef,
     triggerRef,
-    enter,
-    leave,
-    focus,
     toggle,
     close,
-    pin: () => {
-      cancelTimers();
-      setPinned(!pinned);
-      setOpen(true);
-    },
   };
 }
 export type WorkspaceMenu = ReturnType<typeof useWorkspaceMenu>;

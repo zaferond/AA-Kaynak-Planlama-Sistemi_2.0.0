@@ -1,4 +1,4 @@
-import { selectWorkspaceTab } from "./fixture.mjs";
+import { selectWorkspaceTab, hoverMainMenu } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyLeaderChange } from "../../backend/operations.mjs";
 import { directoryRevision } from "../../shared/directory-policy.ts";
@@ -44,9 +44,7 @@ export async function checkEmployeeAccess(f) {
           ),
         );
         await page.reload();
-        await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
-          .click();
+        await hoverMainMenu(page);
         const tab = page.getByRole("tab", {
           name: "Organizasyon & Çalışan & Yetki",
           exact: true,
@@ -77,9 +75,7 @@ export async function checkEmployeeAccess(f) {
           ),
         );
         await page.reload();
-        await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
-          .click();
+        await hoverMainMenu(page);
         const main = page.locator('#workspace-main-menu [role="tablist"]');
         const combined = main
           .locator('[role="tab"]')

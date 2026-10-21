@@ -183,8 +183,7 @@ export async function fixture({ mutationLimits } = {}) {
       if (login)
         await page
           .getByRole("button", {
-            name: "Ana menüyü aç",
-            exact: true,
+            name: /^Ana menüyü (aç|kapat)$/,
           })
           .waitFor();
       return { context, page, id };
@@ -248,21 +247,22 @@ export async function fixture({ mutationLimits } = {}) {
   }
 }
 
-/** Open the main menu by hovering its edge, as a mouse user would. Unlike a
- *  click this keeps focus in an open editor, so its draft is not blurred. */
+/** Ensure the docked menu is visible. It is already open in a fresh session. */
 export async function hoverMainMenu(page) {
-  await page.locator(".workspace-menu-edge").hover();
+  if (
+    (await page.locator("#workspace-main-menu").getAttribute("data-open")) !==
+    "true"
+  )
+    await page
+      .getByRole("button", { name: "Ana menüyü aç", exact: true })
+      .click();
   await page.locator('#workspace-main-menu[data-open="true"]').waitFor();
 }
 
-/** Move the pointer off the hover-opened main menu and wait for it to close,
- *  so it no longer covers the workspace. */
+/** Moving out of a docked menu does not close it or blur an editor. */
 export async function leaveMainMenu(page) {
   const viewport = page.viewportSize();
   await page.mouse.move(viewport.width - 20, viewport.height - 20);
-  await page
-    .locator('#workspace-main-menu:not([data-open="true"])')
-    .waitFor({ state: "attached" });
 }
 
 export async function selectWorkspaceTab(page, name) {

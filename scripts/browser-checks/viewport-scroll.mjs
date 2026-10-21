@@ -139,7 +139,7 @@ export async function checkViewportScroll(f) {
       ["Kaynak Planlama", "plan"],
       ["Projeler", "projects"],
     ]) {
-      await page.getByRole("tab", { name: tab, exact: true }).click();
+      await selectWorkspaceTab(page, tab);
       await f.check(
         "viewport: " +
           screenshot +

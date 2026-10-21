@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 
 export async function checkAllocationFocusLayers(f) {
@@ -19,7 +20,7 @@ export async function checkAllocationFocusLayers(f) {
       await f.check(
         `allocation focus: ${tab} draft stays below sticky headers during vertical scrolling`,
         async () => {
-          await page.getByRole("tab", { name: tab, exact: true }).click();
+          await selectWorkspaceTab(page, tab);
           const table = page.locator(tableSelector),
             container = table.locator(".."),
             input = table.locator(inputSelector).first();

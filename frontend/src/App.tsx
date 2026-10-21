@@ -533,7 +533,12 @@ export default function Portal() {
   return (
     <div
       className={
-        "app dense-" + density + " tab-" + tab + (fullPlan ? " full-plan" : "")
+        "app dense-" +
+        density +
+        " tab-" +
+        tab +
+        (fullPlan ? " full-plan" : "") +
+        (workspaceMenu.pinned ? " menu-pinned" : "")
       }
       style={
         {

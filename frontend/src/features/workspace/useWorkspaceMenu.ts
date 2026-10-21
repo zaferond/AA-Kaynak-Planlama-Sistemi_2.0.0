@@ -1,9 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-/** Hover is temporary; keyboard focus and an explicit pin keep navigation open. */
+const pinnedKey = "aa-kaynak-menu-sabit-v1";
+function readPinned() {
+  try {
+    return localStorage.getItem(pinnedKey) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/** Hover is temporary; keyboard focus and an explicit pin keep navigation open.
+ *  The pin is remembered in this browser, so a pinned menu survives reloads. */
 export function useWorkspaceMenu(tab: string) {
-  const [open, setOpen] = useState(false);
-  const [pinned, setPinned] = useState(false);
+  const [pinned, setPinned] = useState(readPinned);
+  const [open, setOpen] = useState(pinned);
   const [top, setTop] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLElement>(null);
@@ -101,6 +111,14 @@ export function useWorkspaceMenu(tab: string) {
       document.removeEventListener("pointerdown", pointer, true);
     };
   }, [open, pinned]);
+  useEffect(() => {
+    try {
+      if (pinned) localStorage.setItem(pinnedKey, "1");
+      else localStorage.removeItem(pinnedKey);
+    } catch {
+      // Private mode or blocked storage: the pin lasts for this page only.
+    }
+  }, [pinned]);
   useEffect(() => () => cancelTimers(), []);
   useLayoutEffect(() => {
     const header = headerRef.current;

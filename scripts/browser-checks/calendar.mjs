@@ -5,11 +5,10 @@ import {
   personCalendarHoursInMonth,
 } from "../../shared/actual-units.ts";
 
-const actualTab = (page) =>
-  page.getByRole("tab", {
-    name: "Aktivite Girişi",
-    exact: true,
-  });
+// The tab lives in the closed main menu; the fixture opens it first.
+const actualTab = (page) => ({
+  click: () => selectWorkspaceTab(page, "Aktivite Girişi"),
+});
 const dialog = (page) => page.getByRole("dialog");
 async function personalMonth(f) {
   const data = await f.state();

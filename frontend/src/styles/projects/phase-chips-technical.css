@@ -1,0 +1,90 @@
+/* Technical theme phase bars ("pafta çubuğu"): like a dimension line on a
+   drawing. Near-white fill, a thin frame in the phase colour and a heavy
+   terminator at the start and end of each run. Saved colour IDs and the run
+   geometry in shared/phase-chips.css are unchanged.
+
+   The :is(…, *) group carries the specificity of the most specific screen
+   rule (.person-allocation .actual-phase-cell) while still matching every
+   screen, so one rule set wins without !important. Because these rules set
+   the whole border, they repeat the run joins from shared/phase-chips.css. */
+html[data-theme="technical"]
+  :is(.app, [data-slot="dialog-content"])
+  :is(.person-allocation .actual-phase-cell, .planning-grid, *)
+  .phase-chip:not([data-phase-empty="true"]) {
+  border: 1px solid var(--phase-chip-accent, #5b6975);
+  border-radius: 1px;
+  background: color-mix(
+    in srgb,
+    var(--phase-chip-background, #eef1f4) 45%,
+    #fff
+  );
+  box-shadow: none;
+  font-weight: 500;
+}
+html[data-theme="technical"]
+  :is(.app, [data-slot="dialog-content"])
+  :is(.person-allocation .actual-phase-cell, .planning-grid, *)
+  .phase-chip:not([data-phase-empty="true"]):is(
+    :not([data-phase-run]),
+    [data-phase-run="single"],
+    [data-phase-run="start"]
+  ) {
+  border-left-width: 4px;
+  padding-left: 7px;
+}
+html[data-theme="technical"]
+  :is(.app, [data-slot="dialog-content"])
+  :is(.person-allocation .actual-phase-cell, .planning-grid, *)
+  .phase-chip:not([data-phase-empty="true"]):is(
+    :not([data-phase-run]),
+    [data-phase-run="single"],
+    [data-phase-run="end"]
+  ) {
+  border-right-width: 4px;
+}
+/* Run joins: neighbouring months read as one bar. */
+html[data-theme="technical"]
+  .app
+  :is(.person-allocation .actual-phase-cell, .planning-grid, *)
+  .phase-chip:is([data-phase-run="start"], [data-phase-run="middle"]) {
+  border-right-color: transparent;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+html[data-theme="technical"]
+  .app
+  :is(.person-allocation .actual-phase-cell, .planning-grid, *)
+  .phase-chip:is([data-phase-run="middle"], [data-phase-run="end"]) {
+  border-left-color: transparent;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+/* 30px instead of 36px fits more rows; the 5-year overview keeps its 28px. */
+html[data-theme="technical"]
+  .app:not(.dense-overview)
+  :is(.person-allocation .actual-phase-cell, .planning-grid, *)
+  .phase-chip:not(.phase-chip-preview, .phase-chip-detail) {
+  min-height: 30px;
+  padding-block: 4px;
+}
+@media (hover: hover) {
+  html[data-theme="technical"]
+    .app
+    :is(.person-allocation .actual-phase-cell, .planning-grid, *)
+    button.phase-chip:not([data-phase-empty="true"]):not(:disabled):hover {
+    background: var(--phase-chip-background, #eef1f4);
+    filter: none;
+  }
+}
+
+/* Project progress cards and matrix draw the same bar. */
+html[data-theme="technical"] .project-progress .progress-phase {
+  padding: 3px 8px 3px 7px;
+  border: 1px solid var(--phase-chip-accent);
+  border-left-width: 4px;
+  border-right-width: 4px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--phase-chip-background) 45%, #fff);
+  font-weight: 500;
+  text-align: left;
+}

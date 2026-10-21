@@ -108,7 +108,6 @@ export default function ScenarioWarningsPanel({
   }
   return (
     <section className="scenario-warnings-panel" aria-label="Senaryo Uyarıları">
-      <h3>Senaryo Uyarıları</h3>
       <p>
         Son kilitli aya göre ilerleme ve gelecek kaynak planı birlikte
         değerlendirilir. Durum sırası: Açık → Görüldü → Aksiyon Alındı. Senaryo

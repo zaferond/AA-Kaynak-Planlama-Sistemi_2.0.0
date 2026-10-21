@@ -105,7 +105,6 @@ export default function MonthlyActivityReport({
     >
       <div className="activity-toolbar">
         <div>
-          <h2>Aktivite Raporu</h2>
           <span>
             {people} çalışan · {new Set(rows.map((row) => row.teamId)).size}{" "}
             takım

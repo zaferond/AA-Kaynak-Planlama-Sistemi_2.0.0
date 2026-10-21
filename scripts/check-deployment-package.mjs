@@ -41,16 +41,19 @@ try {
   );
   assert.equal(
     references.length,
-    2,
+    3,
     "Review package acceptance when HTML assets change",
   );
   assert(
     references.every((url) =>
-      /^\/assets\/app\.[a-f0-9]{12}\.(?:js|css)$/.test(url),
+      /^\/assets\/(?:app\.[a-f0-9]{12}\.(?:js|css)|favicon\.[a-f0-9]{12}\.svg)$/.test(
+        url,
+      ),
     ),
   );
   assert(references.some((url) => url.endsWith(".js")));
   assert(references.some((url) => url.endsWith(".css")));
+  assert(references.some((url) => url.endsWith(".svg")));
   const plainFiles = [
     "site/index.html",
     ...references.map((url) => "site" + url),

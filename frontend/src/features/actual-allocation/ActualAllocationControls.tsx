@@ -48,9 +48,6 @@ export default function ActualAllocationControls({
             : "%" + numberFormat.format(Math.abs(balance.remainingPercent)));
   return (
     <div className="panelhead">
-      <div>
-        <h2>Aktivite Girişi</h2>
-      </div>
       <div className="actual-unit-control">
         <div className="actual-control-fields">
           {selectedHoursPerson && selectedHoursMonth ? (

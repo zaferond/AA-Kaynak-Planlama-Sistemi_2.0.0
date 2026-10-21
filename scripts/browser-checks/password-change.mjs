@@ -38,7 +38,9 @@ export async function checkPasswordChange(f) {
           .getByRole("heading", { name: "Şifrenizi Belirleyin" })
           .waitFor();
         assert.equal(
-          await page.getByRole("tab", { name: "Projeler" }).count(),
+          await page
+            .getByRole("tab", { name: "Projeler", includeHidden: true })
+            .count(),
           0,
         );
         // A mismatching repeat keeps the button disabled with a message.

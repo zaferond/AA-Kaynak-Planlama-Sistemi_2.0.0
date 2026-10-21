@@ -112,8 +112,11 @@
 .person-allocation .actual-phase-cell {
   padding: 3px 2px !important;
 }
+/* Flex like the other phase chips: a run's label then spans the whole bar
+   instead of being cut at the first month. */
 .person-allocation .actual-phase-button {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
   min-height: 28px;
   height: auto;

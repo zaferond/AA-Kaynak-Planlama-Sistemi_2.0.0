@@ -56,6 +56,14 @@ export function WorkedHours({
     setDirty(false);
     setError("");
   }, [value, calculatedHours, resource.id, month, busy]);
+  /** Back to the saved hours; leaving the field then has nothing to save. */
+  function discardDraft() {
+    draftSave.current = null;
+    unknown.current = false;
+    setText(String(value ?? calculatedHours).replace(".", ","));
+    setDirty(false);
+    setError("");
+  }
   async function commit() {
     const explicit = explicitRetry.current;
     explicitRetry.current = false;
@@ -106,6 +114,8 @@ export function WorkedHours({
             event.preventDefault();
             event.stopPropagation();
           }
+          // Escape cancels the typed value, as in the planned grid.
+          if (event.key === "Escape" && dirty && !busy) discardDraft();
         }}
         onKeyUp={(event) => {
           if (event.key === "Enter") {
@@ -171,12 +181,16 @@ export function ActualAmount({
     setDirty(false);
     setError("");
   }, [value, unit, month, workedHours, savedPercent, busy]);
-  function showLimitWarning() {
+  /** Back to the saved value; leaving the cell then has nothing to save. */
+  function discardDraft() {
     draftSave.current = null;
     unknown.current = false;
     setText(formatEntry(value, unit, month, workedHours, savedPercent));
     setDirty(false);
     setError("");
+  }
+  function showLimitWarning() {
+    discardDraft();
     onLimitExceeded(inputRef.current);
   }
   async function commit() {
@@ -257,6 +271,8 @@ export function ActualAmount({
             event.preventDefault();
             event.stopPropagation();
           }
+          // Escape cancels the typed value, as in the planned grid.
+          if (event.key === "Escape" && dirty && !busy) discardDraft();
         }}
         onKeyUp={(event) => {
           if (event.key === "Enter") {

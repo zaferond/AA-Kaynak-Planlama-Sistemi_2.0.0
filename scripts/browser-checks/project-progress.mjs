@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
+import { selectWorkspaceTab } from "./fixture.mjs";
 
 // Proje İlerlemesi: a leader sees the projects of the leaderships granted in
 // "Kaynak Planlama Yetkisi" grouped by leadership, proposes a baseline, an
@@ -7,8 +8,12 @@ import { applyChanges } from "../../backend/operations.mjs";
 // see the tab. (Monthly actuals need a past tracked month; tests/progress-store
 // covers them.)
 export async function checkProjectProgress(f) {
+  // The tab lives in the closed main menu, so open it through the fixture.
+  // The menu entry stays in the DOM while hidden: count it there.
   const tab = (page) =>
-    page.getByRole("tab", { name: "Proje İlerlemesi", exact: true });
+    page
+      .locator("#workspace-main-menu")
+      .getByText("Proje İlerlemesi", { exact: true });
   const name = "Browser Project A · " + f.teamA.lead;
   const otherName = "Browser Project B · " + f.teamA.lead;
   const otherProject = (await f.state()).projects.find((p) => p.id === "p-b");
@@ -40,7 +45,7 @@ export async function checkProjectProgress(f) {
       "progress: a leader sees its leadership's projects and proposes a baseline",
       async () => {
         const { page } = leader;
-        await tab(page).click();
+        await selectWorkspaceTab(page, "Proje İlerlemesi");
         assert.equal(
           await page
             .getByRole("tab", { name: "Hedef Plan / Gerçekleşen Plan Giriş" })
@@ -191,7 +196,7 @@ export async function checkProjectProgress(f) {
           ]),
         );
         await page.reload();
-        await tab(page).click();
+        await selectWorkspaceTab(page, "Proje İlerlemesi");
         await card
           .getByText("Başlangıç: Kas 2026 · ilk kaynak planlanan ay", {
             exact: true,
@@ -260,7 +265,7 @@ export async function checkProjectProgress(f) {
       async () => {
         const { page } = admin;
         await page.reload();
-        await tab(page).click();
+        await selectWorkspaceTab(page, "Proje İlerlemesi");
         assert.equal(
           await page
             .getByRole("tab", { name: "Hedef Plan / Gerçekleşen Plan Giriş" })

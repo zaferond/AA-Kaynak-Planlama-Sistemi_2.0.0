@@ -1,0 +1,123 @@
+/* Technical theme frame. The applied-filter strip and the planned-capacity
+   summary read as a drawing title block: ruled cells, label above value,
+   paper background. The filter controls above stay the place to change them. */
+html[data-theme="technical"] .app .capacitystrip {
+  border-color: var(--brand-border-strong);
+  border-radius: 0;
+  box-shadow: none;
+}
+html[data-theme="technical"]
+  .app
+  :is(.project-filter-summary, .capacitystrip > summary) {
+  min-height: 0;
+  padding: 0;
+  gap: 0;
+  align-items: stretch;
+  background: #fff;
+  color: var(--brand-text);
+}
+html[data-theme="technical"] .app .project-filter-summary {
+  border: 1px solid var(--brand-border-strong);
+  border-radius: 0;
+  box-shadow: none;
+}
+/* Matches the open-state rule in military-theme.css, which is more specific. */
+html[data-theme="technical"] .app .capacitystrip[open] > summary {
+  border-bottom: 1px solid var(--brand-border-strong);
+  background: #fff;
+  color: var(--brand-text);
+}
+html[data-theme="technical"]
+  .app
+  :is(.project-filter-summary, .capacitystrip > summary)
+  .capacitystrip-icon {
+  display: none;
+}
+html[data-theme="technical"] .app .capacitystrip-copy {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+}
+html[data-theme="technical"] .app .capacitystrip-copy > span {
+  display: flex;
+  min-width: 0;
+}
+/* The block's caption cell. */
+html[data-theme="technical"] .app .capacitystrip-copy > strong {
+  display: flex;
+  align-items: center;
+  flex: none;
+  max-width: 11rem;
+  padding: 8px 14px;
+  border-right: 1px solid var(--brand-border);
+  background: var(--brand-surface-soft);
+  color: var(--brand-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.3;
+}
+html[data-theme="technical"] .app .capacity-filter-list {
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0;
+}
+html[data-theme="technical"] .app .capacity-filter-chip,
+html[data-theme="technical"] .app .capacity-filter-chip.is-active {
+  display: grid;
+  align-content: center;
+  gap: 1px;
+  min-width: 6.5rem;
+  padding: 6px 14px;
+  border: 0;
+  border-right: 1px solid var(--brand-border);
+  border-radius: 0;
+  background: transparent;
+}
+html[data-theme="technical"] .app .capacity-filter-chip > span,
+html[data-theme="technical"] .app .capacity-filter-chip.is-active > span {
+  color: var(--brand-muted);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+}
+html[data-theme="technical"] .app .capacity-filter-chip > strong {
+  color: var(--brand-text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+/* A filter narrowed by the user stands out from the "Tümü" defaults. */
+html[data-theme="technical"] .app .capacity-filter-chip.is-active > strong {
+  color: var(--brand-primary);
+}
+html[data-theme="technical"]
+  .app
+  .capacitystrip
+  > summary
+  .capacitystrip-action {
+  align-self: center;
+  margin: 6px 10px 6px auto;
+  border-color: var(--brand-border-strong);
+  border-radius: 4px;
+  background: #fff;
+}
+/* Admin's posting switch occupies the last cell of the block. */
+html[data-theme="technical"]
+  .app
+  .project-filter-summary
+  > .report-posting-options {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 6px 14px;
+  border: 0;
+  border-left: 1px solid var(--brand-border);
+  border-radius: 0;
+  background: var(--brand-surface-soft);
+}
+html[data-theme="technical"]
+  .app
+  .project-filter-summary
+  > .report-posting-options
+  > :is(label, small) {
+  color: var(--brand-text);
+}

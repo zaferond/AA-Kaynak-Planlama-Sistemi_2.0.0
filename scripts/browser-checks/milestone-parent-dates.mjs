@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 import { milestoneRanges } from "../../shared/milestone-ranges.ts";
@@ -64,7 +65,7 @@ export async function checkMilestoneParentDates(f) {
     });
     const { page } = c;
     await page.reload();
-    await page.getByRole("tab", { name: /Projeler/ }).click();
+    await selectWorkspaceTab(page, "Projeler");
     await page
       .getByRole("switch", { name: "Detayları Göster", exact: true })
       .check();
@@ -135,7 +136,7 @@ export async function checkMilestoneParentDates(f) {
           ],
         );
         await page.reload();
-        await page.getByRole("tab", { name: /Projeler/ }).click();
+        await selectWorkspaceTab(page, "Projeler");
         await page
           .getByRole("switch", { name: "Detayları Göster", exact: true })
           .check();
@@ -191,7 +192,7 @@ export async function checkMilestoneParentDates(f) {
         assert.equal((await reply).status(), 200);
         await dialog.waitFor({ state: "hidden" });
         await page.reload();
-        await page.getByRole("tab", { name: /Projeler/ }).click();
+        await selectWorkspaceTab(page, "Projeler");
         await page
           .getByRole("switch", { name: "Detayları Göster", exact: true })
           .check();

@@ -13,17 +13,17 @@
 
 ## Dosya seçimi
 
-| Dizin | Kapsam |
-|---|---|
-| `workspace/` | Ana yerleşim, menü, filtreler ve ortak aksiyonlar |
-| `projects/` | Proje tablosu, aşama menüsü, Gantt/haftalık barlar, düzenleyiciler |
-| `planning/` | Planlanan kaynak tablosu, kapasite özeti, görünüm seçimleri |
-| `allocation/` | Dağılım kontrolleri, ortak tablo ve sabit sütun kuralları |
-| `resources/` | Çalışan araçları, düzenleme ve içe aktarma |
-| `reports/` | Kritik konular, grafikler ve rapor başlıkları |
-| `administration/` | Yetki ve takım yönetimi |
-| `calendar/` | Ortak çalışma ve kişisel izin/eğitim takvimi |
-| `shared/` | Ortak kontroller, tablo tema değerleri, kişi sayısı rozetleri, bugün çizgisi, dolu hücreler |
+| Dizin             | Kapsam                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------- |
+| `workspace/`      | Ana yerleşim, menü, filtreler ve ortak aksiyonlar                                           |
+| `projects/`       | Proje tablosu, aşama menüsü, Gantt/haftalık barlar, düzenleyiciler                          |
+| `planning/`       | Planlanan kaynak tablosu, kapasite özeti, görünüm seçimleri                                 |
+| `allocation/`     | Dağılım kontrolleri, ortak tablo ve sabit sütun kuralları                                   |
+| `resources/`      | Çalışan araçları, düzenleme ve içe aktarma                                                  |
+| `reports/`        | Kritik konular, grafikler ve rapor başlıkları                                               |
+| `administration/` | Yetki ve takım yönetimi                                                                     |
+| `calendar/`       | Ortak çalışma ve kişisel izin/eğitim takvimi                                                |
+| `shared/`         | Ortak kontroller, tablo tema değerleri, kişi sayısı rozetleri, bugün çizgisi, dolu hücreler |
 
 Bazı ortak seçiciler ilgili ekran dosyalarında hâlâ birbirini tamamlar. Bu ilk ayrıştırma adımında seçiciler, değerler, media query sınırları ve `!important` kullanımları korunmuştur. `*-theme` ve `*-layout` dosyaları mevcut kuralların sonraki düzenlemelerini içerir; yerlerini değiştirmeden önce etkilenen ekranlar görsel olarak doğrulanmalıdır.
 

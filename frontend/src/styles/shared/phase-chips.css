@@ -182,7 +182,9 @@
 
 /* Çubuk başındaki etiket çubuğun tamamını kullanır. Sonraki aylar kendi
    düğmeleriyle tıklanmaya devam etsin diye etiket tıklamayı geçirir. Genişlik
-   hücre içeriği × hücre sayısıdır; çubuğun sonunu aşmaz. */
+   en az ilk hücrenin içi + (ay sayısı − 1) × ay sütunu genişliğidir
+   (--month-width); böylece hücre iç boşlukları farklı ekranlarda da metin
+   yarıda kesilmez. */
 .app .phase-chip[data-phase-run="start"] {
   overflow: visible;
 }
@@ -191,9 +193,20 @@
   position: relative;
   z-index: 0;
   flex: none;
-  width: calc(var(--phase-run-span, 1) * 100%);
+  /* Stretched tables (Kompakt) have columns wider than --month-width; the
+     cell-based width then gives the longer label. */
+  width: max(
+    var(--phase-run-span, 1) * 100%,
+    100% + (var(--phase-run-span, 1) - 1) * var(--month-width, 100%) -
+      var(--phase-label-trim, 0px)
+  );
   max-width: none;
   pointer-events: none;
+}
+/* Planlama tablosunda ilk hücre daha geniş iç boşluk taşır; etiket çubuğu
+   aşmasın. */
+.app.tab-plan .phase-chip {
+  --phase-label-trim: 14px;
 }
 /* 5 yıllık görünüm: metin baştaki şeride yapışmasın. */
 .app.dense-overview

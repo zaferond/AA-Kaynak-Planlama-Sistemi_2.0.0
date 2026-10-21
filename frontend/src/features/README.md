@@ -4,14 +4,14 @@
 
 ## Düzenleme akışı
 
-| Dosya | Sorumluluk |
-|---|---|
-| `usePortalEditor.ts` | Taslak, form hatası, açma, kaydetme, silme ve kaynak statüsü geçişleri |
-| `editor-state.ts` | Düzenleyicinin türlere ayrılmış veri sözleşmesi |
-| `editor-commands.ts` | Taslağın doğrulanması ve revision içeren kayıt komutlarının hazırlanması |
-| `editor-revisions.ts` | Açılış revision'larını yakalama; yenilenen snapshot'tan revision devralmama |
-| `PortalEditorDialog.tsx` | Ortak pencere, başlık, hata alanı ve işlem düğmeleri |
-| `editors/*EditorFields.tsx` | İlgili formun alanları ve taslak değişiklikleri |
+| Dosya                       | Sorumluluk                                                                  |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `usePortalEditor.ts`        | Taslak, form hatası, açma, kaydetme, silme ve kaynak statüsü geçişleri      |
+| `editor-state.ts`           | Düzenleyicinin türlere ayrılmış veri sözleşmesi                             |
+| `editor-commands.ts`        | Taslağın doğrulanması ve revision içeren kayıt komutlarının hazırlanması    |
+| `editor-revisions.ts`       | Açılış revision'larını yakalama; yenilenen snapshot'tan revision devralmama |
+| `PortalEditorDialog.tsx`    | Ortak pencere, başlık, hata alanı ve işlem düğmeleri                        |
+| `editors/*EditorFields.tsx` | İlgili formun alanları ve taslak değişiklikleri                             |
 
 Alan bileşenleri React fragment döndürür. Ek DOM sarmalayıcıları formun doğrudan çocuklarını hedefleyen CSS kurallarını değiştirebilir. İş kuralları form görünümüne kopyalanmamalıdır. Kayıt hatasında taslak ve hata açık kalır; başarılı kayıt tamamlanınca pencere kapanır.
 
@@ -21,16 +21,16 @@ Her `PortalEditor`, değerlerin alındığı snapshot'ın `baseRevisions` sözl�
 
 ## Proje zaman çizelgesi
 
-| Dosya | Sorumluluk |
-|---|---|
-| `../ProjectTimelineRows.tsx` | Proje/aşama satırları, detayları açma ve başlıkların sıralanması |
-| `../MilestoneTrack.tsx` | Aylık bar, haftalık detay, milestone, yerleşim ve önizleme çizimi |
-| `useMilestoneDrag.ts` | Pointer capture, uzun basma, günlük taşıma, iki uçtan boyutlandırma ve iptal |
-| `project-snapshot.ts` | Menü/drag başlangıcındaki proje kopyası ve revision çiftini yakalama |
-| `project-timeline-types.ts` | Satır ve zaman çizelgesi callback sözleşmeleri |
-| `project-timeline-commands.ts` | Tarih/sıralama değişikliklerinden kayıt komutu hazırlanması |
-| `position-pointer-tooltip.ts` | Fare konumu, viewport sınırı ve uygulama zoom'una göre tooltip konumu |
-| `timeline-labels.ts` | Çizelgedeki ay ve gün metinlerinin biçimi |
+| Dosya                          | Sorumluluk                                                                   |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| `../ProjectTimelineRows.tsx`   | Proje/aşama satırları, detayları açma ve başlıkların sıralanması             |
+| `../MilestoneTrack.tsx`        | Aylık bar, haftalık detay, milestone, yerleşim ve önizleme çizimi            |
+| `useMilestoneDrag.ts`          | Pointer capture, uzun basma, günlük taşıma, iki uçtan boyutlandırma ve iptal |
+| `project-snapshot.ts`          | Menü/drag başlangıcındaki proje kopyası ve revision çiftini yakalama         |
+| `project-timeline-types.ts`    | Satır ve zaman çizelgesi callback sözleşmeleri                               |
+| `project-timeline-commands.ts` | Tarih/sıralama değişikliklerinden kayıt komutu hazırlanması                  |
+| `position-pointer-tooltip.ts`  | Fare konumu, viewport sınırı ve uygulama zoom'una göre tooltip konumu        |
+| `timeline-labels.ts`           | Çizelgedeki ay ve gün metinlerinin biçimi                                    |
 
 Tarih doğrulaması ve alt notların etkisi `shared/milestone-ranges.ts` içinde kalır. Sürükleme hook'u önizlemede bu kuralları kullanır; gerçek kayıt mevcut komut ve batch yoluyla yapılır. Fareyle taşıma için 350 ms uzun basma, erken hareketin iptali, geçersiz tarihin kaydedilmemesi ve sürükleme sonrasındaki tıklamanın bastırılması korunur.
 
@@ -64,14 +64,14 @@ Zaman çizelgesi hücresi kendi stacking context'ini oluşturur (`z-index: 0`, `
 
 `../RiskTable.tsx` tabloyu ve hata/çakışma alanını oluşturur; risk düzenleme akışı `risk-table/` altında ayrılır:
 
-| Dosya | Sorumluluk |
-|---|---|
-| `risk-table/types.ts` | Tablo, taslak güncelleme ve ekranı terk etme sözleşmeleri |
-| `risk-table/columns.ts` | Tür güvenli sütun/alan tanımları, başlık grupları, görünür sütunlar ve başlangıç odağı |
-| `risk-table/RiskValue.tsx` | Kaydedilmiş değerlerin ve hesaplanan risk seviyelerinin görünümü |
-| `risk-table/RiskCellEditor.tsx` | Sütun türüne göre düzenlenebilir alanlar ve silme düğmesi |
-| `risk-table/useRiskDraft.ts` | Açılış değer/revision çifti, taslak, tek kayıt isteği, doğrulama, iptal, silme ve çakışma çözümü |
-| `risk-table/useRiskTableInteraction.ts` | Odak, yeni satırı görünür yapma, satır dışına tıklama ve klavye etkileşimleri |
+| Dosya                                   | Sorumluluk                                                                                       |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `risk-table/types.ts`                   | Tablo, taslak güncelleme ve ekranı terk etme sözleşmeleri                                        |
+| `risk-table/columns.ts`                 | Tür güvenli sütun/alan tanımları, başlık grupları, görünür sütunlar ve başlangıç odağı           |
+| `risk-table/RiskValue.tsx`              | Kaydedilmiş değerlerin ve hesaplanan risk seviyelerinin görünümü                                 |
+| `risk-table/RiskCellEditor.tsx`         | Sütun türüne göre düzenlenebilir alanlar ve silme düğmesi                                        |
+| `risk-table/useRiskDraft.ts`            | Açılış değer/revision çifti, taslak, tek kayıt isteği, doğrulama, iptal, silme ve çakışma çözümü |
+| `risk-table/useRiskTableInteraction.ts` | Odak, yeni satırı görünür yapma, satır dışına tıklama ve klavye etkileşimleri                    |
 
 `useRiskDraft` açılış değerini ve revision'ı birlikte tutar; props yenilenince temel sürüm değişmez. Risk `onSave`/`onDelete` sözleşmesi açık revision parametresi alır. `onEditingChange` arka plan yenilemesini bekletir; önce başlamış okumalar için açılış sürümü kontrolü ayrıca gerekir. `ApiError.status === 409` taslağı koruyan çözüm ekranını açar. Kullanıcı onaylı yeniden yükleme yeni değer/revision çiftini kurar; otomatik yeniden bazlama veya üzerine yazma yapılmaz. Değiştirilmemiş taslak açılış değerine karşılaştırılarak yazmadan kapanır.
 
@@ -79,21 +79,20 @@ Değişen ve doğrulamadan geçen satır kaydedilmeden önce **Yaptığınız De
 
 Sütun genişliği, grup başlığı kapsamı, alan sayısı ve düzenlenebilir alan seçimi aynı katalogdan gelir. Risk seçenekleri, puanlama ve doğrulama mevcut ortak politika/hesap modüllerinde kalır. Hücre bileşenleri ek DOM sarmalayıcısı oluşturmaz; CSS sınıfları ve satır davranışı korunur. Tab/Shift+Tab tarayıcının doğal odak sırasını kullanır; IME sırasında Enter kayıt tetiklemez, silme düğmesindeki Enter otomatik kayda dönüşmez. Tarayıcı testleri bu davranışların yanında 409/503, bekleyen kayıt ve uzaktan silinen taslağı denetler.
 
-
 ## Gerçekleşen kaynak dağılımı
 
 `../PersonAllocationPanel.tsx` ekran state'ini ve mevcut `writeBatch` kayıt yolunu koordine eder. Görünüm ve etkileşim sorumlulukları `actual-allocation/` altında ayrılır:
 
-| Dosya | Sorumluluk |
-|---|---|
-| `actual-allocation/types.ts` | Ekran, hücre seçimi, takvim/aşama state'i ve kayıt callback sözleşmeleri |
-| `actual-allocation/useActualAllocationView.ts` | Görünür kişiler/hücreler, sayfalama ve snapshot'ın aylık toplamları |
-| `actual-allocation/useActualCellSelection.ts` | Seçili kişi/ay bağlamı; dış tıklama, odak, Escape, kapsam/sayfa değişiminde temizleme |
-| `actual-allocation/useActualCapacityDialog.ts` | Kapasite uyarısının state'i ve kapanışta giriş alanına odak dönüşü |
-| `actual-allocation/ActualAllocationControls.tsx` | Başlık, seçili çalışan/ay, çalışma saati ve birim kontrolleri |
-| `actual-allocation/ActualAllocationTable.tsx` | Yıl/ay başlıkları, sabit proje grupları, kişi girdileri ve dağıtım toplamı |
-| `actual-allocation/ActualAllocationDialogs.tsx` | Takvim, kapasite uyarısı ve aşama pencerelerinin görünümü |
-| `actual-allocation/format.ts` | Ekranın ortak Türkçe ay/sayı biçimleri |
+| Dosya                                            | Sorumluluk                                                                            |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| `actual-allocation/types.ts`                     | Ekran, hücre seçimi, takvim/aşama state'i ve kayıt callback sözleşmeleri              |
+| `actual-allocation/useActualAllocationView.ts`   | Görünür kişiler/hücreler, sayfalama ve snapshot'ın aylık toplamları                   |
+| `actual-allocation/useActualCellSelection.ts`    | Seçili kişi/ay bağlamı; dış tıklama, odak, Escape, kapsam/sayfa değişiminde temizleme |
+| `actual-allocation/useActualCapacityDialog.ts`   | Kapasite uyarısının state'i ve kapanışta giriş alanına odak dönüşü                    |
+| `actual-allocation/ActualAllocationControls.tsx` | Başlık, seçili çalışan/ay, çalışma saati ve birim kontrolleri                         |
+| `actual-allocation/ActualAllocationTable.tsx`    | Yıl/ay başlıkları, sabit proje grupları, kişi girdileri ve dağıtım toplamı            |
+| `actual-allocation/ActualAllocationDialogs.tsx`  | Takvim, kapasite uyarısı ve aşama pencerelerinin görünümü                             |
+| `actual-allocation/format.ts`                    | Ekranın ortak Türkçe ay/sayı biçimleri                                                |
 
 Hesaplamalar `shared/actual-months.ts`, `shared/actual-units.ts` ve takvim kurallarında kalır. Aylık indeks tüm snapshot'tan oluşturulur; proje filtresi toplam tahsisi veya eğitim katkısını azaltmaz. `shared/actual-visibility.ts` yalnız görünümü belirler; yazma yetkileri sunucuda denetlenir. `actual-allocation-commands.ts` revision içeren komutları hazırlar; ayrı kayıt transport'u eklenmez.
 
@@ -105,14 +104,14 @@ Tarayıcı kontrolleri yüzde/gün/saat dönüşümü, manuel/otomatik saat, dı
 
 `../WorkCalendarDialog.tsx` pencere, yıl seçimi ve bölüm yerleşimini oluşturur. Takvim sorumlulukları `work-calendar/` altında ayrılır:
 
-| Dosya | Sorumluluk |
-|---|---|
-| `work-calendar/types.ts` | Pencere sözleşmesi; komut hazırlayıcılarından türetilen ortak/kişisel form türleri |
-| `work-calendar/useWorkCalendarEditor.ts` | Form state'i, açılış snapshot/revision'ı, yerel ortak taslak ve mevcut kayıt/silme akışı |
-| `work-calendar/useWorkCalendarView.ts` | Seçili yılın ortak/kişisel tarih aralığı kayıtları |
-| `work-calendar/SharedCalendarSection.tsx` | Ortak tarih aralığı formu ve çalışma dışı tarih listesi |
-| `work-calendar/PersonalCalendarSection.tsx` | Kişisel izin/eğitim formu ve kayıt listesi |
-| `work-calendar/format.ts` | Takvimin tarih/aralık biçimleri |
+| Dosya                                       | Sorumluluk                                                                               |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `work-calendar/types.ts`                    | Pencere sözleşmesi; komut hazırlayıcılarından türetilen ortak/kişisel form türleri       |
+| `work-calendar/useWorkCalendarEditor.ts`    | Form state'i, açılış snapshot/revision'ı, yerel ortak taslak ve mevcut kayıt/silme akışı |
+| `work-calendar/useWorkCalendarView.ts`      | Seçili yılın ortak/kişisel tarih aralığı kayıtları                                       |
+| `work-calendar/SharedCalendarSection.tsx`   | Ortak tarih aralığı formu ve çalışma dışı tarih listesi                                  |
+| `work-calendar/PersonalCalendarSection.tsx` | Kişisel izin/eğitim formu ve kayıt listesi                                               |
+| `work-calendar/format.ts`                   | Takvimin tarih/aralık biçimleri                                                          |
 
 Ortak tarih ekleme/silme yerel taslağı değiştirir; sunucuya yalnız **Takvimi Kaydet** ile yazılır. Açılış değeri ve revision birlikte kalır; props yenilenmesi taslağı yeniden bazlamaz. 409 ve geçici kayıt hatası taslağı açık tutar. Pencereyi kapatıp güncel verilerle yeniden açmak yeni taslak oluşturur. Kişisel kayıtlar mevcut `preparePersonalDayChange`/`preparePersonalDayRemoval` yoluyla tek tek kaydedilir.
 
@@ -146,16 +145,16 @@ Ortak XML yazıcısı XML 1.0 içinde temsil edilemeyen karakterleri sessizce si
 
 `PlannedAllocationPanel.tsx` yalnız kapasite özeti, sayfalama, dağılım tablosu ve alt açıklamayı bir araya getirir. Görünüm sorumlulukları `planned-allocation/` altında ayrılır:
 
-| Dosya | Sorumluluk |
-|---|---|
-| `types.ts` | Mevcut ekran/etkileşim callback sözleşmesi; `usePlannedGrid`'den türetilen dar grid tipi |
-| `PlannedCapacitySummary.tsx` | Açılıp kapanan kapasite özeti, belirgin filtre etiketleri ve özet tablo |
-| `PlannedSummaryRows.tsx` | Önceden hesaplanan metric/project totals'tan aktif/tahsis/kalan satırların görünümü |
-| `PlannedTableHeaders.tsx` | İki tablonun aynı colgroup, yıl ve ay başlıkları |
-| `PlannedAllocationTable.tsx` | Takım/proje grupları, sabit proje başlığı ve proje toplamları |
-| `PlannedAllocationRow.tsx` | Tahsis hücreleri, mevcut giriş callback'leri ve isteğe bağlı gerçekleşen satır |
-| `PlannedTeamLabels.tsx` | Kişi rozeti, takım gerçekleşen satırını açma/kapama ve ortak görünürlük hesabı |
-| `PlannedPhaseButton.tsx` | Döneme ve yoğunluğa göre aşama önizlemesi; mevcut açma/sağ tık callback'leri |
+| Dosya                        | Sorumluluk                                                                               |
+| ---------------------------- | ---------------------------------------------------------------------------------------- |
+| `types.ts`                   | Mevcut ekran/etkileşim callback sözleşmesi; `usePlannedGrid`'den türetilen dar grid tipi |
+| `PlannedCapacitySummary.tsx` | Açılıp kapanan kapasite özeti, belirgin filtre etiketleri ve özet tablo                  |
+| `PlannedSummaryRows.tsx`     | Önceden hesaplanan metric/project totals'tan aktif/tahsis/kalan satırların görünümü      |
+| `PlannedTableHeaders.tsx`    | İki tablonun aynı colgroup, yıl ve ay başlıkları                                         |
+| `PlannedAllocationTable.tsx` | Takım/proje grupları, sabit proje başlığı ve proje toplamları                            |
+| `PlannedAllocationRow.tsx`   | Tahsis hücreleri, mevcut giriş callback'leri ve isteğe bağlı gerçekleşen satır           |
+| `PlannedTeamLabels.tsx`      | Kişi rozeti, takım gerçekleşen satırını açma/kapama ve ortak görünürlük hesabı           |
+| `PlannedPhaseButton.tsx`     | Döneme ve yoğunluğa göre aşama önizlemesi; mevcut açma/sağ tık callback'leri             |
 
 `usePlannedGrid.ts` seçim, otomatik odak, sürükleme, klavye/menü clipboard'u ve revision'lı toplu komutları yönetmeye devam eder. `AllocationCell.tsx` giriş taslağı, blur/Enter/Ctrl+Enter, hata/retry ve kapanış callback'ini korur. API yazma App'in mevcut `save`/`batch` yolundadır. Bu ayrıştırmada transport, iş politikası, revision hazırlığı veya yetki değişikliği yapılmadı. Rol, liderlik ve proje dönemi kontrolleri mevcut grid ve sunucuda kalır.
 
@@ -169,13 +168,13 @@ Raporlardaki **Aylık Eksik Kaynak Sayısı** grafiği, seçili liderlik/takım 
 
 `workspace/` API çağrısı yapmadan ekran state'ini ve yetkili snapshot'tan türetilen verileri ayırır:
 
-| Dosya | Sorumluluk |
-|---|---|
-| `workspace-options.ts` | Geniş plan bağlantısındaki filtre/dönem seçeneklerini doğrulama, bağlantıyı üretme ve sıfırlama bildirimi |
-| `useWorkspaceFilters.ts` | Filtre, hücre/kaynak/kişi seçimi, sayfa, yoğunluk, açma/kapama state'i ve güncel tarih |
-| `workspace-selectors.ts` | Saf takım/proje/kişi kapsamı, rapor grupları, filtre etiketleri, metric toplama ve sayfalama |
-| `useWorkspaceView.ts` | Selector sonuçları ve mevcut shared kapasite/tahsis/toplam indekslerinin memo koordinasyonu |
-| `useSynchronizedTableScroll.ts` | Plan–özet ve liderlik–takım tablolarının iki yönlü yatay kaydırması; dinleyici kurma/temizleme |
+| Dosya                           | Sorumluluk                                                                                                |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `workspace-options.ts`          | Geniş plan bağlantısındaki filtre/dönem seçeneklerini doğrulama, bağlantıyı üretme ve sıfırlama bildirimi |
+| `useWorkspaceFilters.ts`        | Filtre, hücre/kaynak/kişi seçimi, sayfa, yoğunluk, açma/kapama state'i ve güncel tarih                    |
+| `workspace-selectors.ts`        | Saf takım/proje/kişi kapsamı, rapor grupları, filtre etiketleri, metric toplama ve sayfalama              |
+| `useWorkspaceView.ts`           | Selector sonuçları ve mevcut shared kapasite/tahsis/toplam indekslerinin memo koordinasyonu               |
+| `useSynchronizedTableScroll.ts` | Plan–özet ve liderlik–takım tablolarının iki yönlü yatay kaydırması; dinleyici kurma/temizleme            |
 
 Sunucunun verdiği snapshot erişim sınırıdır; URL veya ekran filtresi yetki vermez. Kişi görünürlüğü `shared/actual-visibility.ts` üzerinden gelir. Kapasite indeksi tüm yetkili snapshot'ı kullanır; proje filtresi onu küçültmez. Üst plan özetindeki seçili proje tahsisi, tüm proje tahsisiyle yapılan takım/kalan kaynak hesabından ayrı tutulur. Shared iş kuralları çoğaltılmaz.
 
@@ -185,17 +184,16 @@ Kaydırma hook'u tablolar veriyle oluşturulduktan sonra etkinleştirilir. Doğr
 
 `workspace-view.test.mjs` URL sınırları/round-trip, kapsam/sayfalama ve hesap ayrımını saf sentetik veriyle denetler. `workspace-filters.mjs` tarayıcıda seçim temizliği, filtre sıfırlama, özet/rapor hesapları, ilk açılış ve yeniden açılma sonrası gerçek yatay kaydırmayı denetler. Mevcut rol, taslak ve sekmeler arası oturum regresyonları da tam koşuda korunur.
 
-
 ## Çalışma alanı dışa aktarma ve veri eylemleri
 
 `workspace/` altındaki controller fabrikaları her App render'ında o snapshot'ın callback'lerini oluşturur. React hook'u çağırmaz, ayrı state veya transport oluşturmaz; dar state/işlem sözleşmeleri mevcut `usePortalData` dönüş tipinden türetilir.
 
-| Dosya | Sorumluluk |
-|---|---|
-| `workspace-exports.ts` | Aktif sekmenin filtreli takım/proje/kişi görünümünü mevcut Excel yazarına göndermek; hata mesajını App'e döndürmek |
-| `resource-report-data.ts` | Kaynak raporunun saf grup/ay/çalışan sayısı ve filtre metni hazırlığı |
-| `workspace-data-actions.ts` | Tüm planlanan tahsisleri sıfırlama, seçili kaynakları silme, JSON yedek indirme/yükleme; onay, hata ve seçim temizliği |
-| `project-actions.ts` | Proje/başlık sırası ve bar/not tarih eylemlerini mevcut revision'lı komut hazırlayıcıları ve batch yoluyla koordine etmek |
+| Dosya                       | Sorumluluk                                                                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `workspace-exports.ts`      | Aktif sekmenin filtreli takım/proje/kişi görünümünü mevcut Excel yazarına göndermek; hata mesajını App'e döndürmek        |
+| `resource-report-data.ts`   | Kaynak raporunun saf grup/ay/çalışan sayısı ve filtre metni hazırlığı                                                     |
+| `workspace-data-actions.ts` | Tüm planlanan tahsisleri sıfırlama, seçili kaynakları silme, JSON yedek indirme/yükleme; onay, hata ve seçim temizliği    |
+| `project-actions.ts`        | Proje/başlık sırası ve bar/not tarih eylemlerini mevcut revision'lı komut hazırlayıcıları ve batch yoluyla koordine etmek |
 
 Kaynak raporunda çalışan sayısı seçili başlangıç ayının versiyonu, dahil bilgisi, çalışma statüsü ve tarih örtüşmesinden gelir. Bu rapor ölçüsü kapasite kişi eşdeğeriyle aynı ölçü değildir. Ayların kalan kaynağı mevcut tüm-proje metric'inden gelir. Excel paket/stil/limit kuralları ve gerçekleşen görünürlük politikası mevcut yazar/shared modüllerinde kalır.
 
@@ -227,7 +225,6 @@ Kişisel takvim girişinde ayrılış/başlangıç dahil, dönüş tarihi hariç
 
 Ayrı migration olmadan mevcut `kp_revisions` tablosunda ayrılmış `allocation/@directory:shared` kaydı kullanılır. API anahtarı `directory:shared` biçimindedir; genel değişiklik uç noktasından bu anahtara yazılamaz. JSON restore, katalog aynı olsa da mevcut sayaçtan ilerler; yedekteki sayaca güvenilmez. Eski istemciler için generation kontrolü ve yeni istemcinin eski sunucuyla konuşabilmesi için açılış generation alanı korunur. Katalog revision'ı varsa sunucu bu dar kapsamlı kontrolü kullanır. Yetki, bağlı kayıt silme ve audit kuralları değişmez.
 
-
 ## Özet satırında sınırlanan sayfa kaydırması
 
 Plan ve proje paneli `useViewportWorkspace` ile pencere yüksekliği, uygulamanın alt not alanı ve gerçek sayfa ölçeğine göre boyutlanır. Ana sayfanın en aşağı konumu panelin filtre özetini üst kenara getirir; daha uzun veri yalnız tablonun kendi scroll alanındadır. Wheel/key olayları yakalanmaz. Özet açma/kapatma ve pencere boyutu değişiminde ölçü güncellenir; tablonun scroll zinciri sayfaya taşmaz. Proje filtre özeti yalnız bu ekrana uygulanan proje, başlangıç/bitiş ayı, dönem ve aylık/haftalık görünümü gösterir. Plan özetindeki çipler ortak `FilterSummaryChips` bileşenini kullanır.
@@ -237,7 +234,6 @@ Proje ve planlanan dağılım tabloları bütün filtre sonuçlarını tek kayd�
 Takvimde sayısal kaynak editörünün odak katmanı yalnız `.cell input:focus` içeren hücrede yükseltilir. Aşama düğmelerine ve proje adındaki kontrollere uygulanmaz; yatay kaydırmada aşama seçimi/odağı sabit proje sütununun önüne çıkmaz. Bu sınır gerçek tarayıcı hit-test ile doğrulanır.
 
 Görünüm seçenekleri filtre bileşeninde tutulmaz: plan paneli gerçekleşen dağılım anahtarını, proje paneli detay ve haftalık anahtarlarını kendi özetinin altında gösterir. Ortak `.workspace-view-options` stili dar satırı boyutlandırır ve viewport panelinde küçülmeden görünür tutar. Durum App'te kalır; gerçekleşen dağılım anahtarı değişince tekil açılmış takım seçimleri önceki davranışla temizlenir. Haftalık açıklama etiketin başlık ipucunda korunur. Proje özeti başlığı “Filtrelenen Projeler”dir.
-
 
 ## Takvim aralıklarının düzenlenmesi ve raporlanması
 
@@ -275,21 +271,15 @@ Kaynak giriş kutusunun odak katmanı `1`, sabit kimlik hücreleri `2` ve takvim
 
 Bu görünümde `PlannedTeamHeader`, takım kimliği ve yönetici bilgisiyle birlikte her ayın Aktif Kaynak, Dağıtılan Kaynak ve Kalan Kaynak değerlerini tek sabit başlık satırında gösterir. Değerler ayrıntılı görünümde A / D / K işaretleriyle yatay gösterilir; dar görünümlerde kompakt üç satıra geçer. Tam anlam ve ay bilgisi değerlerin açıklama balonunda ve erişilebilir adında bulunur. Takım adının altına ek özet satırları konmaz. Proje satırlarının altındaki eski üç özet satırı kaldırılmıştır. Aylık değerler aynı `metric([team.id], month)` hesabını kullanır; proje filtresi olsa da takımın tüm projelere dağıttığı kaynak toplamı korunur. %10 aşım renkleri ortak `capacityStatus` kuralından alınır. Başlık mevcut pencereleme/sabitleme mekanizmasıyla sonraki takım başlığına kadar görünür kalır. Genel filtre özeti ve Proje → Takımlar görünümü aynı davranışı sürdürür.
 
-
 Gerçekleşen dağılımın kişi alt toplamı yüzde biriminde dağıtılan kaynak yüzdesini, saat biriminde **Kalan Aylık Çalışma Saati** değerini gösterir. Kalan saat, ortak takvim ve kişisel izin sonrası net aylık saatten tüm projelere ayrılan saat ve eğitim saatinin çıkarılmasıdır. Mevcut `actualMonths` toplamları kullanılır; proje filtresi görünmeyen projelerin süresini hesaptan çıkarmaz. Manuel net saat değişiklikleri de aynı hesaba yansır.
-
 
 Gerçekleşen dağılımda yönetici hesabının liderlik yetkisi, tüm alt liderliklerin doğrudan kaynak birimleri ve takımları için devralınır (`allowedActualTeam`). Ekran ve kayıt komutları aynı hiyerarşi kontrolünü kullanır; görünür olmak tek başına düzenleme hakkı vermez. Ayın çalışan ataması yetki kapsamına girmelidir. `actual-view` bu hücrelerin güncel revision değerlerini taşır. Yöneticinin diğer çalışanların izin/eğitim ikonu gizlidir; kendi eşleşmiş çalışan kaydının takvimi ve admin erişimi korunur. Kişisel takvim veri/yazma politikası genişletilmez.
 
-
 Hesap ve Yetkiler alanında liderlik seçimleri yalnız Yönetici rolünde **Planlanan Kaynak Dağılımı Yetkisi** başlığıyla açılır; normal kullanıcıda gizlenir. Rol geçişi görünmeyen taslak seçimlerini silmez. `orderedLeaderships` yalnız verilen liderlik kataloğunu üst/alt sırasıyla gösterir; erişilemeyen liderlik oluşturmaz. Aynı derinlik ve üst birim bilgisi ana filtreler ile tekli/toplu kaynak seçimlerine de taşınır. Liste girintisi ve ↳ işareti yalnız gösterim içindir; seçim kimlikleri, arama ve yetki hesapları değişmez.
-
 
 Active Directory hesabı yeni tanımlanırken veya bağlı çalışan kaydından düzenlenirken **Admin** rolü seçilebilir. Atama, rol değişikliği ve yetki kaldırma yalnız mevcut admin oturumuyla yapılır. AD admin hesabında çalışan eşleştirmesi korunur, liderlik yetki listesi boşaltılır (admin tüm kapsama erişir). Yerel ana yönetici koruması sürer. Rol değişikliği eski oturumları kapatır; kendi rolünü değiştiren AD admin hesabına işlem sonrası ayrıcalıklı veri döndürülmez, yeniden giriş istenir.
 
-
 Liderlik Bazında Eksik Raporu, üst birimlerin altında alt liderlikleri `expandLeadershipReportGroups` ile girintili kırılımlar halinde gösterir. Her alt satır yalnız filtrelenmiş birimler içindeki kendi alt ağacının toplamıdır; doğrudan liderlik kaynakları da dahildir. Ana grup hesabı değiştirilmez. Ekran genel toplamı benzersiz birim kimliklerinden, Excel genel toplamı yalnız kök satırlardan hesaplanır; alt kırılımlar tekrar toplanmaz. Excel'de aynı sıra ve girinti korunur.
-
 
 Kaynak Ekle / Yetki Tanımla ekranında Active Directory seçilince kaynak Ad Soyad alanı salt okunur olur ve seçilen AD kullanıcısının adı gösterilir; kullanıcı seçilmeden kayıt tamamlanmaz. AD modundan çıkılırsa önceki manuel isim taslağı korunur. Aynı `directoryEmployeeName` seçicisi görüntüleme ve kayıt komutunda kullanılır. Birleşik hesap/çalışan kaydında sunucu yeni hesabın adını AD'den yeniden çözer ve gelen manuel kaynak adını dikkate almaz; mevcut AD hesabının yetki düzenlemesinde kaynak adı AD profilindeki hesap adıyla eşitlenir.
 

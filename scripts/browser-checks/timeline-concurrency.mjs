@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { milestoneRanges } from "../../shared/milestone-ranges.ts";
 
@@ -96,7 +97,7 @@ export async function checkTimelineConcurrency(f) {
       ],
     });
     await page.reload();
-    await page.getByRole("tab", { name: /Projeler/ }).click();
+    await selectWorkspaceTab(page, "Projeler");
     await page
       .getByRole("switch", { name: "Detayları Göster", exact: true })
       .check();

@@ -64,6 +64,17 @@
   position: relative;
   z-index: 1;
 }
+/* A run's first month carries the label across the following months, so it
+   sits one layer above them. The frozen name column stays above both. */
+[data-slot="table-container"]:has(> .today-date-column)
+  tbody
+  td
+  > .phase-chip[data-phase-run="start"] {
+  z-index: 2;
+}
+.app .person-allocation tbody tr:has(.actual-phase-cell) > td:first-child {
+  z-index: 3;
+}
 /* Actual entry cells isolate their own layers at z-index 0; lift them above
    the marker (frozen columns and sticky rows sit higher still). */
 .app

@@ -71,7 +71,7 @@ export async function checkHeadcountReports(f) {
     (
       await table(index).locator(`[data-headcount-total="${key}"]`).innerText()
     ).trim();
-  await tab("Raporlar").click();
+  await selectWorkspaceTab(page, "Raporlar");
   await f.check(
     "headcount: left sub-tabs retain resource reports and show dated status pivots with unique totals",
     async () => {
@@ -213,6 +213,8 @@ export async function checkHeadcountReports(f) {
           .getByRole("tab", {
             name: "Raporlar",
             exact: true,
+            // The closed main menu still lists the tab.
+            includeHidden: true,
           })
           .count(),
         0,

@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
-import { selectWorkspaceTab, openUserMenu } from "./fixture.mjs";
+import {
+  selectWorkspaceTab,
+  openUserMenu,
+  hoverMainMenu,
+  leaveMainMenu,
+} from "./fixture.mjs";
 import path from "node:path";
 import { download, zipEntries, validateXml } from "./files.mjs";
 
@@ -219,14 +224,25 @@ export async function checkRisks(f) {
             }),
           { times: 1 },
         );
-        await selectWorkspaceTab(page, "Raporlar");
+        // Hover keeps the draft focused, so the tab click is what saves it;
+        // the header button would blur and save before the tab is chosen.
+        await hoverMainMenu(page);
+        await page
+          .locator("#workspace-main-menu")
+          .getByRole("tab", { name: "Raporlar", exact: true })
+          .click();
         await page
           .locator(".risk-inline-error")
           .filter({ hasText: "Synthetic risk save failure" })
           .waitFor();
         assert.equal(
           await page
-            .getByRole("tab", { name: "Risk Yönetimi", exact: true })
+            .getByRole("tab", {
+              name: "Risk Yönetimi",
+              exact: true,
+              // The closed main menu still lists the tab.
+              includeHidden: true,
+            })
             .getAttribute("aria-selected"),
           "true",
         );
@@ -291,6 +307,8 @@ export async function checkRisks(f) {
           .locator('[data-risk-column="description"]')
           .click();
         await field(page, "description").fill("");
+        // Open the menu without blurring the draft, then use the keyboard.
+        await hoverMainMenu(page);
         await page
           .getByRole("tab", {
             name: "Raporlar",
@@ -300,11 +318,17 @@ export async function checkRisks(f) {
         await page.keyboard.press("Enter");
         assert.equal(
           await page
-            .getByRole("tab", { name: "Risk Yönetimi", exact: true })
+            .getByRole("tab", {
+              name: "Risk Yönetimi",
+              exact: true,
+              // The closed main menu still lists the tab.
+              includeHidden: true,
+            })
             .getAttribute("aria-selected"),
           "true",
         );
         await field(page, "description").press("Escape");
+        await leaveMainMenu(page);
       },
     );
     await f.check(

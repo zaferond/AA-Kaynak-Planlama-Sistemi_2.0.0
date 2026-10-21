@@ -44,5 +44,7 @@
   "reports/critical-topics.css",
   "allocation/actual-person-layout.css",
   "workspace/sidebar.css",
-  "workspace/section-header.css"
+  "workspace/section-header.css",
+  "workspace/technical-chrome.css",
+  "projects/phase-chips-technical.css"
 ]

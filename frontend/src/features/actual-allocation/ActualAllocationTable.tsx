@@ -577,6 +577,8 @@ export default function ActualAllocationTable({
         {
           width: labelWidth + months.length * monthWidth,
           "--label-width": labelWidth + "px",
+          // Phase labels span their run by this column pitch.
+          "--month-width": monthWidth + "px",
         } as React.CSSProperties
       }
     >

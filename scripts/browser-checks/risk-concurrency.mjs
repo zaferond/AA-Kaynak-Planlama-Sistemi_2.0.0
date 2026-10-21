@@ -157,11 +157,21 @@ export async function checkRiskConcurrency(f) {
         await selectWorkspaceTab(page, "Raporlar");
         assert.equal(
           await page
-            .getByRole("tab", { name: "Risk Yönetimi", exact: true })
+            .getByRole("tab", {
+              name: "Risk Yönetimi",
+              exact: true,
+              // The closed main menu still lists the tab.
+              includeHidden: true,
+            })
             .getAttribute("aria-selected"),
           "true",
         );
         await f.capture(page, "risk-conflict-draft-preserved");
+        // The blocked navigation leaves the menu open over the row.
+        await page.keyboard.press("Escape");
+        await page
+          .locator('#workspace-main-menu:not([data-open="true"])')
+          .waitFor({ state: "attached" });
       },
     );
     await f.check(

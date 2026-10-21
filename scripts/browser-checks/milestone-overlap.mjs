@@ -1,3 +1,4 @@
+import { selectWorkspaceTab } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 import { milestoneRanges } from "../../shared/milestone-ranges.ts";
@@ -66,7 +67,7 @@ export async function checkMilestoneOverlap(f) {
         const client = await f.client("root-admin");
         const { page } = client;
         async function openTimeline() {
-          await page.getByRole("tab", { name: /Projeler/ }).click();
+          await selectWorkspaceTab(page, "Projeler");
           await page
             .getByRole("switch", { name: "Detayları Göster", exact: true })
             .check();

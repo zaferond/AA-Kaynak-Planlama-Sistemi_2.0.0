@@ -248,9 +248,31 @@ export async function fixture({ mutationLimits } = {}) {
   }
 }
 
+/** Open the main menu by hovering its edge, as a mouse user would. Unlike a
+ *  click this keeps focus in an open editor, so its draft is not blurred. */
+export async function hoverMainMenu(page) {
+  await page.locator(".workspace-menu-edge").hover();
+  await page.locator('#workspace-main-menu[data-open="true"]').waitFor();
+}
+
+/** Move the pointer off the hover-opened main menu and wait for it to close,
+ *  so it no longer covers the workspace. */
+export async function leaveMainMenu(page) {
+  const viewport = page.viewportSize();
+  await page.mouse.move(viewport.width - 20, viewport.height - 20);
+  await page
+    .locator('#workspace-main-menu:not([data-open="true"])')
+    .waitFor({ state: "attached" });
+}
+
 export async function selectWorkspaceTab(page, name) {
   const menu = page.locator("#workspace-main-menu");
   const mainTab = menu.getByText(name, { exact: true });
+  // Right after a reload the menu is still empty; wait until it lists tabs.
+  await menu
+    .getByRole("tab", { includeHidden: true })
+    .first()
+    .waitFor({ state: "attached" });
   if (
     (await mainTab.count()) ||
     [
@@ -259,10 +281,19 @@ export async function selectWorkspaceTab(page, name) {
       "Organizasyon Yapısı",
     ].includes(name)
   ) {
-    if ((await menu.getAttribute("data-open")) !== "true")
+    // The header button toggles. A pointer resting on the menu edge can open
+    // the menu by hover at the same moment, so confirm it is open and retry.
+    for (let attempt = 0; ; attempt++) {
+      if ((await menu.getAttribute("data-open")) === "true") break;
+      if (attempt === 3) throw Error("Ana menü açılamadı.");
       await page
         .getByRole("button", { name: "Ana menüyü aç", exact: true })
         .click();
+      await page
+        .locator('#workspace-main-menu[data-open="true"]')
+        .waitFor({ timeout: 1500 })
+        .catch(() => {});
+    }
   }
   const employee = name === "Çalışan & Yetki Tanımlama";
   const directory =

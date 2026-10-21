@@ -58,7 +58,7 @@ export async function checkMilestoneReportMenu(f) {
   const row = () =>
     page.locator('[data-project-group="p-a"] .milestone-row').first();
   async function timeline(weekly = false) {
-    await page.getByRole("tab", { name: /Projeler/ }).click();
+    await selectWorkspaceTab(page, "Projeler");
     await page
       .getByRole("switch", { name: "Detayları Göster", exact: true })
       .check();
@@ -223,7 +223,7 @@ export async function checkMilestoneReportMenu(f) {
       async () => {
         const viewer = await f.client("employee");
         try {
-          await viewer.page.getByRole("tab", { name: /Projeler/ }).click();
+          await selectWorkspaceTab(viewer.page, "Projeler");
           await viewer.page
             .getByRole("switch", { name: "Detayları Göster", exact: true })
             .check();

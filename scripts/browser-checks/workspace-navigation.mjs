@@ -97,9 +97,11 @@ export async function checkWorkspaceNavigation(f) {
         await f.wait(
           async () =>
             (await page
+              .locator("#workspace-main-menu")
               .getByRole("tab", {
                 name: "Projeler",
                 exact: true,
+                includeHidden: true,
               })
               .getAttribute("aria-selected")) === "true",
           "latest tab selected after save",

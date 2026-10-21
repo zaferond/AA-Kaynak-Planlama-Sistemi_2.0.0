@@ -59,6 +59,8 @@ export async function checkSessionConsistency(f) {
           .getByRole("tab", {
             name: "Organizasyon & Çalışan & Yetki",
             exact: true,
+            // The closed main menu still lists the tab.
+            includeHidden: true,
           })
           .count(),
         0,

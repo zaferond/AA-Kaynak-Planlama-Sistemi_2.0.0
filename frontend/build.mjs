@@ -58,6 +58,11 @@ const jsName = await asset(
   "js",
   await fs.readFile(path.join(root, ".compiled/app.js")),
 );
+const faviconName = await asset(
+  "favicon",
+  "svg",
+  await fs.readFile(path.join(root, "assets/favicon.svg")),
+);
 const loginBackgroundName = await asset(
   "login-background",
   "png",
@@ -94,7 +99,7 @@ const css = [
 ].join("\n");
 const cssName = await asset("app", "css", Buffer.from(css));
 
-const html = `<!doctype html><html lang="tr" data-theme="${UI_THEME}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${SYSTEM_NAME}</title><link rel="stylesheet" href="/assets/${cssName}"><script defer src="/assets/${jsName}"></script></head><body><div id="root"></div><noscript>JavaScript etkin olmalıdır.</noscript></body></html>`;
+const html = `<!doctype html><html lang="tr" data-theme="${UI_THEME}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${SYSTEM_NAME}</title><link rel="icon" type="image/svg+xml" href="/assets/${faviconName}"><link rel="stylesheet" href="/assets/${cssName}"><script defer src="/assets/${jsName}"></script></head><body><div id="root"></div><noscript>JavaScript etkin olmalıdır.</noscript></body></html>`;
 await fs.writeFile(path.join(site, "index.html"), html);
 await fs.writeFile(path.join(site, "index.html.gz"), gzipSync(html));
 await writeDeploymentManifest(packageRoot, sourceHashes, {
@@ -104,7 +109,7 @@ await writeDeploymentManifest(packageRoot, sourceHashes, {
     "site/assets/otokar-logo.svg",
     "site/assets/" + loginBackgroundName,
     ...Object.values(fontNames).map((name) => "site/assets/" + name),
-    ...[jsName, cssName].flatMap((name) => [
+    ...[faviconName, jsName, cssName].flatMap((name) => [
       "site/assets/" + name,
       "site/assets/" + name + ".gz",
     ]),

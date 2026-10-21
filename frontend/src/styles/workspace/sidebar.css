@@ -162,6 +162,17 @@ html[data-theme]
   width: auto;
   height: 1px;
 }
+/* Sabitlenen menü içeriğin üzerine binmez: çalışma alanı menü kadar sağa
+   kayar. Dar ekranda tablolar sıkışmasın diye menü üstte açılmaya devam eder. */
+@media (min-width: 1100px) {
+  .app.menu-pinned:not(.full-plan) > main {
+    margin-left: 292px;
+    width: calc(100% - 292px);
+  }
+  .app.menu-pinned .workspace-menu-panel[data-pinned="true"] {
+    box-shadow: none;
+  }
+}
 /* Tam ekran planlama görünümünün kendi gezinme düzeni korunur. */
 .app.full-plan .workspace-menu-panel,
 .app.full-plan .workspace-menu-edge {

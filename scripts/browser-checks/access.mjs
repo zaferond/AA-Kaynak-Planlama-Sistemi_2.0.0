@@ -68,6 +68,8 @@ export async function checkAccess(f) {
             .getByRole("tab", {
               name: "Organizasyon & Çalışan & Yetki",
               exact: true,
+              // The closed main menu still lists the tab.
+              includeHidden: true,
             })
             .count(),
           0,
@@ -129,14 +131,17 @@ export async function checkAccess(f) {
             .getByRole("tab", {
               name: "Kaynak Planlama",
               exact: true,
+              includeHidden: true,
             })
-            .isVisible(),
+            .count(),
         );
         assert.equal(
           await employee.page
             .getByRole("tab", {
               name: "Organizasyon & Çalışan & Yetki",
               exact: true,
+              // The closed main menu still lists the tab.
+              includeHidden: true,
             })
             .count(),
           0,
@@ -260,6 +265,8 @@ export async function checkAccess(f) {
             .getByRole("tab", {
               name: "Organizasyon & Çalışan & Yetki",
               exact: true,
+              // The closed main menu still lists the tab.
+              includeHidden: true,
             })
             .count(),
           0,

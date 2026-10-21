@@ -1,4 +1,4 @@
-import { selectWorkspaceTab } from "./fixture.mjs";
+import { selectWorkspaceTab, hoverMainMenu } from "./fixture.mjs";
 import assert from "node:assert/strict";
 import { applyChanges } from "../../backend/operations.mjs";
 import { openRisks, riskSaveConfirmation } from "./risk.mjs";
@@ -162,6 +162,8 @@ export async function checkRiskSaveConfirmation(f) {
         await respond(otherRow, false);
         assert.equal(dialogs, prompts + 1);
         assert.equal(await editing().getAttribute("data-risk-id"), ids[0]);
+        // Hover keeps the draft focused, so only the tab click asks to save.
+        await hoverMainMenu(page);
         await respond(() => selectWorkspaceTab(page, "Raporlar"), false);
         assert.equal(dialogs, prompts + 2);
         assert.equal(
@@ -176,6 +178,9 @@ export async function checkRiskSaveConfirmation(f) {
         );
         assert.equal(writes, requests);
         assert.deepEqual((await f.state()).risks, before.risks);
+        // A declined navigation keeps the menu open; leaving it closes it.
+        await page.mouse.move(1200, 700);
+        await page.locator('#workspace-main-menu[data-open="false"]').waitFor();
         await respond(otherRow, true);
         await f.wait(
           async () => (await editing().getAttribute("data-risk-id")) === ids[1],

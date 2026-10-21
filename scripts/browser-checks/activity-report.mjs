@@ -131,9 +131,10 @@ export async function checkActivityReport(f) {
     await f.check(
       "activity report: tab placement, planned filters and applied filter summary",
       async () => {
+        // The closed main menu still lists the tabs.
         const tabs = await page
-          .getByRole("tablist", { name: "Ana sekmeler" })
-          .getByRole("tab")
+          .getByRole("tablist", { name: "Ana sekmeler", includeHidden: true })
+          .getByRole("tab", { includeHidden: true })
           .allTextContents();
         assert.equal(
           tabs[tabs.findIndex((t) => t === "Aktivite Girişi") + 1],

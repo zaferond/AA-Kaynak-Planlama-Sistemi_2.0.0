@@ -157,3 +157,64 @@
   -webkit-line-clamp: 2;
   line-clamp: 2;
 }
+
+/* Entry unit first, then the selected person-month context on the same row. */
+.app .person-allocation .panelhead > .actual-unit-control:first-child {
+  flex: 1 1 auto;
+  align-items: flex-start;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  text-align: left;
+}
+.app .person-allocation .actual-control-fields {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 6px 0;
+  max-width: none;
+  margin: 0;
+}
+.app
+  .person-allocation
+  .actual-control-fields
+  > .actual-control-item:nth-child(n) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 12px;
+  border: 0;
+  border-left: 1px solid var(--brand-border, #ccd6c5);
+  text-align: left;
+}
+.app .person-allocation .actual-control-fields > .actual-unit-item:first-child {
+  flex: none;
+  width: auto;
+  padding: 3px 8px;
+  border: 1px solid var(--brand-border-strong, #aec9dc);
+  border-radius: 5px;
+  background: var(--brand-surface, #eaf1f6);
+}
+.app .person-allocation .actual-control-fields > .actual-context-hint {
+  flex: 1;
+  border: 0;
+  font-weight: 500;
+}
+.app .person-allocation .actual-unit-item select {
+  width: 110px;
+  height: 28px;
+  min-height: 28px;
+  margin: 0;
+  text-align: left;
+  text-align-last: left;
+}
+.app .person-allocation .actual-person-value strong {
+  text-align: left;
+}
+.app .person-allocation .actual-hours-item .worked-hours-input {
+  width: 88px;
+}

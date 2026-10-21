@@ -50,6 +50,22 @@ export default function ActualAllocationControls({
     <div className="panelhead">
       <div className="actual-unit-control">
         <div className="actual-control-fields">
+          <label
+            className="actual-control-item actual-unit-item"
+            htmlFor="actual-entry-unit"
+          >
+            <span>Kaynak Dağılım Birimi</span>
+            <select
+              id="actual-entry-unit"
+              value={unit}
+              onChange={(event) =>
+                onUnitChange(event.target.value as ActualUnit)
+              }
+            >
+              <option value="percent">Yüzde (%)</option>
+              <option value="hours">Saat</option>
+            </select>
+          </label>
           {selectedHoursPerson && selectedHoursMonth ? (
             <>
               <div className="actual-control-item actual-context-item actual-person-item">
@@ -138,7 +154,7 @@ export default function ActualAllocationControls({
                 )}
               </div>
               <div className="actual-control-item actual-context-item actual-remaining-item">
-                <span>Kalan</span>
+                <span>Kalan {hoursUnit ? "Saat" : "Yüzde"}</span>
                 <strong
                   className={balance ? "" : "actual-context-placeholder"}
                   data-remaining-state={balance?.state}
@@ -162,26 +178,9 @@ export default function ActualAllocationControls({
           ) : (
             // One prompt instead of four "Hücre Seçiniz" placeholders.
             <p className="actual-control-item actual-context-hint">
-              Bir hücre seçin: çalışan, ay, aylık çalışılan saat ve kalan burada
-              görünür.
+              Bir Hücre Seçin
             </p>
           )}
-          <label
-            className="actual-control-item actual-unit-item"
-            htmlFor="actual-entry-unit"
-          >
-            <span>Kaynak Dağıtım Birimi</span>
-            <select
-              id="actual-entry-unit"
-              value={unit}
-              onChange={(event) =>
-                onUnitChange(event.target.value as ActualUnit)
-              }
-            >
-              <option value="percent">Yüzde (%)</option>
-              <option value="hours">Saat</option>
-            </select>
-          </label>
         </div>
       </div>
     </div>

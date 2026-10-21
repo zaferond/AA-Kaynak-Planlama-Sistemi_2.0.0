@@ -858,12 +858,3 @@
 .app [data-slot="table-container"]:has(> .projectmatrix.project-codes-visible) {
   scroll-padding-inline-start: calc(var(--label-width, 300px) + 110px);
 }
-
-.app .projectmatrix .project-progress-slot {
-  position: absolute;
-  top: 22px;
-  right: 0;
-}
-.app .projectmatrix .project-progress-slot .progress-badge-chip {
-  margin: 0;
-}

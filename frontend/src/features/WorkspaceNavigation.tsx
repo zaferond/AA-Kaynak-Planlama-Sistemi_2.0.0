@@ -314,7 +314,9 @@ export default function WorkspaceNavigation({
         tabs={sectionTabs}
         value={sectionValue}
         onChange={changeSection}
-        actionsPlacement={tab === "actual" ? "tabs" : "heading"}
+        actionsPlacement={
+          ["actual", "projects"].includes(tab) ? "tabs" : "heading"
+        }
         actions={
           ![
             "access",
@@ -378,7 +380,7 @@ export default function WorkspaceNavigation({
                   onClick={() => openProject()}
                 >
                   <Plus size={17} />
-                  Yeni Proje Ekle
+                  Yeni Proje
                 </button>
               )}
               {tab === "actual" && isAdmin && (

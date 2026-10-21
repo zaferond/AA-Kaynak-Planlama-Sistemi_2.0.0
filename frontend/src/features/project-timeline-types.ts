@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactNode } from "react";
+import type { MouseEvent } from "react";
 import type { Milestone, Project } from "../model";
 import type { TimelinePeriod } from "../timeline-periods";
 import type { milestoneRanges } from "../milestone-ranges";
@@ -9,8 +9,6 @@ import type { useProjectRowOrder } from "./useProjectRowOrder";
 import type { ProjectSnapshot } from "./project-snapshot";
 
 export type ProjectTimelineRowProps = {
-  /** Proje İlerlemesi badge beside the name (admins and managers). */
-  progressBadge?: ReactNode;
   ordering: ReturnType<ReturnType<typeof useProjectRowOrder>["rowProps"]>;
   phaseSelection: ReturnType<typeof usePhaseGrid>;
   project: Project;

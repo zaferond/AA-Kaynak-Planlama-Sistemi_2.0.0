@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Data } from "../../model";
 import type { Principal } from "../../access";
 import type { Change } from "../../../../shared/commands";
@@ -25,25 +25,15 @@ export default function ProjectProgressPanel({
   saving,
   view,
   onSave,
-  focusProjectId = "",
-  onFocusHandled,
 }: {
   data: Data;
   user: Principal | null;
   saving: boolean;
   view: ProgressView;
   onSave: (changes: Change[]) => Promise<void>;
-  /** Opens the report on this project (from a badge on another screen). */
-  focusProjectId?: string;
-  onFocusHandled?: () => void;
 }) {
   const currentMonth = currentPlanningMonth().slice(0, 7);
   const months = entryMonths(currentMonth, data.projectProgress);
-  const [focus] = useState(focusProjectId);
-  useEffect(() => {
-    if (focus) onFocusHandled?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const [selectedMonth, setMonth] = useState(() =>
     defaultEntryMonth(currentMonth, data.projectProgress),
   );
@@ -142,7 +132,6 @@ export default function ProjectProgressPanel({
           currentMonth={currentMonth}
           saving={saving}
           onSave={onSave}
-          initialDetail={focus}
         />
       )}
     </section>

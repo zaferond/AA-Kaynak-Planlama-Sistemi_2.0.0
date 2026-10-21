@@ -113,7 +113,6 @@ export default function ProgressReport({
   currentMonth,
   saving,
   onSave,
-  initialDetail = "",
 }: {
   ctx: ProgressContext;
   responsibleFilter: ReactNode;
@@ -122,7 +121,6 @@ export default function ProgressReport({
   currentMonth: string;
   saving: boolean;
   onSave: (changes: Change[]) => Promise<void>;
-  initialDetail?: string;
 }) {
   const { data } = ctx;
   const admin = user?.role === "admin";
@@ -130,19 +128,13 @@ export default function ProgressReport({
   const [projectId, setProjectId] = useState("");
   const [decision, setDecision] = useState<DecisionFilter>("");
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
-  const [detail, setDetail] = useState(initialDetail);
+  const [detail, setDetail] = useState("");
   const [year, setYear] = useState(month.slice(0, 4));
   const [page, setPage] = useState(0);
   const [error, setError] = useState("");
   useEffect(() => {
     setYear(month.slice(0, 4));
   }, [month]);
-  useEffect(() => {
-    if (initialDetail)
-      document
-        .getElementById("progress-detail")
-        ?.scrollIntoView({ block: "start" });
-  }, [initialDetail]);
   useEffect(() => {
     setPage(0);
   }, [ctx, month, leader, projectId, decision]);

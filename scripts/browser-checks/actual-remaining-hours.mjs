@@ -43,6 +43,21 @@ export async function checkActualRemainingHours(f) {
   const { page } = await f.client("employee");
   try {
     await selectWorkspaceTab(page, "Aktivite Girişi");
+    await f.check(
+      "actual controls: unit is first and the empty prompt is compact",
+      async () => {
+        assert.equal(
+          await page
+            .locator(".actual-control-fields > :first-child")
+            .getAttribute("class"),
+          "actual-control-item actual-unit-item",
+        );
+        assert.equal(
+          (await page.locator(".actual-context-hint").textContent()).trim(),
+          "Bir Hücre Seçin",
+        );
+      },
+    );
     // Person totals are load bars under each entry cell (no separate row).
     const january = page
       .locator(
@@ -95,6 +110,20 @@ export async function checkActualRemainingHours(f) {
           exact: true,
         });
         await amount.click();
+        const unit = await page.locator(".actual-unit-item").boundingBox();
+        for (const selector of [
+          ".actual-person-item",
+          ".actual-month-item",
+          ".actual-hours-item",
+          ".actual-remaining-item",
+        ]) {
+          const field = await page.locator(selector).boundingBox();
+          assert(field.x >= unit.x + unit.width - 1);
+          assert(
+            Math.abs(field.y + field.height / 2 - unit.y - unit.height / 2) < 3,
+          );
+        }
+
         const hours = page.getByRole("textbox", {
           name: "Browser Employee / 2026-01 çalışılan saat",
           exact: true,

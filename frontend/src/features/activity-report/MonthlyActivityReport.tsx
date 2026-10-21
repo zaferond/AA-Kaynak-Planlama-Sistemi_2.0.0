@@ -66,7 +66,6 @@ export default function MonthlyActivityReport({
   const years = [...new Set(months.map((month) => month.slice(0, 4)))];
   const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const activePage = Math.min(page, pages - 1);
-  const people = new Set(rows.map((row) => row.resourceId)).size;
   const teamSizes = useMemo(() => {
     const sizes = new Map<string, number>();
     for (const row of rows)
@@ -104,14 +103,8 @@ export default function MonthlyActivityReport({
       aria-label="Aktivite Raporu"
     >
       <div className="activity-toolbar">
-        <div>
-          <span>
-            {people} çalışan · {new Set(rows.map((row) => row.teamId)).size}{" "}
-            takım
-          </span>
-        </div>
         <label>
-          Gösterim{" "}
+          Görünüm{" "}
           <select
             aria-label="Aktivite raporu birimi"
             value={unit}

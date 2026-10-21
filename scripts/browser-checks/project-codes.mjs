@@ -33,6 +33,35 @@ export async function checkProjectCodes(f) {
   const { page } = await f.client("root-admin");
   try {
     await selectWorkspaceTab(page, "Projeler");
+    await f.check(
+      "projects: tools share the tab row; progress shortcut dots are removed",
+      async () => {
+        assert.equal(
+          await page
+            .locator(
+              ".project-progress-slot, .projectmatrix .progress-badge-chip",
+            )
+            .count(),
+          0,
+        );
+        const tabs = await page
+          .locator(".workspace-section-tabs")
+          .boundingBox();
+        const actions = await page
+          .locator(".workspace-nav-actions")
+          .boundingBox();
+        const create = page.getByRole("button", {
+          name: "Yeni Proje",
+          exact: true,
+        });
+        assert.equal(await create.count(), 1);
+        assert(actions.x > tabs.x + tabs.width);
+        assert(
+          actions.y >= tabs.y - 2 &&
+            actions.y + actions.height <= tabs.y + tabs.height + 2,
+        );
+      },
+    );
     const toggle = page.getByRole("switch", {
       name: "Proje Kodlarını Göster",
       exact: true,
@@ -43,7 +72,7 @@ export async function checkProjectCodes(f) {
       async () => {
         assert.equal(await toggle.isChecked(), false);
         await page
-          .getByRole("button", { name: "Yeni Proje Ekle", exact: true })
+          .getByRole("button", { name: "Yeni Proje", exact: true })
           .click();
         await page
           .getByLabel("Proje Adı", { exact: true })

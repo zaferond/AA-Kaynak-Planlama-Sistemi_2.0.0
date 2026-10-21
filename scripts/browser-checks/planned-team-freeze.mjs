@@ -25,6 +25,76 @@ export async function checkPlannedTeamFreeze(f) {
   const { page } = await f.client("root-admin");
   try {
     await selectWorkspaceTab(page, "Kaynak Planlama");
+    await f.check(
+      "planning: left labels cover month values in both layouts and the capacity summary",
+      async () => {
+        if (
+          (await page.locator(".capacitystrip").getAttribute("open")) === null
+        )
+          await page.locator(".capacitystrip > summary").click();
+        for (const view of ["Proje → Takımlar", "Takım → Projeler"]) {
+          await page.getByRole("tab", { name: view, exact: true }).click();
+          for (const selector of [
+            ".capacitystrip > [data-slot=table-container]",
+            ".workspace-dock > [data-slot=table-container]",
+          ]) {
+            const container = page.locator(selector);
+            const width = await container.evaluate((el) => {
+              const old = el.style.width;
+              el.style.width = "650px";
+              el.scrollLeft = 420;
+              el.scrollTop = 0;
+              return old;
+            });
+            await f.wait(
+              async () =>
+                container.evaluate((el) => {
+                  const cr = el.getBoundingClientRect();
+                  const cells = [
+                    ...el.querySelectorAll(
+                      "tbody tr > td:first-child:not([colspan])",
+                    ),
+                  ].filter((cell) => {
+                    const r = cell.getBoundingClientRect();
+                    return (
+                      r.top >= cr.top &&
+                      r.bottom <= Math.min(cr.bottom, innerHeight)
+                    );
+                  });
+                  return (
+                    el.scrollLeft > 0 &&
+                    cells.length > 0 &&
+                    cells.every((cell) => {
+                      const r = cell.getBoundingClientRect();
+                      if (Math.abs(r.left - cr.left) > 2) return false;
+                      return [0.25, 0.75, 0.9].every((fraction) => {
+                        const hit = document.elementFromPoint(
+                          r.left + r.width * fraction,
+                          r.top + r.height / 2,
+                        );
+                        return hit === cell || cell.contains(hit);
+                      });
+                    })
+                  );
+                }),
+              "left labels remain pinned and paint above month values: " +
+                view +
+                selector,
+            );
+            await f.capture(
+              page,
+              "frozen-labels-" +
+                (view.startsWith("Proje") ? "project" : "team") +
+                (selector.startsWith(".capacitystrip") ? "-summary" : "-main"),
+            );
+            await container.evaluate((el, old) => {
+              el.style.width = old;
+              el.scrollLeft = 0;
+            }, width);
+          }
+        }
+      },
+    );
     await page
       .getByRole("tab", { name: "Takım → Projeler", exact: true })
       .click();

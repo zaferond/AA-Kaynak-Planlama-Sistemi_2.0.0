@@ -152,27 +152,17 @@ export default function Portal() {
   useEffect(() => {
     if (tab !== "actual" || !isAdmin) setSharedCalendarOpen(false);
   }, [tab, isAdmin]);
-  // Proje İlerlemesi badges on the project screens; a click opens the report.
-  const [progressFocus, setProgressFocus] = useState("");
+  // Read-only scenario status remains visible in critical topics.
   const progressBadges = useMemo(
     () =>
       data && (isAdmin || isManager) ? progressBadgeIndex(data) : new Map(),
     [data, isAdmin, isManager],
   );
-  const progressBadge = (compact: boolean) =>
-    progressBadges.size
-      ? (projectId: string) => (
-          <ProgressBadge
-            compact={compact}
-            badge={progressBadges.get(projectId)}
-            onOpen={() => {
-              setProgressFocus(projectId);
-              setProgressView("report");
-              changeTab("progress");
-            }}
-          />
-        )
-      : undefined;
+  const progressBadge = progressBadges.size
+    ? (projectId: string) => (
+        <ProgressBadge badge={progressBadges.get(projectId)} />
+      )
+    : undefined;
   const {
     leads,
     setLeads,
@@ -719,7 +709,6 @@ export default function Portal() {
                   ) : (
                     <ProjectTimelinePanel
                       selection={projectMenus.phaseGrid}
-                      progressBadge={progressBadge(true)}
                       projects={projects}
                       revisions={data.revisions}
                       months={months}
@@ -959,7 +948,7 @@ export default function Portal() {
                     canEdit={canEditProjects}
                     onSave={(project) => save("project", project.id, project)}
                     onOpenProjects={() => changeTab("projects")}
-                    progressBadge={progressBadge(false)}
+                    progressBadge={progressBadge}
                     onAddInfo={(project) => openMilestone(project)}
                     onEditInfo={(project, infoId) => {
                       const milestone = project.milestones?.find(
@@ -978,8 +967,6 @@ export default function Portal() {
                     user={user}
                     saving={saving}
                     onSave={batch}
-                    focusProjectId={progressFocus}
-                    onFocusHandled={() => setProgressFocus("")}
                   />
                 </TabsContent>
               )}

@@ -728,7 +728,7 @@
   }
 }
 
-/* Badge beside project names on the timeline and critical topics. */
+/* Status badge beside project names in critical topics. */
 .progress-badge-chip {
   display: inline-flex;
   align-items: center;
@@ -743,30 +743,6 @@
   font-size: 11px;
   font-weight: 650;
   vertical-align: middle;
-  cursor: pointer;
-}
-.progress-badge-chip i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #2e7d32;
-}
-.progress-badge-chip[data-level="amber"] i {
-  background: #b7791f;
-}
-.progress-badge-chip[data-level="red"] i {
-  background: #c62828;
-}
-.progress-badge-chip[data-compact] {
-  width: 16px;
-  height: 16px;
-  margin-left: 4px;
-  padding: 0;
-  justify-content: center;
-}
-.progress-badge-chip:hover,
-.progress-badge-chip:focus-visible {
-  border-color: #405440;
 }
 /* Toolbar controls match the compact filter bars of the other screens. */
 .project-progress .progress-baseline-bar select,
@@ -1457,7 +1433,7 @@
   background: white;
   font: inherit;
 }
-.progress-badge-chip.scenario-project-chip:not([data-compact]) {
+.progress-badge-chip.scenario-project-chip {
   height: auto;
   min-height: 20px;
   padding: 3px;
@@ -1466,19 +1442,6 @@
   background: transparent;
   text-align: left;
   max-width: 320px;
-}
-.progress-badge-chip.scenario-project-chip[data-progress="ahead"] i {
-  background: #2368b8;
-}
-.progress-badge-chip.scenario-project-chip[data-progress="behind"] i {
-  background: #b7791f;
-}
-.progress-badge-chip.scenario-project-chip[data-progress="critical"] i {
-  background: #c62828;
-}
-.progress-badge-chip.scenario-project-chip[data-progress="missing"] i,
-.progress-badge-chip.scenario-project-chip[data-progress="unlocked"] i {
-  background: #7d8779;
 }
 .progress-card-head .scenario-warning-status {
   margin-top: 6px;

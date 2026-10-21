@@ -73,7 +73,6 @@ type Props = {
   onPageChange: (page: number) => void;
   actions: ProjectTimelineActions;
   selection: ReturnType<typeof usePhaseGrid>;
-  progressBadge?: (projectId: string) => React.ReactNode;
 };
 
 export default function ProjectTimelinePanel({
@@ -96,7 +95,6 @@ export default function ProjectTimelinePanel({
   onPageChange,
   actions,
   selection,
-  progressBadge,
 }: Props) {
   const viewportRef = useViewportWorkspace();
   const labelColumns = showCodes ? 2 : 1;
@@ -135,7 +133,6 @@ export default function ProjectTimelinePanel({
           setExpandedProjects((old) => ({ ...old, [p.id]: value }))
         }
         project={p}
-        progressBadge={progressBadge?.(p.id)}
         showCodes={showCodes}
         projectRevision={revisions["project:" + p.id] || 0}
         ordering={ordering.rowProps(p.id)}

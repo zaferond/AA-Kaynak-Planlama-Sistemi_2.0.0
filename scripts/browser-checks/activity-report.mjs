@@ -129,7 +129,7 @@ export async function checkActivityReport(f) {
       .fill("2026-01");
     await page.locator(".planning-filterbar .period select").selectOption("12");
     await f.check(
-      "activity report: tab placement, planned filters and applied filter summary",
+      "activity report: tab placement, planned filters and compact left-aligned unit control",
       async () => {
         // The closed main menu still lists the tabs.
         const tabs = await page
@@ -151,11 +151,13 @@ export async function checkActivityReport(f) {
           await page.getByRole("button", { name: "Kişi", exact: true }).count(),
           0,
         );
-        const summary = page.getByRole("region", {
-          name: "Aylık aktivite raporunda uygulanan filtreler",
-        });
-        assert.match(await summary.innerText(), /Uygulanan Filtreler/);
-        assert.match(await summary.innerText(), /12 ay/);
+        assert.equal(await page.locator(".reports-filter-summary").count(), 0);
+        const toolbar = page.locator(".activity-toolbar");
+        assert.equal(await toolbar.locator(":scope > div").count(), 0);
+        const row = await toolbar.boundingBox();
+        const unit = await toolbar.locator("label").boundingBox();
+        assert(unit.x - row.x < 15);
+        assert.match(await toolbar.innerText(), /Görünüm/);
       },
     );
     await f.check(
@@ -227,10 +229,8 @@ export async function checkActivityReport(f) {
         );
         assert.match(
           await page
-            .getByRole("region", {
-              name: "Aylık aktivite raporunda uygulanan filtreler",
-            })
-            .innerText(),
+            .getByRole("button", { name: "Proje", exact: true })
+            .textContent(),
           /Browser Project A/,
         );
         await choose("Proje", []);

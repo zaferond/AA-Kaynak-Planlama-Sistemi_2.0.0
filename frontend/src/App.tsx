@@ -90,6 +90,7 @@ export default function Portal() {
   const [actualLayout, setActualLayout] = useActualLayout();
   const [sharedCalendarOpen, setSharedCalendarOpen] = useState(false);
   const [scenarioOpen, setScenarioOpen] = useState(false);
+  const [sidebarHost, setSidebarHost] = useState<HTMLDivElement | null>(null);
   const mainTabsRef = useRef<HTMLDivElement>(null),
     capacityTableRef = useRef<HTMLTableElement>(null),
     planTableRef = useRef<HTMLTableElement>(null);
@@ -555,8 +556,8 @@ export default function Portal() {
         } as React.CSSProperties
       }
     >
+      <div className="workspace-sidebar-host" ref={setSidebarHost} />
       <WorkspaceHeader
-        menu={workspaceMenu}
         user={user}
         defaultTab={defaultTab}
         setOpeningTab={setOpeningTab}
@@ -592,6 +593,7 @@ export default function Portal() {
           onValueChange={changeTab}
         >
           <WorkspaceNavigation
+            sidebarHost={sidebarHost}
             menu={workspaceMenu}
             user={user}
             tab={tab}

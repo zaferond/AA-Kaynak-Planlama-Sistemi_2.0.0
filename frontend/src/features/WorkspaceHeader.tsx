@@ -1,6 +1,5 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import {
-  Layers3,
   Users,
   Minimize2,
   Maximize2,
@@ -8,7 +7,6 @@ import {
   Download,
   Upload,
   KeyRound,
-  Menu,
 } from "lucide-react";
 import {
   Popover,
@@ -25,11 +23,9 @@ import {
 import PasswordChangeForm from "../PasswordChangeForm";
 import type { Principal } from "../access";
 import { allowedDefaultTabs } from "../navigation";
-import { SYSTEM_NAME, TAB_LABELS } from "../settings";
-import type { WorkspaceMenu } from "./workspace/useWorkspaceMenu";
+import { TAB_LABELS } from "../settings";
 
 type Props = {
-  menu: WorkspaceMenu;
   user: Principal | null;
   defaultTab: string;
   setOpeningTab: (tab: string) => void;
@@ -38,7 +34,6 @@ type Props = {
   onLogout: () => Promise<void>;
 };
 export default function WorkspaceHeader({
-  menu,
   user,
   defaultTab,
   setOpeningTab,
@@ -59,26 +54,15 @@ export default function WorkspaceHeader({
   const [passwordOpen, setPasswordOpen] = useState(false);
   const restoreInput = useRef<HTMLInputElement>(null);
   return (
-    <header className="mast" ref={menu.headerRef}>
+    <header className="mast">
       <div className="mastbrandrow">
-        <button
-          ref={menu.triggerRef}
-          type="button"
-          className="iconbutton workspace-menu-toggle"
-          data-workspace-menu-trigger
-          aria-label={menu.open ? "Ana menüyü kapat" : "Ana menüyü aç"}
-          aria-controls="workspace-main-menu"
-          aria-expanded={menu.open}
-          onClick={(event) => menu.toggle(event.detail === 0)}
-        >
-          <Menu size={19} aria-hidden="true" />
-        </button>
-        <div className="brand">
-          <div className="mark">
-            <Layers3 size={20} />
-          </div>
-          <h1 className="systembrand">{SYSTEM_NAME}</h1>
-        </div>
+        <img
+          className="mast-company-logo"
+          src="/assets/otokar-logo.svg"
+          alt="Otokar"
+          width={126}
+          height={34}
+        />
         <div className="masttopright">
           <Popover open={menuOpen} onOpenChange={setMenuOpen}>
             <PopoverTrigger asChild>

@@ -1,11 +1,29 @@
-/* Docked navigation starts below the sticky application header. */
+/* Sidebar, header and content share one document-flow grid. */
 .app {
   --workspace-menu-width: 244px;
 }
+.app:not(.full-plan) {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  min-height: calc(100dvh / var(--app-page-scale, 1));
+  align-items: start;
+}
+.app.menu-pinned:not(.full-plan) {
+  grid-template-columns: var(--workspace-menu-width) minmax(0, 1fr);
+}
+.app > .workspace-sidebar-host {
+  display: flex;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  min-width: 0;
+}
 .app:not(.full-plan) > .mast {
-  position: sticky;
-  top: 0;
-  z-index: 45;
+  grid-column: 2;
+  grid-row: 1;
+  position: static;
+  min-width: 0;
 }
 .app .workspace-tabs {
   display: block;
@@ -18,23 +36,21 @@ html[data-theme] .app .workspace-nav {
 html[data-theme] .app .workspace-nav-actions {
   margin-bottom: 6px;
 }
-.app .workspace-menu-toggle {
-  flex: none;
-}
-.app:not(.full-plan) > main {
-  margin-left: 28px;
-  width: calc(100% - 28px);
+html[data-theme] .app:not(.full-plan) > main {
+  grid-column: 2;
+  grid-row: 2;
+  margin-left: 0;
+  width: 100%;
+  min-width: 0;
 }
 .app .workspace-menu-edge {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  z-index: 39;
+  position: relative;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: flex-start;
-  width: 28px;
+  width: 100%;
+  align-self: stretch;
   padding: 15px 0;
   border: 0;
   border-right: 1px solid var(--brand-border, #ccd6c5);
@@ -61,38 +77,53 @@ html[data-theme] .app .workspace-nav-actions {
   color: var(--brand-primary, #405341);
 }
 .app .workspace-menu-panel {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  z-index: 40;
-  display: flex;
+  position: static;
+  display: none;
   flex-direction: column;
-  width: min(var(--workspace-menu-width), calc(100vw - 20px));
+  width: 100%;
+  min-width: 0;
   padding: 0 10px 12px;
   border-right: 1px solid var(--brand-border, #ccd6c5);
   background: var(--brand-surface, #edf1e8);
   color: var(--brand-text, #293a2d);
-  box-shadow: 10px 0 28px #1b281f26;
-  transform: translateX(-102%);
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    transform 180ms ease,
-    visibility 180ms;
+  box-shadow: none;
 }
 .app .workspace-menu-panel[data-open="true"] {
-  transform: translateX(0);
-  visibility: visible;
-  pointer-events: auto;
+  display: flex;
+}
+.app.menu-pinned .workspace-menu-edge {
+  display: none;
 }
 .app .workspace-menu-heading {
   display: flex;
   align-items: center;
   gap: 6px;
   justify-content: flex-end;
-  min-height: 42px;
+  min-height: 76px;
   flex: none;
-  padding: 5px 2px;
+  padding: 12px 2px 12px 4px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--brand-border, #ccd6c5);
+}
+.app .workspace-menu-brand {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.app .workspace-menu-brand > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--brand-primary, #405341);
+}
+.app .workspace-menu-brand h1 {
+  margin: 0;
+  color: var(--brand-text, #293a2d);
+  font-size: var(--fs-md);
+  font-weight: 650;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 .app .workspace-menu-heading .iconbutton {
   display: inline-flex;
@@ -113,7 +144,7 @@ html[data-theme] .app .workspace-menu-panel .navtabs {
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start !important;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   gap: 4px !important;
   width: 100%;
   min-height: 0;
@@ -123,7 +154,7 @@ html[data-theme] .app .workspace-menu-panel .navtabs {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  overflow: auto;
+  overflow: visible;
   white-space: normal;
   scroll-snap-type: none;
   scrollbar-width: thin;
@@ -147,6 +178,20 @@ html[data-theme] .app .workspace-menu-panel .navtabs [role="tab"] svg {
   width: 18px;
   height: 18px;
 }
+html[data-theme] .app .workspace-menu-panel .navtabs [role="tab"]:hover {
+  background: var(--brand-selected, #e0e9d8);
+  color: var(--brand-text, #293a2d);
+}
+html[data-theme]
+  .app
+  .workspace-menu-panel
+  .navtabs
+  [role="tab"][data-state="active"] {
+  background: var(--brand-primary, #405341);
+  border-color: var(--brand-primary, #405341);
+  color: #fff;
+  box-shadow: none;
+}
 html[data-theme] .app .workspace-menu-panel .navtabs [data-group-start] {
   margin-top: 9px;
 }
@@ -162,25 +207,46 @@ html[data-theme]
   width: auto;
   height: 1px;
 }
-/* On desktop, reserve the menu's width. Small screens use an overlay with an
-   explicit close button, while the application header remains above it. */
-@media (min-width: 800px) {
-  .app.menu-pinned:not(.full-plan) > main {
-    margin-left: var(--workspace-menu-width);
-    width: calc(100% - var(--workspace-menu-width));
-  }
-  .app.menu-pinned .workspace-menu-panel[data-pinned="true"] {
-    box-shadow: none;
-  }
-}
 /* Tam ekran planlama görünümünün kendi gezinme düzeni korunur. */
 .app.full-plan .workspace-menu-panel,
-.app.full-plan .workspace-menu-edge {
+.app.full-plan .workspace-menu-edge,
+.app.full-plan > .workspace-sidebar-host {
   display: none;
 }
+@media (max-width: 700px) {
+  .app.menu-pinned:not(.full-plan) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+  }
+  .app.menu-pinned:not(.full-plan) > .mast {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .app.menu-pinned > .workspace-sidebar-host {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  html[data-theme] .app.menu-pinned:not(.full-plan) > main {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  html[data-theme] .app.menu-pinned .workspace-menu-panel .navtabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  html[data-theme] .app .workspace-menu-panel .navtabs [data-group-start] {
+    margin-top: 0;
+  }
+  html[data-theme]
+    .app
+    .workspace-menu-panel
+    .navtabs
+    [data-group-start]::before {
+    display: none;
+  }
+}
 @media (pointer: coarse) {
-  .app .workspace-menu-heading .iconbutton,
-  .app .workspace-menu-toggle {
+  .app .workspace-menu-heading .iconbutton {
     width: 44px;
     min-width: 44px;
     height: 44px;
@@ -191,5 +257,40 @@ html[data-theme]
   .app .workspace-menu-panel,
   .app .workspace-menu-edge {
     transition: none;
+  }
+}
+
+/* A little more room for the company logo; neutral grey application chrome. */
+html[data-theme] .app > header.mast {
+  padding-block: 9px;
+  background: linear-gradient(110deg, #e3e5e8, #f1f2f4);
+  color: #303842;
+  border-bottom: 1px solid #c7ccd3;
+}
+.app .mast-company-logo {
+  display: block;
+  flex: none;
+  width: 126px;
+  height: 34px;
+  object-fit: contain;
+}
+html[data-theme] .app .mast :is(.button, .iconbutton, .mastuser-trigger) {
+  background: #ffffff78;
+  color: #303842;
+  border-color: #aab2bd;
+}
+html[data-theme] .app .mast :is(.button, .iconbutton, .mastuser-trigger):hover {
+  background: #ffffffd9;
+}
+html[data-theme]
+  .app
+  .mast
+  :is(.button, .iconbutton, .mastuser-trigger):focus-visible {
+  outline-color: #465565;
+}
+@media (max-width: 650px) {
+  .app .mast-company-logo {
+    width: 110px;
+    height: 30px;
   }
 }

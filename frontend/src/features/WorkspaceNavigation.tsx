@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowDownToLine,
   CalendarClock,
@@ -10,12 +11,11 @@ import {
   TrendingUp,
   Users,
   PanelLeftClose,
-  Menu,
-  ChevronsRight,
+  ChevronRight,
 } from "lucide-react";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Principal } from "../access";
-import { RISK_MANAGEMENT_ENABLED, TAB_LABELS } from "../settings";
+import { RISK_MANAGEMENT_ENABLED, SYSTEM_NAME, TAB_LABELS } from "../settings";
 import { isProjectEditor } from "../../../shared/project-access.ts";
 import type { WorkspaceMenu } from "./workspace/useWorkspaceMenu";
 import WorkspaceSectionHeader, {
@@ -27,6 +27,7 @@ export type WorkspaceDensity = "detail" | "compact" | "overview";
 export type ReportView = "resources" | "headcount";
 export type ProjectView = "projects" | "scenario";
 type Props = {
+  sidebarHost: HTMLElement | null;
   menu: WorkspaceMenu;
   user: Principal | null;
   tab: string;
@@ -58,6 +59,7 @@ type Props = {
   pendingProgressApprovals: number;
 };
 export default function WorkspaceNavigation({
+  sidebarHost,
   menu,
   user,
   tab,
@@ -231,73 +233,81 @@ export default function WorkspaceNavigation({
     : TAB_LABELS[tab as keyof typeof TAB_LABELS];
   return (
     <div className="workspace-nav">
-      <button
-        type="button"
-        className="workspace-menu-edge"
-        inert={menu.open}
-        aria-hidden={menu.open}
-        data-workspace-menu-trigger
-        aria-label="Sol menüyü aç"
-        aria-controls="workspace-main-menu"
-        aria-expanded={menu.open}
-        style={{ top: menu.top }}
-        onClick={(event) => !menu.open && menu.toggle(event.detail === 0)}
-      >
-        <Menu
-          className="workspace-menu-edge-icon"
-          size={16}
-          aria-hidden="true"
-        />
-        <span className="workspace-menu-edge-caption" aria-hidden="true">
-          Menü
-          <ChevronsRight size={14} />
-        </span>
-      </button>
-      <aside
-        id="workspace-main-menu"
-        className="workspace-menu-panel"
-        ref={menu.panelRef}
-        data-open={menu.open}
-        data-pinned={menu.pinned}
-        aria-label="Ana menü"
-        aria-hidden={!menu.open}
-        inert={!menu.open}
-        style={{ top: menu.top }}
-      >
-        <div className="workspace-menu-heading">
-          <button
-            type="button"
-            className="iconbutton"
-            aria-label="Sol menüyü kapat"
-            onClick={() => menu.close(true)}
-          >
-            <PanelLeftClose size={18} />
-          </button>
-        </div>
-        <TabsList
-          ref={mainTabsRef}
-          className="navtabs"
-          variant="line"
-          aria-label="Ana sekmeler"
-        >
-          {mainTabs.map((item, index) => (
-            <TabsTrigger
-              key={item.value}
-              value={item.value}
-              data-tab-group={item.group}
-              // A thin divider marks where a new group of tabs begins.
-              data-group-start={
-                index > 0 && mainTabs[index - 1].group !== item.group
-                  ? ""
-                  : undefined
-              }
+      {sidebarHost &&
+        createPortal(
+          <>
+            <button
+              ref={menu.triggerRef}
+              type="button"
+              className="workspace-menu-edge"
+              inert={menu.open}
+              aria-hidden={menu.open}
+              data-workspace-menu-trigger
+              aria-label="Sol menüyü aç"
+              aria-controls="workspace-main-menu"
+              aria-expanded={menu.open}
+              onClick={(event) => !menu.open && menu.toggle(event.detail === 0)}
             >
-              <item.Icon />
-              <span>{TAB_LABELS[item.value]}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </aside>
+              <ChevronRight
+                className="workspace-menu-edge-icon"
+                size={18}
+                aria-hidden="true"
+              />
+              <span className="workspace-menu-edge-caption" aria-hidden="true">
+                Menü
+              </span>
+            </button>
+            <aside
+              id="workspace-main-menu"
+              className="workspace-menu-panel"
+              ref={menu.panelRef}
+              data-open={menu.open}
+              data-pinned={menu.pinned}
+              aria-label="Ana menü"
+              aria-hidden={!menu.open}
+              inert={!menu.open}
+            >
+              <div className="workspace-menu-heading">
+                <div className="workspace-menu-brand">
+                  <Layers3 size={20} aria-hidden="true" />
+                  <h1>{SYSTEM_NAME}</h1>
+                </div>
+                <button
+                  type="button"
+                  className="iconbutton"
+                  aria-label="Sol menüyü kapat"
+                  onClick={() => menu.close(true)}
+                >
+                  <PanelLeftClose size={18} />
+                </button>
+              </div>
+              <TabsList
+                ref={mainTabsRef}
+                className="navtabs"
+                variant="line"
+                aria-label="Ana sekmeler"
+              >
+                {mainTabs.map((item, index) => (
+                  <TabsTrigger
+                    key={item.value}
+                    value={item.value}
+                    data-tab-group={item.group}
+                    // A thin divider marks where a new group of tabs begins.
+                    data-group-start={
+                      index > 0 && mainTabs[index - 1].group !== item.group
+                        ? ""
+                        : undefined
+                    }
+                  >
+                    <item.Icon />
+                    <span>{TAB_LABELS[item.value]}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </aside>
+          </>,
+          sidebarHost,
+        )}
       <WorkspaceSectionHeader
         title={sectionTitle}
         label={sectionLabel}

@@ -36,7 +36,24 @@ export async function checkWorkspaceMenu(f) {
           "docked menu must not cover content",
         );
         const header = await page.locator("header.mast").boundingBox();
-        assert(Math.abs(panel.y - (header.y + header.height)) < 2);
+        assert(Math.abs(panel.y - header.y) < 2);
+        assert(header.x >= panel.x + panel.width - 1);
+        assert.equal(
+          await menu
+            .getByRole("heading", {
+              name: "Askeri Araçlar Kaynak Yönetimi Sistemi",
+              exact: true,
+            })
+            .count(),
+          1,
+        );
+        assert.equal(await page.locator("header.mast h1").count(), 0);
+        assert.equal(
+          await page
+            .getByRole("img", { name: "Otokar", exact: true })
+            .evaluate((el) => el.complete && el.naturalWidth > 0),
+          true,
+        );
         await page.mouse.move(1000, 500);
         await page.waitForTimeout(300);
         assert.equal(
@@ -55,26 +72,28 @@ export async function checkWorkspaceMenu(f) {
       },
     );
     await f.check(
-      "sol menü: sayfa kaydırılırken ve fare üst çubuğa giderken mavi satırın altında kalır",
+      "sol menü: üst barla aynı blokta kayar ve üst barla çakışmaz",
       async () => {
+        const beforeHeader = await page.locator("header.mast").boundingBox();
+        const beforeMenu = await menu.boundingBox();
         await page.evaluate(() => {
           const space = document.createElement("div");
           space.dataset.menuScrollFixture = "true";
           space.style.height = "1200px";
-          document.querySelector(".app").append(space);
+          document.body.append(space);
           window.scrollTo(0, 300);
         });
         await page.waitForTimeout(100);
         const header = await page.locator("header.mast").boundingBox();
         const panel = await menu.boundingBox();
-        assert(Math.abs(header.y) < 1);
-        assert(panel.y >= header.y + header.height - 1);
-        await page.mouse.move(30, 5);
+        assert(header.y < beforeHeader.y - 50);
+        assert(
+          Math.abs(header.y - beforeHeader.y - (panel.y - beforeMenu.y)) < 2,
+        );
+        assert(panel.x + panel.width <= header.x + 1);
         assert.equal(
-          await page.evaluate(
-            () => !!document.elementFromPoint(30, 5)?.closest("header.mast"),
-          ),
-          true,
+          await menu.evaluate((el) => getComputedStyle(el).position),
+          "static",
         );
         await page.evaluate(() => {
           document.querySelector("[data-menu-scroll-fixture]").remove();
@@ -100,7 +119,7 @@ export async function checkWorkspaceMenu(f) {
         assert.equal(await isOpen(), false);
         await page.reload();
         await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
+          .getByRole("button", { name: "Sol menüyü aç", exact: true })
           .waitFor();
         assert.equal(await isOpen(), false);
         await page
@@ -109,7 +128,7 @@ export async function checkWorkspaceMenu(f) {
         await f.wait(isOpen, "edge click reopens");
         await page.reload();
         await page
-          .getByRole("button", { name: "Ana menüyü kapat", exact: true })
+          .getByRole("button", { name: "Sol menüyü kapat", exact: true })
           .waitFor();
         assert.equal(await isOpen(), true);
       },
@@ -120,10 +139,10 @@ export async function checkWorkspaceMenu(f) {
         await selectWorkspaceTab(page, "Projeler");
         await page.locator(".app.tab-projects").waitFor();
         await page
-          .getByRole("button", { name: "Ana menüyü kapat", exact: true })
+          .getByRole("button", { name: "Sol menüyü kapat", exact: true })
           .click();
         const trigger = page.getByRole("button", {
-          name: "Ana menüyü aç",
+          name: "Sol menüyü aç",
           exact: true,
         });
         await trigger.focus();
@@ -164,18 +183,14 @@ export async function checkWorkspaceMenu(f) {
       async () => {
         await page.setViewportSize({ width: 320, height: 480 });
         await page
-          .getByRole("button", { name: "Ana menüyü aç", exact: true })
+          .getByRole("button", { name: "Sol menüyü aç", exact: true })
           .click();
         await f.wait(async () => {
           const b = await menu.boundingBox();
           return b.x >= 0 && b.x + b.width <= 320;
         }, "narrow panel fits");
         const list = menu.getByRole("tablist");
-        const size = await list.evaluate((el) => ({
-          scroll: el.scrollHeight,
-          client: el.clientHeight,
-        }));
-        assert(size.scroll > size.client);
+        assert((await list.getByRole("tab").count()) > 0);
         await menu
           .getByRole("tab", {
             name: "Organizasyon & Çalışan & Yetki",

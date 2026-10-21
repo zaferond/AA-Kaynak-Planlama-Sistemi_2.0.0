@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const openKey = "aa-kaynak-menu-acik-v2";
 function readOpen() {
@@ -12,8 +12,6 @@ function readOpen() {
 /** Navigation stays docked until explicitly closed; remember that choice. */
 export function useWorkspaceMenu() {
   const [open, setOpen] = useState(readOpen);
-  const [top, setTop] = useState(0);
-  const headerRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   function close(restoreFocus = false) {
@@ -60,31 +58,10 @@ export function useWorkspaceMenu() {
     document.addEventListener("keydown", key);
     return () => document.removeEventListener("keydown", key);
   }, [open]);
-  useLayoutEffect(() => {
-    const header = headerRef.current;
-    if (!header) return;
-    const measure = () => {
-      const zoom =
-        Number.parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
-      setTop(Math.max(0, header.getBoundingClientRect().bottom / zoom));
-    };
-    const observer = new ResizeObserver(measure);
-    observer.observe(header);
-    window.addEventListener("scroll", measure, { passive: true });
-    window.addEventListener("resize", measure);
-    measure();
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", measure);
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
   return {
     open,
     // Existing layout uses this flag to reserve the menu's width.
     pinned: open,
-    top,
-    headerRef,
     panelRef,
     triggerRef,
     toggle,

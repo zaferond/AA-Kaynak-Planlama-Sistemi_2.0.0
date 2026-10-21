@@ -183,7 +183,7 @@ export async function fixture({ mutationLimits } = {}) {
       if (login)
         await page
           .getByRole("button", {
-            name: /^Ana menüyü (aç|kapat)$/,
+            name: /^Sol menüyü (aç|kapat)$/,
           })
           .waitFor();
       return { context, page, id };
@@ -254,7 +254,7 @@ export async function hoverMainMenu(page) {
     "true"
   )
     await page
-      .getByRole("button", { name: "Ana menüyü aç", exact: true })
+      .getByRole("button", { name: "Sol menüyü aç", exact: true })
       .click();
   await page.locator('#workspace-main-menu[data-open="true"]').waitFor();
 }
@@ -287,7 +287,7 @@ export async function selectWorkspaceTab(page, name) {
       if ((await menu.getAttribute("data-open")) === "true") break;
       if (attempt === 3) throw Error("Ana menü açılamadı.");
       await page
-        .getByRole("button", { name: "Ana menüyü aç", exact: true })
+        .getByRole("button", { name: "Sol menüyü aç", exact: true })
         .click();
       await page
         .locator('#workspace-main-menu[data-open="true"]')

@@ -6,7 +6,7 @@ export async function loginUI(page, id, password) {
   await page.getByLabel("Kullanıcı Adı", { exact: true }).fill("qa." + id);
   await page.getByLabel("Şifre", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Giriş Yap", exact: true }).click();
-  await page.getByRole("button", { name: /^Ana menüyü (aç|kapat)$/ }).waitFor();
+  await page.getByRole("button", { name: /^Sol menüyü (aç|kapat)$/ }).waitFor();
 }
 const openAccess = (page) =>
   selectWorkspaceTab(page, "Organizasyon & Çalışan & Yetki");
@@ -57,7 +57,7 @@ export async function checkAccess(f) {
         await loginUI(p, "employee", f.password);
         await p.reload();
         await p
-          .getByRole("button", { name: /^Ana menüyü (aç|kapat)$/ })
+          .getByRole("button", { name: /^Sol menüyü (aç|kapat)$/ })
           .waitFor();
         const cookies = await c.context.cookies();
         assert(cookies.some((cookie) => cookie.httpOnly));
